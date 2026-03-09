@@ -1,71 +1,57 @@
-# 🚀 EXAMPAD-PORTAL
-### *The Ultimate Secure OS-Style Examination Ecosystem*
+# EXAMPAD-PORTAL
+### Secure OS-Style Examination Ecosystem
 
-![EXAMPAD Banner](logo.jpg)
-
-**EXAMPAD** is a high-performance, secure, and feature-rich examination platform designed to provide a professional ERP-like experience. Built for **OM AGGARWAL Classes**, it combines a beautiful glassmorphic UI with robust proctoring capabilities.
+EXAMPAD is a high-performance, secure, and professional examination portal designed for **OM AGGARWAL Classes**. It focuses on providing a desktop-like ERP experience with strict proctoring to ensure exam integrity.
 
 ---
 
-## ✨ Key Features
+## 🚀 Key Features
 
-### 🛡️ Ironclad Security (Zero-Malpractice Policy)
-- **Anti-Tab Switching**: Real-time detection and logging of tab changes.
-- **Copy-Paste Block**: Complete restriction of clipboard actions (Ctrl+C, Ctrl+V, right-click).
-- **Proctoring Engine**: Integrated logging of all student activities.
-- **Developer Shield**: Blocks F12, Inspect Element, and other dev tools.
+### 🛡️ Secure Proctoring
+- **Tab-Switch Detection**: Monitors and logs when students switch tabs.
+- **Strict Controls**: Prevents copy-pasting, right-clicking, and basic keyboard shortcuts.
+- **DevTools Block**: Restricts access to F12 and inspection tools.
 
 ### 📝 Exam Management
-- **Versatile Question Types**: Support for MCQ, Subjective, True/False, and complex Coding problems.
-- **Dynamic Coding Interface**: Full-featured code editor with multi-language support (JS, Python, C++, Java).
-- **Section Lock**: Enforce sequential attempts with OTP-based section submission.
-- **Real-Time Monitoring**: Live dashboard for teachers to track scores and student progress.
+- **Question Variety**: Support for MCQ, Subjective, True/False, and Coding questions.
+- **Coding Problems**: Built-in editor supporting JS, Python, C++, and Java.
+- **Section Workflow**: Enforced section sequence with OTP-based submissions.
+- **Live Monitoring**: Real-time teacher dashboard to track progress.
 
-### 🎨 Premium UI/UX
-- **Aesthetic Design**: Modern Orange & White theme with smooth micro-animations.
-- **OS-Style Interface**: Intuitive navigation that feels like a desktop environment.
-- **Fully Responsive**: Optimized for desktops, tablets, and smartphones.
+### 🎨 User Experience
+- **Interface**: Modern orange and white theme with a clean, professional layout.
+- **Architecture**: Fast, responsive navigation across all devices.
 
 ---
 
-## 📁 Project Architecture
+## 📁 System Structure
 
-```bash
+```
 EXAMPAD/
-├── 🌐 index.html          # Landing Portal
-├── 📁 pages/              # Module Pages
-│   ├── exam-attempt.html  # Active Exam Environment
-│   ├── teacher-dash.html  # Teacher Analytics
-│   └── exam-creator.html  # Smart Question Builder
-├── 📁 js/                 # Logic Core
-│   ├── auth.js           # Secure Authentication
-│   ├── security.js       # Anti-cheat Engine
-│   └── database.js       # LocalStorage Management
-└── 📁 css/                # Styling Tokens
-    └── styles.css        # Premium CSS System
+├── index.html           # Main Portal Entry
+├── pages/               # Functional Modules
+│   ├── exam-attempt.html  # Active Test Environment
+│   ├── teacher-dashboard.html 
+│   └── exam-creator.html
+├── js/                  # Logic and Storage
+│   ├── auth.js          
+│   ├── security.js      # Anti-cheat Engine
+│   └── db.js            # LocalStorage Logic
+└── css/                 # Global Styling
 ```
 
 ---
 
-## 🚀 Quick Start
+## ⚙️ How to Run
 
-### 1. Clone the Repository
+### Web Access
+Simply serve the root directory or open `index.html` in a modern browser.
 ```bash
-git clone https://github.com/OMAGGARWAL2/EXAMPAD-PORTAL.git
-cd EXAMPAD-PORTAL
-```
-
-### 2. Launch Local Server
-No complex setup needed! Just serve the folder:
-```bash
-# Using Node.js
 npx http-server
-
-# Or open index.html directly in Chrome
 ```
 
-### 3. Desktop Mode (Electron)
-To run as a secure desktop application:
+### Desktop Version (Electron)
+The portal is designed to run as a secure desktop App.
 ```bash
 npm install
 npm start
@@ -73,21 +59,11 @@ npm start
 
 ---
 
-## 🛠️ Built With
-- **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+)
-- **Desktop Core**: Electron.js
-- **API**: Integration-ready for OpenAI (Automated Grading)
-- **Database**: Advanced LocalStorage-based Persistent Storage
+## 👥 Development Team
+- **YAKSHI BATISH**
+- **PARAS JINDAL**
+- **PIYUSH THAKUR**
+- **OM AGGARWAL**
 
----
-
-## 🏆 Future Roadmap
-- [ ] **AI Proctoring**: Facial recognition and eye-tracking.
-- [ ] **Cloud Sync**: MongoDB integration for global scalability.
-- [ ] **PDF Generator**: Auto-generate beautiful result certificates.
-- [ ] **Mobile App**: Native iOS/Android student portal.
-
----
-
-**Created with ❤️ by OMAGGARWAL Engineering**
-*Empowering education through secure technology.*
+**Built for OM AGGARWAL Classes**
+© 2026 EXAMPAD Engineering
