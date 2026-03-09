@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chalkpad ERP Login</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: url('https://www.chitkara.edu.in/blogs/wp-content/uploads/2022/03/CUB4-Top-10-reasons-why-Chitkara-University-is-the-best-University-in-North-India.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            width: 300px;
+            padding: 30px;
+            margin-right: 15%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-section {
+            text-align: center;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-section img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .logo-text {
+            font-size: 11px;
+            color: #444;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #777;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #777;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+
+        .remember-section {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .btn-signin {
+            width: 100%;
+            background-color: #c9302c;
+            color: white;
+            border: 1px solid #ac2925;
+            padding: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-signin:hover {
+            background-color: #ac2925;
+        }
+
+        .links-section {
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        .links-section a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+        .links-section a:hover {
+            text-decoration: underline;
+        }
+
+        .app-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        .powered-by {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+    <link rel="icon" type="image/x-icon" href="../logo.jpg">
+</head>
+
+<body>
+
+    <div class="login-box">
+        <div class="logo-section">
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                <img src="../logo.jpg" alt="Chitkara University Logo"
+                    style="max-height: 80px; width: auto; max-width: 100%;">
+            </div>
+            <div class="logo-text">Chitkara University Institute of Engineering & Technology</div>
+        </div>
+
+        <div class="error-msg" id="errorMsg">Invalid Credentials.</div>
+
+        <div class="form-group">
+            <label class="form-label">Username (Education ID)</label>
+            <input type="text" id="username" class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="password" class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Session</label>
+            <select class="form-select">
+                <option>JanJun2026</option>
+                <option>JulDec2025</option>
+            </select>
+        </div>
+
+        <div class="remember-section">
+            <input type="checkbox" checked> Remember Password
+        </div>
+
+        <button class="btn-signin" onclick="doLogin()">Sign In</button>
+
+        <div class="links-section">
+            Forgot your password? <a href="#">Click here</a><br><br>
+            <a href="#">Privacy Policy</a>
+        </div>
+
+        <div class="app-icons">
+            <span style="font-size:12px; font-weight:bold; display:block; width:100%; text-align:center;">Mobile App
+                Code : 800002</span>
+        </div>
+
+        <div class="powered-by">
+            Powered by <strong>CODE</strong>
+        </div>
+    </div>
+
+    <script>
+        function doLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const students = JSON.parse(localStorage.getItem('erp_students')) || [];
+
+            const student = students.find(s => s.username === user && s.password === pass);
+
+            if (student) {
+                sessionStorage.setItem('current_student', JSON.stringify(student));
+                window.location.href = 'erp.html';
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

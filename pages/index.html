@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXAMPAD | Professional Examination Environment</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Brand Orange Palette - Professional & Warm */
+            --primary: #F26B3A;
+            --primary-dark: #D45428;
+            --primary-soft: #FFF1EC;
+            --bg-site: #FFFFFF;
+            --bg-subtle: #F9FAFB;
+            --text-main: #101828;
+            --text-muted: #475467;
+            --card-border: #EAECF0;
+            --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+            --shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-site);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* Abstract Organic Background */
+        .page-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 100% 0%, var(--primary-soft) 0%, transparent 40%),
+                radial-gradient(circle at 0% 100%, #FFF5ED 0%, transparent 40%);
+        }
+
+        .page-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .landing-wrapper {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .system-status {
+            font-size: 12px;
+            color: #12B76A;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .system-status i {
+            font-size: 8px;
+        }
+
+        /* Header Navigation */
+        header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #EAECF0;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 -2rem;
+            /* Pull out of wrapper padding for full-width feeling if possible, or keep inside */
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-ring {
+            width: 42px;
+            height: 42px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 800;
+            box-shadow: 0 8px 16px rgba(242, 107, 58, 0.2);
+        }
+
+        .logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 0;
+            gap: 4rem;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 120px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-content h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            letter-spacing: -1.5px;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero-content h1 span {
+            color: var(--primary);
+        }
+
+        .hero-content p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 620px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        /* Role Selection Cards */
+        .portal-grid {
+            display: flex;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1000px;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .portal-grid::before {
+            content: "";
+            position: absolute;
+            inset: -40px;
+            background: radial-gradient(circle, rgba(242, 107, 58, 0.08), transparent 70%);
+            z-index: -1;
+        }
+
+        .portal-card {
+            flex: 1;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 18px;
+            padding: 3rem 2.5rem;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(16, 24, 40, 0.06);
+        }
+
+        .portal-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: 0.3s;
+        }
+
+        .portal-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(242, 107, 58, 0.12);
+        }
+
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            background: var(--bg-subtle);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .portal-card:hover .icon-circle {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .portal-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .portal-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-portal {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-portal i {
+            transition: transform 0.3s;
+        }
+
+        .portal-card:hover .btn-portal i {
+            transform: translateX(6px);
+        }
+
+        /* Footer Info */
+        footer {
+            padding: 2.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: auto;
+            animation: fadeInUp 0.8s ease-out 0.8s backwards;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-nav a:hover {
+            color: var(--primary);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 860px) {
+            .portal-grid {
+                flex-direction: column;
+            }
+
+            .hero-section {
+                padding: 2rem 0;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-bg"></div>
+
+    <div class="landing-wrapper">
+        <header>
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <a href="#" class="logo">
+                    <div class="logo-ring"
+                        style="background: transparent; border-radius: 0; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;">
+                        <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara"
+                            style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <span class="logo-text">EXAMPAD</span>
+                </a>
+                <div class="system-status">
+                    <i class="fas fa-circle"></i> Secure Mode Active
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <span
+                    style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); background: #fff; border: 1px solid var(--card-border); padding: 6px 16px; border-radius: 12px;">v1.2
+                    Stable</span>
+            </div>
+        </header>
+
+        <main class="hero-section">
+            <div class="hero-content">
+                <div class="badge">
+                    <i class="fas fa-shield-check"></i>
+                    <span>Authorized Environment Only</span>
+                </div>
+                <h1>Secure Exams. <span>Reliable Results.</span></h1>
+                <p>Welcome to EXAMPAD by OM AGGARWAL Classes. Our professional ecosystem ensures assessment integrity
+                    with real-time monitoring and advanced code execution.</p>
+            </div>
+
+            <div class="portal-grid">
+                <!-- Teacher Card -->
+                <div class="portal-card" onclick="goTo('pages/login.html?role=teacher')">
+                    <div class="icon-circle">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3>Instructor Portal</h3>
+                    <p>Build comprehensive assessments, monitor candidate performance, and manage your question bank
+                        with ease.</p>
+                    <div class="btn-portal">Open Dashboard <i class="fas fa-arrow-right"></i></div>
+                </div>
+
+                <!-- Student Card -->
+                <div class="portal-card" onclick="goTo('pages/login.html?role=student')">
+                    <div class="icon-circle">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>Candidate Gateway</h3>
+                    <p>Access your assigned assessments, write code in our professional editor, and track your progress
+                        instantly.</p>
+                    <div class="btn-portal">Start Assessment <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-left">
+                &copy; 2026 OM AGGARWAL Classes. Protected by Exampad Security Shield.
+            </div>
+            <div class="footer-nav">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Security Protocol</a>
+                <a href="#">Technical Support</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function goTo(url) {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.4s ease';
+            setTimeout(() => {
+                window.location.href = url;
+            }, 400);
+        }
+    </script>
+</body>
+
+</html>

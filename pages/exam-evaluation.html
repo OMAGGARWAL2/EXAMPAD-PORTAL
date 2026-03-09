@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exampad | Exam Evaluation Center</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #D92D20;
+            --secondary: #667085;
+            --bg: #F9FAFB;
+            --white: #FFFFFF;
+            --border: #EAECF0;
+            --radius-md: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: #101828;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'Outfit';
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 0;
+            height: calc(100vh - 72px);
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: #fff;
+            border-right: 1px solid var(--border);
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            font-family: 'Outfit';
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #344054;
+        }
+
+        .attempt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .attempt-card {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .attempt-card:hover {
+            border-color: var(--primary);
+            background: #FEF3F2;
+        }
+
+        .attempt-card.active {
+            border-color: var(--primary);
+            background: #FEF3F2;
+            box-shadow: 0 0 0 4px rgba(217, 45, 32, 0.1);
+        }
+
+        .attempt-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: block;
+        }
+
+        .attempt-roll {
+            font-size: 0.75rem;
+            color: var(--secondary);
+            font-family: monospace;
+        }
+
+        .attempt-status {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .status-grad {
+            background: #ECFDF3;
+            color: #027A48;
+        }
+
+        .status-pend {
+            background: #FFFAEB;
+            color: #B54708;
+        }
+
+        /* VIEWPORT */
+        .viewport {
+            padding: 40px;
+            overflow-y: auto;
+            background: #fff;
+        }
+
+        .no-selection {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            text-align: center;
+        }
+
+        .q-eval-card {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .q-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #101828;
+            flex: 1;
+        }
+
+        .q-meta {
+            margin-left: 20px;
+            text-align: right;
+        }
+
+        .q-marks-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-transform: uppercase;
+        }
+
+        .q-marks-val {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .response-box {
+            background: #F9FAFB;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .response-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .response-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-family: inherit;
+        }
+
+        .eval-input-group {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .mark-input {
+            width: 100px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+        }
+
+        .mark-input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-save-mark {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .publish-bar {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            border-top: 1px solid var(--border);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-publish {
+            background: #12B76A;
+            color: #fff;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(18, 183, 106, 0.2);
+        }
+
+        .btn-back {
+            background: var(--bg);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #344054;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo" onclick="window.location.href='./teacher-dashboard.html'">
+            <div
+                style="background:var(--primary); color:#fff; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+                E</div>
+            EXAMPAD EVALUATOR
+        </div>
+        <div>
+            <a href="./teacher-dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h2 class="sidebar-title" id="examTitle">Assessment Results</h2>
+            <div class="attempt-list" id="attemptList">
+                <!-- Attempts injected here -->
+            </div>
+        </aside>
+
+        <main class="viewport">
+            <div id="evalContent" class="no-selection">
+                <i class="fas fa-clipboard-check" style="font-size: 4rem; opacity:0.1; margin-bottom:20px;"></i>
+                <h2>Select a submission to begin evaluation</h2>
+                <p>Click on any candidate from the left panel to review their work.</p>
+            </div>
+        </main>
+    </div>
+
+    <div class="publish-bar" id="publishBar" style="display: none;">
+        <div>
+            <span style="font-size: 0.9rem; color: var(--secondary);">Once publishing is active, students will receive
+                their scores in their Result Portal.</span>
+        </div>
+        <button class="btn-publish" onclick="publishResults()">PUBLISH FINAL RESULTS</button>
+    </div>
+
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const examId = urlParams.get('examId');
+        let currentExam = db.getExamById(examId);
+        let activeAttemptId = null;
+
+        if (!currentExam) {
+            alert("Assessment not found");
+            window.location.href = './teacher-dashboard.html';
+        }
+
+        function init() {
+            document.getElementById('examTitle').textContent = currentExam.title;
+            renderAttemptList();
+            if (currentExam.resultsPublished) {
+                document.getElementById('publishBar').innerHTML = '<span style="color:#12B76A; font-weight:800;"><i class="fas fa-check-circle"></i> RESULTS ALREADY PUBLISHED TO CANDIDATES</span>';
+            }
+            document.getElementById('publishBar').style.display = 'flex';
+        }
+
+        function renderAttemptList() {
+            const list = document.getElementById('attemptList');
+            const attempts = db.getExamAttempts(examId).filter(a => a.status === 'submitted' || a.status === 'reviewed');
+
+            if (attempts.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">No submissions yet.</div>';
+                return;
+            }
+
+            list.innerHTML = attempts.map(a => {
+                const user = db.getUserById ? db.getUserById(a.studentId) : { name: 'Student' };
+                const isReviewed = a.status === 'reviewed';
+                const scoreObj = db.calculateScore(a);
+                const hasPendingManual = scoreObj.isPendingManualReview;
+
+                return `
+                    <div class="attempt-card ${activeAttemptId === a.id ? 'active' : ''}" onclick="selectAttempt('${a.id}')">
+                        <span class="attempt-name">${user.name}</span>
+                        <span class="attempt-roll">ROLL: ${a.studentRollNo || 'UID_' + a.studentId.substr(-4)}</span>
+                        <span class="attempt-status ${hasPendingManual ? 'status-pend' : 'status-grad'}">
+                            ${hasPendingManual ? 'PENDING' : 'GRADED'}
+                        </span>
+                        <div style="font-size:0.75rem; margin-top:8px; font-weight:700;">Score: ${scoreObj.score}/${scoreObj.totalMarks}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectAttempt(id) {
+            activeAttemptId = id;
+            renderAttemptList();
+            const attempt = db.getAttempt(id);
+            const user = db.getUserById ? db.getUserById(attempt.studentId) : { name: 'Student' };
+            const viewport = document.getElementById('evalContent');
+            viewport.className = '';
+
+            let html = `
+                <div style="margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid var(--border);">
+                    <h1 style="font-family:'Outfit'; font-size: 2rem;">Candidate: ${user.name}</h1>
+                    <p style="color:var(--secondary);">Evaluation session for roll number <b>${attempt.studentRollNo || 'N/A'}</b></p>
+                </div>
+            `;
+
+            currentExam.questions.forEach((q, i) => {
+                const response = attempt.responses[q.id] || { value: '' };
+                const isAuto = !['subjective', 'file_upload'].includes(q.type);
+                const currentMark = response.manualMark !== undefined ? response.manualMark : (isAuto ? (db.checkAnswer(q, response) ? q.marks : 0) : '');
+
+                html += `
+                    <div class="q-eval-card">
+                        <div class="q-header">
+                            <div class="q-text">Q${i + 1}. ${q.heading || q.title.replace(/<[^>]*>/g, '').substr(0, 60)}</div>
+                            <div class="q-meta">
+                                <div class="q-marks-label">Max Marks</div>
+                                <div class="q-marks-val">${q.marks}</div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.9rem; color:#444; margin-bottom:15px; background:#fffbf0; padding:10px; border-radius:6px; border:1px solid #FFE58F;">
+                            <b>Prompt:</b> ${q.title}
+                        </div>
+                        <div class="response-box">
+                            <span class="response-label">Candidate Response</span>
+                            <div class="response-text">${typeof response.value === 'object' ? 'FILE ATTACHED: ' + response.value.name : (response.value || '<i>No response provided</i>')}</div>
+                        </div>
+                        <div class="eval-input-group">
+                            <div>
+                                <label style="font-size:0.75rem; font-weight:800; display:block; margin-bottom:4px;">AWARDED MARKS</label>
+                                <input type="number" class="mark-input" value="${currentMark}" max="${q.marks}" id="mark_${q.id}" placeholder="0">
+                            </div>
+                            <button class="btn-save-mark" onclick="saveManualMark('${q.id}')">UPDATE MARKS</button>
+                            ${isAuto ? '<span style="font-size: 0.75rem; color: #12B76A; font-weight:700;"><i class="fas fa-magic"></i> AUTO-GRADED</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            viewport.innerHTML = html;
+        }
+
+        function saveManualMark(qid) {
+            const mark = document.getElementById('mark_' + qid).value;
+            if (mark === '') return;
+
+            const attempt = db.getAttempt(activeAttemptId);
+            if (!attempt.responses[qid]) attempt.responses[qid] = { value: '' };
+            attempt.responses[qid].manualMark = parseFloat(mark);
+
+            // Re-calculate total score immediately
+            const result = db.calculateScore(attempt);
+            attempt.score = result.score;
+
+            db.updateAttempt(activeAttemptId, attempt);
+            showToast("Marks updated for candidate");
+            renderAttemptList();
+        }
+
+        function publishResults() {
+            if (!confirm("Are you sure you want to publish results? All students will be able to see their final grades.")) return;
+
+            currentExam.resultsPublished = true;
+            db.updateExam(examId, currentExam);
+
+            // Mark all graded attempts as reviewed
+            const attempts = db.getExamAttempts(examId);
+            attempts.forEach(a => {
+                a.status = 'reviewed';
+                db.updateAttempt(a.id, a);
+            });
+
+            showToast("Results published successfully!");
+            setTimeout(() => window.location.reload(), 1500);
+        }
+
+        function showToast(msg) {
+            const t = document.createElement('div');
+            t.style = "position:fixed; bottom:100px; right:40px; background:#333; color:#fff; padding:12px 24px; border-radius:8px; z-index:1000; font-weight:700;";
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

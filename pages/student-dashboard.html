@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXAMPAD</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../logo.jpg">
+    <script src="../js/theme-engine.js"></script>
+    <style>
+        :root {
+            --primary: #f26b3a;
+            --primary-dark: #d35400;
+            --bg: #f5f5f5;
+            --white: #ffffff;
+            --text-main: #333333;
+            --text-light: #777777;
+            --border: #eeeeee;
+            --accent-yellow: #c0a000;
+            --accent-green: #7cb342;
+            --shadow-premium: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+        }
+
+        html {
+            font-size: 18px;
+            /* Increased from default */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-size: 15px;
+        }
+
+        /* --- HEADER --- */
+        .site-header {
+            height: 64px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .logo-box:hover {
+            opacity: 0.8;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .nav-icons i:hover {
+            color: var(--primary);
+            background: #fff5f0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .plus-btn {
+            width: 44px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff5f0;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-left: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .plus-btn:hover {
+            background: #ffece5;
+        }
+
+        .grid-icon {
+            color: #555;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .grid-icon:hover {
+            background: #f0f0f0;
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .profile-stack {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+            transition: background 0.2s;
+        }
+
+        .profile-stack:hover {
+            background: #f8f8f8;
+        }
+
+        .profile-text {
+            text-align: right;
+            line-height: 1.2;
+        }
+
+        .profile-name {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #444;
+        }
+
+        .profile-role {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .avatar-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- DROPDOWN MENU --- */
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 200px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-premium);
+            margin-top: 10px;
+            padding: 10px;
+            display: none;
+            z-index: 2000;
+            border: 1px solid #eee;
+            animation: fadeInDown 0.2s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #f8f8f8;
+            color: var(--primary);
+        }
+
+        .menu-item.logout {
+            color: #d32f2f;
+        }
+
+        .menu-item.logout:hover {
+            background: #fff5f5;
+        }
+
+        /* --- DASHBOARD WRAPPER --- */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            min-height: calc(100vh - 64px);
+        }
+
+        .main-panel {
+            padding: 40px;
+            background: #ffffff;
+            border-right: 1px solid var(--border);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .panel-title span {
+            color: #999;
+            font-size: 1.2rem;
+            margin-left: 5px;
+        }
+
+        /* --- JOIN BAR --- */
+        .join-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .join-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .join-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+
+        .join-bar input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fdfdfd;
+        }
+
+        .join-bar input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(242, 107, 58, 0.1);
+        }
+
+        .btn-direct-join {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .btn-direct-join:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-direct-join:active {
+            transform: scale(0.98);
+        }
+
+        /* --- EXAM CARDS --- */
+        .exam-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .exam-card {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-dark);
+        }
+
+        .exam-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .exam-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon-area {
+            width: 56px;
+            height: 56px;
+            background: #fff5f0;
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .card-left {
+            flex: 1;
+        }
+
+        .card-code-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: #777;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 16px;
+        }
+
+        .card-subtitle span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 1s ease-out;
+            box-shadow: 0 0 10px rgba(242, 107, 58, 0.3);
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-card-action {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #eee;
+            background: #fff;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-card-action.primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-card-action:hover {
+            transform: translateY(-2px);
+            background: #f8f8f8;
+        }
+
+        .btn-card-action.primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(242, 107, 58, 0.25);
+            color: white;
+        }
+
+        /* --- SIDEBAR --- */
+        .side-panel {
+            padding: 40px 25px;
+            background: #fafafa;
+        }
+
+        .side-section-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .side-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quick-link-card {
+            border-radius: 8px;
+            padding: 24px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-link-card.yellow {
+            background-color: var(--accent-yellow);
+        }
+
+        .quick-link-card.green {
+            background-color: var(--accent-green);
+        }
+
+        .ql-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .ql-desc {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        .ql-icon {
+            font-size: 2rem;
+            opacity: 0.3;
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+        }
+
+
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
+        }
+
+        .toast {
+            min-width: 280px;
+            max-width: 400px;
+            background: #333;
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-premium);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .toast.success {
+            border-left: 4px solid #4caf50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-box {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalScale {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .modal-body {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-modal {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-modal.cancel {
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .btn-modal.confirm {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-modal.danger {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-modal:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="header-left">
+            <div class="logo-box" onclick="location.reload()">
+                <div class="logo-icon">
+                    <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara">
+                </div>
+                <div style="font-weight: 800; font-size: 1.2rem; color: #333;">EXAMPAD</div>
+            </div>
+            <nav class="nav-icons">
+                <i class="far fa-file-alt" title="Assessment List" onclick="scrollToExams()"></i>
+                <i class="fas fa-chart-bar" title="Performance" onclick="location.href='./studentreports.html'"></i>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="plus-btn" title="Quick Join" onclick="focusJoinField()"><i class="fas fa-plus"></i></div>
+            <div class="grid-icon" title="Menu" onclick="showToast('More features coming soon!', 'info')"><i
+                    class="fas fa-th"></i></div>
+            <div class="profile-container">
+                <div class="profile-stack" id="profileToggle" onclick="toggleMenu()">
+                    <div class="profile-text text-sm">
+                        <span class="profile-name" id="userName">Om Aggarwal</span>
+                        <span class="profile-role">Student</span>
+                    </div>
+                    <div class="avatar-circle" id="userInitial">O</div>
+                </div>
+                <!-- Profile Dropdown -->
+                <div class="profile-menu" id="profileMenu">
+                    <div class="menu-item" onclick="location.href='./profile.html'">
+                        <i class="fas fa-user-circle"></i>
+                        <span>My Profile</span>
+                    </div>
+                    <div class="menu-item" onclick="location.href='./preferences.html'">
+                        <i class="fas fa-cog"></i>
+                        <span>Preferences</span>
+                    </div>
+                    <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
+                    <div class="menu-item logout" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Main Area: Active Exams -->
+        <div class="main-panel">
+            <div class="panel-header" id="assignedSection">
+                <h2 class="panel-title">Assigned Exams <span id="examCount">(0)</span></h2>
+                <form class="join-bar" onsubmit="handleJoin(event)">
+                    <div class="join-input-wrapper">
+                        <i class="fas fa-link"></i>
+                        <input type="text" id="testIdInput" placeholder="Enter Test ID or Link" required>
+                    </div>
+                    <div class="join-input-wrapper" style="max-width: 140px;">
+                        <i class="fas fa-key"></i>
+                        <input type="text" id="passcodeInput" placeholder="Passcode">
+                    </div>
+                    <button type="submit" class="btn-direct-join">JOIN ASSESSMENT</button>
+                    <button type="button" class="btn-direct-join" onclick="window.location.href='joinvialink.html'"
+                        style="background: #2d3436; margin-left: 10px;">JOIN VIA LINK</button>
+                    <div class="search-trigger" onclick="toggleSearch()"
+                        style="cursor:pointer; color:#999; margin-left:10px;">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Optional Search Bar (Toggled) -->
+            <div id="inlineSearch"
+                style="display:none; margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:10px;">
+                <input type="text" id="searchInput" placeholder="Search assigned exams..." onkeyup="filterExams()"
+                    style="width:100%; border:none; outline:none; font-size:1rem; background:transparent;">
+            </div>
+
+            <div class="exam-grid" id="examGrid">
+                <!-- Cards will be injected here -->
+                <div style="text-align:center; color:#999; padding:60px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:15px;"></i>
+                    <p>Fetching your assessments...</p>
+                </div>
+            </div>
+
+            <div class="panel-header" id="coursesSection" style="margin-top: 60px;">
+                <h2 class="panel-title">Assigned Courses <span id="courseCount">(0)</span></h2>
+                <div class="join-bar" style="max-width: 300px;">
+                    <button class="btn-direct-join" onclick="location.href='./digitallib.html'">BROWSE CATALOG</button>
+                </div>
+            </div>
+
+            <div class="exam-grid" id="courseGrid">
+                <!-- Course cards will be injected here -->
+                <div style="text-align:center; color:#999; padding:60px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:15px;"></i>
+                    <p>Fetching your courses...</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Sidebar: Quick Links -->
+        <div class="side-panel">
+            <h3 class="side-section-title">Quick Links</h3>
+            <div class="side-cards">
+                <div class="quick-link-card dark" onclick="location.href='./erp-login.html'"
+                    style="background-color: #3b5998;">
+                    <div class="ql-title">
+                        <span>Chalkpad ERP</span>
+                        <i class="fas fa-university" style="font-size:1.2rem;"></i>
+                    </div>
+                    <p class="ql-desc">Access attendance, timetable, curriculum, and semester fee records.</p>
+                    <i class="fas fa-laptop-house ql-icon"></i>
+                </div>
+                <div class="quick-link-card yellow" onclick="location.href='./downloadadmitcards.html'"
+                    style="background-color: #f59e0b;">
+                    <div class="ql-title">
+                        <span>Admit Card</span>
+                        <i class="fas fa-id-card" style="font-size:1.2rem;"></i>
+                    </div>
+                    <p class="ql-desc">Download your official examination admit card and seating plan.</p>
+                    <i class="fas fa-id-badge ql-icon"></i>
+                </div>
+
+                <div class="quick-link-card yellow" onclick="location.href='./EXAMCIRCULARS.html'">
+                    <div class="ql-title">
+                        <span>Circulars</span>
+                        <i class="fas fa-bullhorn" style="font-size:1.2rem;"></i>
+                    </div>
+                    <p class="ql-desc">Official examination notices, datesheets, and result circulars.</p>
+                    <i class="fas fa-newspaper ql-icon"></i>
+                </div>
+
+                <div class="quick-link-card green" onclick="location.href='./resultsfinal.html'">
+                    <div class="ql-title">
+                        <span>Performance</span>
+                        <i class="fas fa-poll-h" style="font-size:1.2rem;"></i>
+                    </div>
+                    <p class="ql-desc">Check your graded assessments and academic performance registry.</p>
+                    <i class="fas fa-history ql-icon"></i>
+                </div>
+
+                <div class="quick-link-card blue" onclick="location.href='./digitallib.html'"
+                    style="background-color: #2e90fa;">
+                    <div class="ql-title">
+                        <span>Library</span>
+                        <i class="fas fa-book-open" style="font-size:1.2rem;"></i>
+                    </div>
+                    <p class="ql-desc">Access academic resources, prep materials, and digital books.</p>
+                    <i class="fas fa-graduation-cap ql-icon"></i>
+                </div>
+
+                <div class="quick-link-card orange" onclick="location.href='./playground.html'"
+                    style="background-color: var(--primary);">
+                    <div class="ql-title">
+                        <span>Playground</span>
+                        <i class="fas fa-terminal" style="font-size:1.2rem;"></i>
+                    </div>
+                    <p class="ql-desc">Practice coding in Python, Java, C++, and more with our compiler.</p>
+                    <i class="fas fa-code ql-icon"></i>
+                </div>
+
+                <div class="quick-link-card blue" onclick="location.href='./offline-results.html'"
+                    style="background-color: #6366f1;">
+                    <div class="ql-title">
+                        <span>Offline Exam Result</span>
+                        <i class="fas fa-file-invoice" style="font-size:1.2rem;"></i>
+                    </div>
+                    <p class="ql-desc">View graded scanned copies and annotated performance sheets.</p>
+                    <i class="fas fa-marker ql-icon"></i>
+                </div>
+            </div>
+
+            <div style="margin-top: 50px;">
+                <button onclick="handleLogout()"
+                    style="width:100%; padding:14px; border-radius:8px; border:1px solid #ddd; background:#fff; color:#666; font-weight:600; cursor:pointer;">
+                    <i class="fas fa-sign-out-alt"></i> LOGOUT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Systems -->
+    <div id="toast-container"></div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <div class="modal-title" id="modalTitle">Confirmation Required</div>
+            <div class="modal-body" id="modalBody">Are you sure you want to proceed?</div>
+            <div class="modal-footer">
+                <button class="btn-modal cancel" id="modalCancel">Cancel</button>
+                <button class="btn-modal confirm" id="modalConfirm">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        // Check Authentication
+        if (!auth.isLoggedIn() || !auth.isStudent()) {
+            window.location.replace('./login.html?role=student');
+        }
+
+        const user = auth.getCurrentUser();
+        let allExams = [];
+
+        function init() {
+            // Update UI with user info
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+
+            // Direct Invite Handling
+            const params = new URLSearchParams(window.location.search);
+            const inviteId = params.get('invite') || params.get('testId') || params.get('id') || sessionStorage.getItem('pending_test_id');
+            const passcode = params.get('passcode') || sessionStorage.getItem('pending_passcode');
+
+            if (inviteId) {
+                document.getElementById('testIdInput').value = inviteId;
+                if (passcode) document.getElementById('passcodeInput').value = passcode;
+                showToast('Invite details pre-filled. Checking credentials...', 'info');
+                // Clear pending session data
+                sessionStorage.removeItem('pending_test_id');
+                sessionStorage.removeItem('pending_passcode');
+
+                // Auto-join if both present or if no passcode required
+                const exam = db.getExamByTestId(inviteId);
+                const passRequired = exam?.security?.passcode;
+                if (exam && (!passRequired || (passRequired && passcode))) {
+                    setTimeout(() => handleJoin(), 1200);
+                }
+            }
+
+            loadDashboard();
+        }
+
+        // --- DASHBOARD ACTIONS ---
+        function focusJoinField() {
+            document.getElementById('testIdInput').focus();
+            showToast('Enter your Test ID or Link above', 'info');
+        }
+
+        function scrollToExams() {
+            document.getElementById('assignedSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function (event) {
+            const menu = document.getElementById('profileMenu');
+            const toggle = document.getElementById('profileToggle');
+            if (menu && toggle && !toggle.contains(event.target) && !menu.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        }
+
+        function handleJoin(e) {
+            if (e) e.preventDefault();
+            const rawInput = document.getElementById('testIdInput').value.trim();
+            const pass = document.getElementById('passcodeInput').value.trim();
+
+            if (!rawInput) return showToast('Please enter a Test ID or Link', 'error');
+
+            // Extract ID if link
+            let id = rawInput;
+            if (rawInput.includes('?')) {
+                const params = new URLSearchParams(rawInput.split('?')[1]);
+                id = params.get('testId') || params.get('id') || params.get('invite') || rawInput;
+            } else if (rawInput.includes('/')) {
+                id = rawInput.split('/').pop();
+            }
+
+            const exam = db.getExamByTestId(id);
+            if (!exam) return showToast('Assessment not found. Check your ID.', 'error');
+
+            // Check security passcode
+            if (exam.security?.passcode && exam.security.passcode !== pass) {
+                return showToast('❌ Incorrect security passcode', 'error');
+            }
+
+            const res = db.startAttempt(exam.id, user.id);
+            if (res.success) {
+                showToast('Access Granted. Launching session...', 'success');
+                setTimeout(() => {
+                    window.location.href = `./exam-attempt.html?attemptId=${res.attempt.id}`;
+                }, 1500);
+            } else {
+                showToast(res.message, 'error');
+            }
+        }
+
+        function toggleSearch() {
+            const s = document.getElementById('inlineSearch');
+            s.style.display = s.style.display === 'none' ? 'block' : 'none';
+            if (s.style.display === 'block') document.getElementById('searchInput').focus();
+        }
+
+        function loadDashboard() {
+            // LOAD EXAMS
+            const exams = db.getAllExams().filter(e => e.status === 'published' || e.status === 'live');
+            const attempts = db.getStudentAttempts(user.id);
+
+            allExams = exams.map(exam => {
+                const attempt = attempts.find(a => a.examId === exam.id);
+                let progress = 0;
+                let status = 'pending';
+
+                if (attempt) {
+                    if (attempt.status === 'submitted' || attempt.status === 'reviewed') {
+                        progress = 100;
+                        status = 'completed';
+                    }
+                    else if (attempt.status === 'started' || attempt.status === 'ongoing' || attempt.status === 'in-progress') {
+                        progress = 45;
+                        status = 'in-progress';
+                    }
+                }
+                return { ...exam, progress, status, attemptId: attempt?.id, resultsPublished: exam.resultsPublished || false };
+            });
+
+            renderExams(allExams);
+
+            // LOAD COURSES
+            const courses = db.getAllCourses ? db.getAllCourses() : [];
+            renderCourses(courses);
+        }
+
+        function renderCourses(courses) {
+            const grid = document.getElementById('courseGrid');
+            const countSpan = document.getElementById('courseCount');
+            countSpan.textContent = `(${courses.length})`;
+
+            if (courses.length === 0) {
+                grid.innerHTML = `<div style="text-align:center; padding:50px; color:#999;">No courses assigned yet. Ready to learn?</div>`;
+                return;
+            }
+
+            grid.innerHTML = courses.map(c => `
+                <div class="exam-card" onclick="location.href='./course-dashboard.html?courseId=${c.id}'">
+                    <div class="card-icon-area" style="background:#f0fdf4; color:#22c55e;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="card-left">
+                        <h4 class="card-code-title">${c.title}</h4>
+                        <div class="card-subtitle">
+                            <span><i class="far fa-book"></i> ${c.modules?.length || 0} Modules</span>
+                            <span><i class="far fa-tasks"></i> ${c.assignmentCount || 0} Assignments</span>
+                            <span style="color:#22c55e">
+                                <i class="fas fa-circle" style="font-size:0.5rem;"></i> Active
+                            </span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${c.progress || 0}%"></div></div>
+                            <span class="progress-text">${c.progress || 0}% Completed</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-card-action">
+                            <i class="fas fa-list-check"></i> Curriculum
+                        </button>
+                        <button class="btn-card-action primary" style="background:#22c55e;">
+                            Continue <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderExams(examsToRender) {
+            const grid = document.getElementById('examGrid');
+            const countSpan = document.getElementById('examCount');
+            countSpan.textContent = `(${examsToRender.length})`;
+
+            if (examsToRender.length === 0) {
+                grid.innerHTML = `<div style="text-align:center; padding:50px; color:#999;">No assessments assigned at this time.</div>`;
+                return;
+            }
+
+            grid.innerHTML = examsToRender.map(e => {
+                let statusText = e.status === 'completed' ? 'Submitted' : (e.status === 'in-progress' ? 'Ongoing' : 'Available');
+                let actionBtn = e.status === 'completed' ? (e.resultsPublished ? 'VIEW SCORE' : 'RESULT PENDING') : (e.status === 'in-progress' ? 'Resume' : 'Start Exam');
+                let actionColor = e.resultsPublished ? '#12B76A' : (e.status === 'completed' ? '#94a3b8' : '');
+
+                return `
+                <div class="exam-card" onclick="handleCardClick('${e.id}', '${e.attemptId}', '${e.status}', ${e.resultsPublished})">
+                    <div class="card-icon-area">
+                        <i class="fas ${e.status === 'completed' ? 'fa-check-double' : 'fa-laptop-code'}"></i>
+                    </div>
+                    <div class="card-left">
+                        <h4 class="card-code-title">${e.title}</h4>
+                        <div class="card-subtitle">
+                            <span><i class="far fa-clock"></i> ${e.duration} Mins</span>
+                            <span><i class="far fa-layer-group"></i> ${e.sections?.length || 0} Domains</span>
+                            <span style="color:${e.status === 'completed' ? '#22c55e' : (e.status === 'in-progress' ? '#f59e0b' : '#94a3b8')}">
+                                <i class="fas fa-circle" style="font-size:0.5rem;"></i> ${statusText}
+                            </span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${e.progress}%"></div></div>
+                            <span class="progress-text">${e.progress}% Progress</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-card-action">
+                            <i class="fas fa-chart-line"></i> Analytics
+                        </button>
+                        <button class="btn-card-action primary" style="${actionColor ? 'background:' + actionColor + '; border-color:' + actionColor + ';' : ''}">
+                            ${actionBtn} <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function filterExams() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allExams.filter(e =>
+                e.title.toLowerCase().includes(query) ||
+                e.testId.toLowerCase().includes(query)
+            );
+            renderExams(filtered);
+        }
+
+        function handleCardClick(examId, attemptId, status, isPublished) {
+            if (status === 'completed') {
+                if (isPublished) location.href = `./student-results.html?attemptId=${attemptId}`;
+                else showToast("The instructor hasn't published the result for this test yet.", "info");
+            }
+            else if (status === 'in-progress') location.href = `./exam-attempt.html?attemptId=${attemptId}`;
+            else {
+                // Quick start new attempt
+                const res = db.startAttempt(examId, user.id);
+                if (res.success) location.href = `./exam-attempt.html?attemptId=${res.attempt.id}`;
+                else showToast(res.message, 'error');
+            }
+        }
+
+        // --- WEB MESSAGE SYSTEM ---
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+
+            toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${msg}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease-out reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function showConfirm(title, body, confirmBtnText, isDanger = false) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('modalOverlay');
+                const titleEl = document.getElementById('modalTitle');
+                const bodyEl = document.getElementById('modalBody');
+                const cancelBtn = document.getElementById('modalCancel');
+                const confirmBtn = document.getElementById('modalConfirm');
+
+                titleEl.textContent = title;
+                bodyEl.textContent = body;
+                confirmBtn.textContent = confirmBtnText;
+                confirmBtn.className = isDanger ? 'btn-modal danger' : 'btn-modal confirm';
+
+                overlay.style.display = 'flex';
+
+                const close = (res) => {
+                    overlay.style.display = 'none';
+                    resolve(res);
+                };
+
+                cancelBtn.onclick = () => close(false);
+                confirmBtn.onclick = () => close(true);
+            });
+        }
+
+        async function handleLogout() {
+            const confirmed = await showConfirm(
+                'Terminate Portal Session?',
+                'Are you sure you want to logout? Any unsaved environment data might be lost.',
+                'Log Out',
+                true
+            );
+
+            if (confirmed) {
+                auth.logout();
+                location.href = '../index.html';
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

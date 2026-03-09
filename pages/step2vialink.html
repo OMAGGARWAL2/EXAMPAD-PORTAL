@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Include DB for dynamic exam fetching -->
+    <script src="../js/db.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            background: #e9ecef;
+            background-image: radial-gradient(circle at top left, #d8e0e3, transparent 40%),
+                radial-gradient(circle at bottom right, #f2ead8, transparent 40%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bg-shape {
+            position: absolute;
+            background: radial-gradient(circle, #e6ded3 0%, transparent 60%);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        .shape1 {
+            width: 1000px;
+            height: 1000px;
+            bottom: -400px;
+            left: -200px;
+        }
+
+        .shape2 {
+            width: 800px;
+            height: 800px;
+            top: -200px;
+            right: -200px;
+        }
+
+        .top-left-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .top-left-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            z-index: 10;
+        }
+
+        .test-info {
+            flex: 1;
+            padding-right: 80px;
+        }
+
+        .test-title {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #2b2b2b;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            width: 100%;
+            max-width: 250px;
+            height: 6px;
+            margin-bottom: 30px;
+            border-radius: 3px;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        .progress-left {
+            width: 30%;
+            background: #d3ba9a;
+        }
+
+        .progress-right {
+            width: 70%;
+            background: #a94121;
+        }
+
+        .stats {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stat-line {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            color: #b05740;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .login-card {
+            background: #fcfcfc;
+            border-radius: 16px;
+            padding: 40px;
+            width: 350px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+            border: 1px solid #fff;
+            box-sizing: border-box;
+        }
+
+        .card-title {
+            font-size: 2rem;
+            font-weight: 400;
+            color: #2b2b2b;
+            margin-bottom: 35px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            background: transparent;
+            font-size: 1rem;
+            color: #222;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            border-bottom: 1px solid #c05126;
+        }
+
+        .eye-icon {
+            position: absolute;
+            right: 0;
+            top: 32px;
+            color: #a0a0a0;
+            cursor: pointer;
+        }
+
+        .sign-in-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #c05126;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+
+        .sign-in-btn:hover {
+            background-color: #a0411d;
+        }
+
+        .forgot-link {
+            text-align: center;
+            display: block;
+            margin-top: 25px;
+            font-size: 0.95rem;
+            color: #888;
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            color: #c05126;
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .test-info {
+                padding-right: 0;
+                margin-bottom: 50px;
+                text-align: center;
+            }
+
+            .progress-bar-container {
+                margin: 0 auto 30px;
+            }
+
+            .top-left-logo {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-shape shape1"></div>
+    <div class="bg-shape shape2"></div>
+
+    <div class="top-left-logo">
+        <img src="../logo.jpg" alt="Logo">
+    </div>
+
+    <div class="container">
+        <div class="test-info">
+            <div class="test-title" id="testTitle">Reading Exam Context...</div>
+            <div class="progress-bar-container">
+                <div class="progress-left"></div>
+                <div class="progress-right"></div>
+            </div>
+            <div class="stats">
+                <div class="stat-line">Total Questions <span class="stat-value" id="totQuestions">-</span></div>
+                <div class="stat-line">Total Time <span class="stat-value" id="totTime">-</span></div>
+            </div>
+        </div>
+
+        <div class="login-card">
+            <div class="card-title">sign in</div>
+
+            <form id="signInForm" onsubmit="handleSignIn(event)">
+                <div class="input-group">
+                    <label>email or rollnumber *</label>
+                    <input type="text" id="rollnumber" required>
+                </div>
+
+                <div class="input-group">
+                    <label>password *</label>
+                    <input type="password" id="password" required>
+                    <i class="fas fa-eye-slash eye-icon" onclick="togglePass()"></i>
+                </div>
+
+                <div class="input-group">
+                    <label>test code *</label>
+                    <input type="text" id="testcode" required>
+                </div>
+
+                <button type="submit" class="sign-in-btn">sign in</button>
+                <a href="#" class="forgot-link">forgot password?</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const examId = urlParams.get('testId');
+
+            if (examId) {
+                const exam = db.getExamById(examId);
+                if (exam) {
+                    document.getElementById('testTitle').textContent = exam.title || exam.testId || 'M-17th Feb-26 - DSOOPs FA 1 - CSE 2024 Batch';
+                    document.getElementById('totQuestions').textContent = exam.questions ? exam.questions.length : '0';
+                    document.getElementById('totTime').textContent = (exam.duration || 90) + ' mins';
+                } else {
+                    document.getElementById('testTitle').textContent = 'Test Template';
+                }
+            } else {
+                // Fallback text if just loaded directly from file explorer without params
+                document.getElementById('testTitle').textContent = 'M-17th Feb-26 - DSOOPs FA 1 - CSE 2024 Batch';
+                document.getElementById('totQuestions').textContent = '3';
+                document.getElementById('totTime').textContent = '90 mins';
+            }
+        });
+
+        function togglePass() {
+            const passInput = document.getElementById('password');
+            const icon = document.querySelector('.eye-icon');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+
+        function handleSignIn(e) {
+            e.preventDefault();
+            const pass = document.getElementById('password').value;
+            const code = document.getElementById('testcode').value;
+
+            if (pass === '123456' && code === '70707') {
+                // To keep state consistent, set current exam ID if we arrived from a link
+                const urlParams = new URLSearchParams(window.location.search);
+                const examId = urlParams.get('testId');
+                if (examId) {
+                    // For mock system. In real system, startAttempt happens here or in attempt page.
+                }
+                window.location.href = 'exam-attempt.html';
+            } else {
+                alert('Invalid credentials! Test code should be 70707 and password 123456');
+            }
+        }
+    </script>
+</body>
+
+</html>

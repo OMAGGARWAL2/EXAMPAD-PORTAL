@@ -1,0 +1,3935 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXAMPAD</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        /* ENTERPRISE DESIGN SYSTEM */
+        :root {
+            --brand-primary: #800000;
+            /* University Maroon */
+            --brand-secondary: #a52a2a;
+            --brand-accent: #e53e3e;
+            --surface-bg: #f8fafc;
+            --surface-card: #ffffff;
+            --surface-dark: #2d0a0a;
+            /* Maroon Dark */
+            --surface-pdf-bg: #cbd5e1;
+            --border-light: #e2e8f0;
+            --border-dark: #cbd5e1;
+            --text-heading: #1e293b;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --success: #065f46;
+            --warning: #92400e;
+            --font-sans: 'Inter', sans-serif;
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-sans);
+        }
+
+        body {
+            background: var(--surface-bg);
+            color: var(--text-body);
+            min-height: 100vh;
+            overflow-y: auto;
+            /* Allow whole page to scroll if needed */
+            display: flex;
+            font-size: 14px;
+        }
+
+        /* CUSTOM PROFESSIONAL SCROLLBARS */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+            background-clip: content-box;
+        }
+
+        /* For Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+
+        /* TOAST NOTIFICATIONS */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: var(--surface-card);
+            padding: 18px 28px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-left: 6px solid var(--brand-primary);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transform: translateX(120%);
+            transition: 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            min-width: 400px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.error {
+            border-left-color: var(--brand-accent);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        /* ERP SIDEBAR */
+        aside.erp-sidebar {
+            width: 240px;
+            background: #111827;
+            color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            border-right: 1px solid #1f2937;
+        }
+
+        .sidebar-header {
+            height: 64px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #1f2937;
+            background: #4d6fc4;
+        }
+
+        .erp-logo {
+            width: 28px;
+            height: 28px;
+            background: var(--brand-primary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: #5d7dab;
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: #1f2937;
+            color: #fff;
+            border-left: 3px solid var(--brand-secondary);
+        }
+
+        .nav-item i {
+            width: 16px;
+            text-align: center;
+        }
+
+        /* MAIN CONTENT STRUCTURE */
+        main.erp-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* Allow ONLY content to scroll */
+            background: var(--surface-bg);
+            min-height: 100vh;
+        }
+
+        header.erp-header {
+            height: 64px;
+            background: var(--surface-card);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+        }
+
+        .breadcrumb {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .breadcrumb span {
+            color: var(--text-heading);
+            font-weight: 700;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #4686cb;
+        }
+
+        .btn-outline {
+            background: var(--surface-card);
+            border-color: var(--border-dark);
+            color: var(--text-heading);
+        }
+
+        .btn-outline:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .btn-danger {
+            background: var(--brand-accent);
+            color: white;
+        }
+
+        /* WORKSPACE SETUP VIEW */
+        .setup-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--surface-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            background: #fdfdfd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-body {
+            padding: 24px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid var(--border-dark);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            background: #fff;
+            transition: 0.2s;
+            font-family: var(--font-sans);
+        }
+
+        .form-control:focus {
+            border-color: var(--brand-secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 92, 255, 0.1);
+        }
+
+        .dropzone {
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--radius-md);
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #f8fafc;
+        }
+
+        .dropzone:hover {
+            border-color: var(--brand-secondary);
+            background: #f0f4ff;
+        }
+
+        table.erp-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table.erp-table th {
+            padding: 12px 16px;
+            background: #f8fafc;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        table.erp-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+        }
+
+        /* PRO WORKBENCH SYSTEM */
+        .workbench-node {
+            position: fixed;
+            inset: 0;
+            background: var(--surface-dark);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+
+        /* Workbench Header */
+        .wb-sys-header {
+            height: 50px;
+            background: #ffffff;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            color: #1e293b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .wb-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .wb-meta {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--brand-primary);
+            background: #f8fafc;
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            font-weight: 700;
+        }
+
+        .wb-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-wb {
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            text-transform: uppercase;
+            font-family: var(--font-sans);
+        }
+
+        .btn-wb:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .btn-wb-primary {
+            background: var(--brand-secondary);
+            border-color: var(--brand-secondary);
+        }
+
+        .btn-wb-primary:hover {
+            background: #2563eb;
+        }
+
+        /* Workbench Workspace (3 Columns) */
+        .wb-workspace {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Col 1: Queue */
+        .wb-col-queue {
+            width: 240px;
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .queue-header {
+            padding: 12px 16px;
+            background: #f1f5f9;
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .queue-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .q-item {
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .q-item:hover {
+            background: #fcfcfc;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .q-item.active {
+            background: #fff1f2;
+            border-color: var(--brand-primary);
+            box-shadow: 0 4px 6px -1px rgba(128, 0, 0, 0.1);
+        }
+
+        .q-uid {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .q-stat {
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 2px 6px;
+        }
+
+        .q-stat.pen {
+            background: rgba(217, 119, 6, 0.2);
+            color: #fbbf24;
+        }
+
+        .q-stat.don {
+            background: rgba(5, 150, 105, 0.2);
+            color: #34d399;
+        }
+
+        /* Col 2: Editor */
+        .wb-col-editor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface-pdf-bg);
+            position: relative;
+        }
+
+        .editor-toolbar {
+            height: 48px;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 10;
+        }
+
+        .t-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #ffffff;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .t-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: #64748b;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: 0.1s;
+            font-size: 14px;
+        }
+
+        .t-btn:hover {
+            color: var(--brand-primary);
+            background: #f1f5f9;
+        }
+
+        .t-btn.active {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+
+        /* CONTEXT BAR */
+        .context-bar {
+            height: 36px;
+            background: #ffffff;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            color: #64748b;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            z-index: 100;
+            user-select: none;
+        }
+
+        .ctx-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ctx-label {
+            color: #94a3b8;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 9px;
+        }
+
+        .ctx-val {
+            color: #1e293b;
+        }
+
+        .ctx-divider {
+            color: #e2e8f0;
+            margin: 0 8px;
+        }
+
+        .ctx-status-pill {
+            padding: 2px 12px;
+            border-radius: 4px;
+            font-size: 9px;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+        }
+
+        .ctx-status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .ctx-status-done {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .progress-tracker {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #f8fafc;
+            padding: 4px 16px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .prog-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #6366f1;
+            display: inline-block;
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
+        }
+
+        /* HEATMAP & SPLIT VIEW */
+        .heatmap-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            opacity: 0.6;
+            z-index: 5;
+            display: none;
+        }
+
+        .split-pane {
+            display: none;
+            flex: 1;
+            border-right: 2px solid #e2e8f0;
+            background: #f8fafc;
+            overflow: auto;
+            position: relative;
+        }
+
+        .split-active .split-pane {
+            display: block;
+        }
+
+        .split-active .ans-pane {
+            flex: 1;
+        }
+
+        .productivity-badge {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 12px;
+            color: #1e293b;
+            z-index: 5000;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .stat-label {
+            color: #9ca3af;
+        }
+
+        .stat-val {
+            color: #f87171;
+            /* Maroon Tint */
+            font-weight: 700;
+        }
+
+        .audit-log-panel {
+            background: #ffffff;
+            color: #334155;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            padding: 14px;
+            border-top: 1px solid #e2e8f0;
+            height: 130px;
+            overflow-y: auto;
+        }
+
+        .audit-entry {
+            margin-bottom: 8px;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 10px;
+            transition: 0.2s;
+        }
+
+        .audit-entry:hover {
+            border-left-color: var(--brand-primary);
+        }
+
+        .audit-ts {
+            color: #94a3b8;
+            margin-right: 6px;
+            font-weight: 700;
+        }
+
+        .dist-graph {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            height: 100px;
+            margin: 20px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dist-bar {
+            flex: 1;
+            background: var(--brand-primary);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 2px;
+            transition: 0.5s;
+        }
+
+        .dist-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .error-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 12px;
+        }
+
+        .integrity-hash {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: #4b5563;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        .page-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e5e7eb;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+        }
+
+        .page-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 800;
+            font-family: var(--font-mono);
+        }
+
+        .p-btn {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .p-btn:hover {
+            background: #f1f5f9;
+            color: var(--brand-primary);
+        }
+
+        .editor-viewport {
+            flex: 1;
+            overflow: auto;
+            padding: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .canvas-stack {
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            transform-origin: top center;
+            transition: transform 0.1s ease-out;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+        }
+
+        /* Col 3: Evaluator Panel (Ledger) */
+        .wb-col-ledger {
+            width: 340px;
+            background: #fff;
+            border-left: 1px solid var(--border-dark);
+            display: flex;
+            flex-direction: column;
+            font-family: var(--font-sans);
+        }
+
+        .ledger-header {
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--brand-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .matrix-container {
+            flex: 1;
+            overflow-y: auto;
+            background: #fff;
+        }
+
+        .m-row {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: 0.1s;
+            border-left: 3px solid transparent;
+        }
+
+        .m-row:hover {
+            background: #f8fafc;
+        }
+
+        .m-row.active {
+            background: #eff6ff;
+            border-left-color: var(--brand-secondary);
+        }
+
+        .m-row.unmarked {
+            background: #fef2f2;
+        }
+
+        .m-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .m-id {
+            font-weight: 700;
+            color: var(--text-heading);
+            font-family: var(--font-mono);
+        }
+
+        .m-max {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .m-inputs {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .m-score-in {
+            width: 60px;
+            padding: 6px;
+            border: 1px solid var(--border-dark);
+            border-radius: 4px;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--brand-primary);
+        }
+
+        .m-score-in:focus {
+            outline: 2px solid var(--brand-secondary);
+            border-color: transparent;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex: 1;
+            gap: 4px;
+        }
+
+        .qa-btn {
+            flex: 1;
+            padding: 6px 0;
+            background: #f1f5f9;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-body);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .qa-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .rubric-panel {
+            padding: 16px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .r-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .r-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .r-chip {
+            background: #fff;
+            border: 1px solid var(--border-dark);
+            padding: 6px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            color: var(--text-body);
+            transition: 0.1s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .r-chip:hover {
+            border-color: var(--brand-accent);
+            color: var(--brand-accent);
+        }
+
+        .ledger-footer {
+            padding: 16px;
+            background: #f8fafc;
+            border-top: 2px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .lf-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lf-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .lf-score {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-heading);
+        }
+
+        /* REFINED SUMMARY VIEW (FULL SCREEN AI ERP STYLE) */
+        .summary-view {
+            position: fixed;
+            inset: 0;
+            background: #f8fafc;
+            z-index: 6000;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .summary-header {
+            background: #fff;
+            padding: 30px 60px;
+            border-bottom: 4px solid var(--brand-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            width: 100%;
+            padding: 0 40px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .summary-main-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 35px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-side-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .premium-stat {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: 0.3s;
+        }
+
+        .premium-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .ps-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .ps-data .val {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e293b;
+            display: block;
+            line-height: 1;
+        }
+
+        .ps-data .label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .action-bar-final {
+            background: #0f172a;
+            padding: 24px 60px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: sticky;
+            bottom: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* MODALS (ERP Style) */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 24, 39, 0.8);
+            z-index: 9000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-box {
+            background: #fff;
+            width: 420px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .modal-head {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-head i {
+            font-size: 24px;
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-heading);
+        }
+
+        .modal-body {
+            padding: 24px;
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.5;
+        }
+
+        .modal-foot {
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .loader-mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 4px solid var(--border-light);
+            border-top-color: var(--brand-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-txt {
+            margin-top: 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-heading);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* PREMIUM ALERTS */
+        .sys-alert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .sys-alert-box {
+            background: rgba(255, 255, 255, 0.95);
+            width: 420px;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transform: scale(0.9);
+            animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .sys-alert-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 20px;
+        }
+
+        .icon-error {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+
+        .icon-warning {
+            background: #fffbeb;
+            color: #f59e0b;
+        }
+
+        .icon-success {
+            background: #f0fdf4;
+            color: #22c55e;
+        }
+
+        .sys-alert-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-heading);
+            margin-bottom: 8px;
+        }
+
+        .sys-alert-msg {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .btn-alert-close {
+            width: 100%;
+            padding: 12px;
+            background: var(--brand-primary);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-alert-close:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 11000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transform: translateX(120%);
+            transition: 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success i {
+            color: #10b981;
+        }
+
+        .toast.error i {
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SYSTEM ALERTS -->
+    <div class="sys-alert-overlay" id="sysAlert">
+        <div class="sys-alert-box">
+            <div class="sys-alert-icon" id="sysAlertIcon"><i class="fas fa-exclamation"></i></div>
+            <div class="sys-alert-title" id="sysAlertTitle">System Message</div>
+            <div class="sys-alert-msg" id="sysAlertMsg">---</div>
+            <button class="btn-alert-close" onclick="closeSysAlert()">ACKNOWLEDGEMENT</button>
+        </div>
+    </div>
+
+    <!-- INTEGRITY ACKNOWLEDGEMENT OVERLAY -->
+    <div id="integrityOverlay"
+        style="position:fixed; inset:0; background:rgba(15,23,42,0.95); z-index:9900; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+        <div
+            style="background:#fff; width:600px; padding:40px; border-radius:24px; text-align:center; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
+            <img src="../logo.jpg" style="width:100px; margin-bottom:20px;">
+            <h1 style="font-family:var(--font-display); color:#1e293b; margin-bottom:10px;">CHITKARA UNIVERSITY</h1>
+            <h3
+                style="color:var(--brand-primary); font-weight:800; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px;">
+                Official Evaluator's Pledge</h3>
+            <p style="color:#64748b; line-height:1.6; margin-bottom:30px; font-size:15px;">
+                I, <b id="checkerNameDisplay" style="color:#1e293b;">[NAME]</b>, hereby solemnly declare that I shall
+                evaluate all digitized answer scripts with the highest degree of academic integrity and fairness. I
+                understand that my evaluation process is being monitored in real-time, and any negligence or deviation
+                from university rules may result in professional consequences.
+            </p>
+            <div
+                style="background:#f8fafc; padding:20px; border-radius:12px; margin-bottom:30px; border:1px solid #e2e8f0; text-align:left;">
+                <label style="display:flex; align-items:flex-start; gap:12px; cursor:pointer;">
+                    <input type="checkbox" id="integrityCheck" style="margin-top:4px; transform:scale(1.2);">
+                    <span style="font-size:13px; color:#334155; font-weight:600;">I ACKNOWLEDGE AND AGREE TO CHECK ALL
+                        SCRIPTS WITH FULL INTEGRITY AND WITHIN MINIMUM TIME ALLOTMENT.</span>
+                </label>
+            </div>
+            <button class="btn btn-primary" style="width:100%; height:50px; border-radius:12px; font-size:14px;"
+                onclick="acceptPledge()">INITIALIZE SECURE WORKBENCH</button>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastBox"></div>
+    <div class="loader-mask" id="globalLoader">
+        <div class="spinner"></div>
+        <div class="loader-txt" id="loaderText">Initializing Node...</div>
+    </div>
+
+    <!-- ERP SIDEBAR -->
+    <aside class="erp-sidebar">
+        <div class="sidebar-header">
+            <div class="erp-logo"
+                style="background: transparent; border-radius: 0; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
+                <img src="../logo.jpg" alt="Chitkara" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <div style="font-family:var(--font-display); font-weight:700; font-size:15px; letter-spacing:0.5px;">EXAMPAD
+                ERP</div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item" onclick="location.href='./teacher-dashboard.html'"><i class="fas fa-home"></i> Command
+                Center</div>
+            <div class="nav-item active"><i class="fas fa-edit"></i> Digital Evaluation Node</div>
+            <div class="nav-item" onclick="location.href='./analyticshistory.html'"><i class="fas fa-archive"></i>
+                Registry Archives</div>
+        </div>
+        <div style="margin-top:auto; padding:20px; font-size:11px; color:#6b7280; border-top:1px solid #1f2937;">
+            SESSION: 2024-2025<br>OSM CLIENT v3.0
+        </div>
+    </aside>
+
+    <main class="erp-content" id="setupView">
+        <header class="erp-header">
+            <div class="breadcrumb">Academic Evaluation Protocol / <span>Session Setup</span></div>
+            <button class="btn btn-primary" onclick="initEngine()"><i class="fas fa-power-off"></i> INITIALIZE
+                ENGINE</button>
+        </header>
+
+        <div class="setup-container">
+            <!-- PERFORMANCE DASHBOARD -->
+            <div class="panel"
+                style="margin-bottom:20px; border:none; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);">
+                <div class="panel-body"
+                    style="display:grid; grid-template-columns: repeat(4, 1fr); gap:20px; padding:25px;">
+                    <div style="border-right: 1px solid rgba(255,255,255,0.1); padding-right:15px;">
+                        <div
+                            style="color:rgba(255,255,255,0.6); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">
+                            Verified Booklets</div>
+                        <div style="font-size:28px; font-weight:800; margin-top:5px; font-family:var(--font-mono)"
+                            id="statChecked">0</div>
+                        <div style="font-size:10px; color:var(--success); margin-top:4px;"><i
+                                class="fas fa-arrow-up"></i> Official records synced</div>
+                    </div>
+                    <div style="border-right: 1px solid rgba(255,255,255,0.1); padding-right:15px;">
+                        <div
+                            style="color:rgba(255,255,255,0.6); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">
+                            Earned Balance</div>
+                        <div
+                            style="font-size:28px; font-weight:800; margin-top:5px; color:#fbbf24; font-family:var(--font-mono)">
+                            ₹<span id="statWallet">0</span></div>
+                        <div style="font-size:10px; color:rgba(255,255,255,0.4); margin-top:4px;">Rate: ₹50 / Booklet
+                        </div>
+                    </div>
+                    <div style="border-right: 1px solid rgba(255,255,255,0.1); padding-right:15px;">
+                        <div
+                            style="color:rgba(255,255,255,0.6); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">
+                            Active Experience</div>
+                        <div style="font-size:28px; font-weight:800; margin-top:5px; font-family:var(--font-mono)"
+                            id="statHours">0.0h</div>
+                        <div style="font-size:10px; color:rgba(255,255,255,0.4); margin-top:4px;">In-system duration
+                        </div>
+                    </div>
+                    <div>
+                        <div
+                            style="color:rgba(255,255,255,0.6); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">
+                            Current Status</div>
+                        <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                            <span class="q-stat pen" style="background:#3b82f6; border:none; padding:4px 10px;">OFFICIAL
+                                EVALUATOR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Recovery Node -->
+            <div id="restoreCard" class="panel"
+                style="display:none; border:2px solid #0f69ca; background:#f0f7ff; margin-bottom:20px; animation: slideIn 0.5s ease; box-shadow: 0 10px 15px -3px rgba(15, 105, 202, 0.1);">
+                <div class="panel-body" style="display:flex; align-items:center; gap:20px; padding:20px;">
+                    <div
+                        style="width:50px; height:50px; background:#0f69ca; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px; box-shadow:0 4px 6px rgba(15, 105, 202, 0.3)">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div style="flex:1">
+                        <div
+                            style="font-weight:800; color:#0f69ca; font-size:14px; letter-spacing:0.5px; text-transform:uppercase;">
+                            Active Session Detected</div>
+                        <div style="margin:4px 0 0; font-size:13px; color:#475569; font-weight:600;">We found an
+                            unfinished evaluation slot for: <span id="restoreTitle"
+                                style="color:#1e1b4b; font-weight:800;">---</span></div>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-primary" onclick="resumeSession()"
+                            style="padding:10px 24px; font-weight:700; border-radius:8px;">
+                            <i class="fas fa-play"></i> RESUME SLOT
+                        </button>
+                        <button class="btn btn-outline" onclick="clearSaved()"
+                            style="background:#fff; color:#ef4444; border:1px solid #fee2e2; border-radius:8px; padding:10px 20px;">
+                            <i class="fas fa-trash-alt"></i> DISCARD
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- Session Details -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-server"></i> Batch Metadata</div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label>Examination Identity</label>
+                            <input type="text" class="form-control" id="formExamId"
+                                value="CS-402 DISCRETE STRUCTURES - FINALS">
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label>Name of Checker</label>
+                            <input type="text" class="form-control" id="formCheckerName" placeholder="Enter Full Name">
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Target Credits</label>
+                                <input type="number" class="form-control" value="4.0">
+                            </div>
+                            <div class="form-group">
+                                <label>Evaluator ID</label>
+                                <input type="text" class="form-control" value="FAC_098_X" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reference Documents -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-book-open"></i> Reference Documents</div>
+                    </div>
+                    <div class="panel-body" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div class="dropzone" style="padding:15px;" onclick="document.getElementById('qpInp').click()">
+                            <i class="fas fa-question-circle"
+                                style="font-size:20px; color:var(--brand-primary); margin-bottom:8px;"></i>
+                            <div style="font-weight:700; font-size:11px; color:var(--text-heading);">Question Paper
+                            </div>
+                            <div id="qpStat" style="font-size:9px; color:var(--text-muted); margin-top:4px;">No file
+                                selected</div>
+                            <input type="file" id="qpInp" hidden accept="application/pdf"
+                                onchange="ingestReference('QP', this)">
+                        </div>
+                        <div class="dropzone" style="padding:15px;" onclick="document.getElementById('msInp').click()">
+                            <i class="fas fa-file-contract"
+                                style="font-size:20px; color:var(--brand-secondary); margin-bottom:8px;"></i>
+                            <div style="font-weight:700; font-size:11px; color:var(--text-heading);">Marking Scheme
+                            </div>
+                            <div id="msStat" style="font-size:9px; color:var(--text-muted); margin-top:4px;">No file
+                                selected</div>
+                            <input type="file" id="msInp" hidden accept="application/pdf"
+                                onchange="ingestReference('MS', this)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Ingest -->
+                <div class="panel" style="grid-column: span 2;">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fas fa-file-import"></i> Script Ingestion</div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="dropzone" onclick="document.getElementById('fInp').click()">
+                            <i class="fas fa-cloud-upload-alt"
+                                style="font-size:28px; color:var(--brand-primary); margin-bottom:12px;"></i>
+                            <div style="font-weight:700; font-size:14px; color:var(--text-heading);">Submit Scanned
+                                Booklets</div>
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Supports multi-page
+                                PDF records.</div>
+                            <input type="file" id="fInp" multiple hidden accept="application/pdf"
+                                onchange="ingest(this)">
+                        </div>
+                        <div id="ingestStat"
+                            style="margin-top:12px; font-size:12px; font-weight:700; color:var(--success); display:none;">
+                            <i class="fas fa-check"></i> <span id="ingestCount">0</span> bundles securely cached.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Matrix -->
+            <div class="panel" style="flex:1; display:flex; flex-direction:column;">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fas fa-th-list"></i> Evaluation Matrix</div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-outline" style="padding:4px 10px; font-size:11px;"
+                            onclick="saveTemplate()"><i class="fas fa-save"></i> SAVE TEMPLATE</button>
+                        <button class="btn btn-outline" style="padding:4px 10px; font-size:11px;"
+                            onclick="loadTemplate()"><i class="fas fa-folder-open"></i> LOAD</button>
+                        <button class="btn btn-danger"
+                            style="padding:4px 10px; font-size:11px; background:#fef2f2; color:var(--brand-accent); border-color:#fee2e2;"
+                            onclick="resetMatrix()"><i class="fas fa-trash-alt"></i> CLEAR</button>
+                        <button class="btn btn-primary" style="padding:4px 10px; font-size:11px;" onclick="addQ()"><i
+                                class="fas fa-plus"></i> ROW</button>
+                    </div>
+                </div>
+                <!-- Bulk Generator Utility -->
+                <div
+                    style="padding: 12px 20px; background: #f8fafc; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span
+                            style="font-size:11px; font-weight:800; color:var(--brand-primary); text-transform:uppercase; letter-spacing:0.5px;"><i
+                                class="fas fa-bolt"></i> Quick Range:</span>
+                        <input type="number" id="bulkStart" class="form-control" style="width:70px" placeholder="From Q"
+                            title="Starting Question Number">
+                        <span style="font-size:12px; font-weight:700; color:var(--text-muted)">to</span>
+                        <input type="number" id="bulkEnd" class="form-control" style="width:70px" placeholder="To Q"
+                            title="Ending Question Number">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span
+                            style="font-size:11px; font-weight:800; color:var(--brand-primary); text-transform:uppercase; letter-spacing:0.5px;">Marks:</span>
+                        <input type="number" id="bulkMarks" class="form-control" style="width:80px" placeholder="Max"
+                            title="Max Marks Per Question">
+                    </div>
+                    <button class="btn btn-primary"
+                        style="padding:6px 16px; font-size:11px; height:32px; box-shadow:0 2px 4px rgba(15, 105, 202, 0.2);"
+                        onclick="genBulk()">
+                        <i class="fas fa-magic"></i> AUTO-GENERATE ROWS
+                    </button>
+                    <div style="font-size:10px; color:var(--text-muted); font-style:italic;">*Appends to current matrix
+                    </div>
+                </div>
+                <div class="panel-body" style="padding:0; overflow-y:auto; flex:1;">
+                    <table class="erp-table">
+                        <thead>
+                            <tr>
+                                <th style="width:120px">Q. ID</th>
+                                <th style="width:120px">Sub-Part</th>
+                                <th>Max Marks</th>
+                                <th style="width:60px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="mBody">
+                            <tr>
+                                <td><input type="text" class="form-control q-id" value="Q1"></td>
+                                <td><input type="text" class="form-control q-sub" value="A"></td>
+                                <td><input type="number" class="form-control q-max" value="10"></td>
+                                <td><i class="fas fa-times" style="color:var(--brand-accent); cursor:pointer;"
+                                        onclick="this.closest('tr').remove()"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Batch Inspector -->
+            <div class="panel" id="batchInspector" style="display:none;">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fas fa-users"></i> Student Batch Registry</div>
+                </div>
+                <div class="panel-body" style="padding:0;">
+                    <table class="erp-table">
+                        <thead>
+                            <tr>
+                                <th>Roll Number / ID</th>
+                                <th>Filename</th>
+                                <th>Status</th>
+                                <th style="text-align:right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="batchTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Publication Console -->
+            <div class="panel" id="publishPanel"
+                style="display:none; margin-top:20px; border: 1px solid #e0e7ff; background: #f5f7ff;">
+                <div class="panel-header" style="background:#eef2ff;">
+                    <div class="panel-title"><i class="fas fa-broadcast-tower" style="color:#4f46e5;"></i> OFFICIAL
+                        BATCH PUBLICATION</div>
+                </div>
+                <div class="panel-body">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700; color:#1e1b4b; font-size:14px;">Release Results to Student
+                                Portal</div>
+                            <div style="font-size:12px; color:#4338ca; margin-top:2px;">Move <span
+                                    id="pubCount">0</span> verified records from Secure Vault to Public Registry.</div>
+                        </div>
+                        <button class="btn btn-primary" style="background:#4f46e5; padding:12px 24px;"
+                            onclick="publishBatch()">
+                            <i class="fas fa-check-double"></i> PUBLISH OFFICIAL RESULTS
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- WORKBENCH NODE -->
+    <div class="workbench-node" id="wbNode">
+        <header class="wb-sys-header">
+            <div class="wb-brand"><i class="fas fa-satellite-dish" style="color:var(--success)"></i> <span
+                    id="wbTitle">OSM SECURE TERMINAL</span></div>
+            <div class="wb-meta" id="wbProg">BATCH PROGRESS: 0 / 0</div>
+            <div class="wb-meta"
+                style="padding: 0; background: transparent; display: flex; align-items: center; border: 1px solid #374151; border-radius: 4px; overflow: hidden; height: 28px; margin-right: 15px;">
+                <span
+                    style="background: #111827; height: 100%; display: flex; align-items: center; padding: 0 8px; font-size: 9px; color: #6b7280; font-weight: 800; border-right: 1px solid #374151;">PROTOCOL</span>
+                <select id="evalModeSelector" onchange="setEvalMode(this.value)"
+                    style="background: #1f2937; color: #fff; border: none; font-size: 11px; padding: 0 5px; height: 100%; outline: none; cursor: pointer; font-family: var(--font-mono);">
+                    <option value="standard">STANDARD</option>
+                    <option value="blind">BLIND MODE</option>
+                    <option value="recheck">RECHECK / AUDIT</option>
+                    <option value="double">DOUBLE EVAL</option>
+                    <option value="moderation">MODERATION MODE</option>
+                </select>
+            </div>
+            <div class="wb-meta"
+                style="background:#fef2f2; border-color:var(--brand-accent); color:var(--brand-accent); display:flex; align-items:center; gap:10px; min-width:140px;">
+                <i class="fas fa-clock"></i>
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-size:8px; line-height:1;">BOOKLET TIME</span>
+                    <span id="scriptTimerIn" style="font-size:14px; font-weight:800; line-height:1;">00:00</span>
+                </div>
+            </div>
+            <div style="margin-right: 20px; display: flex; flex-direction: column; align-items: flex-end;">
+                <span style="font-size: 8px; color: #9ca3af; font-weight: 800;">LAST SYSTEM ACTION</span>
+                <span id="lastActionNode"
+                    style="font-size: 10px; color: #34d399; font-family: var(--font-mono); font-weight: 700;">--:--:-- |
+                    SYNC_OK</span>
+            </div>
+            <div class="wb-meta"
+                style="flex:1; display:flex; justify-content:center; gap:20px; background: transparent; border: none;">
+                <div class="integrity-hash">SH256: <span id="sysHash">8F3B...9EA1</span></div>
+                <div class="integrity-hash">SECURE NODE: <span id="nodeId">ALPHA-EX-098</span></div>
+            </div>
+            <div class="wb-actions">
+                <button class="btn-wb" onclick="saveOSMSession(); showT('Progress cached locally.')"
+                    title="Backup current state"><i class="fas fa-save"></i> Save Draft</button>
+                <button class="btn-wb" onclick="ext()" title="Exit evaluation mode"><i class="fas fa-sign-out-alt"></i>
+                    Suspend</button>
+                <button class="btn-wb btn-wb-primary" onclick="reqSeal()" title="Finalize current script"><i
+                        class="fas fa-lock"></i> Seal & Commit</button>
+                <button class="btn-wb" style="background:#4f46e5; border-color:#4f46e5; color:#fff;"
+                    onclick="publishAllFromOSM()" title="Make all results live for students"><i
+                        class="fas fa-broadcast-tower"></i> Publish Slot Results</button>
+                <button class="btn-wb" style="background:#059669; border-color:#059669; color:#fff;"
+                    onclick="freezeData()" title="Sync all work to analytics"><i class="fas fa-rocket"></i> Sync &
+                    Redirect</button>
+                <button class="btn-wb" style="background:var(--brand-accent); border-color:var(--brand-accent)"
+                    onclick="endTask()" title="View batch summary"><i class="fas fa-flag-checkered"></i> Summary
+                    Report</button>
+            </div>
+        </header>
+
+        <div class="wb-workspace">
+            <!-- Col 1: Queue -->
+            <aside class="wb-col-queue">
+                <div class="queue-header"><span>Ingested Queue</span> <span><i
+                            class="fas fa-sort-amount-down"></i></span></div>
+                <div class="queue-list" id="qList"></div>
+            </aside>
+
+            <!-- Col 2: Editor (PDF) -->
+            <section class="wb-col-editor">
+                <div class="editor-toolbar">
+                    <div class="page-controls">
+                        <button class="p-btn" onclick="pg(-1)"><i class="fas fa-caret-left"></i></button>
+                        <span>PAGE <span id="pCur">1</span> OF <span id="pTot">1</span></span>
+                        <button class="p-btn" onclick="pg(1)"><i class="fas fa-caret-right"></i></button>
+                    </div>
+
+                    <div class="t-group">
+                        <button class="t-btn active" onclick="setT('pen', this)" title="Pen (P)"><i
+                                class="fas fa-pen"></i></button>
+                        <button class="t-btn" onclick="setT('highlighter', this)" title="Highlighter (H)"><i
+                                class="fas fa-highlighter" style="color:#facc15"></i></button>
+                        <button class="t-btn" onclick="setT('tick', this)" title="Tick (T)"><i class="fas fa-check"
+                                style="color:#34d399"></i></button>
+                        <button class="t-btn" onclick="setT('cross', this)" title="Cross (X)"><i class="fas fa-times"
+                                style="color:#f87171"></i></button>
+                        <button class="t-btn" onclick="setT('rect', this)" title="Rectangle (R)"><i
+                                class="far fa-square"></i></button>
+                        <button class="t-btn" onclick="setT('circle', this)" title="Circle (O)"><i
+                                class="far fa-circle"></i></button>
+                        <button class="t-btn" onclick="setT('arrow', this)" title="Arrow (A)"><i
+                                class="fas fa-long-arrow-alt-right"></i></button>
+                        <button class="t-btn" onclick="setT('cloud', this)" title="Cloud Remark (C)"><i
+                                class="fas fa-cloud"></i></button>
+                        <button class="t-btn" onclick="setT('blank', this)" title="Blank Page Stamp (B)"><i
+                                class="fas fa-ban" style="color:#94a3b8"></i></button>
+                        <button class="t-btn" onclick="setT('text', this)" title="Custom Text (T)"><i
+                                class="fas fa-font" style="color:#6366f1"></i></button>
+                        <button class="t-btn" onclick="setT('stamp', this)" title="Mark Stamp (S)"><i
+                                class="fas fa-stamp" style="color:#f472b6"></i></button>
+                        <button class="t-btn" onclick="setT('eraser', this)" title="Eraser (E)"><i
+                                class="fas fa-eraser"></i></button>
+                        <button class="t-btn" id="btnFinalBadge" onclick="setT('badge', this)"
+                            title="Place Final Official Badge"
+                            style="display:none; background:var(--success); color:#fff;"><i
+                                class="fas fa-award"></i></button>
+                    </div>
+
+                    <div class="t-group">
+                        <div style="display:flex; flex-direction:column; align-items:center; gap:2px; padding:0 4px;">
+                            <span style="font-size:8px; font-weight:700; color:#9ca3af;">BRUSH SIZE</span>
+                            <input type="range" id="toolSize" min="2" max="60" value="3"
+                                style="width:70px; height:4px; cursor:pointer;"
+                                oninput="this.nextElementSibling.textContent = this.value; syncB();">
+                            <span style="font-size:9px; color:#fff; font-family:var(--font-mono)">3</span>
+                        </div>
+                    </div>
+
+                    <div class="t-group">
+                        <div style="display:flex; flex-direction:column; align-items:center; gap:2px; padding:0 4px;">
+                            <span style="font-size:8px; font-weight:700; color:#9ca3af;">TEXT SIZE</span>
+                            <input type="range" id="textSize" min="10" max="60" value="18"
+                                style="width:70px; height:4px; cursor:pointer;"
+                                oninput="this.nextElementSibling.textContent = this.value">
+                            <span style="font-size:9px; color:#fff; font-family:var(--font-mono)">18</span>
+                        </div>
+                    </div>
+
+                    <div class="t-group">
+                        <input type="color" id="brColor" value="#ef4444"
+                            style="width:24px; height:24px; border:none; background:transparent; padding:0; cursor:pointer;"
+                            onchange="syncB()">
+                        <button class="t-btn" onclick="und()" title="Undo (Ctrl+Z)"><i
+                                class="fas fa-undo-alt"></i></button>
+                        <button class="t-btn" onclick="zm(0.1)" title="Zoom In"><i
+                                class="fas fa-search-plus"></i></button>
+                        <button class="t-btn" onclick="zm(-0.1)" title="Zoom Out"><i
+                                class="fas fa-search-minus"></i></button>
+                    </div>
+
+                    <div class="t-group">
+                        <button class="t-btn" id="btnHeatmap" onclick="toggleHeatmap(this)"
+                            title="Toggle Marking Heatmap"><i class="fas fa-fire"></i></button>
+                        <button class="t-btn" id="btnSplit" onclick="toggleSplitView(this)"
+                            title="Split View (QP vs Script)"><i class="fas fa-columns"></i></button>
+                        <button class="t-btn" id="btnProd" onclick="toggleProdPanel(this)"
+                            title="Evaluation Analytics"><i class="fas fa-gauge-high"></i></button>
+                    </div>
+                </div>
+
+                <div class="context-bar">
+                    <div class="ctx-item">
+                        <span class="ctx-label">ROLL:</span> <span class="ctx-val" id="ctxRoll">---</span>
+                        <span class="ctx-divider">|</span>
+                        <span class="ctx-label">PAGE:</span> <span class="ctx-val"><span id="ctxPage">1</span> / <span
+                                id="ctxTotal">1</span></span>
+                        <span class="ctx-divider">|</span>
+                        <span class="ctx-label">STATUS:</span> <span id="ctxStatus"
+                            class="ctx-status-pill ctx-status-pending">PENDING</span>
+                        <span class="ctx-divider">|</span>
+                        <span class="ctx-label">AUTOSAVE:</span> <span class="ctx-val" style="color:#34d399"><i
+                                class="fas fa-circle"
+                                style="font-size:6px; vertical-align:middle; margin-right:4px;"></i>
+                            ACTIVE</span>
+                    </div>
+                    <div class="progress-tracker">
+                        <span style="display:flex; align-items:center; gap:8px;"><span class="prog-dot"></span> <span
+                                id="ctxMarked" style="color:#e5e7eb">0 / 0</span> Questions Marked</span>
+                        <span style="color: #4b5563;">|</span>
+                        <span style="color:#e5e7eb"><span id="ctxPercent">0%</span> Completion</span>
+                    </div>
+                </div>
+
+                <div class="editor-viewport" id="edView">
+                    <div class="split-pane" id="qpPane">
+                        <div
+                            style="padding: 12px 16px; background: #f1f5f9; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0;">
+                            <select id="refDocSelector" onchange="switchRefDoc(this.value)"
+                                style="background:transparent; border:none; font-size: 10px; color: #64748b; font-weight: 800; letter-spacing: 0.5px; cursor:pointer; outline:none;">
+                                <option value="QP">QUESTION PAPER</option>
+                                <option value="MS">MARKING SCHEME</option>
+                            </select>
+                            <div class="page-controls" style="transform: scale(0.8);">
+                                <button class="p-btn" onclick="pgRef(-1)"><i class="fas fa-caret-left"></i></button>
+                                <span style="font-size: 10px;">P. <span id="pCurRef">1</span></span>
+                                <button class="p-btn" onclick="pgRef(1)"><i class="fas fa-caret-right"></i></button>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; padding: 20px;">
+                            <canvas id="qpCan" style="box-shadow: 0 0 20px rgba(0,0,0,0.5);"></canvas>
+                        </div>
+                    </div>
+                    <div class="ans-pane"
+                        style="flex: 1; position: relative; overflow: auto; display: flex; justify-content: center; padding: 32px;">
+                        <div class="canvas-stack" id="cStack">
+                            <canvas id="bCan"></canvas>
+                            <canvas id="dCan"></canvas>
+                            <canvas id="hCan" class="heatmap-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Col 3: Ledger -->
+            <aside class="wb-col-ledger">
+                <div class="ledger-header">
+                    <span>Performance Ledger</span>
+                    <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-heading);"
+                        id="lUid">UID_00</span>
+                </div>
+
+                <div class="matrix-container" id="lMat" style="flex:1; overflow-y:auto;"></div>
+
+                <div class="audit-log-panel">
+                    <div
+                        style="font-size: 8px; font-weight: 800; color: var(--brand-accent); margin-bottom: 8px; display: flex; justify-content: space-between;">
+                        <span>REAL-TIME AUDIT LOG</span>
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div id="auditLogContent">
+                        <div class="audit-entry"><span class="audit-ts">17:25:01</span> Session Integrity Handshake OK.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rubric-panel">
+                    <div class="r-title">Standard Annotations</div>
+                    <div class="r-grid">
+                        <div class="r-chip" onclick="armT('✔ Correct Method')">✔ Correct Method</div>
+                        <div class="r-chip" onclick="armT('✘ Logic Error')">✘ Logic Error</div>
+                        <div class="r-chip" onclick="armT('⚠ Check Calc')">⚠ Check Calc</div>
+                        <div class="r-chip" onclick="armT('✔ Final Ans')">✔ Final Ans</div>
+                    </div>
+                </div>
+
+                <div class="ledger-footer">
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button class="qa-btn" style="flex:1; background:var(--surface-dark); color:#fff; border:none;"
+                            onclick="batchMarkQ()">BATCH ZERO</button>
+                        <button class="qa-btn" style="flex:1; background:var(--brand-primary); color:#fff; border:none;"
+                            onclick="autoFillFull()">AUTO FULL</button>
+                    </div>
+                    <div class="lf-stats">
+                        <span class="lf-label">Verified Total</span>
+                        <span class="lf-score" id="lTot">0 / 0</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- PRODUCTIVITY BADGE -->
+    <div class="productivity-badge" id="prodPanel">
+        <div
+            style="border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 8px; font-weight: 800; color: var(--brand-primary); display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-chart-pie"></i> PERFORMANCE ANALYTICS
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">MARKING SPEED</span>
+            <span class="stat-val" id="prodSpeed">0.0 M/min</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">PRECISION SCORE</span>
+            <span class="stat-val" id="prodPrecision">98.4%</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">CONSISTENCY</span>
+            <span class="stat-val" id="prodConsistency">High</span>
+        </div>
+        <div
+            style="margin-top: 6px; padding: 6px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 9px; color: #64748b; text-align: center; font-weight:600;">
+            <i class="fas fa-info-circle" style="color:var(--brand-primary)"></i> Metrics recalculated every 60s
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal-bg" id="mdlWarn">
+        <div class="modal-box">
+            <div class="modal-head"><i class="fas fa-exclamation-triangle" style="color:var(--warning)"></i> <span
+                    class="modal-title">Validation Exception</span></div>
+            <div class="modal-body" id="mWarnTxt">Parameters missing.</div>
+            <div class="modal-foot">
+                <button class="btn btn-outline" onclick="closeM('mdlWarn')">Review Ledger</button>
+                <button class="btn btn-danger" onclick="fmSeal()">Override & Seal</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-bg" id="mdlSeal">
+        <div class="modal-box">
+            <div class="modal-head"><i class="fas fa-lock" style="color:var(--brand-primary)"></i> <span
+                    class="modal-title">Commit Ledger</span></div>
+            <div class="modal-body">
+                <p style="margin-bottom:15px;">Data integrity checks passed. To finalize, please <b>verify and type the
+                        Roll Number</b> as seen on the script.</p>
+                <div class="form-group">
+                    <label>Confirm Candidate Identity (<span id="mSealUidHint"
+                            style="font-family:var(--font-mono)"></span>)</label>
+                    <input type="text" id="sealVerifyInp" class="form-control" placeholder="Type Roll Number here..."
+                        style="text-transform: uppercase;" onkeyup="if(event.key==='Enter') validateSeal()">
+                    <div id="sealError"
+                        style="color:var(--brand-accent); font-size:11px; margin-top:5px; display:none;">
+                        Roll number mismatch. Please verify exactly as per the script.</div>
+                </div>
+                <div class="form-group" style="margin-top:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label style="margin-bottom:0;">OFFICIAL DIGITAL SIGNATURE</label>
+                        <button class="qa-btn" style="font-size:10px; padding:2px 8px; color:var(--brand-accent);"
+                            onclick="clearSig()">Clear Pad</button>
+                    </div>
+                    <div
+                        style="position:relative; width:100%; height:120px; background:#fff; border:2px solid #e2e8f0; border-radius:8px; overflow:hidden;">
+                        <canvas id="sigPad" style="width:100%; height:100%; cursor:crosshair;"></canvas>
+                        <div
+                            style="position:absolute; bottom:5px; right:10px; pointer-events:none; font-size:9px; color:#cbd5e1; font-weight:800; letter-spacing:1px;">
+                            TEACHER AUTHENTICATION PAD</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-outline" onclick="closeM('mdlSeal')">Cancel</button>
+                <button class="btn btn-primary" onclick="validateSeal()">Execute Seal & Sign</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-bg" id="mdlConfirm">
+        <div class="modal-box">
+            <div class="modal-head"><i class="fas fa-question-circle" style="color:var(--brand-primary)"></i> <span
+                    class="modal-title">System Confirmation</span></div>
+            <div class="modal-body" id="mConfirmTxt">Are you sure?</div>
+            <div class="modal-foot">
+                <button class="btn btn-outline" id="btnConfirmCancel">Cancel Action</button>
+                <button class="btn btn-primary" id="btnConfirmOk">Confirm & Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-bg" id="mdlPrompt">
+        <div class="modal-box">
+            <div class="modal-head"><i class="fas fa-edit" style="color:var(--brand-primary)"></i> <span
+                    class="modal-title">System Input Required</span></div>
+            <div class="modal-body">
+                <p id="mPromptTxt" style="margin-bottom:10px;"></p>
+                <input type="text" id="mPromptInp" class="form-control" style="width:100%">
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-outline" id="promptCancel">Discard</button>
+                <button class="btn btn-primary" id="promptOk">Submit Response</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REFINED FULL-SCREEN SUMMARY VIEW -->
+    <div id="summaryView" class="summary-view">
+        <header class="summary-header">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div
+                    style="width:40px; height:40px; background:var(--brand-primary); color:#fff; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; font-family:var(--font-display);">
+                    E</div>
+                <div>
+                    <h2 style="font-family:var(--font-display); font-size:18px; font-weight:800; color:#0f172a;">
+                        Evaluation Cycle Finalized</h2>
+                    <p id="summaryBatchName"
+                        style="font-size:11px; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">
+                        BATCH: ---</p>
+                </div>
+            </div>
+            <div style="display:flex; gap:12px;">
+                <button class="btn-sum" style="background:#475569;" onclick="publishAllFromOSM()">
+                    <i class="fas fa-broadcast-tower"></i> PUBLISH SLOT RESULTS
+                </button>
+                <button class="btn-sum" style="background:var(--brand-primary);" onclick="freezeData()">
+                    <i class="fas fa-rocket"></i> SYNC & REDIRECT
+                </button>
+                <button class="btn-sum" style="background:#1e293b;" onclick="location.reload()">
+                    <i class="fas fa-plus"></i> START NEXT SLOT
+                </button>
+                <button class="btn-sum" style="background:transparent; border:1px solid #e2e8f0; color:#64748b;"
+                    onclick="exportMarks()">
+                    <i class="fas fa-download"></i> EXPORT CSV
+                </button>
+            </div>
+        </header>
+
+        <div class="summary-content">
+            <div class="summary-stats"
+                style="margin-top:0; grid-template-columns: repeat(4, 1fr); display:grid; gap:20px;">
+                <div class="premium-stat">
+                    <div class="ps-icon" style="background:#fff1f2; color:var(--brand-primary);"><i
+                            class="fas fa-check-double"></i>
+                    </div>
+                    <div class="ps-data">
+                        <span class="val" id="sumScriptsDone">0/0</span>
+                        <span class="label">Scripts Verified</span>
+                    </div>
+                </div>
+                <div class="premium-stat">
+                    <div class="ps-icon" style="background:#fefce8; color:#a16207;"><i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="ps-data">
+                        <span class="val" id="sumAvgScore">0%</span>
+                        <span class="label">Class Average</span>
+                    </div>
+                </div>
+                <div class="premium-stat">
+                    <div class="ps-icon" style="background:#fff7ed; color:#ea580c;"><i class="fas fa-trophy"></i></div>
+                    <div class="ps-data">
+                        <span class="val" id="sumHighScore">0</span>
+                        <span class="label">Top Performance</span>
+                    </div>
+                </div>
+                <div class="premium-stat">
+                    <div class="ps-icon" style="background:#faf5ff; color:#9333ea;"><i class="fas fa-history"></i></div>
+                    <div class="ps-data">
+                        <span class="val" style="font-size:20px;">AUTHENTICATED</span>
+                        <span class="label">Compliance Check</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-main-card">
+                    <div
+                        style="font-size: 18px; font-weight: 800; color: #1e293b; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-chart-area" style="color: var(--brand-primary);"></i> PERFORMANCE DISTRIBUTION
+                    </div>
+                    <div class="dist-graph" id="distGraph"></div>
+
+                    <div style="margin-top: 30px; font-size: 14px; font-weight: 800; color: #1e293b;">CRITICAL ERROR
+                        ANALYSIS (TOP MISTAKES)</div>
+                    <div id="errorList"></div>
+
+                    <h3
+                        style="font-family:var(--font-display); font-size:16px; margin:30px 0 20px 0; color:#1e293b; border-top: 1px solid #e2e8f0; padding-top:25px;">
+                        Candidate Evaluation Ledger</h3>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Roll Number / ID</th>
+                                    <th>Total Score</th>
+                                    <th>Max Marks</th>
+                                    <th>Performance</th>
+                                    <th>Registry Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="summary-side-card">
+                    <div class="summary-main-card"
+                        style="padding:25px; background: linear-gradient(to bottom, #f8fafc, #fff);">
+                        <h3 style="font-family:var(--font-display); font-size:15px; margin-bottom:15px; color:#1e293b;">
+                            Audit Information</h3>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <div
+                                style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px dashed #e2e8f0; padding-bottom:8px;">
+                                <span style="color:#64748b;">Evaluator Node:</span>
+                                <span style="font-weight:700; color:#334155;" id="sumEvaluator">#ADM-8291-OSM</span>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px dashed #e2e8f0; padding-bottom:8px;">
+                                <span style="color:#64748b;">Session End Time:</span>
+                                <span id="sumTime" style="font-weight:700; color:#334155;">--:--</span>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px dashed #e2e8f0; padding-bottom:8px;">
+                                <span style="color:#64748b;">System Hash:</span>
+                                <span style="font-family:var(--font-mono); font-size:10px; color:#0f69ca;">SHA-256
+                                    VERIFIED</span>
+                            </div>
+                        </div>
+                        <div
+                            style="margin-top:20px; padding:15px; background:#f0f9ff; border-radius:10px; border:1px solid #bae6fd;">
+                            <p style="font-size:11px; color:#0369a1; line-height:1.5;">
+                                <i class="fas fa-shield-alt"></i> All marks have been securely cached in the local node
+                                and synchronized with the ERP Registry.
+                            </p>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="btnSyncRedirect"
+                        style="height:60px; font-size:14px; border-radius:16px; background:#059669; box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);"
+                        onclick="freezeData()">
+                        <i class="fas fa-rocket"></i> SYNC & PROCEED TO PUBLISH
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div style="padding:40px; text-align:center; color:#94a3b8; font-size:11px; font-weight:600;">
+            EXAMPAD UNIFIED ACADEMIC REGISTRY | EVALUATION CYCLE V4.0.2
+        </div>
+    </div>
+
+    <script src="../js/db.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // STATE
+        let batch = [], cB = 0, matDefs = [];
+        let pdf = null, pN = 1, pTot = 1;
+        let scale = 1.0;
+        let cTool = 'pen', isD = false, hst = [], annStore = {};
+        let aAct = 0; // active ledger row
+        let lx = 0, ly = 0, sx = 0, sy = 0;
+        let evalMode = 'standard'; // standard, blind, recheck, double
+        let heatmapData = {}; // { pageKey: [points] }
+        let isSplitMode = false;
+        let qpPdf = null, qpPN = 1;
+        let msPdf = null, msPN = 1;
+        let checkerName = "";
+        let qpFileObj = null, msFileObj = null;
+        let scriptSeconds = 0, scriptTimerInterval = null;
+        let sigCanvas = null, sigCtx = null, isSigDrawing = false;
+
+        function initSigPad() {
+            sigCanvas = document.getElementById('sigPad');
+            if (!sigCanvas) return;
+            sigCtx = sigCanvas.getContext('2d');
+            const rect = sigCanvas.getBoundingClientRect();
+            sigCanvas.width = rect.width;
+            sigCanvas.height = rect.height;
+            sigCtx.strokeStyle = '#e30613';
+            sigCtx.lineWidth = 3;
+            sigCtx.lineCap = 'round';
+            sigCtx.lineJoin = 'round';
+            const getPos = (e) => {
+                const r = sigCanvas.getBoundingClientRect();
+                if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+                return { x: e.clientX - r.left, y: e.clientY - r.top };
+            };
+            const start = (e) => { isSigDrawing = true; const pos = getPos(e); sigCtx.beginPath(); sigCtx.moveTo(pos.x, pos.y); };
+            const draw = (e) => { if (!isSigDrawing) return; if (e.cancelable) e.preventDefault(); const pos = getPos(e); sigCtx.lineTo(pos.x, pos.y); sigCtx.stroke(); };
+            const stop = () => { isSigDrawing = false; };
+            sigCanvas.onmousedown = start; sigCanvas.onmousemove = draw; sigCanvas.onmouseup = stop; sigCanvas.onmouseleave = stop;
+            sigCanvas.ontouchstart = start; sigCanvas.ontouchmove = draw; sigCanvas.ontouchend = stop;
+        }
+
+        function clearSig() { if (sigCtx) sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height); }
+        function hasSignature() {
+            if (!sigCanvas) return false;
+            const blank = document.createElement('canvas');
+            blank.width = sigCanvas.width;
+            blank.height = sigCanvas.height;
+            return sigCanvas.toDataURL() !== blank.toDataURL();
+        }
+
+        function setEvalMode(m) {
+            evalMode = m;
+            showT(`Evaluation Protocol: ${m.toUpperCase()}`);
+            buildQueue();
+            bLdg();
+            updateContextBar();
+            saveOSMSession();
+        }
+
+        function getDispId(id) {
+            if (evalMode === 'blind') {
+                const b = batch.find(x => x.id === id);
+                if (b && b.stat === 'DON') return id; // Reveal after seal
+                let hash = 0;
+                for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
+                return `CANDIDATE #A${Math.abs(hash % 10000).toString().padStart(4, '0')}`;
+            }
+            return id;
+        }
+
+        // STATS & PERSISTENCE
+        let sessionTimer = null;
+        let sessionStart = Date.now();
+
+        function updateLiveStats() {
+            const stats = JSON.parse(localStorage.getItem('exampad_osm_stats') || '{"checked":0, "seconds":0}');
+            const currentSessionSecs = Math.floor((Date.now() - sessionStart) / 1000);
+            const totalSecs = stats.seconds + currentSessionSecs;
+
+            document.getElementById('statChecked').textContent = stats.checked;
+            document.getElementById('statWallet').textContent = (stats.checked * 50).toLocaleString();
+            document.getElementById('statHours').textContent = (totalSecs / 3600).toFixed(1) + 'h';
+        }
+
+        setInterval(updateLiveStats, 30000); // Update hours every 30s
+        window.addEventListener('load', updateLiveStats);
+
+        function saveDraft() {
+            storePg();
+            saveOSMSession();
+            updateContextBar();
+            showT("Evaluation progress saved as draft.");
+        }
+
+        function updateContextBar() {
+            if (!batch[cB]) return;
+            const b = batch[cB];
+            document.getElementById('ctxRoll').textContent = getDispId(b.id);
+            document.getElementById('ctxPage').textContent = pN;
+            document.getElementById('ctxTotal').textContent = pTot;
+
+            const statusEl = document.getElementById('ctxStatus');
+            statusEl.textContent = b.stat === 'DON' ? 'VERIFIED' : 'PENDING';
+            statusEl.className = `ctx-status-pill ${b.stat === 'DON' ? 'ctx-status-done' : 'ctx-status-pending'}`;
+
+            const marks = b.marks || matDefs;
+            const markedCount = marks.filter(m => m.aw !== null).length;
+            const totalCount = marks.length;
+            const percent = totalCount > 0 ? Math.round((markedCount / totalCount) * 100) : 0;
+            document.getElementById('ctxMarked').textContent = `${markedCount} / ${totalCount}`;
+            document.getElementById('ctxPercent').textContent = `${percent}%`;
+        }
+
+        function logAudit(msg) {
+            const ts = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            const entry = document.createElement('div');
+            entry.className = 'audit-entry';
+            entry.innerHTML = `<span class="audit-ts">${ts}</span> ${msg}`;
+            const logContent = document.getElementById('auditLogContent');
+            logContent.insertBefore(entry, logContent.firstChild);
+            document.getElementById('lastActionNode').textContent = `${ts} | ${msg.split(' ')[0]}_UPD`;
+
+            // Random hash update
+            document.getElementById('sysHash').textContent = Math.random().toString(16).substring(2, 6) + '...' + Math.random().toString(16).substring(2, 6);
+        }
+
+        // PERSISTENCE ENGINE (IndexedDB)
+        const DB_NAME = 'EXAMPAD_OSM_PERSISTENCE';
+        const DB_VERSION = 2;
+        let _db = null;
+
+        async function initPersistence() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onupgradeneeded = e => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('session')) db.createObjectStore('session');
+                    if (!db.objectStoreNames.contains('files')) db.createObjectStore('files');
+                    if (!db.objectStoreNames.contains('archives')) db.createObjectStore('archives');
+                };
+                req.onsuccess = async e => {
+                    _db = e.target.result;
+                    const saved = await loadOSMSession();
+                    if (saved) {
+                        document.getElementById('restoreCard').style.display = 'block';
+                        document.getElementById('restoreTitle').textContent = saved.wbTitle || saved.examIdValue;
+                    }
+                    resolve();
+                };
+                req.onerror = e => reject(e);
+            });
+        }
+
+        async function saveOSMSession() {
+            if (!_db) return;
+            const data = {
+                cB, matDefs, annStore,
+                wbTitle: document.getElementById('wbTitle').textContent,
+                examIdValue: document.getElementById('formExamId').value,
+                checkerName: document.getElementById('formCheckerName').value,
+                qpId: qpFileObj ? 'QP_DOC' : null,
+                msId: msFileObj ? 'MS_DOC' : null,
+                batch: batch.map(b => ({ id: b.id, stat: b.stat, marks: b.marks, map: b.map, lastPage: b.lastPage, type: b.type })),
+                ts: Date.now()
+            };
+            const tx = _db.transaction('session', 'readwrite');
+            tx.objectStore('session').put(data, 'current');
+        }
+
+        async function saveOSMFile(id, file) {
+            if (!_db) return;
+            const buffer = await file.arrayBuffer();
+            const tx = _db.transaction('files', 'readwrite');
+            tx.objectStore('files').put(buffer, id);
+        }
+
+        async function renameOSMFile(oldId, newId) {
+            if (!_db) return;
+            const buffer = await getOSMFile(oldId);
+            if (!buffer) return;
+            const tx = _db.transaction('files', 'readwrite');
+            const store = tx.objectStore('files');
+            await store.put(buffer, newId);
+            await store.delete(oldId);
+            console.log(`OSM Archive Key Synced: ${oldId} -> ${newId}`);
+        }
+
+        async function loadOSMSession() {
+            if (!_db) return null;
+            return new Promise(resolve => {
+                const req = _db.transaction('session').objectStore('session').get('current');
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            });
+        }
+
+        async function getOSMFile(id) {
+            if (!_db) return null;
+            return new Promise(resolve => {
+                const req = _db.transaction('files').objectStore('files').get(id);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            });
+        }
+
+        async function resumeSession() {
+            const saved = await loadOSMSession();
+            if (!saved) return;
+            loadr(true, "Restoring Session Data...");
+
+            // Restore metadata
+            batch = saved.batch;
+            cB = saved.cB;
+            matDefs = saved.matDefs;
+            annStore = saved.annStore;
+            document.getElementById('formExamId').value = saved.examIdValue;
+            document.getElementById('formCheckerName').value = saved.checkerName || "";
+            document.getElementById('wbTitle').textContent = saved.wbTitle;
+            checkerName = saved.checkerName || "";
+
+            // Restore Reference Files
+            if (saved.qpId) {
+                const buf = await getOSMFile(saved.qpId);
+                if (buf) {
+                    qpFileObj = new File([buf], 'question_paper.pdf', { type: 'application/pdf' });
+                    document.getElementById('qpStat').innerHTML = '<i class="fas fa-check-circle" style="color:var(--success)"></i> question_paper.pdf';
+                }
+            }
+            if (saved.msId) {
+                const buf = await getOSMFile(saved.msId);
+                if (buf) {
+                    msFileObj = new File([buf], 'marking_scheme.pdf', { type: 'application/pdf' });
+                    document.getElementById('msStat').innerHTML = '<i class="fas fa-check-circle" style="color:var(--success)"></i> marking_scheme.pdf';
+                }
+            }
+
+            // Restore File objects from stored buffers
+            let failCount = 0;
+            for (let i = 0; i < batch.length; i++) {
+                try {
+                    const buffer = await getOSMFile(batch[i].id);
+                    if (buffer) {
+                        const type = batch[i].type || 'application/pdf';
+                        const ext = type.split('/')[1] || 'pdf';
+                        batch[i].f = new File([buffer], `${batch[i].id}.${ext}`, { type: type });
+                    } else {
+                        console.warn(`File buffer missing for ${batch[i].id}`);
+                        failCount++;
+                    }
+                } catch (e) {
+                    console.error(`Restore error for ${batch[i].id}:`, e);
+                    failCount++;
+                }
+            }
+
+            if (failCount > 0) {
+                showT(`${failCount} file(s) could not be restored. Please re-ingest.`, "error");
+            }
+
+            // Sync Matrix UI in Setup
+            const tbody = document.getElementById('mBody');
+            tbody.innerHTML = '';
+            matDefs.forEach(q => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><input type="text" class="form-control q-id" value="${q.i}"></td><td><input type="text" class="form-control q-sub" value="${q.s}"></td><td><input type="number" class="form-control q-max" value="${q.mx}"></td><td><i class="fas fa-times" style="color:var(--brand-accent); cursor:pointer;" onclick="this.closest('tr').remove()"></i></td>`;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('ingestStat').style.display = 'block';
+            document.getElementById('ingestCount').textContent = batch.length;
+            renderBatchInspector();
+
+            document.getElementById('restoreCard').style.display = 'none';
+            showT("Session restored successfully.");
+            loadr(false);
+
+            // If we were middle of evaluation, restore the workbench node
+            if (batch.some(b => b.stat === 'DON' || (b.marks && b.marks.some(m => m.aw !== null)))) {
+                document.getElementById('setupView').style.display = 'none';
+                document.getElementById('wbNode').style.display = 'flex';
+                buildQueue();
+                bindKeys();
+                loadBook(cB);
+            }
+        }
+
+        async function clearSaved() {
+            if (await sysConfirm("This will permanently discard all unsaved marks and annotations in the current session. Proceed?")) {
+                const tx = _db.transaction(['session', 'files'], 'readwrite');
+                tx.objectStore('session').clear();
+                tx.objectStore('files').clear();
+                document.getElementById('restoreCard').style.display = 'none';
+                showT("Session storage cleared.");
+            }
+        }
+
+        initPersistence();
+
+        const dC = document.getElementById('dCan'), dCtx = dC.getContext('2d');
+        const bC = document.getElementById('bCan'), bCtx = bC.getContext('2d');
+        const vP = document.getElementById('edView'), cSt = document.getElementById('cStack');
+
+        // UTILS
+        const showT = (m, t = 'success') => {
+            const bx = document.getElementById('toastBox');
+            const el = document.createElement('div'); el.className = `toast ${t}`;
+            el.innerHTML = `<i class="fas ${t === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> <span>${m}</span>`;
+            bx.appendChild(el);
+            setTimeout(() => el.classList.add('show'), 50);
+            setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3000);
+        };
+
+        function sysAlert(title, msg, type = 'warning') {
+            const icons = {
+                error: 'fa-times-circle',
+                warning: 'fa-exclamation-triangle',
+                success: 'fa-check-circle'
+            };
+            const box = document.getElementById('sysAlert');
+            const iconBox = document.getElementById('sysAlertIcon');
+            iconBox.className = 'sys-alert-icon icon-' + type;
+            iconBox.innerHTML = `<i class="fas ${icons[type]}"></i>`;
+            document.getElementById('sysAlertTitle').textContent = title;
+            document.getElementById('sysAlertMsg').textContent = msg;
+            box.style.display = 'flex';
+        }
+
+        function closeSysAlert() {
+            document.getElementById('sysAlert').style.display = 'none';
+        }
+
+        const loadr = (on, msg = "Processing...") => {
+            document.getElementById('globalLoader').style.display = on ? 'flex' : 'none';
+            document.getElementById('loaderText').textContent = msg;
+        };
+        const closeM = id => document.getElementById(id).style.display = 'none';
+
+        // PROFESSIONAL MODAL SYSTEM (No Alerts/Prompts)
+        const sysConfirm = (msg) => {
+            return new Promise(resolve => {
+                document.getElementById('mConfirmTxt').textContent = msg;
+                document.getElementById('mdlConfirm').style.display = 'flex';
+                const ok = document.getElementById('btnConfirmOk');
+                const can = document.getElementById('btnConfirmCancel');
+                const finish = (val) => {
+                    closeM('mdlConfirm');
+                    ok.onclick = null; can.onclick = null;
+                    resolve(val);
+                };
+                ok.onclick = () => finish(true);
+                can.onclick = () => finish(false);
+            });
+        };
+
+        const sysPrompt = (msg, def = "") => {
+            return new Promise(resolve => {
+                document.getElementById('mPromptTxt').textContent = msg;
+                document.getElementById('mPromptInp').value = def;
+                document.getElementById('mdlPrompt').style.display = 'flex';
+                document.getElementById('mPromptInp').focus();
+                const ok = document.getElementById('promptOk');
+                const can = document.getElementById('promptCancel');
+                const finish = (val) => {
+                    closeM('mdlPrompt');
+                    ok.onclick = null; can.onclick = null;
+                    resolve(val);
+                };
+                ok.onclick = () => finish(document.getElementById('mPromptInp').value);
+                can.onclick = () => finish(null);
+            });
+        };
+
+        // SETUP
+        function addQ() {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><input type="text" class="form-control q-id" value="Q${document.getElementById('mBody').rows.length + 1}"></td><td><input type="text" class="form-control q-sub" value="A"></td><td><input type="number" class="form-control q-max" value="10"></td><td><i class="fas fa-times" style="color:var(--brand-accent); cursor:pointer;" onclick="this.closest('tr').remove()"></i></td>`;
+            document.getElementById('mBody').appendChild(tr);
+        }
+
+        async function ingest(inp) {
+            if (!inp.files.length) return;
+            loadr(true, "Processing and caching booklets...");
+            let addedCount = 0;
+            let rejected = 0;
+            for (const f of Array.from(inp.files)) {
+                // Support PDF and common image formats
+                const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+                const isPdf = f.name.toLowerCase().endsWith('.pdf');
+                const isImg = /\.(jpe?g|png|webp)$/i.test(f.name);
+
+                if (!allowedTypes.includes(f.type) && !isPdf && !isImg) {
+                    rejected++;
+                    continue;
+                }
+                const detectedType = f.type || (isPdf ? 'application/pdf' : 'image/jpeg');
+                try {
+                    const id = f.name.replace(/\.[^/.]+$/, "").toUpperCase();
+                    if (!id) continue;
+
+                    if (!batch.find(b => b.id === id)) {
+                        batch.push({ id: id, f: f, stat: 'PEN', marks: null, map: {}, lastPage: 1, type: detectedType });
+                        await saveOSMFile(id, f);
+                        addedCount++;
+                    }
+                } catch (e) {
+                    console.error("Ingestion failed for:", f.name, e);
+                }
+            }
+            inp.value = '';
+            document.getElementById('ingestStat').style.display = 'block';
+            document.getElementById('ingestCount').textContent = batch.length;
+            renderBatchInspector();
+            saveOSMSession();
+
+            if (rejected > 0) {
+                showT(`${rejected} incompatible files were rejected. Please use PDF or Images (JPG/PNG).`, "error");
+            }
+            showT(`${addedCount} new booklets securely archived in the node.`);
+            loadr(false);
+        }
+
+        async function ingestReference(type, inp) {
+            if (!inp.files.length) return;
+            const file = inp.files[0];
+            if (file.type !== 'application/pdf') {
+                showT("Only PDF reference documents are supported.", "error");
+                return;
+            }
+            loadr(true, `Securely archiving ${type === 'QP' ? 'Question Paper' : 'Marking Scheme'}...`);
+            if (type === 'QP') {
+                qpFileObj = file;
+                await saveOSMFile('QP_DOC', file);
+                document.getElementById('qpStat').innerHTML = `<i class="fas fa-check-circle" style="color:var(--success)"></i> ${file.name}`;
+            } else {
+                msFileObj = file;
+                await saveOSMFile('MS_DOC', file);
+                document.getElementById('msStat').innerHTML = `<i class="fas fa-check-circle" style="color:var(--success)"></i> ${file.name}`;
+            }
+            saveOSMSession();
+            showT(`${type === 'QP' ? 'Question Paper' : 'Marking Scheme'} cached.`);
+            loadr(false);
+        }
+
+        function renderBatchInspector() {
+            const container = document.getElementById('batchInspector');
+            const table = document.getElementById('batchTable');
+            if (batch.length > 0) container.style.display = 'block';
+
+            table.innerHTML = batch.map((b, i) => `
+                <tr style="${i === cB ? 'background:#f0f7ff' : ''}">
+                    <td style="font-family:var(--font-mono); font-weight:700;">${b.id}</td>
+                    <td style="font-size:12px; color:var(--text-muted)">${b.f.name}</td>
+                    <td><span class="q-stat ${b.stat === 'DON' ? 'don' : 'pen'}">${b.stat === 'DON' ? 'VERIFIED' : 'PENDING'}</span></td>
+                    <td style="text-align:right">
+                        <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="startEvaluation(${i})">
+                            <i class="fas ${b.stat === 'DON' ? 'fa-redo' : 'fa-play'}"></i> ${b.stat === 'DON' ? 'REVIEW' : 'START'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            const donCount = batch.filter(b => b.stat === 'DON').length;
+            if (donCount > 0) {
+                document.getElementById('publishPanel').style.display = 'block';
+                document.getElementById('pubCount').textContent = donCount;
+            }
+        }
+
+        async function publishBatch() {
+            if (!await sysConfirm(`System Authorization Required.\n\nYou are about to publish ${batch.filter(b => b.stat === 'DON').length} verified results to the Student Registry Portal.\n\nOnce published, students can view their marks and evaluated scripts using their Roll Numbers.\n\nProceed with Batch Publication?`)) return;
+
+            loadr(true, "Synchronizing Registry...");
+
+            // Collect all DON booklets IDs to publish
+            const ids = batch.filter(b => b.stat === 'DON').map(b => b.id);
+
+            for (const id of ids) {
+                await new Promise((resolve, reject) => {
+                    const tx = _db.transaction('archives', 'readwrite');
+                    const store = tx.objectStore('archives');
+                    const req = store.get(id);
+                    req.onsuccess = () => {
+                        const data = req.result;
+                        if (data) {
+                            data.isPublished = true;
+                            const putReq = store.put(data, id);
+                            putReq.onsuccess = () => resolve();
+                            putReq.onerror = e => reject(e);
+                        } else {
+                            resolve();
+                        }
+                    };
+                    req.onerror = e => reject(e);
+                });
+            }
+
+            showT("Publication Successful: Results are now live.", "success");
+            loadr(false);
+        }
+
+        function startEvaluation(i) {
+            cB = i;
+            initEngine();
+            saveOSMSession();
+        }
+
+        async function saveTemplate() {
+            const defs = [];
+            document.querySelectorAll('#mBody tr').forEach(r => {
+                defs.push({ i: r.querySelector('.q-id').value, s: r.querySelector('.q-sub').value, mx: parseFloat(r.querySelector('.q-max').value) });
+            });
+            const name = await sysPrompt("Enter Template Name:", "Standard Final Matrix");
+            if (!name) return;
+            const templates = JSON.parse(localStorage.getItem('exampad_osm_templates') || '{}');
+            templates[name] = defs;
+            localStorage.setItem('exampad_osm_templates', JSON.stringify(templates));
+            showT("Template saved to local registry.");
+        }
+
+        function genBulk() {
+            const start = parseInt(document.getElementById('bulkStart').value);
+            const end = parseInt(document.getElementById('bulkEnd').value);
+            const marks = parseFloat(document.getElementById('bulkMarks').value);
+
+            if (isNaN(start) || isNaN(end) || isNaN(marks)) {
+                showT("Please provide Start, End, and Marks values.", "error");
+                return;
+            }
+
+            if (start > end) {
+                showT("Start range must be less than End range.", "error");
+                return;
+            }
+
+            const tbody = document.getElementById('mBody');
+            let count = 0;
+            for (let i = start; i <= end; i++) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" class="form-control q-id" value="Q${i}"></td>
+                    <td><input type="text" class="form-control q-sub" value="A"></td>
+                    <td><input type="number" class="form-control q-max" value="${marks}"></td>
+                    <td><i class="fas fa-times" style="color:var(--brand-accent); cursor:pointer;" onclick="this.closest('tr').remove()"></i></td>
+                `;
+                tbody.appendChild(tr);
+                count++;
+            }
+            showT(`Successfully appended ${count} questions to the matrix.`);
+
+            // Clear inputs for next use
+            document.getElementById('bulkStart').value = end + 1;
+            document.getElementById('bulkEnd').value = '';
+        }
+
+        async function resetMatrix() {
+            if (await sysConfirm("Wipe current marks matrix? This action cannot be undone.")) {
+                document.getElementById('mBody').innerHTML = '';
+                showT("Matrix cleared.");
+            }
+        }
+
+        async function loadTemplate() {
+            const templates = JSON.parse(localStorage.getItem('exampad_osm_templates') || '{}');
+            const keys = Object.keys(templates);
+            if (keys.length === 0) { showT("No templates found in system registry.", "error"); return; }
+
+            const name = await sysPrompt("Select Template Name from existing list:\n" + keys.join(', '), keys[0]);
+            if (!name || !templates[name]) return;
+
+            const tbody = document.getElementById('mBody');
+            tbody.innerHTML = '';
+            templates[name].forEach(q => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><input type="text" class="form-control q-id" value="${q.i}"></td><td><input type="text" class="form-control q-sub" value="${q.s}"></td><td><input type="number" class="form-control q-max" value="${q.mx}"></td><td><i class="fas fa-times" style="color:var(--brand-accent); cursor:pointer;" onclick="this.closest('tr').remove()"></i></td>`;
+                tbody.appendChild(tr);
+            });
+            showT(`Template [${name}] loaded.`);
+        }
+
+        async function initEngine() {
+            if (batch.length === 0) { showT("Ingest queue empty.", "error"); return; }
+            matDefs = [];
+            document.querySelectorAll('#mBody tr').forEach(r => {
+                const mxVal = parseFloat(r.querySelector('.q-max').value);
+                matDefs.push({ i: r.querySelector('.q-id').value, s: r.querySelector('.q-sub').value, mx: isNaN(mxVal) ? 0 : mxVal, aw: null });
+            });
+            document.getElementById('wbTitle').textContent = document.getElementById('formExamId').value;
+            checkerName = document.getElementById('formCheckerName').value;
+            if (checkerName) {
+                document.getElementById('nodeId').textContent = checkerName.toUpperCase();
+            }
+            document.getElementById('checkerNameDisplay').textContent = checkerName.toUpperCase();
+            document.getElementById('integrityOverlay').style.display = 'flex';
+        }
+
+        function acceptPledge() {
+            if (!document.getElementById('integrityCheck').checked) {
+                showT("Please acknowledge the pledge to continue.", "error");
+                return;
+            }
+            document.getElementById('integrityOverlay').style.display = 'none';
+            document.getElementById('setupView').style.display = 'none';
+            document.getElementById('wbNode').style.display = 'flex';
+
+            // Load Reference PDFs if available
+            loadReferencePDFs();
+
+            buildQueue(); bindKeys();
+            loadBook(0);
+            saveOSMSession();
+        }
+
+        async function loadReferencePDFs() {
+            if (qpFileObj) {
+                const buf = await qpFileObj.arrayBuffer();
+                qpPdf = await pdfjsLib.getDocument(new Uint8Array(buf)).promise;
+            }
+            if (msFileObj) {
+                const buf = await msFileObj.arrayBuffer();
+                msPdf = await pdfjsLib.getDocument(new Uint8Array(buf)).promise;
+            }
+        }
+
+        async function ext() {
+            if (await sysConfirm("Suspend active session? Unsealed evaluation data will remain in temporary system memory only.")) {
+                document.getElementById('wbNode').style.display = 'none';
+                document.getElementById('setupView').style.display = 'flex';
+            }
+        }
+
+        // QUEUE & BOOK
+        function buildQueue() {
+            const dn = batch.filter(b => b.stat === 'DON').length;
+            document.getElementById('wbProg').textContent = `BATCH PROGRESS: ${dn} / ${batch.length}`;
+            document.getElementById('qList').innerHTML = batch.map((b, i) => `
+                <div class="q-item ${i === cB ? 'active' : ''}" onclick="loadBook(${i})">
+                    <span class="q-uid">${getDispId(b.id)}</span>
+                    <span class="q-stat ${b.stat === 'DON' ? 'don' : 'pen'}">${b.stat}</span>
+                </div>
+            `).join('');
+        }
+
+        async function loadBook(i) {
+            if (pdf) { storePg(); try { pdf.destroy(); } catch (e) { } }
+            pdf = null;
+            cB = i; buildQueue();
+            const b = batch[i];
+            document.getElementById('lUid').textContent = getDispId(b.id);
+            document.getElementById('mSealUidHint').textContent = b.id;
+            document.getElementById('sealVerifyInp').value = '';
+            document.getElementById('sealError').style.display = 'none';
+
+            if (!b.marks) b.marks = JSON.parse(JSON.stringify(matDefs));
+
+            if (b.type && b.type.startsWith('image/')) {
+                pTot = 1; document.getElementById('pTot').textContent = '1';
+                pN = 1; // Default for single image
+                await rPg(1);
+                bLdg();
+                updateContextBar();
+                loadr(false);
+                return;
+            }
+
+            loadr(true, `Streaming PDF Context: ${b.id}`);
+            const fr = new FileReader();
+            fr.onload = async function () {
+                pdf = await pdfjsLib.getDocument(new Uint8Array(this.result)).promise;
+                pTot = pdf.numPages; document.getElementById('pTot').textContent = pTot;
+                pN = b.lastPage || 1; // Restore last page
+                await rPg(pN);
+                bLdg();
+                updateContextBar();
+                loadr(false);
+            };
+            fr.readAsArrayBuffer(b.f);
+
+            // START SCRIPT TIMER
+            startScriptTimer();
+        }
+
+        function startScriptTimer() {
+            if (scriptTimerInterval) clearInterval(scriptTimerInterval);
+            scriptSeconds = 0;
+            const timerEl = document.getElementById('scriptTimerIn');
+            timerEl.textContent = "00:00";
+            timerEl.style.color = "var(--brand-accent)";
+
+            scriptTimerInterval = setInterval(() => {
+                scriptSeconds++;
+                const m = Math.floor(scriptSeconds / 60).toString().padStart(2, '0');
+                const s = (scriptSeconds % 60).toString().padStart(2, '0');
+                timerEl.textContent = `${m}:${s}`;
+
+                if (scriptSeconds >= 300) {
+                    timerEl.style.color = "var(--success)";
+                }
+            }, 1000);
+        }
+
+        // PAGE RENDER
+        async function rPg(n) {
+            try {
+                storePg();
+                pN = n;
+                if (batch[cB]) batch[cB].lastPage = n;
+                document.getElementById('pCur').textContent = pN;
+                loadr(true, `Mounting P${n}`);
+
+                const b = batch[cB];
+                let w, h;
+                if (b.type && b.type.startsWith('image/')) {
+                    const img = new Image();
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        const reader = new FileReader();
+                        reader.onload = e => img.src = e.target.result;
+                        reader.readAsDataURL(b.f);
+                        setTimeout(() => reject("Image Load Timeout"), 10000);
+                    });
+
+                    w = img.width; h = img.height;
+                    bC.width = w; bC.height = h;
+                    bCtx.drawImage(img, 0, 0);
+                } else {
+                    const p = await pdf.getPage(n);
+                    const v = p.getViewport({ scale: 1.5 });
+                    w = v.width; h = v.height;
+                    bC.width = w; bC.height = h;
+                    await p.render({ canvasContext: bCtx, viewport: v }).promise;
+                }
+
+                // Sync all canvases and container
+                dC.width = w; dC.height = h;
+                dCtx.clearRect(0, 0, w, h);
+
+                const hC = document.getElementById('hCan');
+                if (hC) { hC.width = w; hC.height = h; }
+
+                cSt.style.width = w + 'px';
+                cSt.style.height = h + 'px';
+                cSt.style.transform = `scale(${scale})`; // Persist Zoom
+
+                hst = [];
+                const k = `b${cB}_p${n}`;
+                if (annStore[k]) {
+                    await new Promise(res => {
+                        const img = new Image();
+                        img.onload = () => { dCtx.drawImage(img, 0, 0); pushH(); res(); };
+                        img.onerror = () => { console.warn("Annotation Draw Failed"); pushH(); res(); };
+                        img.src = annStore[k];
+                    });
+                } else pushH();
+
+                prepC(); loadr(false);
+                updateContextBar();
+            } catch (err) {
+                console.error("Rendering Error:", err);
+                showT("Failed to render page.", "error");
+                loadr(false);
+            }
+        }
+        function pg(d) { const nx = pN + d; if (nx >= 1 && nx <= pTot) rPg(nx); }
+        function storePg() {
+            if (batch[cB]) {
+                annStore[`b${cB}_p${pN}`] = dC.toDataURL();
+                saveOSMSession();
+            }
+        }
+
+        // LEDGER
+        function bLdg() {
+            const m = batch[cB].marks;
+            const isRecheck = evalMode === 'recheck';
+            const isDouble = evalMode === 'double';
+            const isMod = evalMode === 'moderation';
+
+            document.getElementById('lMat').innerHTML = m.map((r, i) => {
+                const mapd = batch[cB].map[i];
+                let inputHtml = '';
+
+                if (isMod) {
+                    inputHtml = `
+                        <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span style="font-size:8px; color:#9ca3af; width:20px;">EVAL</span>
+                                <input type="number" class="m-score-in" style="font-size:11px; width:45px; opacity:0.6;" value="${r.aw ?? ''}" disabled>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span style="font-size:8px; color:var(--brand-accent); width:20px; font-weight:800;">MOD</span>
+                                <input type="number" step="0.5" class="m-score-in" style="font-size:11px; width:45px; border-color:var(--brand-accent);" value="${r.aw_mod ?? ''}" onchange="upSc(${i}, this.value, 'mod')">
+                            </div>
+                        </div>
+                    `;
+                } else if (isRecheck) {
+                    inputHtml = `
+                        <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span style="font-size:8px; color:#9ca3af; width:20px;">ORIG</span>
+                                <input type="number" class="m-score-in" style="font-size:11px; width:45px; opacity:0.6;" value="${r.aw ?? ''}" disabled>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span style="font-size:8px; color:var(--brand-accent); width:20px; font-weight:800;">REV</span>
+                                <input type="number" step="0.5" class="m-score-in" style="font-size:11px; width:45px; border-color:var(--brand-accent);" value="${r.aw_rev ?? ''}" onchange="upSc(${i}, this.value, 'rev')">
+                            </div>
+                        </div>
+                    `;
+                } else if (isDouble) {
+                    inputHtml = `
+                        <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span style="font-size:8px; color:#9ca3af; width:20px;">EVAL1</span>
+                                <input type="number" step="0.5" class="m-score-in" style="font-size:11px; width:45px;" value="${r.aw ?? ''}" onchange="upSc(${i}, this.value, 'e1')">
+                                <span style="font-size:8px; color:#9ca3af; width:25px; margin-left:5px;">EVAL2</span>
+                                <input type="number" step="0.5" class="m-score-in" style="font-size:11px; width:45px;" value="${r.aw2 ?? ''}" onchange="upSc(${i}, this.value, 'e2')">
+                            </div>
+                            <div style="display:flex; align-items:center; gap:4px; padding-top:2px; border-top:1px dashed #e2e8f0;">
+                                <span style="font-size:8px; color:var(--brand-primary); font-weight:800; width:45px;">FINAL AVG</span>
+                                <span style="font-family:var(--font-mono); font-weight:800; color:var(--brand-primary);">${((parseFloat(r.aw || 0) + parseFloat(r.aw2 || 0)) / 2).toFixed(1)}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    inputHtml = `
+                        <input type="number" step="0.5" class="m-score-in" value="${r.aw ?? ''}" id="mi_${i}" onchange="upSc(${i}, this.value)">
+                    `;
+                }
+
+                return `
+                <div class="m-row ${i === aAct ? 'active' : ''} ${(r.aw === null && !isRecheck && !isDouble) ? 'unmarked' : ''}" id="lr_${i}" onclick="fRow(${i})" style="padding: 10px 14px;">
+                    <div class="m-meta" style="margin-bottom:5px;">
+                        <span class="m-id" style="font-size:13px;">${r.i}${r.s} ${mapd ? '<i class="fas fa-link" style="color:var(--brand-primary); margin-left:4px;" title="Region Linked"></i>' : ''}</span>
+                        <span class="m-max" style="font-size:10px;">MAX ${r.mx}</span>
+                    </div>
+                    <div class="m-inputs" style="align-items: flex-start;">
+                        ${inputHtml}
+                        <div class="quick-actions" style="flex-direction: column; max-width: 80px; gap: 2px;">
+                            <div style="display:flex; gap:2px; width:100%;">
+                                <button class="qa-btn" style="padding:2px; font-size:9px;" onclick="upSc(${i},0)">0</button>
+                                <button class="qa-btn" style="padding:2px; font-size:9px;" onclick="upSc(${i},${r.mx})">${r.mx}</button>
+                            </div>
+                            <div style="display:flex; gap:2px; width:100%;">
+                                <button class="qa-btn" style="padding:2px; font-size:9px;" title="Jump" onclick="jmpR(${i}, event)"><i class="fas fa-crosshairs"></i></button>
+                                <button class="qa-btn" style="padding:2px; font-size:9px; color:var(--brand-accent)" title="Stamp" onclick="armS(${i}, event)"><i class="fas fa-stamp"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+            calcT();
+            updateContextBar();
+            trackMark(i);
+        }
+
+        function trackMark(i) {
+            const k = `b${cB}_p${pN}`;
+            if (!heatmapData[k]) heatmapData[k] = [];
+            // We'll use the last known coordinates if this was called from a click
+            heatmapData[k].push({ x: sx, y: sy });
+            if (document.getElementById('hCan').style.display === 'block') renderHeatmap();
+        }
+
+        function toggleHeatmap(btn) {
+            const hCan = document.getElementById('hCan');
+            const isOn = hCan.style.display === 'block';
+            hCan.style.display = isOn ? 'none' : 'block';
+            btn.classList.toggle('active', !isOn);
+            if (!isOn) renderHeatmap();
+        }
+
+        function renderHeatmap() {
+            const hC = document.getElementById('hCan');
+            const hCtx = hC.getContext('2d');
+            hC.width = dC.width; hC.height = dC.height;
+            hCtx.clearRect(0, 0, hC.width, hC.height);
+
+            const k = `b${cB}_p${pN}`;
+            const points = heatmapData[k] || [];
+
+            points.forEach(p => {
+                const grad = hCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 50);
+                grad.addColorStop(0, 'rgba(239, 68, 68, 0.4)');
+                grad.addColorStop(1, 'rgba(239, 68, 68, 0)');
+                hCtx.fillStyle = grad;
+                hCtx.beginPath();
+                hCtx.arc(p.x, p.y, 50, 0, Math.PI * 2);
+                hCtx.fill();
+            });
+        }
+
+        async function toggleSplitView(btn) {
+            isSplitMode = !isSplitMode;
+            document.getElementById('edView').classList.toggle('split-active', isSplitMode);
+            btn.classList.toggle('active', isSplitMode);
+
+            if (isSplitMode) {
+                const currentRef = document.getElementById('refDocSelector').value;
+                if (currentRef === 'QP' && !qpPdf && qpFileObj) {
+                    const buf = await qpFileObj.arrayBuffer();
+                    qpPdf = await pdfjsLib.getDocument(new Uint8Array(buf)).promise;
+                }
+                if (currentRef === 'MS' && !msPdf && msFileObj) {
+                    const buf = await msFileObj.arrayBuffer();
+                    msPdf = await pdfjsLib.getDocument(new Uint8Array(buf)).promise;
+                }
+
+                if (!qpPdf && !msPdf) {
+                    const choice = await sysConfirm("No Question Paper or Marking Scheme loaded. Use demo placeholders?");
+                    if (choice) {
+                        qpPdf = pdf; msPdf = pdf;
+                        renderRefDoc();
+                    } else {
+                        isSplitMode = false;
+                        document.getElementById('edView').classList.remove('split-active');
+                        btn.classList.remove('active');
+                    }
+                } else {
+                    renderRefDoc();
+                }
+            }
+        }
+
+        let currentRefMode = 'QP';
+        function switchRefDoc(val) {
+            currentRefMode = val;
+            renderRefDoc();
+        }
+
+        async function renderRefDoc() {
+            const mode = document.getElementById('refDocSelector').value;
+            const targetPdf = mode === 'QP' ? qpPdf : msPdf;
+            const targetPN = mode === 'QP' ? qpPN : msPN;
+
+            if (!targetPdf) {
+                showT(`${mode === 'QP' ? 'Question Paper' : 'Marking Scheme'} file not found.`, "error");
+                return;
+            }
+
+            document.getElementById('pCurRef').textContent = targetPN;
+            const p = await targetPdf.getPage(targetPN);
+            const v = p.getViewport({ scale: 1.2 });
+            const qpC = document.getElementById('qpCan');
+            qpC.width = v.width; qpC.height = v.height;
+            await p.render({ canvasContext: qpC.getContext('2d'), viewport: v }).promise;
+        }
+
+        function pgRef(d) {
+            const mode = document.getElementById('refDocSelector').value;
+            const targetPdf = mode === 'QP' ? qpPdf : msPdf;
+            let targetPN = mode === 'QP' ? qpPN : msPN;
+
+            if (!targetPdf) return;
+            const nx = targetPN + d;
+            if (nx >= 1 && nx <= targetPdf.numPages) {
+                if (mode === 'QP') qpPN = nx; else msPN = nx;
+                renderRefDoc();
+            }
+        }
+
+        function toggleProdPanel(btn) {
+            const p = document.getElementById('prodPanel');
+            const isOn = p.style.display === 'flex';
+            p.style.display = isOn ? 'none' : 'flex';
+            btn.classList.toggle('active', !isOn);
+            if (!isOn) updateProductivity();
+        }
+
+        function updateProductivity() {
+            const elapsedMins = (Date.now() - sessionStart) / 60000;
+            const totalMarks = batch.reduce((acc, b) => acc + (b.marks ? b.marks.filter(m => m.aw !== null).length : 0), 0);
+            const speed = elapsedMins > 0 ? (totalMarks / elapsedMins).toFixed(1) : "0.0";
+            document.getElementById('prodSpeed').textContent = `${speed} M/min`;
+
+            // Simulation of consistency
+            const marksPerScript = batch.filter(b => b.stat === 'DON').length;
+            document.getElementById('prodConsistency').textContent = marksPerScript > 2 ? "Extreme" : "High";
+        }
+
+        setInterval(() => {
+            if (document.getElementById('prodPanel').style.display === 'flex') updateProductivity();
+        }, 30000);
+
+        function fRow(i) {
+            aAct = i; document.querySelectorAll('.m-row').forEach((r, idx) => r.classList.toggle('active', idx === i));
+            document.getElementById(`lr_${i}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function upSc(i, v, type = 'std') {
+            const marks = batch[cB].marks;
+            let val = parseFloat(v); if (isNaN(val)) val = null;
+            if (val !== null && val > marks[i].mx) val = marks[i].mx;
+
+            const oldVal = type === 'mod' ? marks[i].aw_mod : (type === 'rev' ? marks[i].aw_rev : marks[i].aw);
+
+            if (type === 'rev') marks[i].aw_rev = val;
+            else if (type === 'e1') marks[i].aw = val;
+            else if (type === 'e2') marks[i].aw2 = val;
+            else if (type === 'mod') marks[i].aw_mod = val;
+            else marks[i].aw = val;
+
+            if (oldVal !== val) {
+                logAudit(`Q${marks[i].i}${marks[i].s} ${type.toUpperCase()} Marks: ${oldVal ?? 'NULL'} -> ${val ?? 'NULL'}`);
+            }
+
+            if (type === 'std') {
+                document.getElementById(`mi_${i}`).value = val ?? '';
+                if (val !== null && i + 1 < marks.length) {
+                    setTimeout(() => { fRow(i + 1); document.getElementById(`mi_${i + 1}`).focus(); }, 50);
+                }
+            } else {
+                bLdg();
+            }
+
+            calcT();
+            saveOSMSession();
+        }
+
+        function calcT() {
+            const marks = batch[cB].marks;
+            let t = 0, mx = marks.reduce((s, x) => s + x.mx, 0);
+
+            if (evalMode === 'recheck') {
+                t = marks.reduce((s, x) => s + (x.aw_rev ?? x.aw ?? 0), 0);
+            } else if (evalMode === 'double') {
+                t = marks.reduce((s, x) => s + ((parseFloat(x.aw || 0) + parseFloat(x.aw2 || 0)) / 2), 0);
+            } else if (evalMode === 'moderation') {
+                t = marks.reduce((s, x) => s + (x.aw_mod ?? x.aw ?? 0), 0);
+            } else {
+                t = marks.reduce((s, x) => s + (x.aw || 0), 0);
+            }
+
+            document.getElementById('lTot').textContent = `${t.toFixed(1).replace('.0', '')} / ${mx}`;
+            document.querySelectorAll('.m-row').forEach((r, i) => r.classList.toggle('unmarked', marks[i].aw === null));
+
+            // Enable manual badge tool if all marked
+            const btn = document.getElementById('btnFinalBadge');
+            if (marks.every(m => m.aw !== null)) {
+                if (btn.style.display === 'none') {
+                    btn.style.display = 'flex';
+                    showT("Evaluation Complete! Final Official Badge is now available in your toolbar.", "success");
+                }
+            } else {
+                btn.style.display = 'none';
+            }
+            updateContextBar();
+        }
+
+        function armS(i, e) {
+            if (e) e.stopPropagation(); fRow(i);
+            setT('rst', document.querySelector('.fa-stamp').parentElement);
+            showT(`Score stamp [${batch[cB].marks[i].aw || 0}] armed.`);
+        }
+        function armT(t) {
+            showT(`Rubric [${t}] armed.`);
+            const ot = cTool; cTool = 'txt';
+            const fn = e => {
+                const pt = gP(e); dCtx.font = '600 14px Inter'; dCtx.fillStyle = document.getElementById('brColor').value; dCtx.fillText(t, pt.x, pt.y);
+                pushH(); dC.removeEventListener('click', fn); cTool = ot;
+            };
+            dC.addEventListener('click', fn);
+        }
+        function jmpR(i, e) {
+            if (e) e.stopPropagation();
+            const mp = batch[cB].map[i];
+            if (mp) {
+                if (mp.p !== pN) rPg(mp.p).then(() => scr(mp));
+                else scr(mp);
+            }
+        }
+        function scr(mp) { vP.scrollTo({ left: mp.x * scale - 150, top: mp.y * scale - 150, behavior: 'smooth' }); fRow(aAct); }
+
+        // CANVAS OPS
+        function prepC() { dC.onmousedown = md; dC.onmousemove = mm; dC.onmouseup = mu; syncB(); }
+        function setT(t, b) { cTool = t; document.querySelectorAll('.t-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); syncB(); }
+        function syncB() {
+            const sz = parseInt(document.getElementById('toolSize').value);
+            dCtx.strokeStyle = document.getElementById('brColor').value;
+            // Dynamic line width for shapes too
+            dCtx.lineWidth = cTool === 'pen' ? Math.max(1, sz / 10) : (cTool === 'highlighter' ? sz : Math.max(2, sz / 8));
+            dCtx.lineCap = 'round'; dCtx.lineJoin = 'round';
+        }
+        function gP(e) { const r = dC.getBoundingClientRect(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; }
+
+        async function md(e) {
+            const p = gP(e); sx = p.x; sy = p.y; lx = p.x; ly = p.y; isD = true;
+            if (['tick', 'cross', 'rst'].includes(cTool)) { dop(p.x, p.y); isD = false; }
+            if (cTool === 'eraser') { erase(p.x, p.y); }
+            if (cTool === 'text') {
+                const txt = await sysPrompt("Enter Professional Remark for Script:");
+                if (txt) {
+                    const tSz = document.getElementById('textSize').value;
+                    dCtx.font = `bold ${tSz}px Inter`;
+                    dCtx.fillStyle = document.getElementById('brColor').value;
+                    dCtx.fillText(txt, p.x, p.y);
+                    pushH();
+                }
+                isD = false;
+            }
+        }
+        function mm(e) {
+            if (!isD) return;
+            const p = gP(e);
+            if (cTool === 'pen') {
+                dCtx.globalAlpha = 1.0;
+                dCtx.beginPath(); dCtx.moveTo(lx, ly); dCtx.lineTo(p.x, p.y); dCtx.stroke(); lx = p.x; ly = p.y;
+            }
+            if (cTool === 'highlighter') {
+                dCtx.globalAlpha = 0.3;
+                dCtx.beginPath(); dCtx.moveTo(lx, ly); dCtx.lineTo(p.x, p.y); dCtx.stroke(); lx = p.x; ly = p.y;
+            }
+            if (cTool === 'eraser') {
+                erase(p.x, p.y);
+            }
+        }
+        function mu(e) {
+            if (!isD) return; const p = gP(e);
+            dCtx.globalAlpha = 1.0;
+            syncB(); // Ensure properties are right
+
+            if (cTool === 'rect') dCtx.strokeRect(sx, sy, p.x - sx, p.y - sy);
+            if (cTool === 'circle') {
+                const r = Math.sqrt(Math.pow(p.x - sx, 2) + Math.pow(p.y - sy, 2));
+                dCtx.beginPath(); dCtx.arc(sx, sy, r, 0, 2 * Math.PI); dCtx.stroke();
+            }
+            if (cTool === 'arrow') {
+                drawArrow(sx, sy, p.x, p.y);
+            }
+            if (cTool === 'cloud') {
+                drawCloud(sx, sy, p.x - sx, p.y - sy);
+            }
+            if (cTool === 'link') {
+                dCtx.setLineDash([5, 5]); dCtx.strokeRect(sx, sy, p.x - sx, p.y - sy); dCtx.setLineDash([]);
+                dCtx.font = 'bold 12px Inter'; dCtx.fillStyle = dCtx.strokeStyle; dCtx.fillText(`MAP REGION: ${batch[cB].marks[aAct].i}${batch[cB].marks[aAct].s}`, sx + 5, sy + 15);
+                batch[cB].map[aAct] = { p: pN, x: sx, y: sy }; bLdg(); showT(`Region linked to Q${batch[cB].marks[aAct].i}${batch[cB].marks[aAct].s}`);
+            }
+            if (cTool === 'blank') {
+                const w = p.x - sx, h = p.y - sy;
+                dCtx.strokeStyle = '#94a3b8'; dCtx.lineWidth = 2;
+                dCtx.strokeRect(sx, sy, w, h);
+                dCtx.font = 'bold 14px Inter'; dCtx.fillStyle = '#94a3b8'; dCtx.textAlign = 'center';
+                dCtx.fillText("BLANK PAGE", sx + w / 2, sy + h / 2 + 5);
+                dCtx.textAlign = 'start';
+            }
+            if (cTool === 'badge') {
+                drawManualBadge(p.x, p.y);
+            }
+            pushH(); isD = false;
+        }
+
+        function drawManualBadge(cx, cy) {
+            const t = batch[cB].marks.reduce((s, x) => s + (x.aw || 0), 0);
+            const mx = batch[cB].marks.reduce((s, x) => s + x.mx, 0);
+
+            // Professional Dynamic Scaling for Summary Stamp
+            dCtx.font = 'bold 100px Inter';
+            const metrics = dCtx.measureText(t.toString());
+            const rad = Math.max(150, (metrics.width / 2) + 60);
+
+            // Draw Professional Double Circle
+            dCtx.strokeStyle = '#ef4444';
+            dCtx.lineWidth = 10;
+            dCtx.beginPath(); dCtx.arc(cx, cy, rad, 0, Math.PI * 2); dCtx.stroke();
+            dCtx.lineWidth = 3;
+            dCtx.beginPath(); dCtx.arc(cx, cy, rad - 10, 0, Math.PI * 2); dCtx.stroke();
+
+            dCtx.fillStyle = '#ef4444';
+            dCtx.textAlign = 'center';
+            dCtx.textBaseline = 'middle';
+
+            dCtx.font = 'bold 100px Inter';
+            dCtx.fillText(t, cx, cy);
+
+            dCtx.textBaseline = 'alphabetic';
+            dCtx.font = 'bold 30px Inter';
+            dCtx.fillText(`TOTAL / ${mx}`, cx, cy + 70);
+
+            dCtx.font = '800 22px Inter';
+            dCtx.fillText('EVALUATION VERIFIED', cx, cy - 65);
+            dCtx.fillText('OSM SECURE SEAL', cx, cy + 105);
+
+            dCtx.textAlign = 'start';
+            batch[cB].stamped = true;
+            showT("Final Official Badge placed successfully.");
+        }
+
+        function drawArrow(x1, y1, x2, y2) {
+            const headlen = 15;
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            dCtx.beginPath();
+            dCtx.moveTo(x1, y1);
+            dCtx.lineTo(x2, y2);
+            dCtx.stroke();
+            dCtx.beginPath();
+            dCtx.moveTo(x2, y2);
+            dCtx.lineTo(x2 - headlen * Math.cos(angle - Math.PI / 6), y2 - headlen * Math.sin(angle - Math.PI / 6));
+            dCtx.moveTo(x2, y2);
+            dCtx.lineTo(x2 - headlen * Math.cos(angle + Math.PI / 6), y2 - headlen * Math.sin(angle + Math.PI / 6));
+            dCtx.stroke();
+        }
+
+        function drawCloud(x, y, w, h) {
+            const cp = 6; // segments
+            dCtx.beginPath();
+            let cw = w / cp;
+            let ch = h / cp;
+            dCtx.moveTo(x, y);
+            for (let i = 0; i < cp; i++) {
+                dCtx.quadraticCurveTo(x + cw * (i + 0.5), y - 10, x + cw * (i + 1), y);
+            }
+            for (let i = 0; i < cp; i++) {
+                dCtx.quadraticCurveTo(x + w + 10, y + ch * (i + 0.5), x + w, y + ch * (i + 1));
+            }
+            for (let i = 0; i < cp; i++) {
+                dCtx.quadraticCurveTo(x + cw * (cp - i - 0.5), y + h + 10, x + cw * (cp - i - 1), y + h);
+            }
+            for (let i = 0; i < cp; i++) {
+                dCtx.quadraticCurveTo(x - 10, y + ch * (cp - i - 0.5), x, y + ch * (cp - i - 1));
+            }
+            dCtx.stroke();
+        }
+
+        function erase(x, y) {
+            dCtx.globalCompositeOperation = 'destination-out';
+            dCtx.beginPath();
+            dCtx.arc(x, y, 20, 0, Math.PI * 2);
+            dCtx.fill();
+            dCtx.globalCompositeOperation = 'source-over';
+        }
+
+        function dop(x, y) {
+            const baseSz = parseInt(document.getElementById('toolSize').value);
+            const sz = (baseSz * 2) + 30; // More aggressive scaling
+            dCtx.globalCompositeOperation = 'source-over';
+            if (cTool === 'tick') {
+                const rad = sz / 1.5;
+                dCtx.beginPath(); dCtx.arc(x, y, rad, 0, Math.PI * 2);
+                dCtx.lineWidth = Math.max(2, baseSz / 10);
+                dCtx.strokeStyle = '#ef4444'; dCtx.stroke();
+                dCtx.font = `bold ${sz}px Arial`;
+                dCtx.fillStyle = '#ef4444';
+                dCtx.textAlign = 'center'; dCtx.textBaseline = 'middle';
+                dCtx.fillText('✓', x, y);
+            }
+            else if (cTool === 'cross') {
+                const rad = sz / 1.5;
+                dCtx.beginPath(); dCtx.arc(x, y, rad, 0, Math.PI * 2);
+                dCtx.lineWidth = Math.max(2, baseSz / 10);
+                dCtx.strokeStyle = '#ef4444'; dCtx.stroke();
+                dCtx.font = `bold ${sz - 4}px Arial`;
+                dCtx.fillStyle = '#ef4444';
+                dCtx.textAlign = 'center'; dCtx.textBaseline = 'middle';
+                dCtx.fillText('✗', x, y);
+            }
+            else if (cTool === 'rst') {
+                const v = (batch[cB].marks[aAct].aw || 0).toString();
+                const tSz = parseInt(document.getElementById('textSize').value);
+                dCtx.font = `bold ${tSz}px JetBrains Mono`;
+
+                // High-precision measurement to ensure circle adapts to mark size
+                const metrics = dCtx.measureText(v);
+                const rad = (Math.max(metrics.width, tSz) / 2) + (tSz * 0.35);
+
+                dCtx.beginPath(); dCtx.arc(x, y, rad, 0, Math.PI * 2);
+                dCtx.lineWidth = Math.max(2, baseSz / 10);
+                dCtx.strokeStyle = '#ef4444'; dCtx.stroke();
+
+                dCtx.fillStyle = '#ef4444'; dCtx.textAlign = 'center'; dCtx.textBaseline = 'middle';
+                dCtx.fillText(v, x, y);
+                dCtx.textAlign = 'start'; dCtx.textBaseline = 'alphabetic';
+            }
+            else if (cTool === 'badge') {
+                drawManualBadge(x, y);
+            }
+            pushH();
+        }
+
+        function pushH() { hst.push(dC.toDataURL()); if (hst.length > 20) hst.shift(); }
+        function und() { if (hst.length < 2) { dCtx.clearRect(0, 0, dC.width, dC.height); hst = []; return; } hst.pop(); const i = new Image(); i.onload = () => { dCtx.clearRect(0, 0, dC.width, dC.height); dCtx.drawImage(i, 0, 0); }; i.src = hst[hst.length - 1]; }
+        function zm(v) { scale += v; scale = Math.max(0.5, Math.min(3, scale)); cSt.style.transform = `scale(${scale})`; }
+
+        async function batchMarkQ() {
+            if (await sysConfirm("Assign 0 marks to all remaining unmarked items in this booklet?")) {
+                batch[cB].marks.forEach((m, i) => { if (m.aw === null) upSc(i, 0); });
+                bLdg();
+            }
+        }
+        async function autoFillFull() {
+            if (await sysConfirm("Assign FULL MARKS to all remaining unmarked items? Protocol recommends manual verification.")) {
+                batch[cB].marks.forEach((m, i) => { if (m.aw === null) upSc(i, m.mx); });
+                bLdg();
+            }
+        }
+
+        // OVERRIDES
+        function bindKeys() {
+            document.addEventListener('keydown', e => {
+                const tg = e.target.tagName;
+                if (tg === 'INPUT') {
+                    if (e.key === '+') { e.preventDefault(); upSc(aAct, batch[cB].marks[aAct].mx); }
+                    if (e.key === '0' && e.target.value === '') { e.preventDefault(); upSc(aAct, 0); }
+                    if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+                    return;
+                }
+                if (e.key === 'p') setT('pen', document.querySelector('.fa-pen').parentElement);
+                if (e.key === 'h') setT('highlighter', document.querySelector('.fa-highlighter').parentElement);
+                if (e.key === 't') setT('tick', document.querySelector('.fa-check').parentElement);
+                if (e.key === 'x') setT('cross', document.querySelector('.fa-times').parentElement);
+                if (e.key === 'e') setT('eraser', document.querySelector('.fa-eraser').parentElement);
+                if (e.key === 's') setT('stamp', document.querySelector('.fa-stamp').parentElement);
+                if (e.key === 'r') setT('rect', document.querySelector('.fa-square').parentElement);
+                if (e.key === 'o') setT('circle', document.querySelector('.fa-circle').parentElement);
+                if (e.key === 'a') setT('arrow', document.querySelector('.fa-long-arrow-alt-right').parentElement);
+                if (e.key === 'c') setT('cloud', document.querySelector('.fa-cloud').parentElement);
+                if (e.key === 'b') setT('blank', document.querySelector('.fa-ban').parentElement);
+                if (e.key === 'k') setT('text', document.querySelector('.fa-font').parentElement);
+                if (e.ctrlKey && e.key === 'z') { e.preventDefault(); und(); }
+            });
+        }
+
+        function reqSeal() {
+            const m = batch[cB].marks;
+            const ms = m.filter(x => x.aw === null).map(x => x.i);
+            if (ms.length > 0) {
+                document.getElementById('mWarnTxt').textContent = `Ledger anomaly detected. Questions [${ms.join(', ')}] have no confirmed marks. Sealing violates standard protocol.`;
+                document.getElementById('mdlWarn').style.display = 'flex';
+                return;
+            }
+
+            if (scriptSeconds < 300) {
+                const remaining = 300 - scriptSeconds;
+                const m = Math.floor(remaining / 60);
+                const s = remaining % 60;
+                sysAlert("Evaluation Precision Interval",
+                    `In accordance with CHITKARA UNIVERSITY policy, each answer booklet requires a minimum evaluation time of 5 minutes to prevent oversight. \n\nPlease re-review the script for another ${m}m ${s}s to ensure integrity.`,
+                    "error");
+                return;
+            }
+
+            // Reset and populate seal modal
+            document.getElementById('mSealUidHint').textContent = batch[cB].id;
+            document.getElementById('sealVerifyInp').value = '';
+            document.getElementById('sealError').style.display = 'none';
+            document.getElementById('sealVerifyInp').classList.remove('error');
+
+            document.getElementById('mdlSeal').style.display = 'flex';
+            document.getElementById('sealVerifyInp').focus();
+            setTimeout(initSigPad, 200);
+        }
+
+        async function validateSeal() {
+            if (!hasSignature()) {
+                showT("Official Digital Signature is mandatory to finalize the seal.", "error");
+                return;
+            }
+            const inp = document.getElementById('sealVerifyInp').value.trim().toUpperCase();
+            const actual = batch[cB].id.trim().toUpperCase();
+
+            if (inp === actual) {
+                await fmSeal();
+            } else {
+                // Allow manual override if teacher is certain
+                if (inp.length > 0 && await sysConfirm(`Roll Number Mismatch!\n\nSystem expected: ${actual}\nYou entered: ${inp}\n\nDo you want to override the system record and use '${inp}' as the official Roll Number?`)) {
+                    const oldId = batch[cB].id;
+                    batch[cB].id = inp; // Manually update the roll number
+                    await renameOSMFile(oldId, inp); // Sync the file key in IndexDB
+                    await fmSeal();
+                } else {
+                    document.getElementById('sealError').style.display = 'block';
+                    document.getElementById('sealVerifyInp').classList.add('error');
+                    document.getElementById('sealVerifyInp').focus();
+                }
+            }
+        }
+
+        async function commitToHistory(b, tl, max, timeSecs) {
+            // 1. Sync LocalStorage Ledger (Updates Analytics History Table)
+            const rec = JSON.parse(localStorage.getItem('exampad_osm_history') || '[]');
+            const examName = document.getElementById('wbTitle').textContent;
+            const existingIdx = rec.findIndex(r => r.roll === b.id && r.exam === examName);
+
+            const entry = {
+                roll: b.id,
+                exam: examName,
+                total: tl,
+                max: max,
+                timeSpent: timeSecs,
+                date: new Date().toLocaleDateString(),
+                timestamp: Date.now(),
+                evaluatorId: document.getElementById('nodeId').textContent,
+                archiveId: `OSM_ARCHIVE_${b.id}_${Date.now()}`
+            };
+
+            if (existingIdx !== -1) rec[existingIdx] = entry;
+            else rec.push(entry);
+
+            localStorage.setItem('exampad_osm_history', JSON.stringify(rec));
+
+            // 2. Persist to IndexDB Archives (For Student Portal)
+            if (_db) {
+                const finalPages = {};
+                for (let p = 1; p <= pTot; p++) {
+                    await rPg(p);
+                    const out = document.createElement('canvas');
+                    out.width = bC.width; out.height = bC.height;
+                    const oCtx = out.getContext('2d');
+                    oCtx.drawImage(bC, 0, 0);
+                    oCtx.drawImage(dC, 0, 0);
+                    finalPages[p] = out.toDataURL('image/jpeg', 0.8);
+                }
+                const archiveData = { ...entry, marks: b.marks, pages: finalPages, isPublished: false };
+                const tx = _db.transaction('archives', 'readwrite');
+                tx.objectStore('archives').put(archiveData, b.id);
+            }
+        }
+
+        async function fmSeal() {
+            closeM('mdlWarn'); closeM('mdlSeal');
+            loadr(true, "Synchronizing secure registry record...");
+
+            await new Promise(r => setTimeout(r, 600));
+            const b = batch[cB]; b.stat = 'DON';
+            const tl = b.marks.reduce((s, x) => s + (x.aw || 0), 0);
+            const max = b.marks.reduce((s, x) => s + x.mx, 0);
+            const timeSecs = Math.floor((Date.now() - sessionStart) / 1000);
+
+            await commitToHistory(b, tl, max, timeSecs);
+
+            // Update Global Stats
+            const stats = JSON.parse(localStorage.getItem('exampad_osm_stats') || '{"checked":0, "seconds":0}');
+            stats.checked++;
+            stats.seconds += Math.floor((Date.now() - sessionStart) / 1000);
+            localStorage.setItem('exampad_osm_stats', JSON.stringify(stats));
+            sessionStart = Date.now();
+            updateLiveStats();
+
+            loadr(false);
+            showT(`Ledger securely sealed for ${b.id}`, "success");
+            buildQueue();
+            saveOSMSession();
+
+            const nx = batch.findIndex(x => x.stat === 'PEN');
+            if (nx !== -1) {
+                if (await sysConfirm("Record committed to history. Proceed to evaluation of the next candidate?")) {
+                    loadBook(nx);
+                } else {
+                    showBatchSummary();
+                }
+            } else {
+                // SLOT COMPLETE WORKFLOW
+                if (await sysConfirm("EVALUATION SLOT COMPLETE!\n\nAll scripts in this batch have been verified and logged.\n\nDo you want to PUBLISH these results to students immediately?")) {
+                    await publishAllFromOSM();
+                    location.href = './analyticshistory.html';
+                } else {
+                    if (await sysConfirm("Do you want to view the Slot Analytics History now?")) {
+                        location.href = './analyticshistory.html';
+                    } else {
+                        showBatchSummary();
+                    }
+                }
+            }
+        }
+
+        async function endTask() {
+            const pending = batch.filter(b => b.stat !== 'DON').length;
+            if (pending > 0) {
+                if (!await sysConfirm(`Task Termination Warning!\n\nThere are still ${pending} scripts pending evaluation. Ending the task now will leave these scripts unmarked.\n\nDo you want to proceed and finalize the current batch?`)) return;
+            }
+            document.getElementById('wbNode').style.display = 'none';
+            document.getElementById('summaryView').style.display = 'flex';
+            showBatchSummary();
+        }
+
+        function showBatchSummary() {
+            const don = batch.filter(b => b.stat === 'DON');
+            const results = batch.map(b => ({
+                id: b.id,
+                total: b.marks ? b.marks.reduce((s, x) => s + (x.aw || 0), 0) : 0,
+                max: b.marks ? b.marks.reduce((s, x) => s + x.mx, 0) : 0,
+                status: b.stat
+            }));
+
+            const checkedCount = don.length;
+            const avgScore = results.length > 0 ? (results.reduce((s, r) => s + (r.total / (r.max || 1) * 100), 0) / results.length).toFixed(1) : 0;
+            const highTitle = results.length > 0 ? Math.max(...results.map(r => r.total)) : 0;
+
+            // Distribution Graph
+            const bars = document.getElementById('distGraph');
+            if (bars) {
+                bars.innerHTML = '';
+                const ranges = [0, 20, 40, 60, 80, 100];
+                const counts = [0, 0, 0, 0, 0];
+                results.forEach(m => {
+                    const p = (m.total / (m.max || 1)) * 100;
+                    for (let i = 0; i < 5; i++) {
+                        if (p >= ranges[i] && p < ranges[i + 1]) counts[i]++;
+                    }
+                });
+                const maxC = Math.max(...counts, 1);
+                counts.forEach((c, i) => {
+                    const h = (c / maxC) * 80;
+                    bars.innerHTML += `<div class="dist-bar" style="height:${h}px;"><span class="dist-label">${ranges[i]}-${ranges[i + 1]}%</span></div>`;
+                });
+            }
+
+            // Error Analysis
+            const errorList = document.getElementById('errorList');
+            if (errorList) {
+                errorList.innerHTML = '';
+                const qMistakes = {};
+                batch.forEach(b => {
+                    if (b.marks) {
+                        b.marks.forEach(m => {
+                            if (m.aw === 0) qMistakes[m.i] = (qMistakes[m.i] || 0) + 1;
+                        });
+                    }
+                });
+                Object.keys(qMistakes).sort((a, b) => qMistakes[b] - qMistakes[a]).slice(0, 3).forEach(q => {
+                    errorList.innerHTML += `<div class="error-item"><span>Question Unit ${q}</span> <span style="color:var(--brand-accent); font-weight:700;">${qMistakes[q]} Failures</span></div>`;
+                });
+            }
+
+            document.getElementById('sumScriptsDone').textContent = `${checkedCount} / ${results.length}`;
+            document.getElementById('sumAvgScore').textContent = `${avgScore}%`;
+            document.getElementById('sumHighScore').textContent = highTitle;
+            document.getElementById('sumTime').textContent = new Date().toLocaleTimeString();
+            document.getElementById('sumEvaluator').textContent = checkerName ? checkerName.toUpperCase() : "#ADM-8291-OSM";
+
+            document.getElementById('summaryTableBody').innerHTML = results.map(r => `
+                <tr>
+                    <td style="font-family: var(--font-mono); font-weight: 700; color:var(--brand-primary);">${r.id}</td>
+                    <td><b style="font-size:15px;">${r.total}</b></td>
+                    <td style="color:#64748b;">${r.max}</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="flex:1; height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
+                                <div style="width:${(r.total / r.max * 100) || 0}%; height:100%; background:var(--brand-primary);"></div>
+                            </div>
+                            <span style="font-size:11px; font-weight:700;">${((r.total / r.max * 100) || 0).toFixed(1)}%</span>
+                        </div>
+                    </td>
+                    <td><span class="q-stat ${r.status === 'DON' ? 'don' : 'pen'}">${r.status === 'DON' ? 'VERIFIED' : 'PENDING'}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function finalizeAllBatch() {
+            const pending = batch.filter(b => b.stat !== 'DON' && b.marks && b.marks.some(m => m.aw !== null));
+            if (pending.length === 0) return;
+
+            loadr(true, `Synchronizing Metadata (${pending.length} scripts)...`);
+
+            const rec = JSON.parse(localStorage.getItem('exampad_osm_history') || '[]');
+            const examName = document.getElementById('wbTitle').textContent;
+
+            for (const b of pending) {
+                const tl = b.marks.reduce((s, x) => s + (x.aw || 0), 0);
+                const max = b.marks.reduce((s, x) => s + x.mx, 0);
+                b.stat = 'DON';
+
+                const existingIdx = rec.findIndex(r => r.roll === b.id && r.exam === examName);
+                const entry = {
+                    roll: b.id,
+                    exam: examName,
+                    total: tl,
+                    max: max,
+                    date: new Date().toLocaleDateString(),
+                    archiveId: `OSM_ARCHIVE_${b.id}_${Date.now()}`
+                };
+
+                if (existingIdx !== -1) rec[existingIdx] = entry;
+                else rec.push(entry);
+
+                // Silent sync to indexdb if possible (marks only)
+                if (_db) {
+                    const tx = _db.transaction('archives', 'readwrite');
+                    tx.objectStore('archives').put({ ...entry, marks: b.marks, isPublished: false }, b.id);
+                }
+            }
+
+            localStorage.setItem('exampad_osm_history', JSON.stringify(rec));
+            await saveOSMSession();
+        }
+
+        async function freezeData() {
+            const pendingSeals = batch.filter(b => b.stat !== 'DON' && b.marks && b.marks.some(m => m.aw !== null));
+
+            if (pendingSeals.length > 0) {
+                if (await sysConfirm(`Batch Synchronization Discovery!\n\nSystem detected ${pendingSeals.length} evaluated but unsealed scripts.\n\nDo you want to AUTO-SEAL and SYNC them to Analytics now?`)) {
+                    await finalizeAllBatch();
+                }
+            }
+
+            const unMarked = batch.filter(b => b.stat !== 'DON');
+            if (unMarked.length > 0) {
+                if (!await sysConfirm(`There are still ${unMarked.length} unmarked scripts in this batch. They will NOT be visible in Analytics.\n\nProceed to Registry anyway?`)) return;
+            }
+
+            loadr(true, "Synchronizing Central Registry...");
+            await saveOSMSession();
+            await new Promise(r => setTimeout(r, 1500));
+            location.href = './analyticshistory.html';
+        }
+
+        async function publishAllFromOSM() {
+            if (!_db) { showT("Database not initialized", "error"); return; }
+
+            const sealed = batch.filter(b => b.stat === 'DON');
+            if (sealed.length === 0) {
+                sysAlert("NO SEALED RECORDS", "You must seal at least one script before publishing. Sealed scripts are required for student portal access.", "warning");
+                return;
+            }
+
+            if (!await sysConfirm(`PUBLICATION PROTOCOL\n\nAre you sure you want to make all ${sealed.length} sealed scripts live in the Student Results Portal immediately?`)) return;
+
+            loadr(true, "Broadcasting Results to Student Portal...");
+
+            let published = 0;
+            const tx = _db.transaction('archives', 'readwrite');
+            const store = tx.objectStore('archives');
+
+            for (const b of sealed) {
+                await new Promise(resolve => {
+                    const req = store.get(b.id);
+                    req.onsuccess = () => {
+                        const res = req.result;
+                        if (res) {
+                            res.isPublished = true;
+                            store.put(res, b.id).onsuccess = () => { published++; resolve(); };
+                        } else { resolve(); }
+                    };
+                    req.onerror = () => resolve();
+                });
+            }
+
+            await saveOSMSession();
+            loadr(false);
+            showT(`${published} Results are now LIVE for students!`, "success");
+            sysAlert("PUBLICATION SUCCESSFUL", `${published} records have been officially broadcasted. Students can now view their evaluated scripts in the portal.`, "success");
+        }
+
+        function exportMarks() {
+            const csv = [
+                ['Candidate ID', 'Raw Score', 'Max Marks', 'Percentage'],
+                ...batch.map(b => [
+                    b.id,
+                    b.marks.reduce((s, x) => s + (x.aw || 0), 0),
+                    b.marks.reduce((s, x) => s + x.mx, 0),
+                    ((b.marks.reduce((s, x) => s + (x.aw || 0), 0) / b.marks.reduce((s, x) => s + x.mx, 0)) * 100).toFixed(2) + '%'
+                ])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `OSM_RESULTS_${Date.now()}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+
+</html>

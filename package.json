@@ -1,0 +1,27 @@
+{
+    "name": "exampad-proctor-desktop",
+    "version": "1.0.0",
+    "description": "EXAMPAD Professional ERP - Secure Desktop Environment",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "pack": "electron-builder build"
+    },
+    "keywords": [
+        "ERP",
+        "Proctoring",
+        "Secure"
+    ],
+    "author": "EXAMPAD Engineering",
+    "license": "ISC",
+    "devDependencies": {
+        "electron": "^28.3.3"
+    },
+    "dependencies": {
+        "cors": "^2.8.6",
+        "dotenv": "^17.3.1",
+        "express": "^5.2.1",
+        "openai": "^6.25.0"
+    },
+    "type": "commonjs"
+}

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exampad | Question Bank</title>
+    <!-- Google Fonts: Inter and Outfit -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="https://api.learntechww.com/college_icon/logo1733989968823.jpg">
+    <style>
+        :root {
+            --primary: #D92D20;
+            --primary-hover: #B42318;
+            --primary-soft: #FEF3F2;
+            --secondary: #667085;
+            --text-main: #101828;
+            --text-secondary: #475467;
+            --text-tertiary: #667085;
+            --bg-body: #F9FAFB;
+            --bg-card: #FFFFFF;
+            --border: #EAECF0;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0px 1px 2px rgba(16, 24, 40, 0.05);
+            --shadow-md: 0px 4px 8px -2px rgba(16, 24, 40, 0.1), 0px 2px 4px -2px rgba(16, 24, 40, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1,
+        h2,
+        h3,
+        .logo-text {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* --- HEADER --- */
+        .site-header {
+            height: 72px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .logo-container:hover {
+            opacity: 0.8;
+        }
+
+        .logo-square {
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-square img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 20px;
+        }
+
+        .nav-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+        }
+
+        .nav-icon-btn:hover {
+            background: var(--bg-body);
+            color: var(--primary);
+        }
+
+        .nav-icon-btn.active {
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+        .plus-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            border: 1px solid #FDA29B;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .plus-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .grid-btn {
+            width: 40px;
+            height: 40px;
+            color: var(--secondary);
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .profile-bubble {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 16px;
+            border-left: 1px solid var(--border);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #E66A35;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-back {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .btn-back:hover {
+            background: var(--bg-body);
+            color: var(--primary);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            width: 90%;
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .title-area h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .title-area p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+
+        .search-row {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+        .filter-select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text-secondary);
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* --- POOL TABLE --- */
+        .pool-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #F9FAFB;
+            padding: 16px 24px;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .q-heading {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .q-type {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .q-date {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+        }
+
+        .q-marks {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .row-action {
+            color: var(--secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .row-action:hover {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--border);
+            margin-bottom: 24px;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="header-left">
+            <a href="teacher-dashboard.html" class="logo-container">
+                <div class="logo-square">
+                    <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara">
+                </div>
+                <div class="logo-text">EXAMPAD</div>
+            </a>
+            <div class="header-nav">
+                <button class="nav-icon-btn" title="Dashboard" onclick="location.href='./teacher-dashboard.html'"><i
+                        class="fas fa-th-large"></i></button>
+                <button class="nav-icon-btn active" title="Question Pool"
+                    onclick="location.href='./questionpool.html'"><i class="fas fa-layer-group"></i></button>
+                <button class="nav-icon-btn" title="Analytics" onclick="location.href='./livemonitor.html'"><i
+                        class="fas fa-chart-bar"></i></button>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <button class="btn-back" style="margin-right: 16px;"
+                onclick="window.location.href='teacher-dashboard.html'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <div class="search-container" style="width: 240px; margin-right: 16px;">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Quick Search..." id="globalSearch">
+            </div>
+            <button class="plus-btn" onclick="window.location.href='exam-creator.html'" title="New Assessment">
+                <i class="fas fa-plus"></i>
+            </button>
+            <div class="profile-bubble" onclick="auth.logout()">
+                <div class="user-info">
+                    <div class="user-name">OM AGGARWAL</div>
+                    <div class="user-role">PROFESSOR</div>
+                </div>
+                <div class="avatar">O</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="page-header">
+            <div class="title-area">
+                <h1>Question Bank</h1>
+                <p>Universal repository of all assessments questions created by you.</p>
+            </div>
+            <div style="font-size: 0.875rem; font-weight: 600; color: var(--primary);">
+                <i class="fas fa-cloud-upload-alt"></i> Autosave Active
+            </div>
+        </div>
+
+        <div class="search-row">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="search-input"
+                    placeholder="Search by heading, content or type...">
+            </div>
+            <select id="typeFilter" class="filter-select">
+                <option value="all">All Types</option>
+                <option value="mcq">MCQ</option>
+                <option value="coding">Coding</option>
+                <option value="subjective">Subjective</option>
+            </select>
+        </div>
+
+        <div class="pool-card">
+            <table id="poolTable">
+                <thead>
+                    <tr>
+                        <th>Question Detail</th>
+                        <th>Type</th>
+                        <th>Marks</th>
+                        <th>Section</th>
+                        <th>Added Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="poolBody">
+                    <!-- Dynamic Content -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Security
+        if (!auth.isLoggedIn() || !auth.isTeacher()) {
+            window.location.href = '../pages/login.html';
+        }
+
+        let fullPool = [];
+
+        function init() {
+            fullPool = db.getQuestionPool();
+            renderPool(fullPool);
+
+            document.getElementById('searchInput').addEventListener('input', filterPool);
+            document.getElementById('typeFilter').addEventListener('change', filterPool);
+        }
+
+        function renderPool(pool) {
+            const body = document.getElementById('poolBody');
+            if (pool.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-database"></i>
+                                <p>No questions in your pool yet. Questions are automatically added as you build assessments.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            body.innerHTML = pool.map(q => {
+                const date = new Date(q.addedAt).toLocaleDateString();
+                return `
+                    <tr>
+                        <td>
+                            <div class="q-heading">${q.heading}</div>
+                            <div style="font-size: 0.8rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px;">
+                                ${q.title.replace(/<[^>]*>?/gm, '')}
+                            </div>
+                        </td>
+                        <td><span class="q-type">${q.type}</span></td>
+                        <td><span class="q-marks">${q.marks}</span></td>
+                        <td>${q.section}</td>
+                        <td class="q-date">${date}</td>
+                        <td>
+                            <i class="fas fa-external-link-alt row-action" title="Preview/Use" onclick="previewQuestion('${q.poolId}')"></i>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterPool() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const type = document.getElementById('typeFilter').value;
+
+            const filtered = fullPool.filter(q => {
+                const matchesSearch = q.heading.toLowerCase().includes(query) || q.title.toLowerCase().includes(query);
+                const matchesType = type === 'all' || q.type === type;
+                return matchesSearch && matchesType;
+            });
+
+            renderPool(filtered);
+        }
+
+        function previewQuestion(pid) {
+            // Future logic to show modal or copy to clipboard
+            alert('Question details copied to temporary memory. You can use it in new assessments.');
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exampad | Learning Experience</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Monaco Editor Resources -->
+    <link rel="stylesheet" data-name="vs/editor/editor.main"
+        href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/editor/editor.main.min.css">
+    <style>
+        :root {
+            --primary: #F26B3A;
+            --bg: #FFFFFF;
+            --sidebar: #FAFBFC;
+            --border: #EAECF0;
+            --text-main: #101828;
+            --text-muted: #475467;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            height: 64px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            background: #fff;
+            flex-shrink: 0;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo-sm {
+            width: 32px;
+            height: 32px;
+            background: #d32f2f;
+            color: #fff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* Main Layout */
+        .player-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar - Screen 4 style */
+        .module-sidebar {
+            width: 340px;
+            border-right: 1px solid var(--border);
+            background: var(--sidebar);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .progress-mini {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .mini-bar {
+            flex: 1;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .mini-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+        }
+
+        .module-nav {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .module-nav span {
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .items-list {
+            list-style: none;
+        }
+
+        .item-row {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .item-row:hover {
+            background: #fff;
+        }
+
+        .item-row.active {
+            background: #fff5f0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .item-index {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            width: 20px;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-type {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 2px;
+        }
+
+        .item-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .item-status {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+
+        .item-status.done {
+            color: #22c55e;
+        }
+
+        /* Content Area */
+        .content-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 60px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .article-view {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .article-view h1 {
+            margin-bottom: 24px;
+            font-size: 2rem;
+        }
+
+        /* Notification (Beautiful Toast) */
+        .alert-box {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: rgba(16, 24, 40, 0.95);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: none;
+            z-index: 2000;
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+            animation: slideUpToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border-left: 5px solid var(--primary);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes slideUpToast {
+            from {
+                transform: translateY(100px) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Coding Player Styles */
+        .coding-player {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 24px;
+            height: calc(100vh - 120px);
+            margin: -40px -60px;
+        }
+
+        .problem-statement {
+            background: #fcfcfc;
+            border-right: 1px solid var(--border);
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .editor-workspace {
+            display: flex;
+            flex-direction: column;
+            background: #f5f5f5;
+        }
+
+        .editor-tools {
+            height: 48px;
+            background: #ededed;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Video Transcript */
+        .video-meta {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .transcript-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.6;
+            margin-top: 16px;
+        }
+
+        /* Quiz Player */
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .q-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .opt-btn {
+            width: 100%;
+            text-align: left;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .opt-btn:hover {
+            border-color: var(--primary);
+            background: var(--sidebar);
+        }
+
+        .opt-btn.active {
+            border-color: var(--primary);
+            background: #fff5f0;
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-left">
+            <div class="logo-sm" onclick="location.href='./student-dashboard.html'"><i class="fas fa-home"
+                    style="font-size: 0.8rem;"></i></div>
+            <div id="courseNameHead" style="font-weight: 600; font-size: 0.95rem; color: #444;">Loading Course...</div>
+        </div>
+        <div>
+            <button onclick="markCurrentDone()" class="btn"
+                style="background:var(--primary); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:700;">Complete
+                Item</button>
+        </div>
+    </header>
+
+    <div class="player-container">
+        <aside class="module-sidebar">
+            <div class="sidebar-header">
+                <h2 id="courseNameTitle">Course Name</h2>
+            </div>
+
+            <div class="module-nav" onclick="toggleModules()">
+                <i class="fas fa-chevron-left"></i>
+                <span id="currentModuleTitle">Module 1: Getting Started</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+
+            <ul class="items-list" id="itemList">
+                <!-- Items injected here -->
+            </ul>
+
+            <div style="margin-top:auto; padding: 20px; text-align:center;">
+                <div style="font-size: 0.9rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;"
+                    id="overallPercentage">0% covered</div>
+                <div class="mini-bar">
+                    <div class="mini-fill" id="overallFill"></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content-view" id="playerBody">
+            <div id="videoSection" style="display: none;">
+                <div class="video-container">
+                    <video id="mainVideo" style="width: 100%; height: 100%;" controls>
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-meta">
+                    <h3 style="font-weight: 700; margin-bottom: 8px;">About this lesson</h3>
+                    <div id="videoTranscript" class="transcript-box">No transcript available for this lesson.</div>
+                </div>
+            </div>
+
+            <div id="articleSection" class="article-view" style="display: none;">
+                <h1 id="articleTitle">Article Title</h1>
+                <div id="pdfViewer" style="display: none; height: 600px; margin-bottom: 32px;">
+                    <iframe id="pdfFrame" src=""
+                        style="width: 100%; height: 100%; border-radius: 12px; border: 1px solid var(--border);"></iframe>
+                </div>
+                <div id="articleContent"></div>
+            </div>
+
+            <div id="codingSection" style="display: none;">
+                <div class="coding-player">
+                    <div class="problem-statement">
+                        <h2 id="cQuestionTitle" style="margin-bottom: 16px;">Title</h2>
+                        <div id="cStatement">Statement</div>
+                    </div>
+                    <div class="editor-workspace">
+                        <div class="editor-tools">
+                            <span style="color: #999; font-size: 0.8rem; font-weight: 700;">PYTHON 3.10</span>
+                            <button class="btn"
+                                style="background:#22c55e; color:#fff; border:none; padding:4px 12px; font-size: 0.8rem;"
+                                onclick="runCode()">RUN CODE</button>
+                        </div>
+                        <div id="monaco-container" style="flex:1;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quizSection" style="display: none;">
+                <div class="quiz-container">
+                    <div class="q-card">
+                        <h3 id="quizTitle" style="margin-bottom: 24px;">Quiz Title</h3>
+                        <div id="quizContent">
+                            <!-- Quiz engine will inject questions here -->
+                        </div>
+                        <div style="margin-top: 32px;">
+                            <button class="btn btn-primary" style="width: 100%;" onclick="submitQuiz()">Submit
+                                Answers</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="alert-box" class="alert-box">You must watch the full video without skipping to count progress!</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Init Monaco
+        let editor;
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            // Define Grey Theme
+            monaco.editor.defineTheme('grey-theme', {
+                base: 'vs',
+                inherit: true,
+                rules: [],
+                colors: {
+                    'editor.background': '#f5f5f5',
+                    'editor.lineHighlightBackground': '#eeeeee',
+                    'editor.selectionBackground': '#d0d0d0'
+                }
+            });
+
+            editor = monaco.editor.create(document.getElementById('monaco-container'), {
+                value: "# Write your solution here",
+                language: 'python',
+                theme: 'grey-theme',
+                fontSize: 14,
+                automaticLayout: true,
+                minimap: { enabled: false }
+            });
+        });
+
+        const params = new URLSearchParams(window.location.search);
+        const courseId = params.get('courseId');
+        let moduleIndex = parseInt(params.get('moduleIndex')) || 0;
+        let activeItemIndex = 0;
+        const user = auth.getCurrentUser();
+        let course = null;
+        let progress = null;
+
+        let startTime = 0;
+        let videoSkips = 0;
+
+        function init() {
+            course = db.getCourseById(courseId);
+            if (!course) return window.location.href = './student-dashboard.html';
+
+            progress = db.getCourseProgress(courseId, user.id) || { completedItems: [] };
+
+            document.getElementById('courseNameHead').textContent = course.title;
+            document.getElementById('courseNameTitle').textContent = course.title;
+
+            renderModuleItems();
+            loadItem(0);
+            updateProgressUI();
+        }
+
+        function renderModuleItems() {
+            const mod = course.modules[moduleIndex];
+            document.getElementById('currentModuleTitle').textContent = `${mod.title}`;
+
+            const list = document.getElementById('itemList');
+            list.innerHTML = mod.items.map((it, i) => `
+                <li class="item-row ${i === activeItemIndex ? 'active' : ''}" onclick="loadItem(${i})">
+                    <div class="item-index">${i + 1}</div>
+                    <div class="item-info">
+                        <div class="item-type">${it.type.toUpperCase()}</div>
+                        <div class="item-title">${it.title}</div>
+                    </div>
+                    <div class="item-status ${progress.completedItems.includes(it.id) ? 'done' : ''}">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function loadItem(index) {
+            activeItemIndex = index;
+            const item = course.modules[moduleIndex].items[index];
+            renderModuleItems();
+
+            document.getElementById('videoSection').style.display = 'none';
+            document.getElementById('articleSection').style.display = 'none';
+            document.getElementById('codingSection').style.display = 'none';
+
+            startTime = Date.now();
+            videoSkips = 0;
+
+            if (item.type === 'video') {
+                document.getElementById('videoSection').style.display = 'block';
+                const video = document.getElementById('mainVideo');
+                video.src = item.data?.url || "https://www.w3schools.com/html/mov_bbb.mp4";
+                document.getElementById('videoTranscript').textContent = item.data?.transcript || "No transcript available for this lesson.";
+                video.onseeking = () => { videoSkips++; };
+            } else if (item.type === 'article') {
+                document.getElementById('articleSection').style.display = 'block';
+                document.getElementById('articleTitle').textContent = item.title;
+                document.getElementById('articleContent').innerHTML = item.data?.body || '';
+
+                if (item.data?.pdfUrl) {
+                    document.getElementById('pdfViewer').style.display = 'block';
+                    document.getElementById('pdfFrame').src = item.data.pdfUrl;
+                } else {
+                    document.getElementById('pdfViewer').style.display = 'none';
+                }
+            } else if (item.type === 'coding') {
+                document.getElementById('codingSection').style.display = 'block';
+                document.getElementById('cQuestionTitle').textContent = item.title;
+                document.getElementById('cStatement').innerHTML = item.data?.problemStatement || 'No statement provided.';
+                if (editor) {
+                    editor.setValue(item.data?.boilerplate || "# Initializing editor...");
+                }
+            } else if (item.type === 'quiz') {
+                document.getElementById('quizSection').style.display = 'block';
+                document.getElementById('quizTitle').textContent = item.title;
+                renderQuiz(item);
+            }
+        }
+
+        function renderQuiz(item) {
+            const container = document.getElementById('quizContent');
+            // Mocking quiz questions if none exist in item data
+            const questions = item.data?.questions || [
+                { q: "What is the primary benefit of this module?", opts: ["Speed", "Scalability", "Security", "All of above"], a: 3 }
+            ];
+            container.innerHTML = questions.map((q, i) => `
+                <div style="margin-bottom:24px;">
+                    <p style="font-weight:600; margin-bottom:12px;">${i + 1}. ${q.q}</p>
+                    ${q.opts.map((opt, oi) => `
+                        <button class="opt-btn" onclick="selectOpt(this, ${i}, ${oi})">${opt}</button>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function selectOpt(btn, qIdx, oIdx) {
+            btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function submitQuiz() {
+            showAlert("Quiz submitted successfully! Marking as complete.");
+            markCurrentDone();
+        }
+
+        function runCode() {
+            showAlert("Running code... Output: Hello World!", 2000);
+        }
+
+        function markCurrentDone() {
+            const item = course.modules[moduleIndex].items[activeItemIndex];
+
+            // Progress Logic
+            if (item.type === 'article') {
+                const elapsedMins = (Date.now() - startTime) / 60000;
+                const minRequired = parseFloat(item.data?.minTime) || 0.1;
+                if (elapsedMins < minRequired) {
+                    showAlert(`You finished too fast! Please read for at least ${minRequired} mins to earn progress.`);
+                    return;
+                }
+            } else if (item.type === 'video') {
+                if (videoSkips > 2) {
+                    showAlert("Too many skips detected! Please watch the tutorial properly.");
+                    return;
+                }
+            }
+
+            db.updateCourseProgress(courseId, user.id, item.id);
+            progress = db.getCourseProgress(courseId, user.id);
+
+            showAlert("Progress Recorded!", 2000);
+            renderModuleItems();
+            updateProgressUI();
+
+            // Auto next if available
+            if (activeItemIndex < course.modules[moduleIndex].items.length - 1) {
+                setTimeout(() => loadItem(activeItemIndex + 1), 1000);
+            }
+        }
+
+        function updateProgressUI() {
+            const totalItems = course.modules.reduce((acc, m) => acc + m.items.length, 0);
+            const completedCount = progress.completedItems.length;
+            const percentage = totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
+
+            document.getElementById('overallFill').style.width = percentage + '%';
+            document.getElementById('overallPercentage').textContent = percentage + '% covered';
+        }
+
+        function showAlert(msg, time = 4000) {
+            const Box = document.getElementById('alert-box');
+            Box.textContent = msg;
+            Box.style.display = 'block';
+            setTimeout(() => Box.style.display = 'none', time);
+        }
+
+        function goToCoding() {
+            // Redirect to a practice version of the editor
+            const item = course.modules[moduleIndex].items[activeItemIndex];
+            window.location.href = `./exam-attempt.html?practice=true&itemId=${item.id}&courseId=${courseId}`;
+        }
+
+        function toggleModules() {
+            // Simplified: wrap around modules
+            moduleIndex = (moduleIndex + 1) % course.modules.length;
+            activeItemIndex = 0;
+            renderModuleItems();
+            loadItem(0);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

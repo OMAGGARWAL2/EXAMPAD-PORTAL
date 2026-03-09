@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exampad | Live Monitor</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #D92D20;
+            --primary-hover: #B42318;
+            --primary-soft: #FEF3F2;
+            --bg-body: #F9FAFB;
+            --bg-card: #FFFFFF;
+            --text-main: #101828;
+            --text-secondary: #475467;
+            --text-tertiary: #667085;
+            --border: #EAECF0;
+            --success: #12B76A;
+            --warning: #F79009;
+            --error: #F04438;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            height: 72px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .live-tag {
+            background: var(--error);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .monitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            padding: 40px;
+            flex: 1;
+        }
+
+        .student-feed {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
+            box-shadow: 0px 1px 3px rgba(16, 24, 40, 0.1);
+        }
+
+        .student-feed:hover {
+            border-color: var(--primary);
+            box-shadow: 0px 4px 12px rgba(16, 24, 40, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .video-placeholder {
+            aspect-ratio: 16/9;
+            background: #101828;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .video-placeholder i {
+            font-size: 3rem;
+            opacity: 0.2;
+        }
+
+        .feed-overlay {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .status-chip {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            backdrop-filter: blur(4px);
+        }
+
+        .feed-info {
+            padding: 20px;
+        }
+
+        .student-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .student-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .student-id {
+            font-family: 'JetBrains Mono';
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .activity-stat {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.6rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-val {
+            font-weight: 700;
+            font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-main);
+        }
+
+        .stat-val.warning {
+            color: var(--warning);
+        }
+
+        .stat-val.error {
+            color: var(--error);
+        }
+
+        .stat-val.success {
+            color: var(--success);
+        }
+
+        .sidebar-logs {
+            width: 380px;
+            background: #fff;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .log-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .log-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+            background: #F9FAFB;
+            border: 1px solid var(--border);
+            border-left: 4px solid #D0D5DD;
+        }
+
+        .log-item.alert {
+            border-left-color: var(--error);
+            background: #FEF3F2;
+        }
+
+        .log-item.warning {
+            border-left-color: var(--warning);
+            background: #FFFAEB;
+        }
+
+        .log-item.info {
+            border-left-color: var(--success);
+            background: #ECFDF3;
+        }
+
+        .log-time {
+            color: var(--text-tertiary);
+            font-size: 0.7rem;
+            font-family: 'JetBrains Mono';
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .workspace {
+            display: flex;
+            flex: 1;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--bg-body);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            color: #fff;
+        }
+
+        .empty-monitor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-tertiary);
+            gap: 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <button class="btn-action" onclick="window.history.back()"><i class="fas fa-chevron-left"></i></button>
+            <h1 style="font-size: 1.25rem;">Live Surveillance</h1>
+            <div class="live-tag">
+                <i class="fas fa-circle" style="font-size: 6px;"></i> LIVE
+            </div>
+        </div>
+        <div class="header-right" style="display: flex; gap: 20px; align-items: center;">
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                Assessment: <span style="color: var(--text-main); font-weight: 700;" id="activeExamTitle">---</span>
+            </div>
+            <button class="btn-action btn-primary">BROADCAST MESSAGE</button>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <main class="monitor-grid" id="monitorGrid">
+            <div class="empty-monitor">
+                <i class="fas fa-satellite-dish fa-4x" style="opacity: 0.1;"></i>
+                <p>Waiting for participants to establish connection...</p>
+            </div>
+        </main>
+
+        <aside class="sidebar-logs">
+            <div class="sidebar-header">
+                <h3>Activity Timeline</h3>
+                <p style="font-size: 0.75rem; color: var(--text-secondary);">Real-time integrity logs</p>
+            </div>
+            <div class="log-list" id="activityLogs">
+                <div class="log-item info">
+                    <span class="log-time">INITIALIZING</span>
+                    System diagnostic complete. Monitoring active.
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Custom UI Components -->
+    <div id="toast-container" style="position:fixed; bottom:30px; right:30px; z-index:9999;"></div>
+
+    <div class="modal-overlay" id="modalOverlay"
+        style="position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:10000;">
+        <div class="modal-box"
+            style="background:#fff; width:400px; padding:32px; border-radius:20px; box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+            <h3 id="modalTitle" style="font-family:'Outfit'; margin-bottom:12px;">Confirm Action</h3>
+            <p id="modalBody" style="color:#667085; margin-bottom:24px; line-height:1.5;"></p>
+            <div id="modalExtra"></div>
+            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                <button class="btn-action" id="modalCancel">Cancel</button>
+                <button class="btn-action btn-primary" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const examId = urlParams.get('examId');
+
+        function init() {
+            if (examId) {
+                const exam = db.getExamById(examId);
+                if (exam) {
+                    document.getElementById('activeExamTitle').textContent = exam.title;
+                }
+            }
+
+            refreshMonitor();
+            setInterval(refreshMonitor, 5000);
+        }
+
+        function refreshMonitor() {
+            const attempts = examId ? db.getExamAttempts(examId).filter(a => a.status === 'in-progress') : [];
+            const grid = document.getElementById('monitorGrid');
+
+            if (attempts.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-monitor">
+                        <i class="fas fa-satellite-dish fa-4x" style="opacity: 0.1;"></i>
+                        <p>No active participants at the moment.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = attempts.map(a => {
+                const perc = Math.round((Object.keys(a.responses || {}).length / 20) * 100);
+                return `
+                <div class="student-feed">
+                    <div class="video-placeholder">
+                        <i class="fas fa-user"></i>
+                        <div class="feed-overlay">
+                            <span class="status-chip" style="color: #12B76A; font-weight: 800;">• Cam Live</span>
+                            <span class="status-chip" style="background: var(--primary);">${a.status}</span>
+                        </div>
+                    </div>
+                    <div class="feed-info">
+                        <div class="student-header">
+                            <div>
+                                <div class="student-name">Student ${a.studentId.split('_')[1] || a.studentId}</div>
+                                <div class="student-id">${a.studentId}</div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <i class="fas fa-microphone" style="color: var(--success);" title="Audio Link OK"></i>
+                                <i class="fas fa-wifi" style="color: var(--success);" title="Signal Strength"></i>
+                            </div>
+                        </div>
+                        <div class="activity-row">
+                            <div class="activity-stat">
+                                <span class="stat-label">Switches</span>
+                                <span class="stat-val ${a.tabSwitchCount > 2 ? 'error' : (a.tabSwitchCount > 0 ? 'warning' : 'success')}">${a.tabSwitchCount}</span>
+                            </div>
+                            <div class="activity-stat">
+                                <span class="stat-label">Progress</span>
+                                <span class="stat-val">${perc}%</span>
+                            </div>
+                            <div class="activity-stat">
+                                <span class="stat-label">Mod Alerts</span>
+                                <span class="stat-val ${a.copyPasteAttempts > 0 ? 'error' : 'success'}">${a.copyPasteAttempts || 0}</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <button class="btn-action" onclick="event.stopPropagation(); warnStudent('${a.id}')" title="Send Warning">
+                                <i class="fas fa-bullhorn"></i> WARN
+                            </button>
+                            <button class="btn-action" onclick="event.stopPropagation(); sendMessagePrompt('${a.id}')" title="Direct Message">
+                                <i class="fas fa-comment-alt"></i> CHAT
+                            </button>
+                            <button class="btn-action" style="border-color: #f79009; color: #f79009;" onclick="event.stopPropagation(); deductMarksPrompt('${a.id}')" title="Penalty Calculation">
+                                <i class="fas fa-minus-circle"></i> PENALTY
+                            </button>
+                            <button class="btn-action" style="border-color: var(--error); color: var(--error);" onclick="event.stopPropagation(); endTestPrompt('${a.id}')" title="Terminate Session">
+                                <i class="fas fa-power-off"></i> END
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = `log-item ${type}`;
+            t.style.minWidth = '250px';
+            t.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+            t.innerHTML = `<span class="log-time">${new Date().toLocaleTimeString()}</span>${msg}`;
+            container.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+
+        async function showConfirm(title, body) {
+            return new Promise(resolve => {
+                const modal = document.getElementById('modalOverlay');
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalBody').textContent = body;
+                document.getElementById('modalExtra').innerHTML = '';
+                modal.style.display = 'flex';
+
+                document.getElementById('modalCancel').onclick = () => { modal.style.display = 'none'; resolve(false); };
+                document.getElementById('modalConfirm').onclick = () => { modal.style.display = 'none'; resolve(true); };
+            });
+        }
+
+        async function sendMessagePrompt(attemptId) {
+            const modal = document.getElementById('modalOverlay');
+            document.getElementById('modalTitle').textContent = "Send Message to Student";
+            document.getElementById('modalBody').textContent = "Type your message below. This will appear as a popup on the student's screen.";
+            const extra = document.getElementById('modalExtra');
+            extra.innerHTML = `<textarea id="proctorMsg" style="width:100%; height:80px; padding:10px; border:1px solid #ddd; border-radius:8px; margin-top:10px;" placeholder="e.g., Please stay in your seat and focus on the screen."></textarea>`;
+            modal.style.display = 'flex';
+
+            document.getElementById('modalCancel').onclick = () => { modal.style.display = 'none'; };
+            document.getElementById('modalConfirm').onclick = () => {
+                const msg = document.getElementById('proctorMsg').value;
+                if (!msg) return;
+                const a = db.getAttempt(attemptId);
+                if (a) {
+                    db.updateAttempt(attemptId, { proctorMessage: msg });
+                    addLog('info', `Message sent to Student ${a.studentId}: "${msg}"`);
+                    showToast("Message broadcasted successfully", "info");
+                }
+                modal.style.display = 'none';
+            };
+        }
+
+        async function deductMarksPrompt(attemptId) {
+            const modal = document.getElementById('modalOverlay');
+            document.getElementById('modalTitle').textContent = "Apply Mark Penalty";
+            document.getElementById('modalBody').textContent = "Enter marks to deduct from the student's final score for integrity violations.";
+            const extra = document.getElementById('modalExtra');
+            extra.innerHTML = `<input type="number" id="penaltyVal" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-top:10px;" placeholder="e.g., 2">`;
+            modal.style.display = 'flex';
+
+            document.getElementById('modalCancel').onclick = () => { modal.style.display = 'none'; };
+            document.getElementById('modalConfirm').onclick = () => {
+                const val = parseFloat(document.getElementById('penaltyVal').value);
+                if (isNaN(val)) return;
+                const a = db.getAttempt(attemptId);
+                if (a) {
+                    const newPenalty = (a.penalty || 0) + val;
+                    db.updateAttempt(attemptId, { penalty: newPenalty });
+                    addLog('warning', `Applied -${val} penalty to Student ${a.studentId} for cheating suspicion.`);
+                    showToast(`Penalty of ${val} marks applied`, "warning");
+                }
+                modal.style.display = 'none';
+            };
+        }
+
+        async function endTestPrompt(attemptId) {
+            const ok = await showConfirm("Terminate Session?", "Are you sure you want to force submit this student's exam? This action is immediate and IRREVERSIBLE.");
+            if (ok) {
+                const a = db.getAttempt(attemptId);
+                if (a) {
+                    db.updateAttempt(attemptId, {
+                        status: 'submitted',
+                        endTime: new Date().toISOString(),
+                        forceTerminated: true
+                    });
+                    addLog('alert', `Proctor force-terminated attempt for Student ${a.studentId}.`);
+                    showToast("Candidate session terminated successfully", "alert");
+                    refreshMonitor();
+                }
+            }
+        }
+
+        function warnStudent(attemptId) {
+            const a = db.getAttempt(attemptId);
+            if (a) {
+                db.updateAttempt(attemptId, {
+                    proctorMessage: "SYSTEM WARNING: Suspicious activity detected. This incident has been logged. Please comply with proctoring rules."
+                });
+                addLog('alert', `Official integrity warning sent to ${a.studentId}.`);
+                showToast("Compliance warning sent", "warning");
+            }
+        }
+
+        function addLog(type, msg) {
+            const list = document.getElementById('activityLogs');
+            const item = document.createElement('div');
+            item.className = `log-item ${type}`;
+            item.innerHTML = `
+                <span class="log-time">${new Date().toLocaleTimeString('en-US', { hour12: false })}</span>
+                ${msg}
+            `;
+            list.prepend(item);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join via Link</title>
+
+    <script src="../js/db.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            height: 100vh;
+
+            background: linear-gradient(90deg, #cfd5db, #e7d9c8);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* main background blob */
+        body::before {
+            content: "";
+            position: absolute;
+
+            width: 950px;
+            height: 750px;
+
+            background: rgba(255, 255, 255, 0.32);
+
+            border-radius: 55% 45% 60% 40%;
+
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            z-index: 0;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .main-text {
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -1px;
+            color: #111;
+        }
+
+        .sub-text {
+            font-size: 15px;
+            letter-spacing: 2px;
+            color: #333;
+        }
+
+        .logo img {
+            height: 55px;
+            object-fit: contain;
+        }
+
+        /* input */
+        .input-group {
+            text-align: left;
+            width: 520px;
+            margin-bottom: 8px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #444;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 520px;
+            height: 38px;
+
+            border: 1px solid #d6d6d6;
+
+            border-radius: 6px;
+
+            padding: 0 12px;
+
+            background: #f3f3f3;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        /* button */
+        button {
+            margin-top: 18px;
+
+            background: #9c3d24;
+
+            border: none;
+
+            padding: 8px 42px;
+
+            border-radius: 6px;
+
+            color: white;
+
+            font-size: 15px;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #8a341c;
+        }
+
+        /* warning box */
+        .warning {
+            margin-top: 22px;
+
+            background: #e6d1ab;
+
+            padding: 12px 25px;
+
+            border-radius: 10px;
+
+            width: 520px;
+
+            color: #6b4a21;
+
+            font-size: 14px;
+
+            text-align: center;
+        }
+
+        /* footer */
+        .footer-left {
+            position: absolute;
+
+            bottom: 25px;
+            left: 35px;
+
+            color: #a74b2c;
+
+            font-size: 14px;
+
+            font-weight: 500;
+        }
+
+        .footer-right {
+            position: absolute;
+
+            bottom: 25px;
+            right: 35px;
+
+            color: #a74b2c;
+
+            font-size: 14px;
+
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="logo">
+
+            <div class="logo-text">
+                <span class="main-text">CHITKARA</span>
+                <span class="sub-text">UNIVERSITY</span>
+            </div>
+
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-hapuUdABDDt3Q0bPc6KTE1ZvFVuQigmv6Q&s">
+
+        </div>
+
+        <div class="input-group">
+            <label>Enter test/invite link</label>
+            <input type="text" id="inviteLink">
+        </div>
+
+        <button onclick="validateLink()">Go</button>
+
+        <div class="warning">
+            To exit please press Alt+F4, only when test has not been started.
+        </div>
+
+    </div>
+
+    <div class="footer-left">Powered by Chitkara</div>
+    <div class="footer-right">Version: 0.4.34</div>
+
+    <script>
+
+        function validateLink() {
+
+            const link = document.getElementById("inviteLink").value.trim();
+
+            if (link !== "") {
+
+                const exam = db.getExamByTestId(link) || db.getExamById(link);
+
+                if (exam) {
+                    window.location.href = "step2vialink.html?testId=" + exam.id;
+                }
+                else {
+                    alert("Validating Link Failed: No test is associated with this link, or the test is not available currently.");
+                }
+
+            }
+            else {
+                alert("Please enter a valid link/test code");
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

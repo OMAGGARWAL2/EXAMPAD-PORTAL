@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | EXAMPAD</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External Libraries for Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        :root {
+            /* SaaS Professional Palette */
+            --bg-canvas: #FFFFFF;
+            --bg-subtle: #F9FAFB;
+            --bg-dark: #101828;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --border-subtle: #F3F4F6;
+            --border-default: #E5E7EB;
+            --accent-primary: #101828;
+            /* Deep Charcoal instead of Red for "Real" feel */
+            --accent-red: #DC2626;
+            --accent-green: #059669;
+            --accent-blue: #2563EB;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+        }
+
+        /* --- UTILITIES --- */
+        .outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* --- APP HEADER --- */
+        header.utility-bar {
+            height: 64px;
+            border-bottom: 1px solid var(--border-default);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-utility {
+            padding: 8px 14px;
+            background: #fff;
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+
+        .btn-utility:hover {
+            background: var(--bg-subtle);
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+
+        .btn-primary-dark {
+            background: var(--bg-dark);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .btn-primary-dark:hover {
+            opacity: 0.9;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 32px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .page-header .meta {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 1rem;
+        }
+
+        /* --- KPI RIBBON --- */
+        .kpi-ribbon {
+            margin-bottom: 48px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background-color: var(--border-default);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .kpi-item {
+            background: #fff;
+            padding: 24px;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-family: 'Outfit';
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .kpi-trend.positive {
+            color: var(--accent-green);
+        }
+
+        .kpi-trend.negative {
+            color: var(--accent-red);
+        }
+
+        /* --- TABLE AREA --- */
+        .audit-container {
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .audit-top {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-default);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-wrap {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            padding: 10px 12px 10px 38px;
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .search-wrap input:focus {
+            border-color: var(--text-muted);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 14px 24px;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--bg-subtle);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        td {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr.active-row:hover td {
+            background: var(--bg-subtle);
+        }
+
+        .candidate-id {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono';
+        }
+
+        .status-chip {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-chip::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-chip.submitted {
+            background: #ECFDF5;
+            color: #065F46;
+        }
+
+        .status-chip.submitted::before {
+            background: #10B981;
+        }
+
+        .status-chip.progress {
+            background: #EFF6FF;
+            color: #1E40AF;
+        }
+
+        .status-chip.progress::before {
+            background: #3B82F6;
+        }
+
+        .grade-val {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .accuracy-bar-wrap {
+            width: 120px;
+            height: 6px;
+            background: var(--border-subtle);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .accuracy-bar {
+            height: 100%;
+        }
+
+        .btn-action-small {
+            background: transparent;
+            border: 1px solid var(--border-default);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-action-small:hover {
+            background: var(--bg-dark);
+            color: #fff;
+            border-color: var(--bg-dark);
+        }
+
+        /* --- MODAL (OVERHAUL) --- */
+        .modal-base {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: flex-end;
+            /* Drawer style side panel */
+        }
+
+        .modal-side-panel {
+            width: 800px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -20px 0 50px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .panel-header {
+            padding: 32px;
+            border-bottom: 1px solid var(--border-default);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .panel-body {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            background: var(--bg-subtle);
+        }
+
+        .review-card {
+            background: #fff;
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .rc-top {
+            padding: 16px 24px;
+            background: var(--bg-subtle);
+            border-bottom: 1px solid var(--border-default);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rc-content {
+            padding: 24px;
+        }
+
+        .rc-question {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .rc-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .rc-box {
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-default);
+        }
+
+        .rc-box.correct {
+            background: #F0FDF4;
+            border-color: #DCFCE7;
+        }
+
+        .rc-box.error {
+            background: #FEF2F2;
+            border-color: #FEE2E2;
+        }
+
+        .rc-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .rc-val {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 0;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            opacity: 0.1;
+            margin-bottom: 20px;
+        }
+
+        /* --- EMAIL DRAFT AREA --- */
+        .email-draft-box {
+            display: none;
+            background: #fff;
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            margin-top: 24px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .email-header {
+            padding: 16px 24px;
+            background: #F8F9FA;
+            border-bottom: 1px solid var(--border-default);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .email-content {
+            padding: 32px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+            max-height: 600px;
+            overflow-y: auto;
+            background: #fff;
+        }
+
+        .email-preview-container {
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-copy-mail {
+            margin: 16px 24px 24px;
+            background: var(--accent-blue);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-copy-mail:hover {
+            opacity: 0.9;
+        }
+
+        /* Performance Heatmap Icons */
+        .heatmap-grid {
+            display: flex;
+            gap: 3px;
+        }
+
+        .h-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        .h-dot.ok {
+            background: var(--accent-green);
+        }
+
+        .h-dot.no {
+            background: var(--accent-red);
+        }
+
+        .h-dot.skip {
+            background: var(--border-default);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="utility-bar">
+        <div class="breadcrumb">
+            <a href="./teacher-dashboard.html">Assessments</a>
+            <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
+            <span>Performance Report</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn-utility" onclick="window.location.reload()"><i class="fas fa-rotate"></i> Refresh
+                Data</button>
+            <button class="btn-primary-dark" onclick="exportData('pdf')">Export Report</button>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <div class="page-header">
+            <div class="meta" id="examMeta">
+                <span id="assessmentTitle" class="outfit"
+                    style="font-size:1.1rem; color:var(--text-primary); font-weight:800;">Loading...</span>
+                <span style="width:1px; height:14px; background:var(--border-default);"></span>
+                <span id="examIdTag" class="mono">--</span>
+            </div>
+            <h1>Performance Analytics</h1>
+        </div>
+
+        <section class="kpi-ribbon">
+            <div class="kpi-item">
+                <span class="kpi-label">Active Candidates</span>
+                <div class="kpi-value" id="kpiTakers">0</div>
+                <div class="kpi-trend positive"><i class="fas fa-circle" style="font-size:0.5rem;"></i> Live Syncing
+                </div>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Cohert Average</span>
+                <div class="kpi-value" id="kpiAvg">0%</div>
+                <div class="kpi-trend"><i class="fas fa-chart-line"></i> Aggregate Score</div>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Reliability Index</span>
+                <div class="kpi-value" id="kpiIntegrity">--</div>
+                <div class="kpi-trend positive"><i class="fas fa-shield-check"></i> Anomaly Detection</div>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Completion Status</span>
+                <div class="kpi-value" id="kpiCompletion">0%</div>
+                <div class="kpi-trend"><i class="fas fa-clock"></i> Submission Rate</div>
+            </div>
+        </section>
+
+        <section class="audit-container">
+            <div class="audit-top">
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search by Candidate ID..." onkeyup="filterTable(this.value)">
+                </div>
+                <div class="export-group">
+                    <button class="btn-utility" onclick="exportData('csv')">CSV</button>
+                    <button class="btn-utility" onclick="exportData('excel')">Excel</button>
+                </div>
+            </div>
+            <table id="reportsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 250px;">Candidate Profile</th>
+                        <th>Status</th>
+                        <th>Heatmap</th>
+                        <th>Accuracy</th>
+                        <th>Final Grade</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reportsBody">
+                    <tr>
+                        <td colspan="6" class="empty-state">Loading data stream...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- SIDE PANEL MODAL -->
+    <div class="modal-base" id="reportModal" onclick="if(event.target==this) closeModal()">
+        <div class="modal-side-panel">
+            <div class="panel-header">
+                <div class="candidate-profile">
+                    <div class="profile-avatar" id="modalInitial">?</div>
+                    <div>
+                        <h2 class="outfit" id="modalCandidateId" style="font-size: 1.5rem; margin-bottom:4px;">Candidate
+                            Review</h2>
+                        <p style="font-size: 0.875rem; color: var(--text-secondary);" id="modalTimeTag"></p>
+                    </div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-utility" id="gmailActionBtn" onclick="toggleEmailExpert()"><i
+                            class="fas fa-envelope"></i> Generate Gmail</button>
+                    <button class="btn-utility" onclick="closeModal()" style="padding: 10px;"><i
+                            class="fas fa-times"></i></button>
+                </div>
+            </div>
+
+            <div id="emailExpertArea" class="panel-body email-draft-box">
+                <div style="margin-bottom: 20px;">
+                    <span
+                        style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block;">Email
+                        Preview</span>
+                    <div class="email-header">Subject: <span id="emailSubjectId"></span></div>
+                    <div class="email-preview-container">
+                        <div class="email-content" id="emailDraftBody"></div>
+                    </div>
+                </div>
+                <button class="btn-copy-mail" onclick="copyEmailToClipboard()">
+                    <i class="fas fa-copy"></i> Copy Rich-Text for Gmail
+                </button>
+                <p style="padding: 0 24px 24px; font-size: 0.75rem; color: var(--text-muted);">Paste directly into
+                    Gmail, Outlook, or any email client to preserve styling.</p>
+            </div>
+
+            <div id="modalSummary"
+                style="padding: 24px 32px; border-bottom: 1px solid var(--border-default); background:#fff; display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <!-- Filled by JS -->
+            </div>
+
+            <div class="panel-body" id="modalListing">
+                <!-- Question Cards -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const examId = urlParams.get('examId');
+        let rawAttempts = [];
+
+        function init() {
+            const exam = db.getExamById(examId);
+            if (!exam) return;
+
+            document.getElementById('assessmentTitle').textContent = exam.title.toUpperCase();
+            document.getElementById('examIdTag').textContent = exam.id;
+
+            rawAttempts = db.getExamAttempts(examId);
+            renderDashboard(exam, rawAttempts);
+        }
+
+        function renderDashboard(exam, attempts) {
+            updateKPIs(exam, attempts);
+            renderTable(exam, attempts);
+        }
+
+        function updateKPIs(exam, attempts) {
+            const count = attempts.length;
+            if (count === 0) return;
+
+            document.getElementById('kpiTakers').textContent = count;
+
+            let totalMarks = 0;
+            let totalSwitches = 0;
+            let submitted = 0;
+
+            attempts.forEach(a => {
+                let score = calculateGrade(a, exam);
+                totalMarks += score;
+                totalSwitches += (a.tabSwitchCount || 0);
+                if (a.status === 'submitted') submitted++;
+            });
+
+            document.getElementById('kpiAvg').textContent = Math.round(totalMarks / count) + '%';
+            document.getElementById('kpiIntegrity').textContent = Math.max(0, 100 - (totalSwitches * 2)) + '%';
+            document.getElementById('kpiCompletion').textContent = Math.round((submitted / count) * 100) + '%';
+        }
+
+        function calculateGrade(a, exam) {
+            let correctCount = 0;
+            exam.questions.forEach(q => {
+                if (db.checkAnswer(q, a.responses[q.id])) correctCount++;
+            });
+            const base = (correctCount / exam.questions.length) * 100;
+            const penalty = a.penalty || 0;
+            const penaltyWeight = (penalty / (exam.totalMarks || 100)) * 100;
+            return Math.max(0, base - penaltyWeight);
+        }
+
+        function renderTable(exam, attempts) {
+            const body = document.getElementById('reportsBody');
+            if (attempts.length === 0) {
+                body.innerHTML = '<tr><td colspan="6" class="empty-state">No student records found.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = attempts.map(a => {
+                const user = db.getUserById(a.studentId) || { name: 'Guest Candidate', email: 'no-email@exampad.com' };
+                const grade = calculateGrade(a, exam);
+                const scoreColor = grade >= 80 ? 'var(--accent-green)' : (grade >= 40 ? 'var(--text-primary)' : 'var(--accent-red)');
+                const statusCls = a.status === 'submitted' ? 'submitted' : 'progress';
+
+                // Heatmap Generation
+                let heatmap = '<div class="heatmap-grid">';
+                exam.questions.forEach(q => {
+                    const ok = db.checkAnswer(q, a.responses[q.id]);
+                    const skipped = !a.responses[q.id];
+                    heatmap += `<div class="h-dot ${skipped ? 'skip' : (ok ? 'ok' : 'no')}"></div>`;
+                });
+                heatmap += '</div>';
+
+                return `
+                    <tr class="active-row">
+                        <td>
+                            <div style="font-weight:700; color:var(--text-primary); margin-bottom:2px; font-size:rem;">${user.name}</div>
+                            <div style="font-family:'JetBrains Mono'; font-size:0.75rem; color:var(--text-secondary); margin-bottom:4px;">${user.email}</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); font-weight:500;">ID: ${a.studentId} • ${new Date(a.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                        </td>
+                        <td><span class="status-chip ${statusCls}">${a.status}</span></td>
+                        <td>${heatmap}</td>
+                        <td>
+                            <div style="font-weight:600; font-size:0.8rem; color:var(--text-secondary);">${Math.round(grade)}% Accuracy</div>
+                            <div class="accuracy-bar-wrap"><div class="accuracy-bar" style="width:${grade}%; background:${scoreColor};"></div></div>
+                        </td>
+                        <td><div class="grade-val" style="color:${scoreColor}">${grade.toFixed(1)}</div></td>
+                        <td style="text-align: right;">
+                            <button class="btn-action-small" onclick="openDetails('${a.id}')">Audit Response</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        let currentActiveAttempt = null;
+
+        function toggleEmailExpert() {
+            const area = document.getElementById('emailExpertArea');
+            const mainListing = document.getElementById('modalListing');
+            const btn = document.getElementById('gmailActionBtn');
+
+            if (area.style.display === 'block') {
+                area.style.display = 'none';
+                mainListing.style.display = 'block';
+                btn.innerHTML = '<i class="fas fa-envelope"></i> Generate Gmail';
+            } else {
+                area.style.display = 'block';
+                mainListing.style.display = 'none';
+                btn.innerHTML = '<i class="fas fa-list"></i> Back to Audit';
+                generateEmailReport();
+            }
+        }
+
+        function generateEmailReport() {
+            const a = currentActiveAttempt;
+            const user = db.getUserById(a.studentId) || { name: 'Candidate', email: '' };
+            const exam = db.getExamById(examId);
+            if (!a || !exam) return;
+
+            const grade = calculateGrade(a, exam);
+            const scoreColor = grade >= 80 ? '#059669' : (grade >= 40 ? '#111827' : '#DC2626');
+            const integrityColor = a.tabSwitchCount > 2 ? '#DC2626' : '#059669';
+
+            let breakdownRows = '';
+            exam.questions.forEach((q, i) => {
+                const ok = db.checkAnswer(q, a.responses[q.id]);
+                breakdownRows += `
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: #6B7280;">Q${i + 1}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #F3F4F6; font-size: 14px; font-weight: 600; color: #111827;">${q.heading || q.text || 'Question'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #F3F4F6; text-align: right;">
+                            <span style="font-size: 12px; font-weight: 700; color: ${ok ? '#059669' : '#DC2626'}; text-transform: uppercase;">
+                                ${ok ? 'PASSED' : 'FAILED'}
+                            </span>
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #F3F4F6; text-align: right; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+                            ${ok ? q.marks : 0}/${q.marks}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const htmlContent = `
+                <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px;">
+                    <div style="margin-bottom: 30px; text-align: left;">
+                        <h1 style="color: #111827; font-size: 24px; margin: 0; font-weight: 800; letter-spacing: -1px;">EXAMPAD</h1>
+                        <p style="color: #6B7280; font-size: 13px; margin: 4px 0 0;">Assessment Audit Office</p>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <h2 style="color: #111827; font-size: 18px; font-weight: 700;">Performance Report</h2>
+                        <p style="color: #374151; font-size: 14px; line-height: 1.6;">Hello <strong>${user.name}</strong>,<br><br>We have processed your attempt for the assessment: <strong>${exam.title}</strong>. Below is the breakdown of your performance and integrity logs.</p>
+                    </div>
+
+                    <div style="background: #F9FAFB; border-radius: 12px; padding: 24px; margin-bottom: 30px; border: 1px solid #E5E7EB;">
+                        <table width="100%" style="border-collapse: collapse;">
+                            <tr>
+                                <td>
+                                    <span style="display: block; font-size: 11px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Final Grade</span>
+                                    <span style="font-size: 28px; font-weight: 800; color: ${scoreColor};">${grade.toFixed(1)}%</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <span style="display: block; font-size: 11px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Security Log</span>
+                                    <span style="font-size: 14px; font-weight: 700; color: ${integrityColor};">${a.tabSwitchCount > 2 ? '⚠️ ATTENTION REQ' : '🛡 SATISFACTORY'}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <span style="display: block; font-size: 11px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Detailed Section Analysis</span>
+                        <table width="100%" style="border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #F9FAFB;">
+                                    <th style="padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; width: 40px;">ID</th>
+                                    <th style="padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase;">Topic</th>
+                                    <th style="padding: 8px 12px; text-align: right; font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase;">Result</th>
+                                    <th style="padding: 8px 12px; text-align: right; font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase;">Marks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${breakdownRows}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="padding: 16px; border-left: 4px solid #111827; background: #F3F4F6; margin-bottom: 30px;">
+                        <span style="display: block; font-size: 11px; font-weight: 700; color: #111827; text-transform: uppercase; margin-bottom: 4px;">Proctoring Intelligence Notes</span>
+                        <p style="margin: 0; font-size: 13px; color: #4B5563;">
+                            ${a.penalty ? `Alert: A manual penalty of <strong>${a.penalty} pts</strong> was applied due to suspicious activity detected during the session.` : 'Identity verification and behavioral analysis indicate a verified attempt. No manual overrides applied.'}
+                        </p>
+                    </div>
+
+                    <div style="border-top: 1px solid #E5E7EB; padding-top: 24px; text-align: center;">
+                        <p style="margin: 0; font-size: 12px; color: #9CA3AF;">&copy; 2026 EXAMPAD. All rights reserved.<br>This is a system-generated audit report.</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('emailSubjectId').textContent = `Performance Report: ${exam.title} - ${user.name} [ID: ${a.studentId}]`;
+            document.getElementById('emailDraftBody').innerHTML = htmlContent;
+        }
+
+        async function copyEmailToClipboard() {
+            const content = document.getElementById('emailDraftBody').innerHTML;
+            const plainText = document.getElementById('emailDraftBody').innerText;
+
+            try {
+                // Use the Clipboard API to write both HTML and plain text
+                const typeHtml = "text/html";
+                const typeText = "text/plain";
+                const blobHtml = new Blob([content], { type: typeHtml });
+                const blobText = new Blob([plainText], { type: typeText });
+
+                const data = [new ClipboardItem({
+                    [typeHtml]: blobHtml,
+                    [typeText]: blobText
+                })];
+
+                await navigator.clipboard.write(data);
+
+                const btn = document.querySelector('.btn-copy-mail');
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Rich Text Copied!';
+                btn.style.background = 'var(--accent-green)';
+                setTimeout(() => {
+                    btn.innerHTML = orig;
+                    btn.style.background = 'var(--accent-blue)';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy rich text: ', err);
+                // Fallback for older browsers or if API fails
+                navigator.clipboard.writeText(plainText);
+                alert("Copied as plain text (Rich-text copy failed in this browser)");
+            }
+        }
+
+        function openDetails(attemptId) {
+            const a = rawAttempts.find(x => x.id === attemptId);
+            currentActiveAttempt = a;
+            const exam = db.getExamById(examId);
+            const user = db.getUserById(a.studentId) || { name: 'Candidate', email: '' };
+            if (!a || !exam) return;
+
+            // Reset view
+            document.getElementById('emailExpertArea').style.display = 'none';
+            document.getElementById('modalListing').style.display = 'block';
+            document.getElementById('gmailActionBtn').innerHTML = '<i class="fas fa-envelope"></i> Generate Gmail';
+
+            document.getElementById('modalCandidateId').textContent = user.name;
+            document.getElementById('modalInitial').textContent = user.name.charAt(0).toUpperCase();
+            document.getElementById('modalTimeTag').textContent = user.email + " • Session started at " + new Date(a.startTime).toLocaleString();
+
+            const grade = calculateGrade(a, exam);
+            document.getElementById('modalSummary').innerHTML = `
+                <div>
+                    <span class="kpi-label">Final Score</span>
+                    <div style="font-size:1.5rem; font-weight:800; font-family:'Outfit';">${grade.toFixed(1)}%</div>
+                </div>
+                <div>
+                    <span class="kpi-label">Security Flags</span>
+                    <div style="font-size:1.5rem; font-weight:800; font-family:'Outfit'; color:${a.tabSwitchCount > 2 ? 'var(--accent-red)' : 'var(--text-primary)'}">${a.tabSwitchCount} Switches</div>
+                </div>
+                <div>
+                    <span class="kpi-label">Manual Penalty</span>
+                    <div style="font-size:1.5rem; font-weight:800; font-family:'Outfit'; color:var(--accent-red);">${a.penalty || 0} pts</div>
+                </div>
+            `;
+
+            const list = document.getElementById('modalListing');
+            list.innerHTML = exam.questions.map((q, i) => {
+                const resp = a.responses[q.id];
+                const ok = db.checkAnswer(q, resp);
+                const val = (typeof resp === 'object') ? resp.value : (resp || '-- No Response --');
+                const key = q.correctAnswer || (q.keywords ? q.keywords.join(', ') : 'Manual Verification');
+
+                return `
+                    <div class="review-card">
+                        <div class="rc-top">
+                            <span class="outfit" style="font-weight:800; font-size:0.8rem;">QUESTION 0${i + 1}</span>
+                            <span class="status-chip ${ok ? 'submitted' : 'progress'}" style="font-size:0.7rem;">${ok ? 'Correct' : 'Incorrect'}</span>
+                        </div>
+                        <div class="rc-content">
+                            <div class="rc-question">${q.heading || q.text || 'Question Content'}</div>
+                            <div class="rc-comparison">
+                                <div class="rc-box ${ok ? 'correct' : 'error'}">
+                                    <span class="rc-label">Candidate Answer</span>
+                                    <div class="rc-val mono" style="font-weight:700;">${val}</div>
+                                </div>
+                                <div class="rc-box" style="background:var(--bg-subtle);">
+                                    <span class="rc-label">Accepted Key</span>
+                                    <div class="rc-val mono" style="color:var(--accent-green); font-weight:700;">${key}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('reportModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+        function filterTable(val) {
+            const term = val.toLowerCase();
+            const rows = document.querySelectorAll('#reportsBody tr.active-row');
+            rows.forEach(row => {
+                const text = row.querySelector('td:first-child').textContent.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        }
+
+        function exportData(type) {
+            if (rawAttempts.length === 0) return;
+            const exam = db.getExamById(examId);
+            const headers = ["Candidate", "Grade %", "Integrity", "Status"];
+            const data = rawAttempts.map(a => [a.studentId, calculateGrade(a, exam).toFixed(1), a.tabSwitchCount, a.status]);
+
+            if (type === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.text("EXAMPAD Audit Report", 14, 20);
+                doc.autoTable({ head: [headers], body: data, startY: 30 });
+                doc.save(`Audit_${examId}.pdf`);
+            } else if (type === 'excel') {
+                const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Audit");
+                XLSX.writeFile(wb, `Audit_${examId}.xlsx`);
+            } else {
+                let csv = headers.join(",") + "\n" + data.map(r => r.join(",")).join("\n");
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+                link.download = `Audit_${examId}.csv`;
+                link.click();
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

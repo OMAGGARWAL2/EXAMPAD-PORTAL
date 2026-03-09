@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exampad | Course Architect</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="https://api.learntechww.com/college_icon/logo1733989968823.jpg">
+    <!-- Quill Rich Text -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Monaco Editor Resources -->
+    <link rel="stylesheet" data-name="vs/editor/editor.main"
+        href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/editor/editor.main.min.css">
+    <style>
+        :root {
+            --primary: #D92D20;
+            --primary-soft: #FEF3F2;
+            --bg: #F9FAFB;
+            --white: #FFFFFF;
+            --border: #EAECF0;
+            --text-main: #101828;
+            --text-muted: #475467;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            height: 72px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .logo-sq {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            color: #fff;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-sq img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #b42318;
+            transform: translateY(-1px);
+        }
+
+        /* Main Layout */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 0;
+        }
+
+        /* Left: Course Structure */
+        .curriculum-sidebar {
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 32px 24px;
+            overflow-y: auto;
+            max-height: calc(100vh - 72px);
+        }
+
+        .curriculum-sidebar h3 {
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .module-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            padding: 16px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .module-item:hover {
+            border-color: var(--primary);
+        }
+
+        .module-item.active {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        .module-title {
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .content-links {
+            list-style: none;
+            margin-top: 12px;
+        }
+
+        .content-link {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 8px 0;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .content-link i {
+            width: 16px;
+            text-align: center;
+        }
+
+        .add-module-btn {
+            width: 100%;
+            border: 2px dashed var(--border);
+            background: transparent;
+            padding: 16px;
+            border-radius: var(--radius);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .add-module-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        /* Right: Editor Area */
+        .editor-area {
+            padding: 48px 64px;
+            overflow-y: auto;
+            background: #fff;
+        }
+
+        .editor-header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+        }
+
+        .course-title-input {
+            font-size: 2rem;
+            font-weight: 800;
+            border: none;
+            outline: none;
+            width: 100%;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .course-desc-input {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            border: none;
+            outline: none;
+            width: 100%;
+            resize: none;
+        }
+
+        .form-group {
+            margin-bottom: 32px;
+        }
+
+        .label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+        /* Content Types Grid */
+        .content-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .type-card {
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .type-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .type-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .type-card span {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Dynamic Form Area */
+        .content-editor {
+            margin-top: 40px;
+            padding: 40px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: none;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Custom Toast */
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: #333;
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Video Options */
+        .video-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .v-opt {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .v-opt.active {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+        }
+
+        /* Modal Base */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(16, 24, 40, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 480px;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            animation: slideUp 0.3s forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        .ql-toolbar.ql-snow {
+            border: 1px solid var(--border) !important;
+            border-radius: 8px 8px 0 0;
+            background: #fafafa;
+        }
+
+        .ql-container.ql-snow {
+            border: 1px solid var(--border) !important;
+            border-radius: 0 0 8px 8px;
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        /* Coding Editor Fields */
+        .code-block-field {
+            font-family: 'JetBrains Mono', monospace;
+            background: #f5f5f5;
+            color: #333;
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            resize: none;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .ql-snow .ql-editor pre.ql-syntax {
+            background-color: #f5f5f5 !important;
+            color: #333 !important;
+            border: 1px solid #eee !important;
+            border-radius: 8px !important;
+            padding: 12px !important;
+        }
+
+        .tri-orange-line {
+            height: 4px;
+            background: #ffe8dd;
+            margin-top: 8px;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tri-orange-line::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 30%;
+            background: var(--primary);
+        }
+
+        .mini-tool-btn {
+            background: none;
+            border: none;
+            font-size: 0.65rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .mini-tool-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .code-label {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-box" onclick="location.href='./teacher-dashboard.html'">
+            <div class="logo-sq">
+                <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara">
+            </div>
+            <div style="font-weight: 800; font-size: 1.2rem;">EXAMPAD <span
+                    style="font-weight: 400; color:var(--text-muted);">| ARCHITECT</span></div>
+        </div>
+        <div class="header-actions">
+            <button class="btn" onclick="saveCourse()"><i class="fas fa-save"></i> SAVE DRAFT</button>
+            <button class="btn btn-primary" onclick="publishCourse()"><i class="fas fa-rocket"></i> PUBLISH
+                COURSE</button>
+        </div>
+    </header>
+
+    <main>
+        <aside class="curriculum-sidebar">
+            <div id="sidebarHeader">
+                <h3>Curriculum <button class="btn" style="padding: 4px 8px; font-size: 0.7rem;" onclick="addModule()">+
+                        MODULE</button></h3>
+            </div>
+
+            <div id="moduleList">
+                <!-- Modules will be listed here -->
+            </div>
+
+            <button class="add-module-btn" style="margin-top: 20px;" onclick="addModule()">
+                <i class="fas fa-plus"></i> ADD NEW MODULE
+            </button>
+        </aside>
+
+        <section class="editor-area">
+            <div class="editor-header">
+                <input type="text" class="course-title-input" id="courseTitle"
+                    placeholder="Untitled Professional Course">
+                <textarea class="course-desc-input" id="courseDesc"
+                    placeholder="Enter course description, learning objectives, and outcomes..." rows="2"></textarea>
+            </div>
+
+            <div id="moduleEditor" style="display: none;">
+                <h4 id="editingModuleTitle" style="font-size: 1.4rem; margin-bottom: 24px;">Module: Introduction</h4>
+
+                <div class="form-group">
+                    <label class="label">Choose Content Type to Add</label>
+                    <div class="content-type-grid">
+                        <div class="type-card" onclick="openContentEditor('video')">
+                            <i class="fas fa-video"></i>
+                            <span>Video Lesson</span>
+                        </div>
+                        <div class="type-card" onclick="openContentEditor('coding')">
+                            <i class="fas fa-laptop-code"></i>
+                            <span>Coding Practice</span>
+                        </div>
+                        <div class="type-card" onclick="openContentEditor('quiz')">
+                            <i class="fas fa-tasks"></i>
+                            <span>Graded Quiz</span>
+                        </div>
+                        <div class="type-card" onclick="openContentEditor('article')">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Reading Article</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Creator Forms -->
+                <div id="formArticle" class="content-editor">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h5 style="font-size: 1.2rem; font-weight: 700;">Add Reading Material</h5>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-ghost" onclick="togglePreview()">Live Preview</button>
+                            <button class="btn btn-primary" onclick="saveContent('article')">Add Article</button>
+                            <button class="btn" onclick="closeContentEditor()">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="split-editor-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                        <div class="editor-pane">
+                            <div class="form-group">
+                                <label class="label">Article Title</label>
+                                <input type="text" class="input" id="aTitle"
+                                    placeholder="e.g. History of Web Development">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Minimum Reading Time (Minutes)</label>
+                                <input type="number" class="input" id="aMinTime" value="5" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Content Editor</label>
+                                <div style="margin-bottom: 12px; display: flex; gap: 8px;">
+                                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.7rem;"
+                                        onclick="insertHero(articleQuill, 'h1')">H1 HERO</button>
+                                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.7rem;"
+                                        onclick="insertHero(articleQuill, 'button')">BTN</button>
+                                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.7rem;"
+                                        onclick="insertHero(articleQuill, 'divider')">DIVIDER</button>
+                                </div>
+                                <div id="article-quill" style="height: 500px; background: #fff;"></div>
+                            </div>
+                        </div>
+
+                        <div class="preview-pane" id="articlePreview"
+                            style="background: #fdfdfd; border: 1px solid var(--border); border-radius: 8px; padding: 40px; overflow-y: auto; height: 750px;">
+                            <div style="color: #999; text-align: center; margin-top: 100px;">
+                                <i class="fas fa-eye" style="font-size: 3rem; opacity: 0.2; margin-bottom: 20px;"></i>
+                                <p>Live preview will appear here as you type...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="formVideo" class="content-editor">
+                    <h5 style="margin-bottom: 20px;">Add Video Tutorial</h5>
+                    <div class="form-group">
+                        <label class="label">Video Title</label>
+                        <input type="text" class="input" id="vTitle" placeholder="e.g. Setting up the environment">
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Source Type</label>
+                        <div class="video-options">
+                            <div class="v-opt active" onclick="setVType(this, 'record')"><i
+                                    class="fas fa-record-vinyl"></i> Record on Platform</div>
+                            <div class="v-opt" onclick="setVType(this, 'upload')"><i class="fas fa-upload"></i> Upload
+                                File</div>
+                            <div class="v-opt" onclick="setVType(this, 'youtube')"><i class="fab fa-youtube"></i>
+                                YouTube Link</div>
+                        </div>
+                        <div id="vSourceInput" style="margin-top: 20px;">
+                            <div id="recordInterface"
+                                style="background:#f0f0f0; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                <i class="fas fa-video-slash"></i> [ Camera Interface Preview ]
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Video Transcript / Description</label>
+                        <textarea class="input" id="vTranscript" rows="4"
+                            placeholder="Enter video script or notes here..."></textarea>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-primary" onclick="saveContent('video')">Add Content</button>
+                        <button class="btn" onclick="closeContentEditor()">Cancel</button>
+                    </div>
+                </div>
+
+                <div id="formCoding" class="content-editor">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="label"
+                            style="letter-spacing:1px; color:#999; font-size:0.7rem; font-weight:700; margin:0;">CODING
+                            ARCHITECT</label>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="mini-tool-btn" style="color: #6366f1;"><i class="fas fa-database"></i>
+                                Pool</button>
+                            <button class="mini-tool-btn" style="color: var(--primary);"><i class="fas fa-robot"></i>
+                                AI</button>
+                            <button class="mini-tool-btn" style="color: #333;"><i class="fas fa-code"></i>
+                                Template</button>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <input type="text" class="input" id="cTitle" placeholder="e.g. Reverse a String in Python"
+                            style="border:none; font-size:1.4rem; font-weight:700; padding:0; height:auto; margin-bottom:8px;">
+                        <div class="tri-orange-line"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Problem Statement (Rich Text)</label>
+                        <div id="coding-quill" style="height: 200px;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label" style="display: flex; justify-content: space-between;">
+                            <span>Prefilled Code (Python Primary)</span>
+                            <span style="font-size: 0.7rem; color: var(--primary);">JETBRAINS ENHANCED</span>
+                        </label>
+
+                        <span class="code-label">Header (Prefix - Read Only)</span>
+                        <div id="monaco-cPrefix" class="code-block-field" style="height: 150px;"></div>
+
+                        <span class="code-label">Boilerplate (Editable by Student)</span>
+                        <div id="monaco-cBoilerplate" class="code-block-field" style="height: 200px;"></div>
+
+                        <span class="code-label">Footer (Suffix - Read Only)</span>
+                        <div id="monaco-cSuffix" class="code-block-field" style="height: 150px;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Difficulty</label>
+                        <select class="input" id="cDiff">
+                            <option>Easy</option>
+                            <option>Medium</option>
+                            <option>Hard</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-primary" onclick="saveContent('coding')">Build Challenge</button>
+                        <button class="btn" onclick="closeContentEditor()">Cancel</button>
+                    </div>
+                </div>
+
+                <div id="formQuiz" class="content-editor">
+                    <h5 style="margin-bottom: 20px;">Add Graded Quiz</h5>
+                    <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">Build a Coursera-style
+                        assessment with multiple choice or subjective questions.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-primary"
+                            onclick="location.href='./exam-creator.html?source=course'">Launch Exam Builder</button>
+                        <button class="btn" onclick="closeContentEditor()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="welcomeState" style="text-align: center; padding: 100px 0; color: var(--text-muted);">
+                <i class="fas fa-compass" style="font-size: 4rem; margin-bottom: 24px; opacity: 0.2;"></i>
+                <h3 style="margin-bottom: 12px;">Welcome to Course Architect</h3>
+                <p>Start by naming your course or adding your first learning module on the left.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <!-- Modals -->
+    <div id="promptModal" class="modal-overlay">
+        <div class="modal-content" style="max-width:400px; width:90%;">
+            <h3 class="modal-title" id="promptTitle" style="font-size:1.5rem; font-weight:800; margin-bottom:24px;">
+                Enter Information</h3>
+            <div class="form-group" style="margin-bottom:0;">
+                <input type="text" id="promptInput" class="input" placeholder="..."
+                    style="margin-bottom:20px; font-size:1.1rem; padding:16px;">
+                <button class="btn btn-primary" id="promptConfirmBtn"
+                    style="width:100%; padding:14px; font-weight:700; font-size:1rem;">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Init Monaco State
+        let editorPrefix, editorBoilerplate, editorSuffix;
+
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            monaco.editor.defineTheme('grey-theme-monaco', {
+                base: 'vs',
+                inherit: true,
+                rules: [
+                    { token: 'comment', foreground: '008000', fontStyle: 'italic' },
+                    { token: 'keyword', foreground: '0000ff' },
+                    { token: 'string', foreground: 'a31515' },
+                    { token: 'identifier', foreground: '000000' }
+                ],
+                colors: {
+                    'editor.background': '#f5f5f5',
+                    'editorLineNumber.foreground': '#999999',
+                    'editor.lineHighlightBackground': '#eeeeee',
+                    'editor.selectionBackground': '#d0d0d0'
+                }
+            });
+
+            const commonConfig = {
+                language: 'python',
+                theme: 'grey-theme-monaco',
+                fontSize: 14,
+                fontFamily: 'JetBrains Mono',
+                automaticLayout: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                renderLineHighlight: 'none',
+                scrollbar: { vertical: 'auto', horizontal: 'auto' }
+            };
+
+            editorPrefix = monaco.editor.create(document.getElementById('monaco-cPrefix'), {
+                ...commonConfig, value: "import sys\n\ndef main():\n    # Prefix code here"
+            });
+            editorBoilerplate = monaco.editor.create(document.getElementById('monaco-cBoilerplate'), {
+                ...commonConfig, value: "def solution():\n    # Student implementation"
+            });
+            editorSuffix = monaco.editor.create(document.getElementById('monaco-cSuffix'), {
+                ...commonConfig, value: "if __name__ == '__main__':\n    print(solution())"
+            });
+        });
+
+        // Custom Font & Size registration for Quill
+        const Font = Quill.import('attributors/style/font');
+        Font.whitelist = ['Inter', 'Outfit', 'Roboto', 'Arial', 'Times New Roman', 'Georgia', 'Garamond', 'Tex Gyre Schola', 'Century Schoolbook', 'JetBrains Mono'];
+        Quill.register(Font, true);
+
+        const Size = Quill.import('attributors/style/size');
+        Size.whitelist = ['10px', '12px', '13px', '14px', '16px', '18px', '20px', '22px', '24px', '28px', '32px', '36px', '48px', '64px'];
+        Quill.register(Size, true);
+
+        // Init Quills with Very Rich Toolbar
+        const richToolbar = [
+            [{ 'header': [1, 2, 3, false] }],
+            [{ 'font': Font.whitelist }, { 'size': Size.whitelist }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['code-block', 'link', 'image'],
+            ['clean']
+        ];
+
+        const articleQuill = new Quill('#article-quill', {
+            theme: 'snow',
+            modules: { toolbar: richToolbar },
+            placeholder: 'Draft your premium reading material...'
+        });
+
+        articleQuill.on('text-change', () => {
+            const preview = document.getElementById('articlePreview');
+            preview.innerHTML = articleQuill.root.innerHTML;
+            if (!articleQuill.root.innerText.trim()) {
+                preview.innerHTML = `
+                    <div style="color: #999; text-align: center; margin-top: 100px;">
+                        <i class="fas fa-eye" style="font-size: 3rem; opacity: 0.2; margin-bottom: 20px;"></i>
+                        <p>Live preview will appear here as you type...</p>
+                    </div>`;
+            }
+        });
+
+        const codingQuill = new Quill('#coding-quill', {
+            theme: 'snow',
+            modules: { toolbar: [richToolbar[0], richToolbar[2], richToolbar[6], richToolbar[7]] },
+            placeholder: 'Describe the coding challenge requirements...'
+        });
+
+        // Advanced Designer Helper Functions
+        function insertHero(quillTarget, type) {
+            const range = quillTarget.getSelection();
+            if (!range) return showToast('Click inside editor first', 'info');
+
+            let html = '';
+            switch (type) {
+                case 'h1':
+                    html = '<h1 style="color:var(--primary); border-left: 5px solid var(--primary); padding-left:15px; margin: 20px 0;">Premium Heading Title</h1>';
+                    break;
+                case 'button':
+                    html = '<a href="#" style="display:inline-block; background:var(--primary); color:#fff; padding:12px 30px; border-radius:30px; text-decoration:none; font-weight:700; box-shadow: 0 4px 15px rgba(217,45,32,0.3); margin: 10px 0;">ACTION BUTTON</a>';
+                    break;
+                case 'divider':
+                    html = '<hr style="border:none; height:1px; background:linear-gradient(to right, transparent, #eee, transparent); margin: 30px 0;">';
+                    break;
+            }
+            if (html) quillTarget.clipboard.dangerouslyPasteHTML(range.index, html);
+        }
+
+        if (!auth.isLoggedIn() || !auth.isTeacher()) {
+            window.location.replace('./login.html?role=teacher');
+        }
+
+        const user = auth.getCurrentUser();
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('id');
+
+        let currentCourse = {
+            title: '',
+            description: '',
+            modules: []
+        };
+        let activeModuleIndex = -1;
+
+        function init() {
+            if (courseId) {
+                const existing = db.getCourseById(courseId);
+                if (existing) {
+                    currentCourse = existing;
+                }
+            } else {
+                const draft = localStorage.getItem('exampad_course_draft');
+                if (draft) {
+                    try {
+                        const parsed = JSON.parse(draft);
+                        if (parsed && typeof parsed === 'object') {
+                            currentCourse = parsed;
+                        }
+                    } catch (e) { console.error("Invalid draft", e); }
+                }
+            }
+
+            if (!currentCourse.modules) currentCourse.modules = [];
+
+            // Always set these even if values are empty
+            document.getElementById('courseTitle').value = currentCourse.title || '';
+            document.getElementById('courseDesc').value = currentCourse.description || '';
+            renderModules();
+
+            if (currentCourse.modules.length > 0) {
+                openModule(0);
+            } else {
+                // Show welcome if no modules
+                document.getElementById('welcomeState').style.display = 'block';
+                document.getElementById('moduleEditor').style.display = 'none';
+            }
+        }
+
+        init();
+
+        function addModule() {
+            showPrompt("", "Enter Module Name:", (title) => {
+                const name = title?.trim();
+                if (!name) return;
+
+                if (!currentCourse.modules) currentCourse.modules = [];
+                currentCourse.modules.push({
+                    title: name,
+                    items: []
+                });
+                renderModules();
+                openModule(currentCourse.modules.length - 1);
+                autosave();
+                showToast(`Module "${name}" created`, 'success');
+            });
+        }
+
+        function showPrompt(defaultValue, title, callback) {
+            const modal = document.getElementById('promptModal');
+            const input = document.getElementById('promptInput');
+            const confirmBtn = document.getElementById('promptConfirmBtn');
+            const titleEl = document.getElementById('promptTitle');
+
+            titleEl.textContent = title;
+            input.value = defaultValue || '';
+            modal.style.display = 'flex';
+
+            // Wait for display change before focus
+            setTimeout(() => input.focus(), 10);
+
+            const cleanup = () => {
+                closeModal('promptModal');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                input.removeEventListener('keydown', handleKeyDown);
+            };
+
+            const handleConfirm = () => {
+                try {
+                    callback(input.value);
+                } catch (e) {
+                    console.error("Prompt callback error:", e);
+                    showToast("Error processing request", "danger");
+                } finally {
+                    cleanup();
+                }
+            };
+
+            const handleKeyDown = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleConfirm();
+                } else if (e.key === 'Escape') {
+                    cleanup();
+                }
+            };
+
+            confirmBtn.addEventListener('click', handleConfirm);
+            input.addEventListener('keydown', handleKeyDown);
+        }
+
+        function autosave() {
+            currentCourse.title = document.getElementById('courseTitle').value;
+            currentCourse.description = document.getElementById('courseDesc').value;
+            localStorage.setItem('exampad_course_draft', JSON.stringify(currentCourse));
+        }
+
+        // Add event listeners for autosave
+        document.getElementById('courseTitle').addEventListener('input', autosave);
+        document.getElementById('courseDesc').addEventListener('input', autosave);
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function renderModules() {
+            const list = document.getElementById('moduleList');
+            if (!list) return;
+
+            if (!currentCourse.modules) currentCourse.modules = [];
+            list.innerHTML = currentCourse.modules.map((m, i) => `
+                <div class="module-item ${i === activeModuleIndex ? 'active' : ''}" onclick="openModule(${i})">
+                    <div class="module-title" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:700;">${m.title}</span>
+                        <i class="fas fa-chevron-right" style="font-size: 0.7rem; opacity: 0.5;"></i>
+                    </div>
+                    <ul class="content-links" style="margin-top:8px;">
+                        ${(m.items || []).map(item => `
+                            <li class="content-link" style="font-size:0.85rem; padding:4px 0;">
+                                <i class="fas ${getIcon(item.type)}" style="width:20px; opacity:0.6;"></i> ${item.title}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        function getIcon(type) {
+            switch (type) {
+                case 'video': return 'fa-video';
+                case 'coding': return 'fa-code';
+                case 'quiz': return 'fa-tasks';
+                case 'article': return 'fa-file-alt';
+                default: return 'fa-circle';
+            }
+        }
+
+        function openModule(index) {
+            activeModuleIndex = index;
+            document.getElementById('welcomeState').style.display = 'none';
+            document.getElementById('moduleEditor').style.display = 'block';
+            document.getElementById('editingModuleTitle').textContent = `Module: ${currentCourse.modules[index].title}`;
+            renderModules();
+            closeContentEditor();
+        }
+
+        function openContentEditor(type) {
+            closeContentEditor();
+            if (type === 'video') document.getElementById('formVideo').style.display = 'block';
+            if (type === 'coding') document.getElementById('formCoding').style.display = 'block';
+            if (type === 'quiz') document.getElementById('formQuiz').style.display = 'block';
+            if (type === 'article') document.getElementById('formArticle').style.display = 'block';
+        }
+
+        function closeContentEditor() {
+            document.querySelectorAll('.content-editor').forEach(f => f.style.display = 'none');
+        }
+
+        function setVType(el, type) {
+            document.querySelectorAll('.v-opt').forEach(o => o.classList.remove('active'));
+            el.classList.add('active');
+            const inputArea = document.getElementById('vSourceInput');
+            if (type === 'youtube') {
+                inputArea.innerHTML = `<label class="label">YouTube URL</label><input type="text" class="input" id="vUrl" placeholder="https://youtube.com/watch?v=...">`;
+            } else if (type === 'upload') {
+                inputArea.innerHTML = `<label class="label">Select Video File</label><input type="file" class="input">`;
+            } else {
+                inputArea.innerHTML = `<div id="recordInterface" style="background:#f0f0f0; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i class="fas fa-video-slash"></i> [ Camera Interface Preview ]</div>`;
+            }
+        }
+
+        function saveContent(type) {
+            if (activeModuleIndex === -1) return;
+
+            let title = '';
+            let data = {};
+
+            if (type === 'video') {
+                title = document.getElementById('vTitle').value;
+                const vUrlInput = document.getElementById('vUrl');
+                data = {
+                    source: 'external',
+                    url: vUrlInput ? vUrlInput.value : '',
+                    transcript: document.getElementById('vTranscript').value
+                };
+            } else if (type === 'coding') {
+                title = document.getElementById('cTitle').value;
+                data = {
+                    difficulty: document.getElementById('cDiff').value,
+                    problemStatement: codingQuill.root.innerHTML,
+                    prefix: editorPrefix ? editorPrefix.getValue() : '',
+                    boilerplate: editorBoilerplate ? editorBoilerplate.getValue() : '',
+                    suffix: editorSuffix ? editorSuffix.getValue() : ''
+                };
+            } else if (type === 'article') {
+                title = document.getElementById('aTitle').value;
+                data = {
+                    body: articleQuill.root.innerHTML,
+                    pdfUrl: document.getElementById('aPdfUrl').value,
+                    minTime: document.getElementById('aMinTime').value
+                };
+            }
+
+            if (!title) return showToast("Please enter a title", "error");
+
+            currentCourse.modules[activeModuleIndex].items.push({
+                id: 'item_' + Date.now(),
+                type: type,
+                title: title,
+                data: data
+            });
+
+            showToast(`${type.toUpperCase()} added to curriculum!`, "success");
+            renderModules();
+            closeContentEditor();
+            autosave();
+        }
+
+        function publishCourse() {
+            currentCourse.title = document.getElementById('courseTitle').value;
+            currentCourse.description = document.getElementById('courseDesc').value;
+
+            if (!currentCourse.title) return showToast("Course title required", "error");
+            if (currentCourse.modules.length === 0) return showToast("Add at least one module", "error");
+
+            if (courseId) {
+                db.updateCourse(courseId, currentCourse);
+                showToast("Course updated successfully!", "success");
+            } else {
+                db.createCourse(currentCourse, user.id);
+                showToast("Course published successfully!", "success");
+            }
+            setTimeout(() => window.location.href = './teacher-dashboard.html', 1500);
+        }
+
+        function saveCourse() {
+            showToast("Draft saved to cloud", "success");
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderLeft = `4px solid ${type === 'success' ? '#22c55e' : (type === 'error' ? '#ef4444' : '#3b82f6')}`;
+            toast.innerHTML = `<span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immediate Results - EXAMPAD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #D35400;
+            /* Deep EXAMPAD Orange */
+            --primary-dark: #A04000;
+            --accent: #E67E22;
+            --success: #12B76A;
+            --warning: #F79009;
+            --danger: #F04438;
+            --bg-body: #F9FAFB;
+            --text-main: #101828;
+            --text-secondary: #475467;
+            --border: #EAECF0;
+            --radius: 24px;
+            --shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Fullscreen Layout Wrapper */
+        .report-page {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-strip {
+            background: #fff;
+            padding: 60px 80px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-strip h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -1.5px;
+            color: var(--primary);
+        }
+
+        .header-strip p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .id-badge {
+            background: #FEF3F2;
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border: 1px solid #FEE4E2;
+        }
+
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 60px 80px;
+        }
+
+        .score-headline {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+            padding-bottom: 60px;
+            border-bottom: 2px solid var(--bg-body);
+        }
+
+        .score-circle-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0deg, #F2F4F7 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 1s cubic-bezier(0.1, 0, 0.3, 1);
+            position: relative;
+        }
+
+        .score-circle::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-text {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .score-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: var(--text-main);
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: -5px;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .metric-card {
+            background: #F9FAFB;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .metric-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .section-breakdown {
+            margin-top: 40px;
+        }
+
+        .section-breakdown h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 32px;
+            color: var(--text-main);
+        }
+
+        .performance-bar {
+            margin-bottom: 32px;
+        }
+
+        .bar-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .bar-name {
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .bar-marks {
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .bar-bg {
+            height: 16px;
+            background: #F2F4F7;
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 100px;
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.1, 0, 0.3, 1);
+        }
+
+        .footer-actions {
+            background: #F9FAFB;
+            padding: 40px 80px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-exit {
+            background: #101828;
+            color: #fff;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-exit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 900px) {
+            .score-headline {
+                grid-template-columns: 1fr;
+            }
+
+            .content-scroll {
+                padding: 40px;
+            }
+
+            .header-strip {
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="mainContainer">
+        <!-- Will be populated by JS -->
+        <div class="empty-state">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Analyzing assessment modules...</p>
+        </div>
+    </div>
+
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const attemptId = urlParams.get('attemptId');
+
+        function init() {
+            if (!attemptId) {
+                renderError("No attempt ID provided");
+                return;
+            }
+
+            const attempt = db.getAttempt(attemptId);
+            if (!attempt) {
+                renderError("Attempt record not found.");
+                return;
+            }
+
+            const exam = db.getExamById(attempt.examId);
+            if (!exam) {
+                renderError("Parent assessment architecture not found.");
+                return;
+            }
+
+            renderResults(attempt, exam);
+        }
+
+        function renderResults(attempt, exam) {
+            const container = document.getElementById('mainContainer');
+            const scoreData = db.calculateScore(attempt);
+            const percentage = scoreData.percentage;
+
+            // Calculate section-wise performance
+            const sectionPerformance = {};
+            exam.sections.forEach(s => {
+                sectionPerformance[s] = { marks: 0, total: 0 };
+            });
+
+            exam.questions.forEach(q => {
+                const qSection = q.section || 'General';
+                if (!sectionPerformance[qSection]) sectionPerformance[qSection] = { marks: 0, total: 0 };
+
+                sectionPerformance[qSection].total += q.marks;
+
+                const response = attempt.responses[q.id];
+                if (response && response.manualMark !== undefined) {
+                    sectionPerformance[qSection].marks += parseFloat(response.manualMark);
+                } else {
+                    if (db.checkAnswer(q, response)) {
+                        sectionPerformance[qSection].marks += q.marks;
+                    }
+                }
+            });
+
+            let html = `
+                <div class="report-page">
+                    <header class="header-strip">
+                        <div>
+                            <h1>Digital Transcript.</h1>
+                            <p>${exam.title.toUpperCase()}</p>
+                        </div>
+                        <div class="id-badge">REF: ${attemptId.slice(0, 8).toUpperCase()}</div>
+                    </header>
+
+                    <main class="content-scroll">
+                        <section class="score-headline">
+                            <div class="score-circle-container">
+                                <div class="score-circle" id="scoreCircle" style="background: conic-gradient(var(--primary) ${percentage * 3.6}deg, #F2F4F7 0deg)">
+                                    <div class="score-text">
+                                        <div class="score-value">${Math.round(percentage)}</div>
+                                        <div class="score-label">PTS</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h2 style="font-family:'Outfit'; font-size:2rem; margin:0 0 12px 0;">Performance Integrity</h2>
+                                <p style="color:var(--text-secondary); margin-bottom:32px;">The following analytics represent the verified computational output of your assessment session.</p>
+                                
+                                <div class="metric-grid">
+                                    <div class="metric-card">
+                                        <span class="metric-label">Points Secured</span>
+                                        <span class="metric-val">${scoreData.score} <span style="font-size:1rem; opacity:0.5;">/ ${scoreData.totalMarks}</span></span>
+                                    </div>
+                                    <div class="metric-card">
+                                        <span class="metric-label">Efficiency</span>
+                                        <span class="metric-val">${Object.keys(attempt.responses).length} <span style="font-size:1rem; opacity:0.5;">/ ${exam.questions.length} Qs</span></span>
+                                    </div>
+                                    <div class="metric-card">
+                                        <span class="metric-label">Duration</span>
+                                        <span class="metric-val">${calculateDuration(attempt)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="section-breakdown">
+                            <h3>Module Performance Curve</h3>
+                            ${Object.entries(sectionPerformance).map(([name, data]) => {
+                const p = data.total > 0 ? (data.marks / data.total * 100) : 0;
+                return `
+                                    <div class="performance-bar">
+                                        <div class="bar-info">
+                                            <span class="bar-name">${name}</span>
+                                            <span class="bar-marks">${data.marks} / ${data.total} Marks</span>
+                                        </div>
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: ${p}%"></div>
+                                        </div>
+                                    </div>
+                                `;
+            }).join('')}
+                        </section>
+                    </main>
+
+                    <footer class="footer-actions">
+                        <div style="color:var(--text-secondary); font-size:0.9rem; font-weight:600;">
+                            <i class="fas fa-shield-check" style="color:var(--success); margin-right:8px;"></i> Verified Official Transcript
+                        </div>
+                        <a href="./student-dashboard.html" class="btn-exit">Close Assessment Portal</a>
+                    </footer>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function calculateDuration(attempt) {
+            const start = new Date(attempt.startTime);
+            const end = new Date(attempt.endTime || new Date());
+            const diff = Math.floor((end - start) / 1000);
+            const mins = Math.floor(diff / 60);
+            const secs = diff % 60;
+            return `${mins}m ${secs}s`;
+        }
+
+        function renderError(msg) {
+            document.getElementById('mainContainer').innerHTML = `
+                <div class="card" style="text-align:center; padding:80px;">
+                    <i class="fas fa-exclamation-triangle fa-3x" style="color:var(--danger); margin-bottom:20px;"></i>
+                    <h2>Analysis Unavailable</h2>
+                    <p style="color:var(--text-secondary);">${msg}</p>
+                    <a href="./student-dashboard.html" class="back-btn">Go to Dashboard</a>
+                </div>
+            `;
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>

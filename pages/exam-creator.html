@@ -1,0 +1,3798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Creator - EXAMPAD</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://api.learntechww.com/college_icon/logo1733989968823.jpg">
+    <!-- Monaco Editor Resources -->
+    <link rel="stylesheet" data-name="vs/editor/editor.main"
+        href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/editor/editor.main.min.css">
+    <style>
+        :root {
+            --primary: #D96C33;
+            --primary-light: #FF8D4D;
+            --bg-body: #ffffff;
+            --bg-sidebar: #f8f9fa;
+            --text-nav: #3c4043;
+            --text-main: #202124;
+            --text-secondary: #5f6368;
+            --border: #e0e0e0;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Real Site Header */
+        .site-header {
+            height: 64px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            color: white;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+        }
+
+        .nav-icon {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .nav-icon:hover {
+            background: #f1f3f4;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .plus-btn {
+            background: #fff5f0;
+            color: var(--primary);
+            border: 1px solid #ffe8dd;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .profile-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-circle {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(217, 108, 51, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .profile-circle:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            display: none;
+            flex-direction: column;
+            padding: 8px;
+            z-index: 1000;
+            border: 1px solid #eee;
+        }
+
+        .profile-menu.active {
+            display: flex;
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            color: #444;
+            border-radius: 8px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            background: #fdf8f5;
+            color: var(--primary);
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: #eee;
+            margin: 8px 0;
+        }
+
+        .logo {
+            cursor: pointer;
+        }
+
+        .nav-icon {
+            cursor: pointer;
+        }
+
+        /* Layout */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            min-height: calc(100vh - 64px);
+        }
+
+        .main-editor {
+            border-right: 1px solid var(--border);
+            padding: 40px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Form Styling */
+        .editor-section {
+            margin-bottom: 48px;
+        }
+
+        .section-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        h2.title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a1a1b;
+            margin: 0 0 24px 0;
+            border-left: 4px solid var(--primary);
+            padding-left: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .clean-input {
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            border-bottom: 2px solid #f1f3f4;
+            font-size: 1.1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            outline: none;
+            background: transparent;
+        }
+
+        .clean-input:focus {
+            border-bottom-color: var(--primary);
+        }
+
+        .clean-textarea {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            outline: none;
+            background: #fafafa;
+        }
+
+        .clean-textarea:focus {
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        /* Grid inputs */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        /* Real Website Buttons */
+        .btn {
+            height: 44px;
+            padding: 0 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-run {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(217, 108, 51, 0.2);
+        }
+
+        .btn-run:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: #f8f9fa;
+            color: var(--text-main);
+        }
+
+        /* Question Builder Cards */
+        .type-tabs {
+            display: flex;
+            border-bottom: 2px solid #f1f3f4;
+            margin-bottom: 32px;
+        }
+
+        .type-tab {
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .type-tab.active {
+            color: var(--primary);
+        }
+
+        .type-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        /* Sidebar Stats */
+        .sidebar {
+            background: var(--bg-sidebar);
+            padding: 32px;
+            border-left: 1px solid var(--border);
+            position: sticky;
+            top: 64px;
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+
+        /* --- PRENIUM STEP 3 ENHANCEMENTS --- */
+        .type-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 12px;
+            width: fit-content;
+        }
+
+        .type-tab {
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #666;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: transparent;
+        }
+
+        .type-tab:hover {
+            color: var(--primary);
+            background: rgba(217, 108, 51, 0.05);
+        }
+
+        .type-tab.active {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .split-builder {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 24px;
+            background: transparent;
+            border: none;
+            overflow: visible;
+        }
+
+        .builder-left,
+        .builder-right {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f0f0f0;
+        }
+
+        .builder-right {
+            background: #fafafa;
+        }
+
+        .question-id-wrapper {
+            margin-bottom: 30px;
+        }
+
+        #questionHeading {
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            color: #1a1a1b;
+            padding: 12px 0;
+            width: 100%;
+        }
+
+        .tri-orange-line {
+            height: 4px;
+            border-radius: 2px;
+            margin: 0 0 32px 0;
+        }
+
+        .commit-section {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+            padding: 24px;
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #eee;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-commit {
+            flex: 1;
+            height: 56px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(217, 108, 51, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-commit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(217, 108, 51, 0.4);
+            background: var(--primary-light);
+        }
+
+        /* --- DESIGNER SIDEBAR & ADVANCED EDITOR --- */
+        .editor-wrapper {
+            display: flex;
+            gap: 24px;
+            margin-top: 24px;
+            align-items: flex-start;
+        }
+
+        .editor-canvas {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            min-width: 0;
+            /* Critical for flex child overflow */
+        }
+
+        #editor-container {
+            height: 480px;
+            border: none !important;
+            font-size: 1.1rem;
+        }
+
+        .ql-toolbar.ql-snow {
+            border: none !important;
+            border-bottom: 1px solid #eee !important;
+            background: #fcfcfc;
+            padding: 12px !important;
+        }
+
+        .designer-sidebar {
+            width: 280px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .ql-snow.ql-toolbar button {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 6px !important;
+            margin-right: 4px !important;
+            transition: all 0.2s !important;
+        }
+
+        .ql-snow.ql-toolbar button:hover {
+            background: var(--primary-soft) !important;
+            color: var(--primary) !important;
+        }
+
+        .ql-snow.ql-toolbar button.ql-active {
+            color: var(--primary) !important;
+        }
+
+        /* --- QUILL PICKER ENHANCEMENTS --- */
+        .ql-picker.ql-size .ql-picker-label::before,
+        .ql-picker.ql-size .ql-picker-item::before {
+            content: attr(data-value) !important;
+        }
+
+        .ql-picker.ql-font .ql-picker-label::before,
+        .ql-picker.ql-font .ql-picker-item::before {
+            content: attr(data-value) !important;
+        }
+
+        /* Font Family Previews in Picker */
+        .ql-picker-item[data-value="Roboto"]::before {
+            font-family: "Roboto" !important;
+        }
+
+        .ql-picker-item[data-value="Inter"]::before {
+            font-family: "Inter" !important;
+        }
+
+        .ql-picker-item[data-value="Outfit"]::before {
+            font-family: "Outfit" !important;
+        }
+
+        .ql-picker-item[data-value="JetBrains Mono"]::before {
+            font-family: "JetBrains Mono" !important;
+        }
+
+        .ql-picker-item[data-value="Arial"]::before {
+            font-family: "Arial" !important;
+        }
+
+        .ql-picker-item[data-value="Times New Roman"]::before {
+            font-family: "Times New Roman" !important;
+        }
+
+        .ql-picker-item[data-value="Georgia"]::before {
+            font-family: "Georgia" !important;
+        }
+
+        .ql-picker-item[data-value="Garamond"]::before {
+            font-family: "Garamond" !important;
+        }
+
+        .ql-picker-item[data-value="Tex Gyre Schola"]::before {
+            font-family: "Tex Gyre Schola" !important;
+        }
+
+        .ql-picker-item[data-value="Century Schoolbook"]::before {
+            font-family: "Century Schoolbook" !important;
+        }
+
+        .ql-picker.ql-font {
+            width: 140px !important;
+        }
+
+        .ql-picker.ql-size {
+            width: 80px !important;
+        }
+
+        .design-group-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #f9f9f9;
+            padding-bottom: 4px;
+        }
+
+        .design-control {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .design-control label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .design-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .design-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .mini-tool-btn {
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #444;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .mini-tool-btn:hover {
+            background: var(--bg-sidebar);
+            border-color: #ddd;
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 32px;
+            border-radius: 6px;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #eee;
+            cursor: pointer;
+        }
+
+        /* Dark Mode for Architect */
+        .architect-dark-mode {
+            background: #1a1a1b !important;
+            color: #eee !important;
+        }
+
+        .architect-dark-mode .builder-left,
+        .architect-dark-mode .builder-right,
+        .architect-dark-mode .designer-sidebar {
+            background: #252627 !important;
+            border-color: #333 !important;
+        }
+
+        .architect-dark-mode .clean-input,
+        .architect-dark-mode .design-input {
+            background: #1a1a1b !important;
+            color: #fff !important;
+            border-color: #333 !important;
+        }
+
+        .architect-dark-mode #editor-container {
+            background: #1a1a1b !important;
+            border-color: #333 !important;
+        }
+
+        .architect-dark-mode .ql-editor {
+            color: #fff !important;
+        }
+
+        .architect-dark-mode .ql-toolbar {
+            background: #252627 !important;
+            border-color: #333 !important;
+        }
+
+        .architect-dark-mode .ql-stroke {
+            stroke: #aaa !important;
+        }
+
+        .architect-dark-mode .ql-picker {
+            color: #aaa !important;
+        }
+
+        .stat-group {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Sidebar Detailed Question Cards */
+        .q-item {
+            padding: 16px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .q-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(217, 108, 51, 0.08);
+        }
+
+        .q-item.active {
+            border-color: var(--primary);
+            background: #fffafa;
+            box-shadow: 0 4px 15px rgba(217, 108, 51, 0.1);
+        }
+
+        .q-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+            padding-right: 10px;
+        }
+
+        .q-item-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+
+        .q-item-marks {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .q-item-actions {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .q-item:hover .q-item-actions {
+            opacity: 1;
+        }
+
+        .q-action-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+
+        .q-action-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #fff5f0;
+        }
+
+        .q-action-btn.delete-btn:hover {
+            border-color: #F04438;
+            color: #F04438;
+            background: #FEF3F2;
+        }
+
+        /* Architect Navigation Grid Style */
+        .q-nav-section {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .q-nav-header {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 12px 0 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .q-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 0 12px;
+        }
+
+        .q-nav-item {
+            aspect-ratio: 1/1;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .q-nav-item:hover {
+            border-color: var(--primary);
+            background: #fff5f0;
+            color: var(--primary);
+        }
+
+        .q-nav-item.active {
+            background: #fff5f0;
+            color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(217, 108, 51, 0.15);
+        }
+
+        .q-nav-item i.status-tick {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            font-size: 0.65rem;
+            color: #12B76A;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        .q-nav-actions {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            border-radius: 6px;
+        }
+
+        .q-nav-item:hover .q-nav-actions {
+            opacity: 1;
+        }
+
+        .q-mini-btn {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            border-radius: 4px;
+            transition: all 0.2s;
+            background: #f8f9fa;
+            border: 1px solid #eee;
+        }
+
+        .q-mini-btn:hover {
+            color: var(--primary);
+            background: #fff5f0;
+            border-color: var(--primary);
+        }
+
+        .q-mini-btn.del:hover {
+            color: #F04438;
+            background: #FEF3F2;
+            border-color: #FDA29B;
+        }
+
+        /* Q-Builder Inline Nav */
+        .builder-nav-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .nav-link-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link-btn:hover {
+            color: var(--primary);
+            background: #fdf8f5;
+        }
+
+        .save-btn-architect {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(217, 108, 51, 0.2);
+        }
+
+        .save-btn-architect:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        /* Architect Context Rail */
+        .q-rail {
+            width: 80px;
+            background: #fff;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            z-index: 10;
+        }
+
+        /* Footer Action Bar */
+        .footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: #fff;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        @media (max-width: 1100px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-left: none;
+                border-top: 1px solid var(--border);
+                height: auto;
+            }
+        }
+
+        /* Split View Question Builder */
+        .split-builder {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .builder-left {
+            padding: 32px;
+            background: #fff;
+            border-right: 1px solid var(--border);
+        }
+
+        .builder-right {
+            padding: 32px;
+            background: #fafafa;
+        }
+
+        /* Custom Dots Loader */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .dots-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: dot-pulse 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+            background: #D96C33;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+            background: #e38250;
+        }
+
+        .dot:nth-child(3) {
+            background: #b05020;
+        }
+
+        @keyframes dot-pulse {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1.0);
+            }
+        }
+
+        /* Custom Modal */
+        .custom-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(4px);
+        }
+
+        .custom-modal {
+            background: #fff;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Security Blackout */
+        .security-blackout {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 11000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            text-align: center;
+        }
+
+        /* Quill Formatting */
+        #editor-container {
+            height: 300px;
+            margin-bottom: 24px;
+            border-radius: 8px;
+            border-color: var(--border);
+        }
+
+        /* Tri-Shade Orange Line (SCR 1) */
+        .tri-orange-line {
+            display: flex;
+            height: 5px;
+            width: 100%;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 12px 0 24px 0;
+        }
+
+        .tri-orange-line>div {
+            height: 100%;
+        }
+
+        .tol-light {
+            background: #fff1eb;
+            flex: 1;
+        }
+
+        .tol-mid {
+            background: #f9d8c8;
+            flex: 1;
+        }
+
+        .tol-dark {
+            background: #e67e22;
+            flex: 2;
+        }
+
+        /* Wizard Workflow */
+        .wizard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        .wizard-header {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .step-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: #ccc;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .step-indicator.active {
+            color: var(--primary);
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .step-indicator.active .step-num {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Modernized Calendar (Eye-Relaxer) */
+        input[type="datetime-local"] {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #f9f9f9;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg);
+            /* Subtle blue-ish tint */
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        input[type="datetime-local"]:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(217, 108, 51, 0.1);
+        }
+
+        .select-all-btn {
+            font-size: 0.7rem;
+            color: var(--primary);
+            background: rgba(217, 108, 51, 0.05);
+            border: 1px solid rgba(217, 108, 51, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .select-all-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .workspace-lang-title {
+            background: #f2f2f2;
+            color: #333;
+            padding: 14px 24px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .code-workspace-block {
+            margin-bottom: 40px;
+            padding-bottom: 32px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .ql-toolbar.ql-snow {
+            border-color: #eee !important;
+            background: #fafafa !important;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+            padding: 12px !important;
+        }
+
+        .ql-container.ql-snow {
+            border-color: #eee !important;
+            border-bottom-left-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 1.05rem !important;
+        }
+
+        /* Target the </> Code Block Box inside the Editor */
+        .ql-editor pre.ql-syntax {
+            background-color: #f2f2f2 !important;
+            color: #333 !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            margin: 15px 0 !important;
+            line-height: 1.6 !important;
+        }
+
+        /* Target Inline Code snippets if used */
+        .ql-editor code {
+            background-color: #f2f2f2 !important;
+            color: var(--primary) !important;
+            padding: 3px 8px !important;
+            border-radius: 6px !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-weight: 600 !important;
+            font-size: 0.9em !important;
+        }
+
+        .code-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .code-label-main {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #444;
+            letter-spacing: 0.3px;
+        }
+
+        .code-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .monaco-inline-wrapper {
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f2f2f2;
+            /* Grey color from screenshot */
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-fullscreen-toggle {
+            height: 32px;
+            padding: 0 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            color: #666;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-fullscreen-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Test Case UI Refined */
+        .test-case-card {
+            background: #fff;
+            padding: 28px;
+            border-bottom: 2px solid #f8f8f8;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .test-case-card:hover {
+            background: #fdfdfd;
+        }
+
+        .test-case-card .label {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .test-case-input-group {
+            margin-bottom: 20px;
+        }
+
+        .remove-case {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Fullscreen Editor Overlay */
+        #editorOverlay {
+            position: fixed;
+            inset: 0;
+            background: #1e1e1e;
+            z-index: 20000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .overlay-header {
+            padding: 12px 24px;
+            background: #252526;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        #monaco-container {
+            flex: 1;
+        }
+
+        /* Rich Text Fonts Support */
+        .ql-font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .ql-font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .ql-font-roboto {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .ql-font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .ql-font-serif {
+            font-family: 'Merriweather', serif;
+        }
+
+        .ql-font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .ql-font-slab {
+            font-family: 'Roboto Slab', serif;
+        }
+
+        .ql-font-script {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* MCQ Selection UI */
+        .option-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 32px;
+            gap: 12px;
+            align-items: center;
+            background: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #f1f3f4;
+            transition: all 0.2s;
+        }
+
+        .option-selector {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .option-row.is-correct {
+            border-color: var(--primary);
+            background: #fdf8f5;
+        }
+
+        .option-row.is-correct .option-selector {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .option-selector::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .option-row.is-correct .option-selector::after {
+            opacity: 1;
+        }
+
+        /* Question Preview Line */
+        .q-preview-header {
+            margin-bottom: 24px;
+        }
+
+        .q-preview-heading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 8px 0;
+        }
+
+        .q-preview-line {
+            height: 4px;
+            background: #ffe8dd;
+            /* Light orange base */
+            width: 100%;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .q-preview-line::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 40%;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        @media print {
+            body {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<div class="page-loader" id="pageLoader">
+    <div class="dots-container">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+    <div
+        style="font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px;">
+        EXAMPAD CREATOR</div>
+</div>
+
+<div class="security-blackout" id="securityBlackout">
+    <div>
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;">SECURITY ALERT</h1>
+        <p>External recording/screenshot activities detected.<br>This session has been locked for integrity.</p>
+    </div>
+</div>
+
+<div class="custom-modal-overlay" id="customModalOverlay">
+    <div class="custom-modal">
+        <h3 id="modalTitle" style="margin-top:0; font-family:'Outfit';">Modal Title</h3>
+        <p id="modalDesc" style="color:var(--text-secondary); margin-bottom: 1.5rem;">Description goes here.</p>
+        <div id="modalContent"></div>
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+            <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+            <button class="btn btn-run" id="modalConfirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- Fullscreen Monaco Editor Overlay -->
+<div id="editorOverlay">
+    <div class="overlay-header">
+        <h3 id="overlayTitle" style="color: #fff; font-family: 'Outfit', sans-serif; margin: 0;">CODE WORKSPACE</h3>
+        <button class="btn btn-ghost" onclick="closeEditorOverlay()"
+            style="color: #fff; border-color: #555;">CLOSE</button>
+    </div>
+    <div id="monaco-container"></div>
+</div>
+
+<header class="site-header">
+    <div class="header-left">
+        <div class="logo" onclick="goBack()">
+            <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara">
+        </div>
+        <div class="nav-icons">
+            <div class="nav-icon" title="Dashboard" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg></div>
+            <div class="nav-icon" title="Feedback & Support" onclick="showToast('Support Center coming soon!')"><svg
+                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg></div>
+            <div class="nav-icon" title="Question Bank" onclick="window.location.href='questionpool.html'"><svg
+                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg></div>
+            <div class="nav-icon" title="Notifications" onclick="showToast('No new notifications')"><svg width="20"
+                    height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg></div>
+        </div>
+    </div>
+    <div class="header-right">
+        <div id="collabIndicator"
+            style="display: flex; align-items: center; background: #f0f7ff; padding: 4px 12px; border-radius: 20px; border: 1px solid #d0e7ff; margin-right: 15px;">
+            <div
+                style="display: flex; -webkit-mask-image: linear-gradient(to right, black 70%, transparent 100%); mask-image: linear-gradient(to right, black 70%, transparent 100%);">
+                <div
+                    style="width: 24px; height: 24px; background: #4a90e2; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content:center; color:white; font-size:0.6rem; font-weight:700;">
+                    JD</div>
+                <div
+                    style="width: 24px; height: 24px; background: #e24a4a; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content:center; color:white; font-size:0.6rem; font-weight:700; margin-left:-8px;">
+                    OA</div>
+            </div>
+            <span style="font-size: 0.65rem; font-weight: 700; color: #4a90e2; margin-left: 8px;">2 EDITING</span>
+        </div>
+        <div id="autoSaveIndicator"
+            style="font-size: 0.7rem; color: #999; display: flex; align-items: center; gap: 6px;">
+            <div style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%;"></div>
+            <span>Changes Saved</span>
+        </div>
+        <button class="nav-icon-btn" onclick="showVersionHistory()" title="Version History"
+            style="margin-left: 10px; background: #fff; border: 1px solid #eee; height: 36px; padding: 0 12px;"><i
+                class="fas fa-history"></i> History</button>
+        <button class="plus-btn" title="Create New Assessment" onclick="createNewExam()">+</button>
+        <div class="profile-container" id="profileToggle">
+            <div class="profile-circle">OA</div>
+            <div class="profile-menu" id="profileMenu">
+                <div class="menu-item"><i class="fas fa-user-circle"></i> View Profile</div>
+                <div class="menu-item"><i class="fas fa-cog"></i> Settings</div>
+                <div class="menu-divider"></div>
+                <div class="menu-item" style="color:#ff4d4f;" onclick="auth.logout()"><i
+                        class="fas fa-sign-out-alt"></i>
+                    Logout</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="workspace">
+    <main class="wizard-container">
+        <!-- Progress Bar -->
+        <div class="wizard-header">
+            <div class="step-indicator active" id="ind1" onclick="goToStep(1)">
+                <div class="step-num">1</div>
+                <span>BASIC DETAILS</span>
+            </div>
+            <div class="step-indicator" id="ind2" onclick="goToStep(2)">
+                <div class="step-num">2</div>
+                <span>SECTIONS & RULES</span>
+            </div>
+            <div class="step-indicator" id="ind3" onclick="goToStep(3)">
+                <div class="step-num">3</div>
+                <span>QUESTION ARCHITECT</span>
+            </div>
+            <div class="step-indicator" id="ind4" onclick="goToStep(4)">
+                <div class="step-num">4</div>
+                <span>SECURE DEPLOYMENT</span>
+            </div>
+        </div>
+
+        <!-- STEP 1: Details -->
+        <div id="step-1" class="wizard-step active">
+            <div class="form-card">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
+                    <div
+                        style="width:40px; height:40px; background:rgba(217, 108, 51, 0.1); color:var(--primary); border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-id-card" style="font-size:1.2rem;"></i>
+                    </div>
+                    <h2 class="section-title" style="margin:0;">Assessment Identity</h2>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">EXAM TITLE</label>
+                    <input type="text" id="examTitle" class="clean-input" style="font-size:1.2rem; font-weight:600;"
+                        placeholder="e.g. End Semester - Computer Science">
+                </div>
+
+                <div class="input-group">
+                    <label class="label">SUBTITLE / DESCRIPTION</label>
+                    <textarea id="examDescription" class="clean-textarea" style="min-height:100px;"
+                        placeholder="Add instructions or overview..."></textarea>
+                </div>
+
+                <div class="form-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;">
+                    <div class="input-group">
+                        <label class="label">DURATION (MINUTES)</label>
+                        <div style="position:relative;">
+                            <input type="number" id="examDuration" class="clean-input" value="60"
+                                style="padding-left:36px; background:#fdfdfd;">
+                            <i class="far fa-clock"
+                                style="position:absolute; left:12px; top:12px; color:var(--primary); opacity:0.6;"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="label">TOTAL CAPACITY (MARKS)</label>
+                        <div style="position:relative;">
+                            <input type="number" id="examTotalMarks" class="clean-input" value="100"
+                                style="padding-left:36px; background:#fdfdfd;">
+                            <i class="fas fa-star"
+                                style="position:absolute; left:12px; top:12px; color:var(--primary); opacity:0.6;"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="label">ACADEMIC CREDITS</label>
+                        <div style="position:relative;">
+                            <input type="number" id="examCredits" class="clean-input" value="1" step="0.5"
+                                style="padding-left:36px; background:#fdfdfd;">
+                            <i class="fas fa-graduation-cap"
+                                style="position:absolute; left:12px; top:12px; color:var(--primary); opacity:0.6;"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="label">NEGATIVE MARKING</label>
+                        <div style="position:relative;">
+                            <input type="number" id="negativeMarking" class="clean-input" value="0"
+                                style="padding-left:36px; background:#fdfdfd;">
+                            <i class="fas fa-minus-circle"
+                                style="position:absolute; left:12px; top:12px; color:var(--primary); opacity:0.6;"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="label">SCHEDULED START (MODERN CALENDAR)</label>
+                        <input type="datetime-local" id="scheduleDate" class="clean-input"
+                            style="background:#fdfeff; border-color:#eef0f2;">
+                    </div>
+                </div>
+
+                <!-- Exam Theme Designer -->
+                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom: 20px;">
+                        <div
+                            style="width:32px; height:32px; background:rgba(155, 89, 182, 0.1); color:#9b59b6; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3 style="margin:0; font-size: 1.1rem; font-family: 'Outfit';">Exam Visual Theme Designer</h3>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px;">
+                        <div class="input-group">
+                            <label class="label">BRAND COLOR</label>
+                            <input type="color" id="themePrimaryColor" value="#D96C33"
+                                style="width:100%; height:44px; border-radius: 8px; border: 1px solid #ddd; cursor:pointer;">
+                        </div>
+                        <div class="input-group">
+                            <label class="label">INTERFACE FONT</label>
+                            <select id="themeFont" class="clean-input">
+                                <option value="Outfit">Outfit (Dynamic)</option>
+                                <option value="Inter">Inter (Professional)</option>
+                                <option value="Roboto">Roboto (Clean)</option>
+                                <option value="JetBrains Mono">Standard Mono</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label class="label">DARK MODE</label>
+                            <label class="sec-toggle"><input type="checkbox" id="themeDarkMode"> <span>Enable Dark
+                                    Theme</span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card" style="margin-top: 24px; border-left: 4px solid var(--primary);">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
+                    <div
+                        style="width:40px; height:40px; background:rgba(46, 204, 113, 0.1); color:#2ecc71; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-shield-alt" style="font-size:1.2rem;"></i>
+                    </div>
+                    <h2 class="section-title" style="margin:0;">Integrity Shield & Policy</h2>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div class="security-card"
+                        style="background:#fcfcfc; border:1px solid #f0f0f0; padding:20px; border-radius:12px;">
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:12px;">
+                            <input type="checkbox" id="blockCopyPaste" style="width:18px; height:18px;">
+                            <span style="font-size:0.9rem; font-weight:500;">Block Copy-Paste Activity</span>
+                        </label>
+                        <label class="sec-toggle" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
+                            <input type="checkbox" id="blockScreenshot" style="width:18px; height:18px;">
+                            <span style="font-size:0.9rem; font-weight:500;">Block PrintScreen & Snipping</span>
+                        </label>
+                    </div>
+                    <div class="security-card"
+                        style="background:#fcfcfc; border:1px solid #f0f0f0; padding:20px; border-radius:12px;">
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:12px;">
+                            <input type="checkbox" id="fullScreenRequired" style="width:18px; height:18px;">
+                            <span style="font-size:0.9rem; font-weight:500;">Enforce Strict Fullscreen</span>
+                        </label>
+                        <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #eee;">
+                            <label class="label" style="font-size:0.7rem; color:#A01E17;">MAX VIOLATIONS ALLOWED</label>
+                            <input type="number" id="maxTabSwitches" class="clean-input" value="3"
+                                style="font-size:0.8rem; padding:8px; width:80px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center;">
+                <button class="btn btn-ghost" onclick="goBack()">&larr; Exit to Dashboard</button>
+                <div style="display: flex; gap: 16px;">
+                    <button class="btn btn-ghost" onclick="saveDraft()"
+                        style="padding: 0 32px; height: 50px; font-weight:600;">SAVE AS DRAFT</button>
+                    <button class="btn btn-run" onclick="goToStep(2)"
+                        style="width: 260px; height: 50px; font-weight:700; font-size:1rem; box-shadow: 0 4px 15px rgba(217, 108, 51, 0.3);">
+                        CONFIGURE SECTIONS <i class="fas fa-chevron-right" style="margin-left:10px;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: Sections -->
+        <div id="step-2" class="wizard-step">
+            <div class="form-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2 class="section-title">Sectional Architecture</h2>
+                    <button class="btn btn-ghost" onclick="promptAddSection()">+ Define New Section</button>
+                </div>
+                <p style="color:#777; font-size: 0.9rem; margin-bottom: 24px;">Add sections to categorize questions
+                    (Objective, Subjective, Lab, etc.)</p>
+                <div id="sectionsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            </div>
+
+            <div style="margin-top: 40px; display: flex; justify-content: space-between;">
+                <button class="btn btn-ghost" onclick="goToStep(1)">&larr; Back to Details</button>
+                <button class="btn btn-run" onclick="goToStep(3)" style="width: 200px; height: 50px;">Architect
+                    Questions &rarr;</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: Question Builder (SCR 2 Layout) -->
+        <div id="step-3" class="wizard-step">
+            <div id="builder-anchor"></div>
+            <div class="type-selector" style="overflow-x: auto; white-space: nowrap; max-width: 100%;">
+                <div class="type-tab active" id="type-mcq" onclick="selectQuestionType('mcq')">Multiple Choice</div>
+                <div class="type-tab" id="type-true_false" onclick="selectQuestionType('true_false')">TF Logic</div>
+                <div class="type-tab" id="type-assertion_reason" onclick="selectQuestionType('assertion_reason')">
+                    Assertion Reason</div>
+                <div class="type-tab" id="type-subjective" onclick="selectQuestionType('subjective')">Short/Long Answer
+                </div>
+                <div class="type-tab" id="type-single_integer" onclick="selectQuestionType('single_integer')">Single
+                    Integer</div>
+                <div class="type-tab" id="type-numeric" onclick="selectQuestionType('numeric')">Numeric Value</div>
+                <div class="type-tab" id="type-file_upload" onclick="selectQuestionType('file_upload')">File Upload
+                </div>
+                <div class="type-tab" id="type-coding" onclick="selectQuestionType('coding')">Advanced Coding</div>
+            </div>
+
+            <!-- New Architect Workspace -->
+            <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 24px;">
+                <!-- Left Nav Rail -->
+                <div class="q-rail" id="architectSidebar"
+                    style="flex-shrink: 0; width: 100px; background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 10px 0;">
+                    <div id="questionsListArchitect" style="width: 100%;"></div>
+                </div>
+
+                <!-- Main Worksite -->
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                    <div class="split-builder" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
+                        <!-- Center: Problem -->
+                        <div class="builder-left"
+                            style="background: #fff; border-radius: 16px; padding: 32px; border: 1px solid #eee;">
+                            <div class="question-id-wrapper">
+                                <div class="question-id-wrapper">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <label class="label"
+                                            style="letter-spacing:1px; color:#999; font-size:0.7rem; font-weight:700;">QUESTION
+                                            IDENTIFIER</label>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="mini-tool-btn" onclick="openPoolModal()"
+                                                style="color: #6366f1;"><i class="fas fa-database"></i> Import from
+                                                Pool</button>
+                                            <button class="mini-tool-btn" onclick="generateAIQuestion()"
+                                                style="color: var(--primary);"><i class="fas fa-robot"></i> AI
+                                                Generate</button>
+                                            <button class="mini-tool-btn" onclick="applyTemplate('coding')"><i
+                                                    class="fas fa-code"></i> Coding Template</button>
+                                        </div>
+                                        <div id="qStatusIndicator" style="display: none; gap: 8px;">
+                                            <button class="nav-icon-btn" onclick="duplicateCurrent()"
+                                                title="Duplicate"><i class="far fa-copy"></i></button>
+                                            <button class="nav-icon-btn" onclick="deleteCurrent()" title="Delete"
+                                                style="color: #F04438;"><i class="far fa-trash-alt"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="text" id="questionHeading" class="clean-input"
+                                        placeholder="e.g. OOP Constructs & Recursion"
+                                        style="border:none; font-size: 1.4rem; font-weight: 700;">
+                                    <div class="tri-orange-line"
+                                        style="height: 4px; background: #ffe8dd; margin-top: 8px; border-radius: 2px; position: relative; overflow: hidden;">
+                                        <div
+                                            style="position: absolute; left: 0; top: 0; height: 100%; width: 30%; background: var(--primary);">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <div id="editor-container"
+                                    style="height: 400px; border: 1px solid #f0f0f0; border-radius: 8px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Logic & Preview -->
+                        <div class="builder-right"
+                            style="background: #fafafa; border-radius: 16px; padding: 32px; border: 1px solid #eee; display: flex; flex-direction: column;">
+
+                            <!-- Panel Toggle -->
+                            <div
+                                style="display: flex; gap: 8px; margin-bottom: 20px; background: #eee; padding: 4px; border-radius: 8px;">
+                                <button onclick="toggleRightPanel('logic')" id="panel-btn-logic" class="type-tab active"
+                                    style="flex:1; font-size: 0.75rem; padding: 6px;">Logic & Grading</button>
+                                <button onclick="toggleRightPanel('preview')" id="panel-btn-preview" class="type-tab"
+                                    style="flex:1; font-size: 0.75rem; padding: 6px;">Student Preview</button>
+                            </div>
+
+                            <div id="logicPanel">
+                                <div class="form-grid"
+                                    style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 0;">
+                                    <div class="input-group">
+                                        <label class="label">SECTION</label>
+                                        <select id="questionSection" class="clean-input"
+                                            style="font-size: 0.9rem;"></select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="label">MARKS</label>
+                                        <input type="number" id="questionMarks" class="clean-input" value="1"
+                                            style="font-size: 0.9rem;">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="label">TIMER (SEC)</label>
+                                        <input type="number" id="questionTimer" class="clean-input" value="0"
+                                            style="font-size: 0.9rem;" placeholder="0 = No limit">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="label">TEACHER NOTES</label>
+                                        <input type="text" id="teacherNotes" class="clean-input"
+                                            style="font-size: 0.9rem;" placeholder="Internal only...">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="label">PREREQUISITE Q</label>
+                                        <select id="prereqQuestion" class="clean-input" style="font-size: 0.8rem;">
+                                            <option value="">None</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="optionsContainer">
+                                    <label class="label">Choose any one</label>
+                                    <div id="optionsList"
+                                        style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;"></div>
+                                    <button class="btn btn-ghost" onclick="addOption()"
+                                        style="width:100%; border:1px dashed #ddd; background:#fff; font-size: 0.8rem;">+
+                                        Add Option</button>
+                                </div>
+
+                                <div id="subjectiveContainer" style="display: none;">
+                                    <label class="label">Grading Rubric</label>
+                                    <textarea id="keywords" class="clean-textarea"
+                                        placeholder="Enter keywords separated by commas for auto-grading..."
+                                        style="min-height: 150px; font-family: 'JetBrains Mono';"></textarea>
+                                </div>
+
+                                <div id="numericContainer" style="display: none;">
+                                    <div class="form-group" style="margin-bottom: 16px;">
+                                        <label class="label">Correct Numeric Answer</label>
+                                        <input type="number" step="any" id="correctNumeric" class="clean-input"
+                                            placeholder="e.g. 10.5">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label">Allowed Error Tolerance (&plusmn;)</label>
+                                        <input type="number" step="any" id="numericTolerance" class="clean-input"
+                                            value="0">
+                                    </div>
+                                </div>
+
+                                <div id="fileUploadContainer" style="display: none;">
+                                    <div class="form-group" style="margin-bottom: 16px;">
+                                        <label class="label">Allowed File Extensions</label>
+                                        <input type="text" id="allowedExtensions" class="clean-input"
+                                            placeholder="e.g. .pdf, .jpg, .zip">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label">Max File Size (MB)</label>
+                                        <input type="number" id="maxFileSize" class="clean-input" value="10">
+                                    </div>
+                                </div>
+
+                                <div id="codingContainer" style="display: none;">
+                                    <!-- Coding Logic -->
+                                    <div id="langSelectorGrid"
+                                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
+                                    <div id="languageCodeTemplates" style="margin-top: 16px;"></div>
+                                    <div id="testCasesContainer" style="margin-top: 16px;"></div>
+                                </div>
+                            </div> <!-- End logicPanel -->
+
+                            <!-- Live Student Preview Panel -->
+                            <div id="previewPanel" style="display: none; flex: 1; overflow-y: auto;">
+                                <div
+                                    style="background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 24px; min-height: 400px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                                    <div id="livePreviewTitle"
+                                        style="font-family: 'Outfit'; font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; color: #1a1a1b;">
+                                    </div>
+                                    <div id="livePreviewContent"
+                                        style="font-size: 0.95rem; line-height: 1.6; color: #444; margin-bottom: 24px;">
+                                    </div>
+                                    <div id="livePreviewInteraction"
+                                        style="padding-top: 20px; border-top: 1px dashed #eee;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="builder-nav-footer">
+                        <div style="display:flex; gap:16px;">
+                            <button class="nav-link-btn" onclick="navigateBuilder(-1)">
+                                <i class="fas fa-caret-left"></i> previous
+                            </button>
+                            <button class="nav-link-btn" onclick="navigateBuilder(1)">
+                                next <i class="fas fa-caret-right"></i>
+                            </button>
+                        </div>
+
+                        <div style="display:flex; gap:12px;">
+                            <button class="btn btn-ghost" onclick="resetBuilder()">Reset</button>
+                            <button class="save-btn-architect" onclick="addQuestion()" id="saveBtnArchitect">
+                                <i class="fas fa-check-circle"></i> Save Question
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+                <button class="btn btn-ghost" onclick="goToStep(2)">&larr; Manage Sections</button>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-ghost" onclick="saveDraft()">SYNC DRAFT</button>
+                    <button class="btn btn-run" onclick="goToStep(4)" style="padding: 0 40px;">Finalize Architecture
+                        &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: Finalization & Deployment -->
+        <div id="step-4" class="wizard-step">
+            <div class="form-grid" style="grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: start;">
+                <div class="left-col">
+                    <div class="form-card" style="margin-bottom: 24px;">
+                        <h2 class="section-title"><i class="fas fa-lock"
+                                style="margin-right:12px; color:var(--primary);"></i>Entry Control & Security</h2>
+
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top:0;">
+                            <div class="input-group">
+                                <label class="label">ENTRANCE PASSCODE</label>
+                                <input type="text" id="examPasscode" class="clean-input" placeholder="e.g. EXAM2024"
+                                    style="font-family:'JetBrains Mono'; font-weight:700;">
+                            </div>
+                            <div class="input-group">
+                                <label class="label">MAX TAB SWITCHES</label>
+                                <input type="number" id="maxTabSwitches" class="clean-input" value="3"
+                                    style="font-weight:700;">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="label">LATE ENTRY DEADLINE</label>
+                            <input type="datetime-local" id="entryDeadline" class="clean-input">
+                        </div>
+
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:12px; cursor:pointer; background:#fdf8f5; padding:12px; border-radius:8px; border:1px solid #ffe8dd; margin-top:10px;">
+                            <input type="checkbox" id="showResults" checked style="width:18px; height:18px;">
+                            <span style="font-size:0.85rem; font-weight:600; color:#333;">Show Results/Answers to
+                                Student after Submission</span>
+                        </label>
+                    </div>
+
+                    <div class="form-card">
+                        <h2 class="section-title"><i class="fas fa-eye"
+                                style="margin-right:12px; color:#2ecc71;"></i>Advanced Proctoring (AI)</h2>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <label class="sec-toggle"
+                                style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <i class="fas fa-video" style="color:#555;"></i>
+                                    <div>
+                                        <div style="font-weight:700; font-size:0.9rem;">Enable Webcam Proctoring</div>
+                                        <div style="font-size:0.75rem; color:#888;">AI will monitor eye-movement and
+                                            presence</div>
+                                    </div>
+                                </div>
+                                <input type="checkbox" id="webcamEnabled" style="width:20px; height:20px;">
+                            </label>
+
+                            <label class="sec-toggle"
+                                style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <i class="fas fa-microphone" style="color:#555;"></i>
+                                    <div>
+                                        <div style="font-weight:700; font-size:0.9rem;">Enable Microphone Audio-Audit
+                                        </div>
+                                        <div style="font-size:0.75rem; color:#888;">Listen for unauthorized voice
+                                            assistance</div>
+                                    </div>
+                                </div>
+                                <input type="checkbox" id="micEnabled" style="width:20px; height:20px;">
+                            </label>
+
+                            <label class="sec-toggle"
+                                style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <i class="fas fa-network-wired" style="color:#555;"></i>
+                                    <div>
+                                        <div style="font-weight:700; font-size:0.9rem;">Block VPN & Proxy</div>
+                                        <div style="font-size:0.75rem; color:#888;">Prevent IP spoofing and location
+                                            bypass</div>
+                                    </div>
+                                </div>
+                                <input type="checkbox" id="vpnBlocked" style="width:20px; height:20px;">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-card" style="margin-top: 24px; border-left: 4px solid #f39c12;">
+                        <h2 class="section-title"><i class="fas fa-user-edit"
+                                style="margin-right:12px; color:#f39c12;"></i>Evaluation Configuration</h2>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <label class="sec-toggle"
+                                style="display:flex; justify-content:space-between; align-items:center; background:#fef9e7; padding:15px; border-radius:10px; border:1px solid #f9e79f;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <i class="fas fa-marker" style="color:#d4ac0d;"></i>
+                                    <div>
+                                        <div style="font-weight:700; font-size:0.9rem;">Enable Manual Teacher Review
+                                        </div>
+                                        <div style="font-size:0.75rem; color:#888;">Subjective and File-Upload questions
+                                            will be manually graded by teacher</div>
+                                    </div>
+                                </div>
+                                <input type="checkbox" id="manualGrading" style="width:20px; height:20px;">
+                            </label>
+                            <p style="font-size: 0.75rem; color: #777; font-style: italic;">
+                                Note: MCQs, T/F, Assertion-Reason, and Numeric questions will still be graded
+                                automatically by the AI system.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div class="form-card" style="margin-bottom: 24px;">
+                        <h2 class="section-title"><i class="fas fa-user-shield"
+                                style="margin-right:12px; color:#F04438;"></i>Proctoring Dashboard (Demo)</h2>
+                        <div style="background: #f8f9fa; border: 1px solid #eee; border-radius: 8px; padding: 15px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
+                                <span style="font-size: 0.75rem; font-weight: 700; color: #444;">Live Activity
+                                    Log</span>
+                                <span style="font-size: 0.65rem; color: #2ecc71;">● RECORDER ACTIVE</span>
+                            </div>
+                            <div
+                                style="display: flex; flex-direction: column; gap: 8px; font-family: 'JetBrains Mono'; font-size: 0.65rem;">
+                                <div style="color: #555;"><span style="color: #8844ff;">[10:14:02]</span> Student #38423
+                                    Attempt Started</div>
+                                <div style="color: #d9480f;"><span style="color: #8844ff;">[10:15:45]</span> <i
+                                        class="fas fa-exclamation-triangle"></i> ALERT: Tab Switch detected (User OA)
+                                </div>
+                                <div style="color: #d33;"><span style="color: #8844ff;">[10:16:12]</span> <i
+                                        class="fas fa-ban"></i> CRITICAL: Unauthorized Clipboard Access blocked</div>
+                                <div style="color: #555;"><span style="color: #8844ff;">[10:17:05]</span> AI Score: 98%
+                                    (No help detected)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-card" style="background:#fff5f0; border:2px solid #ffe8dd;">
+                        <h2 class="section-title"><i class="fas fa-rocket"
+                                style="margin-right:12px; color:var(--primary);"></i>Final Release Configuration</h2>
+                        <p style="font-size:0.8rem; color:#666; margin-bottom:20px;">Review your security keys and
+                            deployment settings before taking this assessment live.</p>
+
+                        <div
+                            style="background:#fff; border:1px solid #eee; padding:20px; border-radius:12px; margin-bottom:20px;">
+                            <div style="display:flex; flex-direction:column; gap:12px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:#888;">RELEASE STATUS</span>
+                                    <span
+                                        style="background:#e9ecef; color:#495057; padding:4px 10px; border-radius:20px; font-size:0.65rem; font-weight:800;">DRAFT
+                                        MODE</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:#888;">TEST IDENTITY</span>
+                                    <strong style="color:var(--primary); font-family:'JetBrains Mono';">${editExamId ?
+                                        exams.testId : 'AUTO-GENERATE'}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:24px;">
+                            <label class="label">FINAL VALIDATION</label>
+                            <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                                <label
+                                    style="display:flex; align-items:center; gap:10px; font-size:0.8rem; cursor:pointer;"><input
+                                        type="checkbox" id="val_points" required> I have verified all question
+                                    points</label>
+                                <label
+                                    style="display:flex; align-items:center; gap:10px; font-size:0.8rem; cursor:pointer;"><input
+                                        type="checkbox" id="val_security" required> Security protocols are
+                                    configured</label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-run" onclick="publishExam()"
+                            style="width:100%; height:60px; font-size:1.1rem; border-radius:12px; box-shadow:0 8px 20px rgba(217,108,51,0.2);">
+                            <i class="fas fa-globe" style="margin-right:10px;"></i> DEPLOY LIVE ASSESSMENT
+                        </button>
+
+                        <button class="btn btn-ghost" onclick="previewAsStudent()"
+                            style="width:100%; height:50px; margin-top:12px; border:1px dashed #ddd; font-weight:700;">
+                            <i class="fas fa-eye" style="margin-right:10px;"></i> PREVIEW STUDENT EXPERIENCE
+                        </button>
+                    </div>
+
+                    <div class="form-card" style="margin-top:24px;">
+                        <h2 class="section-title">Exam Blueprint Review</h2>
+                        <div id="previewQuestionsList"
+                            style="max-height:400px; overflow-y:auto; border:1px solid #f0f0f0; border-radius:8px;">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 50px; display: flex; justify-content: flex-start;">
+                <button class="btn btn-ghost" onclick="goToStep(3)">&larr; Return to Questions</button>
+            </div>
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div style="position: sticky; top: 32px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+                <h3 style="font-weight: 700; font-size: 1.1rem;">Exam Timeline</h3>
+                <div id="totalQuestionsCount"
+                    style="background:var(--primary); color:white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight:700;">
+                    0</div>
+            </div>
+
+            <div class="input-group" style="margin-bottom: 20px;">
+                <input type="text" id="sidebarSearch" class="clean-input" placeholder="Search Questions..."
+                    style="font-size: 0.85rem; padding: 8px 0; border-bottom: 1px solid #ddd;"
+                    oninput="filterQuestions()">
+            </div>
+
+            <div id="questionsList"
+                style="display: flex; flex-direction: column; gap: 0; max-height: 70vh; overflow-y: auto; padding-right: 5px;">
+            </div>
+
+            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 12px;">
+                    <span style="color: #666; font-size: 0.9rem;">Estimated Marks</span>
+                    <strong id="totalMarksCount">0</strong>
+                </div>
+
+                <div id="analyticsSection" style="margin-top: 20px;">
+                    <div
+                        style="font-size: 0.75rem; font-weight: 700; color: #999; margin-bottom: 10px; text-transform: uppercase;">
+                        Marks Distribution</div>
+                    <div id="marksChart" style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Updated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 32px; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #eee; font-size: 0.8rem;">
+                <div style="font-weight: 700; color: #555; margin-bottom: 8px;"><i class="fas fa-keyboard"></i>
+                    Shortcuts</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; color: #888;">
+                    <span>Ctrl + S</span> <span>Save</span>
+                    <span>Ctrl + Z</span> <span>Undo</span>
+                    <span>Q / A</span> <span>Prev/Next</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script src="../js/db.js"></script>
+<script src="../js/auth.js"></script>
+<!-- Quill Library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<!-- Monaco Editor -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+<!-- SortableJS for Drag & Drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script>
+    // Custom Font & Size registration for Quill
+    const Font = Quill.import('attributors/style/font');
+    Font.whitelist = ['Inter', 'Outfit', 'Roboto', 'Arial', 'Times New Roman', 'Georgia', 'Garamond', 'Tex Gyre Schola', 'Century Schoolbook', 'JetBrains Mono'];
+    Quill.register(Font, true);
+
+    const Size = Quill.import('attributors/style/size');
+    Size.whitelist = ['10px', '12px', '13px', '14px', '16px', '18px', '20px', '22px', '24px', '28px', '32px', '36px', '48px', '64px'];
+    Quill.register(Size, true);
+
+    // Monaco State Management
+    let activeMonacoEditor = null;
+    let monacoTargetId = null;
+    let inlineMonacoEditors = {}; // Storage for inline editors by DIV ID
+    let editingQIndex = -1; // Track which question is being edited
+
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' } });
+
+    // State management for Undo/Redo
+    let history = [];
+    let historyStep = -1;
+
+    function saveToHistory() {
+        if (historyStep < history.length - 1) {
+            history = history.slice(0, historyStep + 1);
+        }
+        history.push(JSON.stringify(exams));
+        if (history.length > 50) history.shift();
+        historyStep = history.length - 1;
+    }
+
+    function undo() {
+        if (historyStep > 0) {
+            historyStep--;
+            exams = JSON.parse(history[historyStep]);
+            updateQuestionsList();
+            updateSectionsList();
+            showToast('Undo performed (Ctrl+Z)');
+        }
+    }
+
+    function redo() {
+        if (historyStep < history.length - 1) {
+            historyStep++;
+            exams = JSON.parse(history[historyStep]);
+            updateQuestionsList();
+            updateSectionsList();
+            showToast('Redo performed (Ctrl+Shift+Z)');
+        }
+    }
+
+    function showVersionHistory() {
+        if (history.length === 0) { showToast('No history available yet'); return; }
+        let versions = history.map((h, i) => `Option ${i + 1}: ${JSON.parse(h).questions.length} questions`).join('\n');
+        let choice = prompt(`Select version to restore (1 to ${history.length}):\n${versions}`);
+        if (choice && choice > 0 && choice <= history.length) {
+            historyStep = choice - 1;
+            exams = JSON.parse(history[historyStep]);
+            updateQuestionsList();
+            updateSectionsList();
+            showToast('Version Restored');
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'z') {
+            e.preventDefault();
+            undo();
+        }
+        if (e.ctrlKey && e.shiftKey && e.key === 'Z') {
+            e.preventDefault();
+            redo();
+        }
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable) {
+            if (e.key === 'q' || e.key === 'Q') navigateBuilder(-1);
+            if (e.key === 'a' || e.key === 'A') navigateBuilder(1);
+        }
+    });
+
+    function toggleRightPanel(panel) {
+        document.getElementById('logicPanel').style.display = panel === 'logic' ? 'block' : 'none';
+        document.getElementById('previewPanel').style.display = panel === 'preview' ? 'block' : 'none';
+
+        document.getElementById('panel-btn-logic').classList.toggle('active', panel === 'logic');
+        document.getElementById('panel-btn-preview').classList.toggle('active', panel === 'preview');
+
+        if (panel === 'preview') updateLivePreview();
+    }
+
+    function updateLivePreview() {
+        const heading = document.getElementById('questionHeading').value || 'Question Heading';
+        const content = quill ? quill.root.innerHTML : '';
+        const type = currentQuestionType;
+
+        document.getElementById('livePreviewTitle').textContent = heading;
+        document.getElementById('livePreviewContent').innerHTML = content;
+
+        let interactionHtml = '';
+        if (type === 'mcq' || type === 'true_false') {
+            const options = Array.from(document.querySelectorAll('.option-input')).map(i => i.value);
+            interactionHtml = options.map((opt, i) => `
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; padding: 12px; border: 1px solid #eee; border-radius: 8px; background: #fafafa;">
+                    <div style="width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 50%;"></div>
+                    <span style="font-size: 0.9rem;">${opt || 'Option ' + (i + 1)}</span>
+                </div>
+            `).join('');
+        } else if (type === 'subjective') {
+            interactionHtml = `<textarea class="clean-textarea" style="height: 120px;" placeholder="Student response area..."></textarea>`;
+        } else if (type === 'coding') {
+            const selectedLangs = Array.from(document.querySelectorAll('#langSelectorGrid input:checked')).map(c => c.value.toUpperCase());
+            const displayLang = selectedLangs.length > 0 ? selectedLangs[0] : 'PYTHON';
+
+            interactionHtml = `
+                <div style="margin-bottom:10px; font-size:0.7rem; font-weight:700; color:#666;">PREVIEWING AS: <span style="color:var(--primary);">${displayLang}</span></div>
+                <div style="background: #252526; color: #fff; padding: 12px; border-radius: 8px; font-family: 'JetBrains Mono'; font-size: 0.8rem; height: 150px; overflow: hidden; position: relative;">
+                    <div style="color: #6a9955;">// Student Writes ${displayLang} Code Here...</div>
+                    <div style="margin-top: 10px; color:#aaa;">[ Monaco Editor Interface Mock ]</div>
+                    
+                    <div style="position: absolute; bottom: 10px; right: 10px;">
+                        <button onclick="simulateExecution()" class="btn-run" style="height: 32px; font-size: 0.75rem; padding: 0 15px;">RUN CODE</button>
+                    </div>
+                </div>
+                <div id="executionConsole" style="display: none; margin-top: 10px; background: #000; color: #0f0; font-family: 'JetBrains Mono'; font-size: 0.7rem; padding: 10px; border-radius: 6px; min-height: 80px;">
+                </div>
+            `;
+        }
+        document.getElementById('livePreviewInteraction').innerHTML = interactionHtml;
+    }
+
+    function simulateExecution() {
+        const console = document.getElementById('executionConsole');
+        console.style.display = 'block';
+        console.innerHTML = '> Initializing Sandbox...<br>> Loading Python Interpreter...<br>> Running Test Cases...<br>';
+
+        setTimeout(() => {
+            console.innerHTML += '<span style="color: #fbbf24;">[WAITING]</span> Case 1: Checking constraints...<br>';
+        }, 1000);
+
+        setTimeout(() => {
+            console.innerHTML += '<span style="color: #10b981;">[PASSED]</span> Case 1: Basic functionality<br>';
+            console.innerHTML += '<span style="color: #10b981;">[PASSED]</span> Case 2: Edge cases<br>';
+            console.innerHTML += '<br><strong style="color: #fff;">SCORE: 100/100</strong>';
+            showToast('Simulation: Execution Success!');
+        }, 2500);
+    }
+
+    function initMonacoInline(divId, lang, initialValue = '') {
+        require(['vs/editor/editor.main'], function () {
+            // Define Grey Theme
+            monaco.editor.defineTheme('grey-theme', {
+                base: 'vs',
+                inherit: true,
+                rules: [],
+                colors: {
+                    'editor.background': '#f2f2f2',
+                    'editor.lineHighlightBackground': '#eeeeee',
+                    'editor.selectionBackground': '#d0d0d0'
+                }
+            });
+
+            const mlang = lang.toLowerCase() === 'c++' ? 'cpp' : lang.toLowerCase();
+            const editor = monaco.editor.create(document.getElementById(divId), {
+                value: initialValue,
+                language: mlang,
+                theme: 'grey-theme', // Grey Mode per request
+                fontSize: 14,
+                fontFamily: 'JetBrains Mono',
+                automaticLayout: true,
+                minimap: { enabled: false },
+                suggestOnTriggerCharacters: true,
+                quickSuggestions: true,
+                scrollBeyondLastLine: false,
+                lineNumbers: 'on',
+                renderLineHighlight: 'none',
+                scrollbar: { vertical: 'auto', horizontal: 'auto' }
+            });
+            inlineMonacoEditors[divId] = editor;
+        });
+    }
+
+    function openEditorOverlay(sourceId, lang, title) {
+        monacoTargetId = sourceId;
+        document.getElementById('overlayTitle').textContent = `${lang.toUpperCase()} ARCHITECT - ${title}`;
+        document.getElementById('editorOverlay').style.display = 'flex';
+
+        // Get content from inline editor or textarea
+        const initialValue = inlineMonacoEditors[sourceId] ? inlineMonacoEditors[sourceId].getValue() : '';
+        const monacoLang = lang.toLowerCase() === 'c++' ? 'cpp' : lang.toLowerCase();
+
+        if (!activeMonacoEditor) {
+            require(['vs/editor/editor.main'], function () {
+                activeMonacoEditor = monaco.editor.create(document.getElementById('monaco-container'), {
+                    value: initialValue,
+                    language: monacoLang,
+                    theme: 'vs', // White Mode
+                    fontSize: 18,
+                    fontFamily: 'JetBrains Mono',
+                    automaticLayout: true,
+                    minimap: { enabled: true },
+                    suggestOnTriggerCharacters: true,
+                    quickSuggestions: true
+                });
+            });
+        } else {
+            activeMonacoEditor.setValue(initialValue);
+            monaco.editor.setModelLanguage(activeMonacoEditor.getModel(), monacoLang);
+        }
+    }
+
+    function closeEditorOverlay() {
+        if (activeMonacoEditor && monacoTargetId) {
+            if (inlineMonacoEditors[monacoTargetId]) {
+                inlineMonacoEditors[monacoTargetId].setValue(activeMonacoEditor.getValue());
+            }
+        }
+        document.getElementById('editorOverlay').style.display = 'none';
+        monacoTargetId = null;
+    }
+
+    // State & Quill init
+    let quill;
+    let examStatus = 'Draft';
+
+    window.addEventListener('load', () => {
+        quill = new Quill('#editor-container', {
+            theme: 'snow',
+            placeholder: 'Craft your question prompt or problem statement here...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    [{ 'font': Font.whitelist }, { 'size': Size.whitelist }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['code-block', 'link'],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Hide Loader
+        hideLoader();
+
+        // Initialize SortableJS
+        if (typeof Sortable !== 'undefined') {
+            const el = document.getElementById('questionsList');
+            if (el) {
+                Sortable.create(el, {
+                    animation: 150,
+                    onEnd: function (evt) {
+                        const itemEl = evt.item;
+                        // Logic to reorder exams.questions based on DOM order
+                        reorderQuestionsFromUI();
+                    }
+                });
+            }
+        }
+    });
+
+    function reorderQuestionsFromUI() {
+        const listItems = document.querySelectorAll('#questionsList .q-item');
+        const newOrder = [];
+        listItems.forEach(item => {
+            const idx = parseInt(item.getAttribute('data-global-idx'));
+            newOrder.push(exams.questions[idx]);
+        });
+        exams.questions = newOrder;
+        updateQuestionsList();
+        showToast('Sequence updated via Drag & Drop');
+    }
+
+    function filterQuestions() {
+        const query = document.getElementById('sidebarSearch').value.toLowerCase();
+        const items = document.querySelectorAll('#questionsList .q-item');
+        items.forEach(item => {
+            const text = item.innerText.toLowerCase();
+            item.style.display = text.includes(query) ? 'block' : 'none';
+        });
+    }
+
+    function showProcessing() {
+        const loader = document.getElementById('pageLoader');
+        loader.style.display = 'flex';
+        loader.style.opacity = '1';
+    }
+
+    function updatePool(section, size) {
+        if (!exams.pools) exams.pools = {};
+        exams.pools[section] = parseInt(size);
+        showToast(`Pool for ${section} set to ${size} questions`);
+    }
+
+    function generateAIQuestion() {
+        const topic = prompt("Enter topic for AI generation (e.g. Binary Search Tree):");
+        if (!topic) return;
+
+        showProcessing();
+        setTimeout(() => {
+            document.getElementById('questionHeading').value = `Advanced ${topic} Analysis`;
+            quill.root.innerHTML = `<p>Implement a solution for <strong>${topic}</strong> that optimizes for time complexity O(log n). Ensure you handle edge cases such as empty inputs.</p>`;
+            selectQuestionType('coding');
+            const pyCheck = document.querySelector('#langSelectorGrid input[value="python"]');
+            if (pyCheck) pyCheck.checked = true;
+            updateLanguages();
+            hideLoader();
+            showToast(`AI Generated ${topic} template!`);
+        }, 1200);
+    }
+
+    function openPoolModal() {
+        const pool = db.getQuestionPool();
+        if (!pool || pool.length === 0) {
+            showToast('Question Pool is currently empty');
+            return;
+        }
+
+        const html = `
+            <div style="max-height: 400px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px;">
+                ${pool.map(q => `
+                    <div style="padding: 15px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+                        <div style="flex:1;">
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #333;">${q.heading}</div>
+                            <div style="font-size: 0.7rem; color: #999; text-transform: uppercase; font-weight: 600; margin-top:2px;">${q.type} • ${q.marks} Marks</div>
+                        </div>
+                        <button class="btn btn-run" onclick="importQuestionFromPool('${q.poolId}')" style="height: 32px; font-size: 0.75rem; padding: 0 15px; width:auto;">IMPORT</button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        showModal({
+            title: 'Global Question Pool',
+            desc: 'Select a question to import into your current assessment timeline.',
+            content: html,
+            confirmText: 'Close',
+            onConfirm: () => { }
+        });
+    }
+
+    function importQuestionFromPool(poolId) {
+        const pool = db.getQuestionPool();
+        const sourceQ = pool.find(q => q.poolId === poolId);
+        if (sourceQ) {
+            // Clone and reset IDs
+            const newQ = JSON.parse(JSON.stringify(sourceQ));
+            newQ.id = 'q_' + Date.now();
+            delete newQ.poolId;
+            delete newQ.addedAt;
+
+            // Set to current section
+            newQ.section = document.getElementById('questionSection').value || 'General';
+
+            exams.questions.push(newQ);
+            updateQuestionsList();
+            showToast(`Imported: ${newQ.heading}`);
+        }
+    }
+
+    function applyTemplate(type) {
+        if (type === 'coding') {
+            document.getElementById('questionHeading').value = "Coding Challenge Template";
+            quill.root.innerHTML = "<p>Problem Description here...</p><h3>Input Format</h3><p>...</p><h3>Output Format</h3><p>...</p>";
+            selectQuestionType('coding');
+            document.querySelector('#codingContainer input[value="python"]').checked = true;
+            updateLanguages();
+        }
+        showToast("Template Applied");
+    }
+
+    function hideLoader() {
+        const loader = document.getElementById('pageLoader');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+    }
+
+    function triggerSecurityBlackout() {
+        document.getElementById('securityBlackout').style.display = 'flex';
+        setTimeout(() => document.getElementById('securityBlackout').style.display = 'none', 3000);
+    }
+
+    // --- ADVANCED DESIGNER LOGIC ---
+    function updateEditorStyle(prop, val) {
+        const editor = document.querySelector('.ql-editor');
+        if (editor) {
+            editor.style[prop] = val;
+            showToast(`Applied ${prop}: ${val}`);
+        }
+    }
+
+    function toggleArchitectTheme() {
+        const step3 = document.getElementById('step-3');
+        step3.classList.toggle('architect-dark-mode');
+        showToast('Architect Theme Toggled');
+    }
+
+    function insertWebHero(type) {
+        const range = quill.getSelection();
+        if (!range) {
+            showToast('Please click inside the editor first.');
+            return;
+        }
+
+        let html = '';
+        switch (type) {
+            case 'h1':
+                html = '<h1 style="color:var(--primary); border-left: 5px solid var(--primary); padding-left:15px; margin: 20px 0;">Premium Heading Title</h1>';
+                break;
+            case 'button':
+                html = '<a href="#" style="display:inline-block; background:var(--primary); color:#fff; padding:12px 30px; border-radius:30px; text-decoration:none; font-weight:700; box-shadow: 0 4px 15px rgba(217,108,51,0.3); margin: 10px 0;">ACTION BUTTON</a>';
+                break;
+            case 'divider':
+                html = '<hr style="border:none; height:1px; background:linear-gradient(to right, transparent, #eee, transparent); margin: 30px 0;">';
+                break;
+            case 'icon':
+                html = '<i class="fas fa-rocket" style="color:var(--primary); font-size:1.5rem; margin-right:10px;"></i>';
+                break;
+        }
+
+        if (html) {
+            quill.clipboard.dangerouslyPasteHTML(range.index, html);
+            showToast(`Inserted ${type.toUpperCase()}`);
+        }
+    }
+
+    // Custom Modal System
+    function showModal({ title, desc, content, confirmText = 'Confirm', onConfirm }) {
+        const overlay = document.getElementById('customModalOverlay');
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalDesc').textContent = desc;
+        document.getElementById('modalContent').innerHTML = content || '';
+        const confirmBtn = document.getElementById('modalConfirm');
+        const cancelBtn = document.getElementById('modalCancel');
+        confirmBtn.textContent = confirmText;
+
+        overlay.style.display = 'flex';
+
+        const cleanup = () => { overlay.style.display = 'none'; };
+        cancelBtn.onclick = cleanup;
+        confirmBtn.onclick = () => { onConfirm(); cleanup(); };
+    }
+
+    function promptAddSection() {
+        showModal({
+            title: 'New Section Architecture',
+            desc: 'Enter a conceptual name for this assessment portion.',
+            content: `<input type="text" id="modalPromptInput" class="clean-input" placeholder="e.g. Cognitive Logic" style="border-bottom: 2px solid var(--primary);">`,
+            confirmText: 'Create Section',
+            onConfirm: () => {
+                const name = document.getElementById('modalPromptInput').value;
+                if (name && name.trim()) {
+                    exams.sections.push(name.trim());
+                    updateSectionsList();
+                }
+            }
+        });
+    }
+
+    // Check auth
+    if (!auth.isLoggedIn() || !auth.isTeacher()) {
+        window.location.href = '../pages/login.html?role=teacher';
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const editExamId = urlParams.get('examId');
+    let exam = editExamId ? db.getExamById(editExamId) : null;
+
+    let currentQuestionType = 'mcq';
+    let exams = exam ? JSON.parse(JSON.stringify(exam)) : {
+        title: '',
+        description: '',
+        duration: 60,
+        totalMarks: 100,
+        negativeMarking: 0,
+        scheduledDate: null,
+        wifiRestriction: false,
+        allowedWifi: null,
+        sections: ['General'],
+        questions: [],
+        languages: [],
+        pools: {},
+        theme: { primaryColor: '#D96C33', font: 'Outfit', darkMode: false },
+        sectionLockEnabled: false,
+        security: {
+            blockCopyPaste: false,
+            blockScreenshot: false,
+            shuffleQuestions: false,
+            fullScreenRequired: false,
+            webcamEnabled: false,
+            micEnabled: false,
+            vpnBlocked: false,
+            passcode: '',
+            entryDeadline: null,
+            maxTabSwitches: 3,
+            showResults: true
+        }
+    };
+
+    function initPage() {
+        // Step Persistence (REFRSH PROTECTION)
+        const savedStep = localStorage.getItem('exam_step_' + (editExamId || 'new'));
+        if (savedStep) {
+            goToStep(parseInt(savedStep), true);
+            showToast(`Resuming from Step ${savedStep}`);
+        }
+
+        if (!editExamId) {
+            const temp = localStorage.getItem('exampad_creator_temp');
+            if (temp) {
+                const recovered = JSON.parse(temp);
+                showModal({
+                    title: 'Draft Recovery',
+                    desc: 'We found an in-progress architectural draft. Would you like to continue building it?',
+                    confirmText: 'Restore Draft',
+                    onConfirm: () => {
+                        exams = recovered;
+                        if (document.getElementById('examTitle')) document.getElementById('examTitle').value = exams.title || '';
+                        if (document.getElementById('examDescription')) document.getElementById('examDescription').value = exams.description || '';
+                        if (document.getElementById('examDuration')) document.getElementById('examDuration').value = exams.duration || 60;
+                        if (document.getElementById('examTotalMarks')) document.getElementById('examTotalMarks').value = exams.totalMarks || 100;
+                        if (document.getElementById('negativeMarking')) document.getElementById('negativeMarking').value = exams.negativeMarking || 0;
+                        if (document.getElementById('scheduleDate')) document.getElementById('scheduleDate').value = exams.scheduledDate || '';
+
+                        // Theme
+                        if (exams.theme) {
+                            if (document.getElementById('themePrimaryColor')) document.getElementById('themePrimaryColor').value = exams.theme.primaryColor || '#D96C33';
+                            if (document.getElementById('themeFont')) document.getElementById('themeFont').value = exams.theme.font || 'Outfit';
+                            if (document.getElementById('themeDarkMode')) document.getElementById('themeDarkMode').checked = exams.theme.darkMode || false;
+                        }
+
+                        updateSectionsList();
+                        updateQuestionsList();
+                        showToast('Draft restored successfully');
+                    }
+                });
+            }
+        }
+
+        // Periodic Autosave every 20 seconds
+        setInterval(autoSave, 20000);
+
+        // Header Widget Logic
+        const profileToggle = document.getElementById('profileToggle');
+        const profileMenu = document.getElementById('profileMenu');
+
+        if (profileToggle && profileMenu) {
+            profileToggle.onclick = (e) => {
+                e.stopPropagation();
+                profileMenu.classList.toggle('active');
+            };
+        }
+
+        window.onclick = (e) => {
+            if (profileMenu && profileMenu.classList.contains('active')) {
+                profileMenu.classList.remove('active');
+            }
+        };
+
+        if (exam) {
+            document.getElementById('examTitle').value = exams.title;
+            document.getElementById('examDescription').value = exams.description;
+            document.getElementById('examDuration').value = exams.duration;
+            document.getElementById('examTotalMarks').value = exams.totalMarks;
+            document.getElementById('negativeMarking').value = exams.negativeMarking || 0;
+            if (exams.scheduledDate) document.getElementById('scheduleDate').value = exams.scheduledDate;
+
+            // Security & Proctoring Persistence
+            if (exams.security) {
+                if (document.getElementById('blockCopyPaste')) document.getElementById('blockCopyPaste').checked = exams.security.blockCopyPaste;
+                if (document.getElementById('blockScreenshot')) document.getElementById('blockScreenshot').checked = exams.security.blockScreenshot;
+                if (document.getElementById('shuffleQuestions')) document.getElementById('shuffleQuestions').checked = exams.security.shuffleQuestions;
+                if (document.getElementById('fullScreenRequired')) document.getElementById('fullScreenRequired').checked = exams.security.fullScreenRequired;
+
+                // Step 4 fields
+                if (document.getElementById('webcamEnabled')) document.getElementById('webcamEnabled').checked = exams.security.webcamEnabled;
+                if (document.getElementById('micEnabled')) document.getElementById('micEnabled').checked = exams.security.micEnabled;
+                if (document.getElementById('vpnBlocked')) document.getElementById('vpnBlocked').checked = exams.security.vpnBlocked;
+                if (document.getElementById('examPasscode')) document.getElementById('examPasscode').value = exams.security.passcode || '';
+                if (document.getElementById('entryDeadline')) document.getElementById('entryDeadline').value = exams.security.entryDeadline || '';
+                if (document.getElementById('maxTabSwitches')) document.getElementById('maxTabSwitches').value = exams.security.maxTabSwitches || 3;
+                if (document.getElementById('showResults')) document.getElementById('showResults').checked = exams.security.showResults !== false;
+                if (document.getElementById('manualGrading')) document.getElementById('manualGrading').checked = exams.security.manualGrading || false;
+
+                // Final Validation
+                if (exams.security.finalValidation) {
+                    if (document.getElementById('val_points')) document.getElementById('val_points').checked = exams.security.finalValidation.points;
+                    if (document.getElementById('val_security')) document.getElementById('val_security').checked = exams.security.finalValidation.security;
+                }
+            }
+
+            // Theme Persistence
+            if (exams.theme) {
+                if (document.getElementById('themePrimaryColor')) document.getElementById('themePrimaryColor').value = exams.theme.primaryColor || '#D96C33';
+                if (document.getElementById('themeFont')) document.getElementById('themeFont').value = exams.theme.font || 'Outfit';
+                if (document.getElementById('themeDarkMode')) document.getElementById('themeDarkMode').checked = exams.theme.darkMode || false;
+            }
+            updateSectionsList();
+            updateQuestionsList();
+            // Force Step 4 preview refresh on load if we are already on step 4
+            updatePreviewList();
+        }
+        updateSectionsList();
+    }
+
+    function selectQuestionType(type) {
+        currentQuestionType = type;
+        document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+        const tab = document.getElementById(`type-${type}`);
+        if (tab) tab.classList.add('active');
+
+        // Toggle containers
+        document.getElementById('optionsContainer').style.display = (type === 'mcq' || type === 'true_false' || type === 'assertion_reason') ? 'block' : 'none';
+        document.getElementById('subjectiveContainer').style.display = type === 'subjective' ? 'block' : 'none';
+        document.getElementById('numericContainer').style.display = (type === 'numeric' || type === 'single_integer') ? 'block' : 'none';
+        document.getElementById('fileUploadContainer').style.display = type === 'file_upload' ? 'block' : 'none';
+        document.getElementById('codingContainer').style.display = type === 'coding' ? 'block' : 'none';
+
+        document.getElementById('optionsList').innerHTML = '';
+        if (type === 'true_false') {
+            addOptionWithValue('True');
+            addOptionWithValue('False');
+        } else if (type === 'assertion_reason') {
+            addOptionWithValue('Both Assertion (A) and Reason (R) are true and R is the correct explanation of A');
+            addOptionWithValue('Both Assertion (A) and Reason (R) are true but R is not the correct explanation of A');
+            addOptionWithValue('Assertion (A) is true but Reason (R) is false');
+            addOptionWithValue('Assertion (A) is false but Reason (R) is true');
+        } else if (type === 'mcq') {
+            addOption(); addOption();
+        }
+
+        if (type === 'coding') {
+            populateLanguages();
+            if (document.getElementById('testCasesContainer').children.length === 0) {
+                addTestCaseRow('// Sample Input', '// Sample Output', 20, true);
+            }
+        }
+    }
+
+    function populateLanguages() {
+        const langGrid = document.getElementById('langSelectorGrid');
+        if (!langGrid) return;
+        const langs = [
+            { id: 'python', name: 'Python' },
+            { id: 'javascript', name: 'JavaScript' },
+            { id: 'java', name: 'Java' },
+            { id: 'cpp', name: 'C++' },
+            { id: 'c', name: 'C' }
+        ];
+
+        langGrid.innerHTML = langs.map(l => `
+            <label class="lang-check" style="display:flex; align-items:center; gap:8px; background:#fff; padding:10px; border-radius:8px; border:1px solid #eee; cursor:pointer; font-size:0.85rem; font-weight:600;">
+                <input type="checkbox" value="${l.id}" onchange="updateLanguages()" style="width:16px; height:16px;">
+                ${l.name}
+            </label>
+        `).join('');
+
+        // Add "Add Test Case" button if not exists
+        if (!document.getElementById('addTestCaseBtn')) {
+            const btn = document.createElement('button');
+            btn.id = 'addTestCaseBtn';
+            btn.className = 'btn btn-ghost';
+            btn.style = 'width:100%; margin-top:16px; border:1px dashed #ddd; background:#fff;';
+            btn.innerHTML = '+ Add Hidden Test Case';
+            btn.onclick = () => addTestCaseRow();
+            document.getElementById('codingContainer').appendChild(btn);
+        }
+    }
+
+    function addOption() { addOptionWithValue(''); }
+
+    function addOptionWithValue(val, isCorrect = false) {
+        const list = document.getElementById('optionsList');
+        const id = 'opt_' + Math.random().toString(36).substr(2, 9);
+        const div = document.createElement('div');
+        div.className = `option-row ${isCorrect ? 'is-correct' : ''}`;
+        div.id = id;
+        div.style.padding = '16px';
+        div.style.borderWidth = '2px';
+        div.innerHTML = `
+                <div class="option-selector" onclick="setCorrectOption('${id}')" style="width:28px; height:28px;"></div>
+                <input type="text" class="clean-input option-input" style="border:none; padding:4px 0; font-size: 1.1rem; background:transparent;" value="${val}" placeholder="Enter Choice...">
+                <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer; color:#ef4444; font-size: 1.1rem; display:flex; align-items:center;">&times;</button>
+            `;
+        list.appendChild(div);
+    }
+
+    function setCorrectOption(id) {
+        document.querySelectorAll('.option-row').forEach(r => r.classList.remove('is-correct'));
+        document.getElementById(id).classList.add('is-correct');
+    }
+
+    function getCorrectAnswer() {
+        const correctRow = document.querySelector('.option-row.is-correct');
+        return correctRow ? correctRow.querySelector('.option-input').value : null;
+    }
+
+    function addTestCaseRow(input = '', output = '', marks = 20, isSample = false) {
+        const container = document.getElementById('testCasesContainer');
+        const div = document.createElement('div');
+        div.className = 'test-case-card';
+        div.innerHTML = `
+                <span class="remove-case" onclick="this.parentElement.remove()">&times;</span>
+                
+                <div class="test-case-input-group">
+                    <label class="label" style="font-weight:700; color:#333;">INPUT FORMAT / SAMPLE INPUT</label>
+                    <textarea class="clean-textarea t-input" style="height:100px; min-height:100px; border:none; background:#f2f2f2; border-radius:8px; padding:15px; font-family:'JetBrains Mono'; font-size:0.9rem;" placeholder="Enter input content...">${input}</textarea>
+                </div>
+
+                <div class="test-case-input-group">
+                    <label class="label" style="font-weight:700; color:#333;">OUTPUT FORMAT / SAMPLE OUTPUT</label>
+                    <textarea class="clean-textarea t-output" style="height:100px; min-height:100px; border:none; background:#f2f2f2; border-radius:8px; padding:15px; font-family:'JetBrains Mono'; font-size:0.9rem;" placeholder="Enter output content...">${output}</textarea>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px; padding-top:16px; border-top:1px solid #f5f5f5;">
+                    <div style="display:flex; align-items:center; gap:16px;">
+                        <div style="display:flex; flex-direction:column; gap:4px;">
+                            <label style="font-size:0.65rem; font-weight:700; color:#999; letter-spacing:0.5px;">WIEGHT (MARKS)</label>
+                            <input type="number" class="clean-input t-marks" value="${marks}" style="width:120px; font-weight:700; font-size:1.1rem; color:var(--primary);" placeholder="Marks">
+                        </div>
+                    </div>
+                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.85rem; font-weight:600; color:#555; background:#f9f9f9; padding:8px 16px; border-radius:30px; border:1px solid #eee;">
+                        <input type="checkbox" class="t-sample" ${isSample ? 'checked' : ''} onchange="toggleTestCaseSample(this)"> 
+                        <span>Mark as Sample Case</span>
+                    </label>
+                </div>
+            `;
+        container.appendChild(div);
+    }
+
+    function toggleTestCaseSample(cb) {
+        const marksInput = cb.parentElement.parentElement.querySelector('.t-marks');
+        if (cb.checked) {
+            marksInput.value = 0;
+            marksInput.disabled = true;
+            marksInput.style.opacity = '0.5';
+        } else {
+            marksInput.value = 1;
+            marksInput.disabled = false;
+            marksInput.style.opacity = '1';
+        }
+    }
+
+    function addQuestion() {
+        const headingInput = document.getElementById('questionHeading');
+        const htmlContent = quill.root.innerHTML;
+
+        if (!headingInput.value.trim()) {
+            showToast('Question Heading identifies your question');
+            headingInput.focus();
+            return;
+        }
+        if (quill.getText().trim().length === 0) {
+            showToast('Problem statement cannot be empty');
+            return;
+        }
+
+        const q = {
+            id: 'q_' + Date.now(),
+            type: currentQuestionType,
+            heading: headingInput.value.trim(),
+            title: htmlContent, // Rich text content
+            marks: parseInt(document.getElementById('questionMarks').value),
+            section: document.getElementById('questionSection').value || 'General',
+            timer: parseInt(document.getElementById('questionTimer').value) || 0,
+            teacherNotes: document.getElementById('teacherNotes').value.trim()
+        };
+
+        if (currentQuestionType === 'mcq' || currentQuestionType === 'true_false' || currentQuestionType === 'assertion_reason') {
+            q.options = Array.from(document.querySelectorAll('.option-input')).map(i => i.value.trim()).filter(v => v);
+            if (q.options.length < 2) { showToast('Add at least 2 options'); return; }
+            q.correctAnswer = getCorrectAnswer();
+            if (!q.correctAnswer) { showToast('Select the correct option (orange circle)'); return; }
+        }
+        else if (currentQuestionType === 'subjective') {
+            q.keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
+        } else if (currentQuestionType === 'numeric' || currentQuestionType === 'single_integer') {
+            q.correctNumeric = parseFloat(document.getElementById('correctNumeric').value);
+            q.tolerance = parseFloat(document.getElementById('numericTolerance').value) || 0;
+            if (isNaN(q.correctNumeric)) { showToast('Enter a valid numeric answer'); return; }
+        } else if (currentQuestionType === 'file_upload') {
+            q.allowedExtensions = document.getElementById('allowedExtensions').value.split(',').map(e => e.trim()).filter(e => e);
+            q.maxFileSize = parseInt(document.getElementById('maxFileSize').value) || 10;
+        } else if (currentQuestionType === 'coding') {
+            q.languages = Array.from(document.querySelectorAll('#langSelectorGrid input:checked')).map(c => c.value);
+            if (q.languages.length === 0) { showToast('Select at least one language'); return; }
+            q.code = {};
+            q.languages.forEach(l => {
+                q.code[l] = {
+                    prefix: inlineMonacoEditors[`code_prefix_${l}`]?.getValue() || '',
+                    middle: inlineMonacoEditors[`code_middle_${l}`]?.getValue() || '',
+                    suffix: inlineMonacoEditors[`code_suffix_${l}`]?.getValue() || '',
+                    lockPrefix: document.getElementById(`lock_prefix_${l}`).checked,
+                    lockSuffix: document.getElementById(`lock_suffix_${l}`).checked,
+                    hidePrefix: document.getElementById(`hide_prefix_${l}`).checked,
+                    hideSuffix: document.getElementById(`hide_suffix_${l}`).checked
+                };
+            });
+
+            q.testCases = Array.from(document.querySelectorAll('.test-case-card')).map(card => ({
+                input: card.querySelector('.t-input').value,
+                output: card.querySelector('.t-output').value,
+                marks: parseInt(card.querySelector('.t-marks').value) || 0,
+                isSample: card.querySelector('.t-sample').checked
+            }));
+        }
+
+        if (editingQIndex !== -1) {
+            exams.questions[editingQIndex] = q;
+            showToast('Question synchronized');
+        } else {
+            exams.questions.push(q);
+            db.addToQuestionPool(q);
+            showToast('Question added to timeline');
+        }
+
+        editingQIndex = -1;
+        updateQuestionsList();
+        updateSectionsList();
+        resetBuilder();
+        autoSave();
+    }
+
+    function updateSectionsList() {
+        const list = document.getElementById('sectionsList');
+        if (!list) return;
+        list.innerHTML = exams.sections.map((s, i) => `
+                <div class="q-item" style="display:flex; justify-content:space-between; align-items:center; background: #fff; border: 1px solid #eee; margin-bottom: 12px; padding: 20px 24px; border-radius: 12px; border-left: 4px solid var(--primary);">
+                    <div style="display:flex; align-items:center; gap:16px;">
+                        <div style="width:40px; height:40px; background:rgba(217, 108, 51, 0.05); color:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(217, 108, 51, 0.1);">
+                            <i class="fas fa-layer-group" style="font-size:1.1rem;"></i>
+                        </div>
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-weight:700; font-size: 1rem; color: var(--text-main);">${s}</span>
+                            <span style="font-size:0.75rem; color: var(--text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">${exams.questions.filter(q => q.section === s).length} Questions</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:24px;">
+                        <!-- Random Question Pool Logic -->
+                        <div style="display:flex; align-items:center; gap:8px; background:#f9f9f9; padding:8px 16px; border-radius:30px; border:1px solid #eee;">
+                            <span style="font-size:0.75rem; font-weight:700; color:#666;">RANDOM POOL:</span>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <span style="font-size:0.75rem; color:#999;">Display</span>
+                                <input type="number" id="poolSize_${i}" value="${(exams.pools && exams.pools[s]) || 0}" style="width:40px; border:none; background:transparent; font-weight:700; text-align:center;" onchange="updatePool('${s}', this.value)">
+                                <span style="font-size:0.75rem; color:#999;">questions</span>
+                            </div>
+                            <span style="font-size:0.65rem; color:#ccc;">(0 = Show All)</span>
+                        </div>
+
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <button onclick="duplicateSection(${i})" class="btn-fullscreen-toggle" style="color:var(--primary); border-color:#ffe8dd; background:#fff5f0;" title="Duplicate Section">
+                                <i class="far fa-copy"></i>
+                            </button>
+                            ${exams.sections.length > 1 ? `
+                                <button onclick="removeSection(${i})" class="btn-fullscreen-toggle" style="color:#F04438; border-color:#FEE4E2; background:#FEF3F2;" title="Remove Section">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        document.getElementById('questionSection').innerHTML = exams.sections.map(s => `<option value="${s}">${s}</option>`).join('');
+    }
+
+    function removeSection(index) {
+        showModal({
+            title: 'Confirm Deletion',
+            desc: `Are you sure you want to remove the section "${exams.sections[index]}" and all its logic?`,
+            onConfirm: () => {
+                exams.sections.splice(index, 1);
+                updateSectionsList();
+            }
+        });
+    }
+
+    function duplicateSection(index) {
+        const sourceSec = exams.sections[index];
+        const newSec = sourceSec + ' (Copy)';
+        exams.sections.push(newSec);
+
+        // Duplicate questions in this section
+        const secQuestions = exams.questions.filter(q => q.section === sourceSec);
+        secQuestions.forEach(q => {
+            const newQ = JSON.parse(JSON.stringify(q));
+            newQ.id = 'q_' + Date.now() + Math.random();
+            newQ.section = newSec;
+            exams.questions.push(newQ);
+        });
+
+        updateSectionsList();
+        updateQuestionsList();
+        showToast('Section and questions duplicated');
+    }
+
+    function updateQuestionsList() {
+        // Sync both sidebar and architect rail if they exist
+        const sidebarList = document.getElementById('questionsList');
+        const railList = document.getElementById('questionsListArchitect');
+
+        if (exams.questions.length === 0) {
+            const empty = '<div style="text-align:center; padding:40px; color:#999; font-size:0.85rem; border:1px dashed #ddd; border-radius:12px; margin: 12px;">Empty Timeline</div>';
+            if (sidebarList) sidebarList.innerHTML = empty;
+            if (railList) railList.innerHTML = empty;
+            return;
+        }
+
+        let railHtml = '';
+        let sidebarHtml = '';
+
+        exams.sections.forEach((secName, secIdx) => {
+            const secQuestions = exams.questions.map((q, idx) => ({ ...q, globalIdx: idx })).filter(q => q.section === secName);
+            if (secQuestions.length > 0) {
+                // Rail View (Grid numbers)
+                railHtml += `
+                    <div style="margin-bottom: 24px;">
+                        <div style="font-size: 0.65rem; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 8px; text-transform:uppercase;">${secName}</div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                            ${secQuestions.map((q, i) => `
+                                <div class="q-nav-item ${editingQIndex === q.globalIdx ? 'active' : ''}" 
+                                     onclick="editQuestion(${q.globalIdx})">
+                                    ${i + 1}
+                                    <i class="fas fa-check status-tick" style="position: absolute; top: -4px; right: -4px; color: #12B76A; font-size: 0.7rem; background: #fff; border-radius: 50%; display: block;"></i>
+                                    
+                                    <div class="q-nav-actions">
+                                        <div class="q-mini-btn" onclick="event.stopPropagation(); editQuestion(${q.globalIdx})" title="Edit"><i class="fas fa-pen"></i></div>
+                                        <div class="q-mini-btn" onclick="event.stopPropagation(); duplicateQuestion(${q.globalIdx})" title="Copy"><i class="far fa-copy"></i></div>
+                                        <div class="q-mini-btn del" onclick="event.stopPropagation(); deleteQuestion(${q.globalIdx})" title="Delete"><i class="far fa-trash-alt"></i></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                // Sidebar View (Detailed cards as per user request)
+                secQuestions.forEach((q, i) => {
+                    sidebarHtml += `
+                        <div class="q-item ${editingQIndex === q.globalIdx ? 'active' : ''}" onclick="editQuestion(${q.globalIdx})" data-global-idx="${q.globalIdx}">
+                            <div class="q-item-header">
+                                <span class="q-item-title">${q.heading || 'Untitled Question'}</span>
+                                <span class="q-item-marks">${q.marks} pts</span>
+                            </div>
+                            <div style="font-size:0.68rem; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-top:4px; display:flex; align-items:center; gap:6px;">
+                                <span style="color:var(--primary)">SEC - ${secIdx + 1}, Q - ${i + 1}</span> • <span>${q.type}</span>
+                                ${q.timer ? `• <span style="color:#d97706;"><i class="far fa-clock"></i> ${q.timer}s</span>` : ''}
+                            </div>
+                            
+                            <div class="q-item-actions">
+                                <div class="q-action-btn" onclick="event.stopPropagation(); editQuestion(${q.globalIdx})" title="Edit"><i class="fas fa-pen"></i></div>
+                                <div class="q-action-btn" onclick="event.stopPropagation(); duplicateQuestion(${q.globalIdx})" title="Copy"><i class="far fa-copy"></i></div>
+                                <div class="q-action-btn delete-btn" onclick="event.stopPropagation(); deleteQuestion(${q.globalIdx})" title="Delete"><i class="far fa-trash-alt"></i></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        });
+
+        if (railList) railList.innerHTML = railHtml;
+        if (sidebarList) {
+            sidebarList.innerHTML = sidebarHtml;
+            sidebarList.style.display = 'block'; // Ensure block layout
+        }
+
+        const totalQ = exams.questions.length;
+        const totalM = exams.questions.reduce((s, q) => s + q.marks, 0);
+        if (document.getElementById('totalQuestionsCount')) document.getElementById('totalQuestionsCount').textContent = totalQ;
+        if (document.getElementById('totalMarksCount')) document.getElementById('totalMarksCount').textContent = totalM;
+
+        updateAnalytics();
+        saveToHistory();
+
+        // Update Prerequisite Dropdown
+        const prereqSelect = document.getElementById('prereqQuestion');
+        if (prereqSelect) {
+            const currentVal = prereqSelect.value;
+            prereqSelect.innerHTML = '<option value="">None</option>' +
+                exams.questions.map((q, idx) => idx !== editingQIndex ? `<option value="${q.id}">${q.heading || 'Q' + (idx + 1)}</option>` : '').join('');
+            prereqSelect.value = currentVal;
+        }
+
+        // Show/Hide Current Status actions
+        const statusInd = document.getElementById('qStatusIndicator');
+        if (statusInd) statusInd.style.display = editingQIndex !== -1 ? 'flex' : 'none';
+
+        updatePreviewList();
+    }
+
+    function updateAnalytics() {
+        const chart = document.getElementById('marksChart');
+        if (!chart) return;
+
+        const types = ['mcq', 'coding', 'subjective'];
+        const totals = { mcq: 0, coding: 0, subjective: 0 };
+        exams.questions.forEach(q => {
+            if (totals[q.type] !== undefined) totals[q.type] += q.marks;
+        });
+
+        const maxMarks = Math.max(...Object.values(totals), 1);
+        chart.innerHTML = Object.entries(totals).map(([type, marks]) => `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 70px; font-size: 0.65rem; font-weight: 700; color: #666; text-transform: uppercase;">${type}</div>
+                <div style="flex: 1; height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
+                    <div style="width: ${(marks / maxMarks) * 100}%; height: 100%; background: var(--primary);"></div>
+                </div>
+                <div style="width: 30px; font-size: 0.65rem; font-weight: 700; color: var(--primary);">${marks}</div>
+            </div>
+        `).join('');
+    }
+
+    function deleteCurrent() {
+        if (editingQIndex === -1) return;
+        deleteQuestion(editingQIndex);
+        resetBuilder();
+    }
+
+    function duplicateCurrent() {
+        if (editingQIndex === -1) return;
+        duplicateQuestion(editingQIndex);
+    }
+
+    function navigateBuilder(dir) {
+        if (exams.questions.length === 0) return;
+        let nextIdx = editingQIndex + dir;
+        if (nextIdx < 0) nextIdx = 0;
+        if (nextIdx >= exams.questions.length) nextIdx = exams.questions.length - 1;
+        editQuestion(nextIdx);
+    }
+
+    function deleteQuestion(index) {
+        showModal({
+            title: 'Confirm Deletion',
+            desc: 'This question will be removed from the current assessment timeline. This action cannot be undone.',
+            onConfirm: () => {
+                exams.questions.splice(index, 1);
+                if (editingQIndex === index) {
+                    resetBuilder();
+                } else if (editingQIndex > index) {
+                    editingQIndex--;
+                }
+                updateQuestionsList();
+                showToast('Question removed from timeline');
+            }
+        });
+    }
+
+    function duplicateQuestion(index) {
+        const q = JSON.parse(JSON.stringify(exams.questions[index]));
+        q.id = 'q_' + Date.now();
+        q.heading += ' (Copy)';
+        exams.questions.splice(index + 1, 0, q);
+
+        if (editingQIndex > index) {
+            editingQIndex++;
+        }
+
+        updateQuestionsList();
+        showToast('Question logic duplicated');
+    }
+
+    function moveQuestion(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex >= 0 && newIndex < exams.questions.length) {
+            const arr = exams.questions;
+            [arr[index], arr[newIndex]] = [arr[newIndex], arr[index]];
+            updateQuestionsList();
+        }
+    }
+
+    // DEPRECATED dropdown update, logic moved to inline setCorrectOption
+    function updateCorrectAnswerOptions() { }
+
+    function goToStep(step, silent = false) {
+        syncState(); // Save data internally before moving
+        localStorage.setItem('exam_step_' + (editExamId || 'new'), step);
+
+        document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.step-indicator').forEach(i => i.classList.remove('active'));
+        document.getElementById('step-' + step).classList.add('active');
+        document.getElementById('ind' + step).classList.add('active');
+
+        if (!silent) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast('Step ' + step + ' Auto-Synced');
+        }
+
+        if (step === 4) {
+            updatePreviewList();
+        }
+    }
+
+    function updateLanguages(savedCodes = null) {
+        const langs = Array.from(document.querySelectorAll('#langSelectorGrid input:checked')).map(c => c.value);
+
+        // Clean up old editors to prevent memory leak
+        Object.values(inlineMonacoEditors).forEach(ed => ed.dispose());
+        inlineMonacoEditors = {};
+
+        document.getElementById('languageCodeTemplates').innerHTML = langs.map(l => {
+            const prefixId = `code_prefix_${l}`;
+            const middleId = `code_middle_${l}`;
+            const suffixId = `code_suffix_${l}`;
+
+            return `
+                <div class="code-workspace-block">
+                    <div class="workspace-lang-title">${l} WORKSPACE</div>
+                    
+                    <div class="code-sub-container">
+                        <div class="code-header-row">
+                            <span class="code-label-main">HEADER (HIDDEN FROM STUDENT)</span>
+                            <div class="code-controls">
+                                <button class="btn-fullscreen-toggle" onclick="openEditorOverlay('${prefixId}', '${l}', 'HEADER')">[ FULLSCREEN ]</button>
+                                <label style="font-size:0.75rem; color:#666; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="lock_prefix_${l}" checked> Locked</label>
+                                <label style="font-size:0.75rem; color:#666; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="hide_prefix_${l}"> Visible to student</label>
+                            </div>
+                        </div>
+                        <div id="${prefixId}" class="monaco-inline-wrapper"></div>
+                    </div>
+
+                    <div class="code-sub-container">
+                        <div class="code-header-row">
+                            <span class="code-label-main">CODE TEMPLATE (STUDENT EDITOR)</span>
+                            <div class="code-controls">
+                                <button class="btn-fullscreen-toggle" onclick="openEditorOverlay('${middleId}', '${l}', 'TEMPLATE')">[ FULLSCREEN ]</button>
+                            </div>
+                        </div>
+                        <div id="${middleId}" class="monaco-inline-wrapper" style="height:280px;"></div>
+                    </div>
+
+                    <div class="code-sub-container" style="margin-bottom:0;">
+                        <div class="code-header-row">
+                            <span class="code-label-main">FOOTER (READ-ONLY)</span>
+                            <div class="code-controls">
+                                <button class="btn-fullscreen-toggle" onclick="openEditorOverlay('${suffixId}', '${l}', 'FOOTER')">[ FULLSCREEN ]</button>
+                                <label style="font-size:0.75rem; color:#666; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="lock_suffix_${l}" checked> Locked</label>
+                                <label style="font-size:0.75rem; color:#666; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="hide_suffix_${l}"> Visible to student</label>
+                            </div>
+                        </div>
+                        <div id="${suffixId}" class="monaco-inline-wrapper"></div>
+                    </div>
+                </div>`;
+        }).join('');
+
+        // Init Monaco for each new div after DOM update
+        langs.forEach(l => {
+            const code = savedCodes ? savedCodes[l] : null;
+            initMonacoInline(`code_prefix_${l}`, l, code ? code.prefix : '// Global declarations...');
+            initMonacoInline(`code_middle_${l}`, l, code ? code.middle : '// User implementation...');
+            initMonacoInline(`code_suffix_${l}`, l, code ? code.suffix : '// Execution drivers...');
+
+            if (code) {
+                document.getElementById(`lock_prefix_${l}`).checked = code.lockPrefix;
+                document.getElementById(`lock_suffix_${l}`).checked = code.lockSuffix;
+                document.getElementById(`hide_prefix_${l}`).checked = code.hidePrefix;
+                document.getElementById(`hide_suffix_${l}`).checked = code.hideSuffix;
+            }
+        });
+    }
+
+    function syncState() {
+        const titleEl = document.getElementById('examTitle');
+        const descEl = document.getElementById('examDescription');
+        const durEl = document.getElementById('examDuration');
+        const mkEl = document.getElementById('examTotalMarks');
+        const negEl = document.getElementById('negativeMarking');
+        const dateEl = document.getElementById('scheduleDate');
+
+        if (titleEl) exams.title = titleEl.value;
+        if (descEl) exams.description = descEl.value;
+        if (durEl) exams.duration = parseInt(durEl.value) || 60;
+        if (mkEl) exams.totalMarks = parseInt(mkEl.value) || 100;
+        if (negEl) exams.negativeMarking = parseInt(negEl.value) || 0;
+        const credEl = document.getElementById('examCredits');
+        if (credEl) exams.credits = parseFloat(credEl.value) || 1;
+        if (dateEl) exams.scheduledDate = dateEl.value;
+
+        // Security & Step 4 Fields
+        const cp = document.getElementById('blockCopyPaste');
+        const ss = document.getElementById('blockScreenshot');
+        const sq = document.getElementById('shuffleQuestions');
+        const fs = document.getElementById('fullScreenRequired');
+        const wc = document.getElementById('webcamEnabled');
+        const mc = document.getElementById('micEnabled');
+        const vpn = document.getElementById('vpnBlocked');
+        const psc = document.getElementById('examPasscode');
+        const dln = document.getElementById('entryDeadline');
+        const mts = document.getElementById('maxTabSwitches');
+        const shr = document.getElementById('showResults');
+        const mgr = document.getElementById('manualGrading');
+
+        exams.security = {
+            blockCopyPaste: cp ? cp.checked : false,
+            blockScreenshot: ss ? ss.checked : false,
+            shuffleQuestions: sq ? sq.checked : false,
+            fullScreenRequired: fs ? fs.checked : false,
+            webcamEnabled: wc ? wc.checked : false,
+            micEnabled: mc ? mc.checked : false,
+            vpnBlocked: vpn ? vpn.checked : false,
+            passcode: psc ? psc.value : '',
+            entryDeadline: dln ? dln.value : null,
+            maxTabSwitches: mts ? parseInt(mts.value) : 3,
+            showResults: shr ? shr.checked : true,
+            manualGrading: mgr ? mgr.checked : false,
+            finalValidation: {
+                points: document.getElementById('val_points') ? document.getElementById('val_points').checked : false,
+                security: document.getElementById('val_security') ? document.getElementById('val_security').checked : false
+            }
+        };
+
+        // Theme sync
+        const prime = document.getElementById('themePrimaryColor');
+        const font = document.getElementById('themeFont');
+        const dark = document.getElementById('themeDarkMode');
+        exams.theme = {
+            primaryColor: prime ? prime.value : '#D96C33',
+            font: font ? font.value : 'Outfit',
+            darkMode: dark ? dark.checked : false
+        };
+    }
+
+    function autoSave() {
+        if (exams.questions.length === 0 && !exams.title) return; // Don't save empty
+        syncState();
+        localStorage.setItem('exampad_creator_temp', JSON.stringify(exams));
+        if (editExamId) {
+            db.updateExam(editExamId, exams);
+        }
+
+        const indicator = document.getElementById('autoSaveIndicator');
+        if (indicator) {
+            indicator.innerHTML = '<div style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%;"></div><span>Saved Just Now</span>';
+            setTimeout(() => {
+                indicator.innerHTML = '<div style="width: 8px; height: 8px; background: #ccc; border-radius: 50%;"></div><span>Changes Saved</span>';
+            }, 5000);
+        }
+    }
+
+    function updatePreviewList() {
+        const container = document.getElementById('previewQuestionsList');
+        if (!container) return;
+
+        // Ensure we have current sections even if none defined
+        const sections = (exams.sections && exams.sections.length) ? exams.sections : ['General'];
+
+        if (!exams.questions || exams.questions.length === 0) {
+            container.innerHTML = '<div style="padding:40px; text-align:center; color:#999; font-size:0.9rem; border:1px dashed #eee; border-radius:12px; margin:20px;">No questions architected yet. Click "Architect Questions" to begin.</div>';
+            return;
+        }
+
+        let html = '';
+        sections.forEach((sec, sIdx) => {
+            const qs = exams.questions.filter(q => q.section === sec);
+            if (qs.length > 0) {
+                html += `
+                    <div style="background:#fcfcfc; padding:12px 20px; font-size:0.7rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center;">
+                        <span>Section ${sIdx + 1}: ${sec}</span>
+                        <span style="opacity:0.6;">${qs.length} Qs</span>
+                    </div>
+                `;
+                html += qs.map((q, i) => `
+                    <div style="padding:16px 20px; border-bottom:1px solid #f5f5f5; display:flex; justify-content:space-between; align-items:center; background:#fff; transition: background 0.2s;" onmouseover="this.style.background='#fff9f6'" onmouseout="this.style.background='#fff'">
+                        <div style="display:flex; align-items:center; gap:16px;">
+                            <div style="width:32px; height:32px; border:1px solid #eee; display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:700; font-size:0.8rem; background:#f9f9f9;">${i + 1}</div>
+                            <div>
+                                <div style="font-weight:700; font-size:0.9rem; color:var(--text-main);">${q.heading}</div>
+                                <div style="font-size:0.65rem; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-top:2px;">${q.type} • ${q.marks} Marks</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="nav-icon-btn" onclick="editQuestion(${exams.questions.indexOf(q)})" title="Edit"><i class="fas fa-pen"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        });
+
+        if (html === '') {
+            container.innerHTML = '<div style="padding:40px; text-align:center; color:#999; font-size:0.9rem; border:1px dashed #eee; border-radius:12px; margin:20px;">Questions exist but don\'t match defined sections. Check Step 2.</div>';
+        } else {
+            container.innerHTML = html;
+        }
+    }
+
+
+
+    function toggleAllLanguages() {
+        const checks = document.querySelectorAll('#langSelectorGrid input[type="checkbox"]');
+        const anyUnchecked = Array.from(checks).some(c => !c.checked);
+        checks.forEach(c => c.checked = anyUnchecked);
+        updateLanguages();
+    }
+
+    function saveDraft() {
+        syncState();
+        localStorage.setItem('exam_step_' + (editExamId || 'new'), 1); // Reset step on final save? Actually keep it.
+        showProcessing();
+        setTimeout(() => {
+            exams.status = 'draft';
+            if (editExamId) db.updateExam(editExamId, exams);
+            else db.createExam(exams, auth.getCurrentUser().id);
+            hideLoader();
+            showToast('Progress Synced to Database');
+            setTimeout(goBack, 800);
+        }, 1000);
+    }
+
+    function publishExam() {
+        // Final validation check
+        const checks = document.querySelectorAll('#step-4 input[type="checkbox"][required]');
+        const allChecked = Array.from(checks).every(c => c.checked);
+        if (!allChecked) {
+            showToast('Please confirm all final validation points');
+            return;
+        }
+
+        syncState();
+        if (exams.questions.length === 0) {
+            showToast('Add at least one question before deploying');
+            return;
+        }
+
+        showProcessing();
+        setTimeout(() => {
+            exams.status = 'published';
+            let savedExam;
+            if (editExamId) {
+                savedExam = db.updateExam(editExamId, exams);
+            } else {
+                savedExam = db.createExam(exams, auth.getCurrentUser().id);
+            }
+
+            hideLoader();
+            const testId = savedExam.testId || 'PENDING';
+            const passcode = savedExam.passcode || 'NONE';
+
+            showModal({
+                title: '🚀 ARCHITECTURE DEPLOYED',
+                desc: 'Your assessment is now live on the Exampad neural network. Give these credentials to your students.',
+                content: `
+                    <div style="background:#f9f9f9; padding:24px; border-radius:16px; border:1px solid #eee; margin-top:10px; display:flex; flex-direction:column; gap:16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.75rem; font-weight:800; color:#666;">TEST IDENTITY</span>
+                            <span style="font-family:'JetBrains Mono'; color:var(--primary); font-size:1.2rem; font-weight:800; background:#fff; padding:6px 14px; border-radius:8px; border:1px solid #eee;">${testId}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.75rem; font-weight:800; color:#666;">PASSCODE</span>
+                            <span style="font-family:'JetBrains Mono'; color:#333; font-size:1.2rem; font-weight:800;">${passcode}</span>
+                        </div>
+                        <div style="margin-top:8px; padding:12px; background:var(--primary-soft); border-radius:10px; border:1px solid #ffe8dd;">
+                             <label style="font-size:0.6rem; font-weight:800; color:var(--primary); display:block; margin-bottom:4px; text-transform:uppercase;">Direct Assessment URL</label>
+                             <div style="display:flex; gap:8px; align-items:center;">
+                                <input type="text" readonly value="${window.location.origin}/pages/login.html?invite=${testId}" style="flex:1; background:transparent; border:none; font-size:0.75rem; color:#d96c33; font-weight:600; text-overflow:ellipsis;" id="finalLink">
+                                <button onclick="navigator.clipboard.writeText(document.getElementById('finalLink').value); showToast('Link Copied!')" style="background:var(--primary); color:#fff; border:none; padding:4px 10px; border-radius:6px; font-size:0.7rem; cursor:pointer;"><i class="fas fa-copy"></i></button>
+                             </div>
+                        </div>
+                        <p style="font-size:0.75rem; color:#999; text-align:center; border-top:1px solid #eee; padding-top:12px; margin:0;">Students can join via simulation or the Universal Gateway.</p>
+                    </div>
+                `,
+                confirmText: 'Return to Command Center',
+                onConfirm: goBack
+            });
+        }, 1500);
+    }
+
+    function previewAsStudent() {
+        syncState();
+        if (exams.questions.length === 0) {
+            showToast('Add questions before previewing');
+            return;
+        }
+
+        // Save to specific preview slot
+        localStorage.setItem('exampad_preview_data', JSON.stringify(exams));
+
+        showToast('Entering Simulation Mode...');
+        setTimeout(() => {
+            window.open('./exam-attempt.html?mode=preview', '_blank');
+        }, 800);
+    }
+
+    function editQuestion(index) {
+        editingQIndex = index;
+        const q = exams.questions[index];
+        selectQuestionType(q.type);
+        document.getElementById('questionHeading').value = q.heading || '';
+        quill.root.innerHTML = q.title;
+        document.getElementById('questionMarks').value = q.marks;
+        document.getElementById('questionSection').value = q.section;
+        document.getElementById('questionTimer').value = q.timer || 0;
+        document.getElementById('teacherNotes').value = q.teacherNotes || '';
+
+        if (q.options) {
+            document.getElementById('optionsList').innerHTML = '';
+            q.options.forEach(o => addOptionWithValue(o, o === q.correctAnswer));
+        }
+
+        if (q.type === 'coding') {
+            const checkBoxes = document.querySelectorAll('#langSelectorGrid input[type="checkbox"]');
+            checkBoxes.forEach(cb => cb.checked = q.languages.includes(cb.value));
+            updateLanguages(q.code);
+            if (q.testCases) {
+                document.getElementById('testCasesContainer').innerHTML = '';
+                q.testCases.forEach(tc => addTestCaseRow(tc.input, tc.output, tc.marks, tc.isSample));
+            }
+        }
+
+        if (q.type === 'subjective') {
+            document.getElementById('keywords').value = (q.keywords || []).join(', ');
+        }
+
+        if (q.type === 'numeric' || q.type === 'single_integer') {
+            document.getElementById('correctNumeric').value = q.correctNumeric || '';
+            document.getElementById('numericTolerance').value = q.tolerance || 0;
+        }
+
+        if (q.type === 'file_upload') {
+            document.getElementById('allowedExtensions').value = (q.allowedExtensions || []).join(', ');
+            document.getElementById('maxFileSize').value = q.maxFileSize || 10;
+        }
+
+        updateQuestionsList();
+        document.getElementById('builder-anchor').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetBuilder() {
+        editingQIndex = -1;
+        if (document.getElementById('questionHeading')) document.getElementById('questionHeading').value = '';
+        if (quill) quill.setContents([]);
+        if (document.getElementById('questionMarks')) document.getElementById('questionMarks').value = 1;
+        if (document.getElementById('questionTimer')) document.getElementById('questionTimer').value = 0;
+        if (document.getElementById('teacherNotes')) document.getElementById('teacherNotes').value = '';
+        if (document.getElementById('optionsList')) document.getElementById('optionsList').innerHTML = '';
+        if (document.getElementById('testCasesContainer')) document.getElementById('testCasesContainer').innerHTML = '';
+        if (document.getElementById('keywords')) document.getElementById('keywords').value = '';
+        if (document.getElementById('correctNumeric')) document.getElementById('correctNumeric').value = '';
+        if (document.getElementById('numericTolerance')) document.getElementById('numericTolerance').value = '0';
+        if (document.getElementById('allowedExtensions')) document.getElementById('allowedExtensions').value = '';
+        if (document.getElementById('maxFileSize')) document.getElementById('maxFileSize').value = '10';
+
+        selectQuestionType('mcq');
+        updateQuestionsList();
+    }
+
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.style.position = 'fixed';
+        toast.style.bottom = '80px';
+        toast.style.right = '40px';
+        toast.style.background = '#333';
+        toast.style.color = '#fff';
+        toast.style.padding = '12px 24px';
+        toast.style.borderRadius = '8px';
+        toast.style.fontFamily = 'Inter';
+        toast.style.fontSize = '0.9rem';
+        toast.style.zIndex = '11000';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function createNewExam() {
+        localStorage.removeItem('exam_step_new');
+        localStorage.removeItem('exampad_creator_temp');
+        window.location.href = './exam-creator.html';
+    }
+
+    function updatePool(sectionName, size) {
+        if (!exams.pools) exams.pools = {};
+        exams.pools[sectionName] = parseInt(size, 10) || 0;
+        autoSave();
+        showToast('Pool updated for ' + sectionName);
+    }
+
+    function goBack() { window.location.href = './teacher-dashboard.html'; }
+    initPage();
+    selectQuestionType('mcq');
+</script>
+</body>
+
+</html>
+```
