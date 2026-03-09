@@ -1,57 +1,50 @@
-# EXAMPAD-PORTAL
-### Secure OS-Style Examination Ecosystem
+# EXAMPAD PORTAL
+## Secure Examination System
 
-EXAMPAD is a high-performance, secure, and professional examination portal designed for **OM AGGARWAL Classes**. It focuses on providing a desktop-like ERP experience with strict proctoring to ensure exam integrity.
+<img src="https://upload.wikimedia.org/wikipedia/en/e/e0/Chitkara_University_logo.png" width="250">
 
----
-
-## 🚀 Key Features
-
-### 🛡️ Secure Proctoring
-- **Tab-Switch Detection**: Monitors and logs when students switch tabs.
-- **Strict Controls**: Prevents copy-pasting, right-clicking, and basic keyboard shortcuts.
-- **DevTools Block**: Restricts access to F12 and inspection tools.
-
-### 📝 Exam Management
-- **Question Variety**: Support for MCQ, Subjective, True/False, and Coding questions.
-- **Coding Problems**: Built-in editor supporting JS, Python, C++, and Java.
-- **Section Workflow**: Enforced section sequence with OTP-based submissions.
-- **Live Monitoring**: Real-time teacher dashboard to track progress.
-
-### 🎨 User Experience
-- **Interface**: Modern orange and white theme with a clean, professional layout.
-- **Architecture**: Fast, responsive navigation across all devices.
+EXAMPAD is a secure examination portal developed for managing and conducting assessments. It provides a robust proctoring environment with features to prevent unauthorized activities and ensure academic integrity.
 
 ---
 
-## 📁 System Structure
+### Core Functionality
 
-```
-EXAMPAD/
-├── index.html           # Main Portal Entry
-├── pages/               # Functional Modules
-│   ├── exam-attempt.html  # Active Test Environment
-│   ├── teacher-dashboard.html 
-│   └── exam-creator.html
-├── js/                  # Logic and Storage
-│   ├── auth.js          
-│   ├── security.js      # Anti-cheat Engine
-│   └── db.js            # LocalStorage Logic
-└── css/                 # Global Styling
-```
+#### Security and Proctoring
+* Tab-Switch Monitoring: Detects and records any changes to browser focus.
+* Action Restrictions: Disables clipboard interaction, right-click context menus, and developer tools.
+* Shortcuts Blocking: Restricts keyboard shortcuts like F12 and Ctrl+Shift+I to prevent code inspection.
+
+#### Assessment Management
+* Question Formats: Support for Objective (MCQ, T/F), Subjective, and Technical (Coding) questions.
+* Online Coding Environment: Integrated development environment for languages including Python, C++, Java, and JavaScript.
+* Section Management: Conditional section progression with OTP validation for submission.
+* Real-Time Monitoring: Administrative dashboard for tracking student status and performance in real-time.
+
+#### Interface Design
+* Professional layout with a clean orange and white theme.
+* Responsive design compatible across mobile and desktop platforms.
 
 ---
 
-## ⚙️ How to Run
+### Project Structure
 
-### Web Access
-Simply serve the root directory or open `index.html` in a modern browser.
+* index.html - Application entry point
+* pages/ - Application modules for students and faculty
+* js/ - Logic, Security, and Database management
+* css/ - Styling and layout specifications
+
+---
+
+### Deployment
+
+#### Web Access
+To run the application locally, serve the root directory:
 ```bash
 npx http-server
 ```
 
-### Desktop Version (Electron)
-The portal is designed to run as a secure desktop App.
+#### Desktop Application (Electron)
+The project can be executed as a secure desktop application:
 ```bash
 npm install
 npm start
@@ -59,11 +52,12 @@ npm start
 
 ---
 
-## 👥 Development Team
-- **YAKSHI BATISH**
-- **PARAS JINDAL**
-- **PIYUSH THAKUR**
-- **OM AGGARWAL**
+### Development Team
 
-**Built for OM AGGARWAL Classes**
+* YAKSHI BATISH
+* PARAS JINDAL
+* PIYUSH THAKUR
+* OM AGGARWAL
+
+**Chitkara University**
 © 2026 EXAMPAD Engineering
