@@ -35,12 +35,17 @@ app.get("/health", (req, res) => {
     res.json({ status: "active", architecture: "client-server", platform: "node-express" });
 });
 
-// Handling Exceptions Globally
+// Globally handling exceptions
 app.use((err, req, res, next) => {
     console.error("Critical Backend Error:", err.stack);
     res.status(500).json({ error: "A server exception occurred!" });
 });
 
-app.listen(PORT, () => {
-    console.log(`EXAMPAD Backend System operational on port ${PORT}`);
-});
+// Export the app for Vercel's serverless environment
+module.exports = app;
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`EXAMPAD Backend System operational on port ${PORT}`);
+    });
+}
