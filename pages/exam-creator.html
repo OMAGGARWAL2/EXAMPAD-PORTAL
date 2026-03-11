@@ -2070,6 +2070,22 @@
                         <h2 class="section-title"><i class="fas fa-lock"
                                 style="margin-right:12px; color:var(--primary);"></i>Entry Control & Security</h2>
 
+                        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                            <label class="sec-toggle"
+                                style="display:flex; justify-content:space-between; align-items:center; background:#FFF5F0; padding:16px; border-radius:12px; border: 1.5px dashed var(--primary);">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <i class="fas fa-desktop" style="color:var(--primary); font-size: 1.2rem;"></i>
+                                    <div>
+                                        <div style="font-weight:800; font-size:0.95rem; color: #101828;">Mandatory
+                                            Desktop Application</div>
+                                        <div style="font-size:0.75rem; color:#666; font-weight: 500;">Enforce proctoring
+                                            by blocking browser attempts</div>
+                                    </div>
+                                </div>
+                                <input type="checkbox" id="desktopOnly" style="width:22px; height:22px;">
+                            </label>
+                        </div>
+
                         <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top:0;">
                             <div class="input-group">
                                 <label class="label">ENTRANCE PASSCODE</label>
@@ -2125,6 +2141,20 @@
                                     </div>
                                 </div>
                                 <input type="checkbox" id="micEnabled" style="width:20px; height:20px;">
+                            </label>
+
+                            <label class="sec-toggle"
+                                style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <i class="fas fa-lock" style="color:#555;"></i>
+                                    <div>
+                                        <div style="font-weight:700; font-size:0.9rem;">Enable Sequential Section
+                                            Locking</div>
+                                        <div style="font-size:0.75rem; color:#888;">Students must complete sections in
+                                            order and cannot return</div>
+                                    </div>
+                                </div>
+                                <input type="checkbox" id="lockSections" style="width:20px; height:20px;" checked>
                             </label>
 
                             <label class="sec-toggle"
@@ -2887,6 +2917,7 @@
                 if (document.getElementById('blockScreenshot')) document.getElementById('blockScreenshot').checked = exams.security.blockScreenshot;
                 if (document.getElementById('shuffleQuestions')) document.getElementById('shuffleQuestions').checked = exams.security.shuffleQuestions;
                 if (document.getElementById('fullScreenRequired')) document.getElementById('fullScreenRequired').checked = exams.security.fullScreenRequired;
+                if (document.getElementById('desktopOnly')) document.getElementById('desktopOnly').checked = exams.security.desktopOnly || false;
 
                 // Step 4 fields
                 if (document.getElementById('webcamEnabled')) document.getElementById('webcamEnabled').checked = exams.security.webcamEnabled;
@@ -3504,8 +3535,10 @@
         const mts = document.getElementById('maxTabSwitches');
         const shr = document.getElementById('showResults');
         const mgr = document.getElementById('manualGrading');
+        const lks = document.getElementById('lockSections');
 
         exams.security = {
+            desktopOnly: document.getElementById('desktopOnly') ? document.getElementById('desktopOnly').checked : false,
             blockCopyPaste: cp ? cp.checked : false,
             blockScreenshot: ss ? ss.checked : false,
             shuffleQuestions: sq ? sq.checked : false,
@@ -3513,6 +3546,7 @@
             webcamEnabled: wc ? wc.checked : false,
             micEnabled: mc ? mc.checked : false,
             vpnBlocked: vpn ? vpn.checked : false,
+            lockSections: lks ? lks.checked : false,
             passcode: psc ? psc.value : '',
             entryDeadline: dln ? dln.value : null,
             maxTabSwitches: mts ? parseInt(mts.value) : 3,

@@ -16,6 +16,9 @@ contextBridge.exposeInMainWorld('proctorBridge', {
     // AI Communication via IPC (Direct Main Process)
     askAI: (prompt) => ipcRenderer.invoke('ask-ai', prompt),
 
+    // Deep Linking: Handlers for opening specific exams from browser
+    onOpenExam: (callback) => ipcRenderer.on('open-exam-intent', (event, data) => callback(data)),
+
     // Version Check
     getAppVersion: () => '1.0.0-PROCTOR-CORE'
 });

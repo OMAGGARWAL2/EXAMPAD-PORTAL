@@ -7,7 +7,7 @@
     <title>EXAMPAD</title>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500;600&family=Open+Sans:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500;600&family=Open+Sans:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -120,16 +120,37 @@
         }
 
         /* --- HEADER --- */
-        .top-bar {
-            height: 72px;
+        .top-bar-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: visible !important;
+            /* Force visible to prevent clipping of diagnostic tooltips */
             background: #fff;
             border-bottom: 2px solid var(--border);
+            z-index: 1000;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .top-bar-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .top-bar-wrapper {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .top-bar {
+            height: 88px;
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
             z-index: 1000;
-            overflow: hidden;
             flex-wrap: nowrap;
             width: 100%;
             box-sizing: border-box;
@@ -250,7 +271,7 @@
             border-left: 1px solid #FFE4D6;
             border-right: 1px solid #FFE4D6;
             padding: 0 16px;
-            height: 72px;
+            height: 88px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -389,23 +410,65 @@
         }
 
         .nav-rail {
-            width: 80px;
-            min-width: 0;
+            width: 100px;
+            min-width: 100px;
             background: #fff;
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px 0;
-            overflow-y: auto;
-            overflow-x: hidden;
+            padding: 0;
+            /* Padding moved to scroll area */
+            overflow: hidden;
+            /* Keeps ribbon constant */
             position: relative;
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
+            box-sizing: border-box;
+        }
+
+        .rail-scroll-area {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px 16px 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Global Stealth Scrollbar - Small and Thin */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+        }
+
+        /* Specific Hover-only for Rail Area */
+        .rail-scroll-area::-webkit-scrollbar-thumb {
+            background: transparent;
+        }
+
+        .rail-scroll-area:hover::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
         }
 
         .nav-rail.collapsed {
             width: 0px !important;
+            min-width: 0 !important;
             padding: 0;
             border-right: none;
             overflow: hidden;
@@ -419,7 +482,7 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 8px;
+            width: 16px;
             height: 100%;
             background: #FFF4ED;
             display: flex;
@@ -437,12 +500,14 @@
         /* Add a small arrow in the middle of the strip */
         .rail-toggle-strip::after {
             content: '<';
-            font-weight: 500;
-            color: #cc0000;
-            font-size: 16px;
+            font-weight: 300;
+            color: #CF5927;
+            font-size: 26px;
             position: absolute;
             top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            transform: translate(-50%, -50%) scaleY(1.3);
+            font-family: 'Outfit', sans-serif;
         }
 
         .nav-rail.collapsed+.resizer-h {
@@ -472,14 +537,16 @@
         }
 
         .section-label {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #A01E17;
+            font-size: calc(16px * var(--text-scale));
+            font-weight: 600;
+            color: #CF5927;
             text-transform: none;
             writing-mode: horizontal-tb;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            padding: 10px 0;
             text-align: center;
             width: 100%;
+            font-family: 'Open Sans', sans-serif;
         }
 
         .rail-node {
@@ -516,12 +583,15 @@
         }
 
         .tick-icon {
-            margin-left: 6px;
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             width: 16px;
             height: 14px;
             fill: none;
             stroke: #660000;
-            stroke-width: 3.5px;
+            stroke-width: 4px;
             stroke-linecap: square;
             stroke-linejoin: miter;
         }
@@ -570,6 +640,106 @@
             z-index: 20;
         }
 
+        /* WIFI CUSTOM TOOLTIP */
+        .wifi-tooltip {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #EAECF0;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+            z-index: 50000;
+            /* Ensure it floats above workspace */
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 240px;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: opacity 0.25s;
+            opacity: 0;
+            transform: translateX(-50%);
+        }
+
+        /* Tooltip tail is tricky with fixed pos, removing for alignment stability */
+
+        .wifi-tooltip-header {
+            font-size: 11px;
+            font-weight: 800;
+            color: #667085;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #F2F4F7;
+            padding-bottom: 8px;
+            margin-bottom: 4px;
+        }
+
+        .wifi-tooltip-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wifi-tooltip-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #475467;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wifi-tooltip-label i {
+            width: 14px;
+            text-align: center;
+            font-size: 12px;
+            color: #98A2B3;
+        }
+
+        .wifi-tooltip-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #101828;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* FONT SIZE TOOLTIP */
+        .font-sizer-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .font-size-tooltip {
+            position: absolute;
+            top: -35px;
+            background: #101828;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            pointer-events: none;
+            display: none;
+            white-space: nowrap;
+            z-index: 10003;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateX(-50%);
+            transition: opacity 0.2s, transform 0.1s ease-out;
+        }
+
+        .font-size-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #101828;
+        }
+
         /* VIEWPORT */
         .viewport {
             flex: 1;
@@ -581,10 +751,9 @@
         }
 
         .resizer-h {
-            width: 12px;
-            background: #e5e7eb;
-            border-left: 1px solid #d1d5db;
-            border-right: 1px solid #d1d5db;
+            width: 8px;
+            background: #f2f4f7;
+            border: none;
             cursor: col-resize;
             transition: background 0.2s;
             display: flex;
@@ -594,24 +763,17 @@
             z-index: 10;
         }
 
-        .resizer-h::after {
-            content: '';
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
         .resizer-h::before {
             content: '';
-            width: 4px;
-            height: 4px;
-            background: #9ca3af;
+            width: 3px;
+            height: 3px;
+            background: #94a3b8;
             border-radius: 50%;
-            box-shadow: 0 8px 0 #9ca3af, 0 -8px 0 #9ca3af;
+            box-shadow: 0 7px 0 #94a3b8, 0 -7px 0 #94a3b8;
         }
 
         .resizer-h:hover {
-            background: #e2e8f0;
+            background: #e5e7eb;
         }
 
         .pane-left {
@@ -1891,10 +2053,19 @@
             transform: translateY(-1px);
         }
 
-        /* Scoped buttons to avoid global orange hover */
-        .interaction-pane button:hover,
-        .console-bar button:hover {
-            /* Handled by inline styles or specific classes */
+        /* Header Horizontal Scroll Control */
+        .top-bar-wrapper {
+            overflow-x: auto;
+            width: 100%;
+            flex-shrink: 0;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .top-bar-wrapper::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
@@ -2097,124 +2268,172 @@
     </div>
 
     <div class="app-layout">
-        <!-- TOP BAR -->
-        <header class="top-bar"
-            style="background: #fff; border-bottom: 1px solid #eee; height: 72px; padding: 0 20px; position: relative; width: 100%; display: flex; align-items: center; overflow: hidden; box-sizing: border-box;">
+        <!-- TOP BAR WRAPPER FOR HORIZONTAL SCROLL -->
+        <div class="top-bar-wrapper" style="overflow-y: visible !important;">
+            <header class="top-bar"
+                style="background: #fff; height: 88px; padding: 0 20px; position: relative; display: flex; align-items: center; box-sizing: border-box; white-space: nowrap; min-width: max-content; overflow: visible !important;">
 
-            <!-- HEADER LEFT -->
-            <div class="header-left" style="display: flex; align-items: center; gap: 12px; flex: 0 0 auto;">
-                <div class="logo-box"
-                    style="background: transparent; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;">
-                    <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara"
-                        style="width: 100%; height: 100%; object-fit: contain;">
-                </div>
-                <div style="font-weight:700; color:#101828; font-size:calc(15px * var(--text-scale)); font-family:'Outfit', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;"
-                    id="testTag">MCQ3-G3</div>
-                <div class="time-left-text"
-                    style="font-weight:600; color:#101828; font-size:calc(14px * var(--text-scale)); margin-left:8px; white-space: nowrap; flex-shrink: 0;">
-                    time left <span id="timerDisplay">00:00:00</span></div>
-            </div>
-
-            <!-- HEADER CENTER -->
-            <div class="header-center"
-                style="display: flex; align-items: center; gap: 18px; flex: 1 1 auto; min-width: 0; justify-content: center; margin: 0 24px;">
-                <div class="stat-indicator" title="Fullscreen Leaks"
-                    style="display:flex; align-items:center; gap:6px; flex-shrink: 0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round"
-                        stroke-linejoin="round" style="width: 18px; height: 18px;">
-                        <path d="M15 3h6v6" />
-                        <path d="M9 21H3v-6" />
-                        <path d="M21 3l-7 7" />
-                        <path d="M3 21l7-7" />
-                    </svg>
-                    <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
-                    <span id="fsCount"
-                        style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
-                </div>
-
-                <div class="stat-indicator" title="Tab Switches"
-                    style="display:flex; align-items:center; gap:6px; flex-shrink: 0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round"
-                        stroke-linejoin="round" style="width: 18px; height: 18px;">
-                        <path d="M4 14h6v6" />
-                        <path d="M20 10h-6V4" />
-                        <path d="M14 10l7-7" />
-                        <path d="M10 14l-7 7" />
-                    </svg>
-                    <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
-                    <span id="switchCountHeader"
-                        style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
-                </div>
-
-                <div class="stat-indicator" title="Reloads/Out"
-                    style="display:flex; align-items:center; gap:6px; flex-shrink: 0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round"
-                        stroke-linejoin="round" style="width: 20px; height: 20px;">
-                        <path d="M14 4.5A9 9 0 1 0 14 19.5" />
-                        <path d="M10 12h13m-4-4l4 4-4 4" />
-                    </svg>
-                    <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
-                    <span
-                        style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
-                </div>
-
-                <div class="stat-indicator" title="Exits/In"
-                    style="display:flex; align-items:center; gap:6px; flex-shrink: 0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round"
-                        stroke-linejoin="round" style="width: 20px; height: 20px;">
-                        <path d="M10 4.5A9 9 0 1 1 10 19.5" />
-                        <path d="M1 12h13m-4-4l4 4-4 4" />
-                    </svg>
-                    <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
-                    <span
-                        style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
-                </div>
-
-                <div class="font-size-control" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                    <i class="fas fa-wifi" id="wifiIcon" style="color:#000; font-size: 20px; margin-right: 4px;"
-                        title="Connectivity"></i>
-                    <span
-                        style="font-size:calc(1.15rem * var(--text-scale)); font-weight:400; color:#555; white-space: nowrap;">Font
-                        Size</span>
-                    <input type="range" class="font-range" id="fontSizeSlider" min="90" max="150" value="100"
-                        oninput="updateFontSize(this.value)" style="margin: 0 12px; width: 140px;">
-                    <i class="fas fa-home" style="color:#A01E17; font-size:1.6rem; cursor:pointer;"
-                        onclick="showDashboard()"></i>
-                </div>
-            </div>
-
-            <!-- HEADER RIGHT -->
-            <div class="header-right" style="display: flex; align-items: center; gap: 16px; flex: 0 0 auto;">
-                <div class="attempted-box"
-                    style="background: #FFF0E6; padding: 0 24px; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; margin: 0; flex-shrink: 0; border: none; border-left: 1px solid #FFE4D6; border-right: 1px solid #FFE4D6;">
-                    <span class="attempted-label"
-                        style="color:#A01E17; font-size: 14px; font-weight: 700; letter-spacing: 0.2px;">attempted</span>
-                    <span class="attempted-val" id="attemptedCount"
-                        style="color:#A01E17; font-size: 26px; font-weight: 900; margin-top: 1px; line-height: 1;">4/64</span>
-                </div>
-
-                <div class="user-block" onclick="toggleProfileMenu(event)"
-                    style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                    <div class="user-info"
-                        style="display: flex; flex-direction: column; align-items: flex-end; min-width: 0;">
-                        <div class="user-name" id="userName"
-                            style="font-weight: 400 !important; font-size: calc(18px * var(--text-scale)) !important; color: #667085 !important; letter-spacing: -0.1px; text-transform: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">
-                            Om Aggarwal</div>
-                        <div class="user-id" id="userId"
-                            style="font-size: calc(13px * var(--text-scale)) !important; color: #98A2B3 !important; font-family: 'Segoe UI', sans-serif !important; font-weight: 400 !important; margin-top: 1px;">
-                            2410990257</div>
+                <!-- HEADER LEFT -->
+                <div class="header-left" style="display: flex; align-items: center; gap: 12px; flex: 0 0 auto;">
+                    <div class="logo-box"
+                        style="background: transparent; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0;">
+                        <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara"
+                            style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
-                    <div
-                        style="width: calc(40px * var(--text-scale)); height: calc(40px * var(--text-scale)); border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #CBD5E1; flex-shrink: 0;">
-                        <img src="https://course.testpad.chitkara.edu.in/icons/portrait_placeholder_circle.png"
-                            alt="User Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div style="font-weight:700; color:#101828; font-size:calc(15px * var(--text-scale)); font-family:'Outfit', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;"
+                        id="testTag">MCQ3-G3</div>
+                    <div class="time-left-text"
+                        style="font-weight:600; color:#101828; font-size:calc(14px * var(--text-scale)); margin-left:8px; white-space: nowrap; flex-shrink: 0;">
+                        time left <span id="timerDisplay">00:00:00</span></div>
+                </div>
+
+                <!-- HEADER CENTER -->
+                <div class="header-center"
+                    style="display: flex; align-items: center; gap: 18px; flex: 1 1 auto; min-width: 0; justify-content: center; margin: 0 24px;">
+                    <div class="stat-indicator" title="Fullscreen Leaks"
+                        style="display:flex; align-items:center; gap:6px; flex-shrink: 0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#808080" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" style="width: 18px; height: 18px;">
+                            <path d="M15 3h6v6" />
+                            <path d="M9 21H3v-6" />
+                            <path d="M21 3l-7 7" />
+                            <path d="M3 21l7-7" />
+                        </svg>
+                        <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
+                        <span id="fsCount"
+                            style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
+                    </div>
+
+                    <div class="stat-indicator" title="Tab Switches"
+                        style="display:flex; align-items:center; gap:6px; flex-shrink: 0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#808080" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" style="width: 18px; height: 18px;">
+                            <path d="M4 14h6v6" />
+                            <path d="M20 10h-6V4" />
+                            <path d="M14 10l7-7" />
+                            <path d="M10 14l-7 7" />
+                        </svg>
+                        <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
+                        <span id="switchCountHeader"
+                            style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
+                    </div>
+
+                    <div class="stat-indicator" title="Reloads/Out"
+                        style="display:flex; align-items:center; gap:6px; flex-shrink: 0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#808080" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" style="width: 20px; height: 20px;">
+                            <path d="M14 4.5A9 9 0 1 0 14 19.5" />
+                            <path d="M10 12h13m-4-4l4 4-4 4" />
+                        </svg>
+                        <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
+                        <span
+                            style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
+                    </div>
+
+                    <div class="stat-indicator" title="Exits/In"
+                        style="display:flex; align-items:center; gap:6px; flex-shrink: 0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#808080" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" style="width: 20px; height: 20px;">
+                            <path d="M10 4.5A9 9 0 1 1 10 19.5" />
+                            <path d="M1 12h13m-4-4l4 4-4 4" />
+                        </svg>
+                        <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
+                        <span
+                            style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
+                    </div>
+
+                    <div class="font-size-control"
+                        style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                        <div id="wifiGroup"
+                            style="display: flex; align-items: center; gap: 12px; margin-right: 12px; transition: all 0.3s ease; position: relative;"
+                            onmouseenter="showWifiTooltip()" onmouseleave="hideWifiTooltip()">
+                            <div
+                                style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding: 6px; background: rgba(255, 255, 255, 0.9); border-radius: 12px;">
+                                <div
+                                    style="position: relative; display: flex; align-items: center; justify-content: center; margin-top: 4px;">
+                                    <i class="fas fa-wifi" id="wifiIcon"
+                                        style="color:#12B76A; font-size: 38px; transition: all 0.3s ease;"></i>
+                                    <div id="wifiErrorIcon"
+                                        style="position: absolute; top: -6px; right: -10px; background: #D92D20; border-radius: 50%; width: 28px; height: 28px; display: none; align-items: center; justify-content: center; border: 3px solid #fff; box-shadow: 0 4px 12px rgba(217, 45, 32, 0.4);">
+                                        <i class="fas fa-exclamation"
+                                            style="color:#fff; font-size: 16px; font-weight: 900;"></i>
+                                    </div>
+                                </div>
+                                <div id="wifiWarning"
+                                    style="display: none; font-size: 2.2rem; font-weight: 800; line-height: 1.1; color: #D92D20; text-align: left; font-family: 'Outfit', sans-serif; letter-spacing: -0.02em;">
+                                    Your<br>connection<br>is poor or slow.
+                                </div>
+                            </div>
+
+                            <!-- Styled Custom Tooltip -->
+                            <div class="wifi-tooltip">
+                                <div class="wifi-tooltip-header">Network Performance</div>
+                                <div class="wifi-tooltip-item">
+                                    <span class="wifi-tooltip-label"><i class="fas fa-signal"></i> Strength</span>
+                                    <span class="wifi-tooltip-value" id="ttStrength">Checking...</span>
+                                </div>
+                                <div class="wifi-tooltip-item">
+                                    <span class="wifi-tooltip-label"><i class="fas fa-bolt"></i> Latency</span>
+                                    <span class="wifi-tooltip-value" id="ttLatency">---</span>
+                                </div>
+                                <div class="wifi-tooltip-item">
+                                    <span class="wifi-tooltip-label"><i class="fas fa-download"></i> Speed</span>
+                                    <span class="wifi-tooltip-value" id="ttUpload">---</span>
+                                </div>
+                                <div class="wifi-tooltip-item">
+                                    <span class="wifi-tooltip-label"><i class="fas fa-shield-alt"></i> Stability</span>
+                                    <span class="wifi-tooltip-value" id="ttStability">Checking...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span
+                            style="font-size:calc(1.15rem * var(--text-scale)); font-weight:400; color:#555; white-space: nowrap;">Font
+                            Size</span>
+                        <div class="font-sizer-wrapper" onmousemove="showFontSizeTooltip(event)"
+                            onmouseleave="hideFontSizeTooltip()">
+                            <input type="range" class="font-range" id="fontSizeSlider" min="90" max="150" value="100"
+                                oninput="updateFontSize(this.value)" style="margin: 0 12px; width: 140px;">
+                            <div id="fontSizeTooltip" class="font-size-tooltip">100%</div>
+                        </div>
+                        <i class="fas fa-home" style="color:#A01E17; font-size:1.6rem; cursor:pointer;"
+                            onclick="showDashboard()"></i>
                     </div>
                 </div>
-        </header>
+
+                <!-- HEADER RIGHT -->
+                <div class="header-right" style="display: flex; align-items: center; gap: 16px; flex: 0 0 auto;">
+                    <div class="attempted-box"
+                        style="background: #FFF0E6; padding: 0 24px; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 88px; margin: 0; flex-shrink: 0; border: none; border-left: 1px solid #FFE4D6; border-right: 1px solid #FFE4D6;">
+                        <span class="attempted-label"
+                            style="color:#A01E17; font-size: 14px; font-weight: 700; letter-spacing: 0.2px;">attempted</span>
+                        <span class="attempted-val" id="attemptedCount"
+                            style="color:#A01E17; font-size: 26px; font-weight: 900; margin-top: 1px; line-height: 1;">4/64</span>
+                    </div>
+
+                    <div class="user-block" onclick="toggleProfileMenu(event)"
+                        style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                        <div class="user-info"
+                            style="display: flex; flex-direction: column; align-items: flex-end; min-width: 0;">
+                            <div class="user-name" id="userName"
+                                style="font-weight: 300 !important; font-size: calc(20px * var(--text-scale)) !important; color: #808080 !important; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; font-family: 'Roboto', sans-serif !important; margin-bottom: -6px;">
+                                Om Aggarwal</div>
+                            <div class="user-id" id="userId"
+                                style="font-size: calc(28px * var(--text-scale)) !important; color: #9E9E9E !important; font-family: 'Roboto', sans-serif !important; font-weight: 400 !important; margin-top: -4px; letter-spacing: 0.5px;">
+                                2410990257</div>
+                        </div>
+                        <div
+                            style="width: calc(64px * var(--text-scale)); height: calc(64px * var(--text-scale)); border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #EAECF0; flex-shrink: 0;">
+                            <img src="https://course.testpad.chitkara.edu.in/icons/portrait_placeholder_circle.png"
+                                alt="User Profile" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
 
         <!-- Hidden context / Reload menu (Moved outside top-bar to prevent overflow:hidden clipping) -->
         <div class="profile-menu" id="profileMenu"
-            style="position: absolute; top: 72px; right: 20px; border-radius: 8px; overflow: hidden; border: 1px solid #EAECF0; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 11000; display: none;">
+            style="position: absolute; top: 88px; right: 20px; border-radius: 8px; overflow: hidden; border: 1px solid #EAECF0; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 11000; display: none;">
             <div class="profile-menu-item" onclick="location.reload()"
                 style="padding: 14px 20px; font-weight: 600; color: #344054;">
                 <i class="fas fa-sync-alt" style="color: #E66A35;"></i> Refresh Session
@@ -2233,9 +2452,11 @@
             </div>
             <nav class="nav-rail" id="questionRail">
                 <div class="rail-toggle-strip" onclick="toggleRail(true)"></div>
-                <!-- Nodes container -->
-                <div id="railNodesContainer"
-                    style="display:flex; flex-direction:column; width:100%; align-items:center; margin: 0; padding: 0;">
+                <!-- Independent Scroll Area -->
+                <div class="rail-scroll-area">
+                    <div id="railNodesContainer"
+                        style="display:flex; flex-direction:column; width:100%; align-items:center; margin: 0; padding: 0;">
+                    </div>
                 </div>
             </nav>
 
@@ -2304,7 +2525,8 @@
                                 <h1>Test submitted successfully :)</h1>
                                 <p class="time-took">you took <b id="finalTimeTook">-- mins</b> to finish the test
                                 </p>
-                                <p>Please take out a minute to submit your feedback. Your feedback helps us improve the
+                                <p>Please take out a minute to submit your feedback. Your feedback helps us improve
+                                    the
                                     quality of learning and the services we render to you.</p>
                             </div>
                         </div>
@@ -2806,6 +3028,12 @@
 
                 document.getElementById('testTag').textContent = currentExam.title || currentExam.sections?.[0]?.title || 'EXAM SESSION';
 
+                // Desktop Enforcement Logic
+                if (currentExam.security && currentExam.security.desktopOnly && !window.proctorBridge && !isPreview) {
+                    showDesktopMandatoryOverlay(currentAttempt.examId);
+                    return; // Stop further execution
+                }
+
                 // Calculate remaining time precisely based on original start time
                 testStartTime = new Date(currentAttempt.startTime).getTime();
                 let now = new Date().getTime();
@@ -2972,6 +3200,31 @@
                     });
                 }
             })();
+        }
+
+        function initAntiCheat() {
+            if (window.proctorBridge) {
+                window.proctorBridge.setKioskMode(true);
+                window.addEventListener('proctorEvent', handleInfraction);
+            }
+        }
+
+        function handleInfraction(event) {
+            const { type, message } = event.detail;
+            console.warn("Proctoring Infraction:", type, message);
+            // Example: Log to server, show toast, etc.
+            showToast(`Infraction: ${message}`, 'error');
+            // You might want to increment a counter or take other actions
+            // For example, if it's a fullscreen exit, increment fsCount
+            if (type === 'fullscreen_exit') {
+                const fsCountEl = document.getElementById('fsCount');
+                if (fsCountEl) fsCountEl.textContent = parseInt(fsCountEl.textContent) + 1;
+            } else if (type === 'tab_switch') {
+                const switchCountEl = document.getElementById('switchCountHeader');
+                if (switchCountEl) switchCountEl.textContent = parseInt(switchCountEl.textContent) + 1;
+            }
+            // Capture evidence for any infraction
+            captureSecurityEvidence();
         }
 
         function updateCheckStatus(id, success, msg) {
@@ -3162,15 +3415,25 @@
                 sectionsMap[s].push({ q, idx });
             });
 
-            // Display title of current section in sidebar label
-            const railLabel = document.querySelector('.section-label');
-            if (railLabel) railLabel.textContent = active || 'SEC-DONE';
+            // Display title of current section in sidebar label? Handled within the loop now
+            /* const railLabel = document.querySelector('.section-label');
+            if (railLabel) {
+                let lbl = active || 'SEC-DONE';
+                lbl = lbl.replace('Section ', 'Sec-');
+                railLabel.textContent = lbl;
+            } */
 
             for (const [sName, qs] of Object.entries(sectionsMap)) {
                 const isSub = currentAttempt.submittedSections.includes(sName);
                 const isActive = (sName === active);
                 const isFuture = !isSub && !isActive;
                 const isLocked = isSub || isFuture;
+
+                // Create header for THIS section
+                const secLabel = document.createElement('div');
+                secLabel.className = 'section-label';
+                secLabel.textContent = sName.replace('Section ', 'Sec-');
+                container.appendChild(secLabel);
 
                 const secContainer = document.createElement('div');
                 secContainer.style.position = 'relative';
@@ -3189,12 +3452,12 @@
                     const response = currentAttempt.responses[q.id];
                     const answered = response?.submitted;
 
-                    node.innerHTML = `<span>${idx + 1}</span>`;
+                    node.innerHTML = `${idx + 1}`;
                     node.dataset.tooltipText = q.heading || q.title || ("Question " + (idx + 1));
 
                     if (answered) {
                         node.classList.add('answered');
-                        node.innerHTML = `<span>${idx + 1} <svg viewBox="0 0 16 14" class="tick-icon"><path d="M2.5 7 L6 10.5 L13.5 3" /></svg></span>`;
+                        node.innerHTML += `<svg viewBox="0 0 16 14" class="tick-icon"><path d="M2.5 7 L6 10.5 L13.5 3" /></svg>`;
                     }
 
                     if (isLocked && !isPractice) {
@@ -3346,11 +3609,11 @@
 
                 // --- SECTION HEADER ---
                 const header = document.createElement('div');
-                let headerColor = '#e68a5c'; // Default Orange
+                let headerColor = '#CF5927'; // Desaturated Terracotta
                 if (isSubmitted) headerColor = '#12B76A'; // Green if submitted
                 if (isLocked) headerColor = '#94a3b8'; // Grey if locked
 
-                header.style = `background: ${headerColor}; color: #fff; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: calc(16px * var(--text-scale)); font-family: 'Open Sans', sans-serif; cursor: ${isLocked ? 'not-allowed' : 'pointer'};`;
+                header.style = `background: ${headerColor}; color: #fff; padding: 16px 25px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: calc(18px * var(--text-scale)); font-family: 'Open Sans', sans-serif; cursor: ${isLocked ? 'not-allowed' : 'pointer'}; border-top-left-radius: 8px; border-top-right-radius: 8px;`;
 
                 if (!isLocked) {
                     header.onclick = () => {
@@ -3359,11 +3622,12 @@
                     };
                 }
 
-                const indicatorIcon = isLocked ? '<i class="fas fa-lock"></i>' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}"></i>`;
+                const indicatorIcon = isLocked ? '<i class="fas fa-lock"></i>' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}" style="font-size: 14px; margin-left: 8px;"></i>`;
+                const sectionType = qs[0]?.q?.type === 'coding' ? ' - Coding' : '';
 
                 header.innerHTML = `
-                    <span>${sName}</span>
-                    <div style="display: flex; align-items: center; gap: 8px; font-size: calc(14px * var(--text-scale)); opacity: 0.9;">
+                    <span>${sName}${sectionType}</span>
+                    <div style="display: flex; align-items: center; gap: 4px; font-size: calc(15px * var(--text-scale)); opacity: 1;">
                         <span>${subCount}/${qs.length} Questions</span>
                         ${indicatorIcon}
                     </div>
@@ -3372,29 +3636,28 @@
 
                 if (!isCollapsed) {
                     const tableWrap = document.createElement('div');
-                    tableWrap.style = "padding: 20px 0;";
+                    tableWrap.style = "padding: 30px 40px;";
 
                     const table = document.createElement('table');
-                    table.style = "width: 100%; border-collapse: collapse; text-align: left; font-family: 'Open Sans', sans-serif; font-size: calc(14.5px * var(--text-scale));";
+                    table.style = "width: 100%; border-collapse: collapse; text-align: left; font-family: 'Open Sans', sans-serif; font-size: calc(15px * var(--text-scale));";
                     table.innerHTML = `
                         <thead>
                             <tr style="border-bottom: none;">
-                                <th style="padding: 15px 10px; color: #344054; font-weight: 700; width: 70px; text-align: center; font-size: calc(14px * var(--text-scale)); vertical-align: bottom;">
-                                    <div style="display:inline-block; border-bottom: 2px solid #D1D5DB; padding-bottom: 8px; width: 40px;">Sr. no.</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; width: 80px; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 45px;">Sr. no.</div>
                                 </th>
-                                <th style="padding: 15px 10px; color: #344054; font-weight: 700; text-align: left; font-size: calc(14px * var(--text-scale)); vertical-align: bottom;">
-                                    <div style="display:inline-block; border-bottom: 2px solid #D1D5DB; padding-bottom: 8px; width: 250px;">Question</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 220px;">Question</div>
                                 </th>
-                                <th style="padding: 15px 10px; color: #344054; font-weight: 700; width: 150px; text-align: center; font-size: calc(14px * var(--text-scale)); vertical-align: bottom;">
-                                    <div style="display:inline-block; border-bottom: 2px solid #D1D5DB; padding-bottom: 8px; width: 50px;">Type</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; width: 200px; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 60px;">Type</div>
                                 </th>
-                                <th style="padding: 15px 10px; color: #344054; font-weight: 700; width: 150px; text-align: center; font-size: calc(14px * var(--text-scale)); vertical-align: bottom;">
-                                    <div style="display:inline-block; border-bottom: 2px solid #D1D5DB; padding-bottom: 8px; width: 70px;">Status</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; width: 200px; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 70px;">Status</div>
                                 </th>
-                                <th style="padding: 15px 10px; color: #344054; font-weight: 700; width: 150px; text-align: center; font-size: calc(14px * var(--text-scale)); vertical-align: bottom;">
-                                    <div style="display:inline-block; border-bottom: 2px solid #D1D5DB; padding-bottom: 8px; width: 90px;">Action</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; width: 150px; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 80px;">Action</div>
                                 </th>
-                                <th style="width: 80px;"></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -3406,32 +3669,31 @@
                         const i = item.idx;
                         const response = currentAttempt.responses[qInfo.id];
                         let status = "Pending";
-                        let actionText = "Solve Question";
-                        let statusColor = "#333";
+                        let actionText = "Solve<br>Question";
+                        let statusColor = "#101828";
 
                         if (response?.submitted) {
                             status = "Submitted";
-                            actionText = "Modify Answer";
-                            statusColor = "#000";
+                            actionText = "Modify<br>Answer";
+                            statusColor = "#101828";
                         } else if (response?.value) {
                             status = "Drafted";
-                            statusColor = "#E68A5C";
+                            statusColor = "#CF5927";
                         }
 
                         const tr = document.createElement('tr');
                         tr.style = "border-bottom: none; background: #fff; transition: all 0.2s;";
                         tr.innerHTML = `
-                            <td style="padding: 18px 10px; color: #555; text-align: center; font-size: calc(15px * var(--text-scale));">${i + 1}.</td>
-                            <td style="padding: 18px 10px; color: #222; text-align: left; font-size: calc(15.5px * var(--text-scale));">
-                                <span class="q-title-link" onclick="loadQuestion(${i})" style="cursor: pointer; transition: all 0.2s; font-weight: 400;">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
+                            <td style="padding: 20px 10px; color: #101828; text-align: left; font-weight: 500;">${i + 1}.</td>
+                            <td style="padding: 20px 10px; color: #101828; text-align: left; font-weight: 500;">
+                                <span class="q-title-link" onclick="loadQuestion(${i})" style="cursor: pointer; transition: all 0.2s;">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
                             </td>
-                            <td style="padding: 18px 10px; color: #555; text-align: center; font-size: calc(14.5px * var(--text-scale));">${(qInfo.type || 'MCQ').toUpperCase()}</td>
-                            <td style="padding: 18px 10px; color: ${status === 'Pending' ? '#667085' : statusColor}; text-align: center; font-size: calc(14.5px * var(--text-scale));">${status}</td>
-                            <td style="padding: 18px 10px; text-align: center; font-size: calc(14.5px * var(--text-scale));">
+                            <td style="padding: 20px 10px; color: #101828; text-align: left; font-weight: 500;">${(qInfo.type || 'MCQ').toUpperCase()}</td>
+                            <td style="padding: 20px 10px; color: ${statusColor}; text-align: left; font-weight: 500;">${status}</td>
+                            <td style="padding: 20px 10px; text-align: left;">
                                 <a href="javascript:void(0)" class="solve-link" onclick="loadQuestion(${i})" 
-                                   style="color: #E66A35; text-decoration: none; font-weight: 700;">${actionText}</a>
+                                   style="color: #CF5927; text-decoration: none; font-weight: 500; line-height: 1.3; display: block;">${actionText}</a>
                             </td>
-                            <td></td>
                         `;
                         const titleSpan = tr.querySelector('.q-title-link');
                         titleSpan.onmouseenter = () => titleSpan.style.textDecoration = 'underline';
@@ -3441,7 +3703,7 @@
                         solveLink.onmouseenter = () => solveLink.style.textDecoration = 'underline';
                         solveLink.onmouseleave = () => solveLink.style.textDecoration = 'none';
 
-                        tr.onmouseenter = () => tr.style.background = "#F4F6F8";
+                        tr.onmouseenter = () => tr.style.background = "#F9FAFB";
                         tr.onmouseleave = () => tr.style.background = "#fff";
                         tbody.appendChild(tr);
                     });
@@ -3706,6 +3968,7 @@
                             <div style="display:flex; align-items:center;">
                                 <select class="lang-select" id="langSelector" onchange="resetTemplate()">
                                     ${q.languages.map(l => `<option value="${l}">${l.charAt(0).toUpperCase() + l.slice(1)}</option>`).join('')}
+                                FAMILY: 'Open Sans', sans-serif;
                                 </select>
                                 <i class="fas fa-caret-down" style="margin-left: -22px; pointer-events: none; color: #111; font-size: 10px;"></i>
                             </div>
@@ -4026,20 +4289,55 @@
             }
         }
 
+        function showFontSizeTooltip(e) {
+            const slider = document.getElementById('fontSizeSlider');
+            const tooltip = document.getElementById('fontSizeTooltip');
+            if (!slider || !tooltip) return;
+
+            const rect = slider.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const percent = Math.min(1, Math.max(0, offsetX / rect.width));
+
+            const min = parseInt(slider.min);
+            const max = parseInt(slider.max);
+            const valueAtPoint = Math.round(min + (max - min) * percent);
+
+            tooltip.textContent = valueAtPoint + "%";
+            tooltip.style.display = 'block';
+            tooltip.style.left = (offsetX + 12) + "px"; // Account for margin
+            tooltip.style.opacity = '1';
+        }
+
+        function hideFontSizeTooltip() {
+            const tooltip = document.getElementById('fontSizeTooltip');
+            if (tooltip) {
+                tooltip.style.opacity = '0';
+                setTimeout(() => { if (tooltip.style.opacity === '0') tooltip.style.display = 'none'; }, 200);
+            }
+        }
+
+        let fontResizeTimer = null;
+
         function updateFontSize(val) {
-            // Apply scale ONLY to the content text variable. Layout stays static.
-            let scale = val / 100;
-            document.documentElement.style.setProperty('--text-scale', scale);
+            clearTimeout(fontResizeTimer);
 
-            if (editorInstance) {
-                // Monaco font can still be scaled independently for better reading
-                editorInstance.updateOptions({ fontSize: Math.max(10, Math.min(48, 18 * scale)) });
-            }
+            fontResizeTimer = setTimeout(() => {
+                const scale = val / 100;
 
-            // Sync Dashboard font if student is at dashboard
-            if (document.getElementById('testDashboardView').style.display !== 'none') {
-                renderDashboardTable();
-            }
+                document.documentElement.style.setProperty('--text-scale', scale);
+
+                if (editorInstance) {
+                    editorInstance.updateOptions({
+                        fontSize: Math.max(12, Math.min(40, 18 * scale))
+                    });
+                }
+
+                const dash = document.getElementById('testDashboardView');
+                if (dash && dash.style.display !== 'none') {
+                    requestAnimationFrame(() => renderDashboardTable());
+                }
+
+            }, 60);
         }
 
         // --- SPLIT PANE RESIZER LOGIC ---
@@ -4075,16 +4373,92 @@
             }
         });
 
+        function showWifiTooltip() {
+            const group = document.getElementById('wifiGroup');
+            const tooltip = document.querySelector('.wifi-tooltip');
+            if (!group || !tooltip) return;
+            const rect = group.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width / 2) + "px";
+            tooltip.style.top = (rect.bottom + 12) + "px";
+            tooltip.style.display = 'flex';
+            requestAnimationFrame(() => tooltip.style.opacity = '1');
+        }
+
+        function hideWifiTooltip() {
+            const tooltip = document.querySelector('.wifi-tooltip');
+            if (tooltip) {
+                tooltip.style.opacity = '0';
+                setTimeout(() => { if (tooltip.style.opacity === '0') tooltip.style.display = 'none'; }, 250);
+            }
+        }
+
         function updateWifiStat() {
-            const wifiLabel = document.getElementById('wifiLabel');
             const wifiIcon = document.getElementById('wifiIcon');
-            if (navigator.connection) {
-                const strength = Math.round(navigator.connection.downlink * 10);
-                const val = Math.min(100, strength + 70);
-                wifiLabel.textContent = val + '%';
-                if (val < 40) wifiIcon.style.color = 'var(--danger)';
-                else if (val < 70) wifiIcon.style.color = 'var(--warning)';
-                else wifiIcon.style.color = 'var(--success)';
+            const wifiErrorIcon = document.getElementById('wifiErrorIcon');
+            const wifiWarning = document.getElementById('wifiWarning');
+            const topBar = document.querySelector('.top-bar');
+            const attemptedBoxes = document.querySelectorAll('.attempted-box');
+
+            if (navigator.connection && wifiIcon) {
+                const { downlink, rtt, effectiveType } = navigator.connection;
+
+                // Defaults (Excellent)
+                let color = '#12B76A'; // Green
+                let showWarning = false;
+                let msg = "";
+
+                // Critical Logic (Poor)
+                if (downlink < 1 || (rtt && rtt > 400) || effectiveType === '2g' || effectiveType === 'slow-2g') {
+                    color = '#D92D20'; // Red
+                    showWarning = true;
+                    msg = "Your<br>internet<br>connection<br>is poor.";
+                }
+                // Warning Logic (Slow)
+                else if (downlink < 2.5 || (rtt && rtt > 200) || effectiveType === '3g') {
+                    color = '#DC6803'; // Yellow/Orange
+                    showWarning = true;
+                    msg = "Your<br>internet<br>connectivity<br>is slow.";
+                }
+
+                // Apply Colors
+                wifiIcon.style.color = color;
+
+                // Update Styled Tooltip DOM
+                const strength = Math.round(Math.min(100, Math.max(0, (downlink / 10) * 100)));
+                const ttStrength = document.getElementById('ttStrength');
+                const ttLatency = document.getElementById('ttLatency');
+                const ttUpload = document.getElementById('ttUpload');
+                const ttStability = document.getElementById('ttStability');
+
+                if (ttStrength) ttStrength.textContent = strength + "%";
+                if (ttLatency) ttLatency.textContent = (rtt || '---') + " ms";
+                if (ttUpload) ttUpload.textContent = downlink + " Mbps";
+                if (ttStability) {
+                    ttStability.textContent = showWarning ? (downlink < 1 ? 'Poor' : 'Slow') : 'Stable';
+                    ttStability.style.color = color;
+                }
+
+                if (showWarning) {
+                    wifiWarning.innerHTML = msg;
+                    wifiWarning.style.display = 'block';
+                    if (wifiErrorIcon) {
+                        wifiErrorIcon.style.display = 'flex';
+                        wifiErrorIcon.style.background = color;
+                    }
+
+                    // Dynamic Header Expansion - "Increase a lil more"
+                    const expandedHeight = "135px";
+                    if (topBar) topBar.style.height = expandedHeight;
+                    attemptedBoxes.forEach(box => box.style.height = expandedHeight);
+                } else {
+                    wifiWarning.style.display = 'none';
+                    if (wifiErrorIcon) wifiErrorIcon.style.display = 'none';
+
+                    // Reset Height
+                    const baseHeight = "88px";
+                    if (topBar) topBar.style.height = baseHeight;
+                    attemptedBoxes.forEach(box => box.style.height = baseHeight);
+                }
             }
         }
         setInterval(updateWifiStat, 5000);
@@ -4857,8 +5231,8 @@
             const feedbackView = document.getElementById('feedbackView');
             feedbackView.style.display = 'flex';
 
-            // Release Kiosk mode and Anti-cheat for Feedback page
-            if (window.proctorBridge) window.proctorBridge.setKioskMode(false);
+            // Kiosk mode persists through Feedback page as requested
+
             sessionStorage.setItem(`exam_started_${attemptId}`, 'false');
 
             // View Your Result button removed
@@ -4875,96 +5249,68 @@
         }
 
         function finalizeFeedback() {
+            if (window.proctorBridge) {
+                // In Desktop version, close immediately as requested
+                window.proctorBridge.close();
+                return;
+            }
+
             const btn = document.getElementById('feedbackSubmitBtn');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ARCHIVING DATA...';
             btn.disabled = true;
 
-            // Show a success animation with a thumb sign
-            const finalOverlay = document.createElement('div');
-            finalOverlay.style.cssText = "position:fixed; inset:0; background:rgba(255,255,255,0.95); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center; animation: fadeIn 0.5s forwards;";
-            finalOverlay.innerHTML = `
-                <div style="font-size: 8rem; color: #D35400; margin-bottom: 24px; animation: thumbPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                    <i class="fas fa-thumbs-up"></i>
-                </div>
-                <h1 style="font-family: 'Outfit', sans-serif; font-weight: 800; color: #101828; margin-bottom: 12px; font-size: 2.5rem;">THANK YOU!</h1>
-                <p style="color: #475467; font-size: 1.2rem; font-weight: 600;">Your feedback has been securely archived.</p>
-                <style>
-                    @keyframes thumbPop {
-                        0% { transform: scale(0) rotate(-45deg); opacity: 0; }
-                        70% { transform: scale(1.2) rotate(10deg); opacity: 1; }
-                        100% { transform: scale(1) rotate(0deg); opacity: 1; }
-                    }
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-                </style>
-            `;
-            document.body.appendChild(finalOverlay);
-
-            if (window.proctorBridge) window.proctorBridge.setKioskMode(false);
-
-            // Attempt to close immediately after short visual confirmation
-            setTimeout(() => {
-                window.close();
-                // If it doesn't close, redirect to dashboard as fallback
-                setTimeout(() => {
-                    window.location.replace('./student-dashboard.html');
-                }, 500);
-            }, 800);
+            // Browser version fallback (rare)
+            window.location.replace('./student-dashboard.html');
         }
 
         function initAntiCheat() {
+            if (window.proctorBridge) {
+                // Listen for system-level proctoring events
+                window.proctorBridge.onSystemEvent((data) => {
+                    if (data.type === 'FOCUS_LOST') {
+                        handleInfraction('Desktop Switch Detect');
+                    } else if (data.type === 'ILLEGAL_INPUT') {
+                        handleInfraction('Blocked Shortcut: ' + data.message);
+                    }
+                });
+            }
+
+            // Global Keydown Blocking (SILENT)
+            document.addEventListener("keydown", (e) => {
+                // Block F5 / Refresh
+                if (e.key === "F5") e.preventDefault();
+                if (e.ctrlKey && e.key === "r") e.preventDefault();
+                if (e.metaKey && e.key === "r") e.preventDefault();
+
+                // Block DevTools shortcuts
+                if (e.ctrlKey && e.shiftKey && e.key === "i") e.preventDefault();
+                if (e.ctrlKey && e.shiftKey && e.key === "j") e.preventDefault();
+
+                // Block close
+                if (e.ctrlKey && e.key === "w") e.preventDefault();
+            });
+
+            // Global Disable Right Click
+            document.addEventListener("contextmenu", e => e.preventDefault());
+
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) handleInfraction('Tab Switch Detect');
             });
-            // Better Fullscreen Accuracy
+
             document.addEventListener('fullscreenchange', () => {
                 const fsCounter = document.getElementById('fsCount');
                 if (!document.fullscreenElement) {
                     handleInfraction('Exited Fullscreen');
                     if (fsCounter) fsCounter.textContent = parseInt(fsCounter.textContent) + 1;
-                    showFullscreenBarrier();
+                    // SILENT: We no longer show the barrier overlay. 
+                    // Just count and continue if possible, or attempt re-entry silently.
                 }
             });
-
-            // Initial Barrier check removed from global scope to avoid overlapping with onload Resume check
         }
 
         function showFullscreenBarrier(isResume = false) {
-            if (document.getElementById('fsBarrier')) return;
-            const div = document.createElement('div');
-            div.id = 'fsBarrier';
-            // True center pop modal style
-            div.style.cssText = "position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 10000; display: flex; align-items: center; justify-content: center; color: #fff; padding: 20px;";
-
-            const btnText = isResume ? "RESUME ASSESSMENT" : "AGREE & RETURN TO FULLSCREEN";
-            const headerText = isResume ? "SESSION RESTORED" : "ENTRY RESTRICTED";
-            const iconClass = isResume ? "fa-play" : "fa-exclamation-triangle";
-            const bodyText = isResume ? "Your session has been restored. Please enter fullscreen mode to continue your assessment." : "To maintain assessment integrity, this session must run in full-screen mode by any means. Leave now or risk immediate termination.";
-            const accentColor = isResume ? "#12B76A" : "var(--danger)";
-
-            div.innerHTML = `
-                <div style="background: #fff; padding: 48px; border-radius: 24px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); transform: scale(0.9); animation: modalIn 0.3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                    <div style="width:80px; height:80px; background:${accentColor}; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin: 0 auto 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-                        <i class="fas ${iconClass}" style="color: #fff;"></i>
-                    </div>
-                    <h2 style="font-size:2rem; font-weight:900; margin-bottom:12px; color:#101828; text-transform:uppercase;">${headerText}</h2>
-                    <p style="color:#475467; margin-bottom:32px; line-height:1.6; font-size:1.1rem; font-weight:500;">${bodyText}</p>
-                    <button onclick="enterFS()" style="background:${accentColor}; color:#fff; border:none; padding:16px 40px; border-radius:12px; font-weight:800; font-size:1rem; cursor:pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); text-transform:uppercase; width: 100%; transition: transform 0.2s;">${btnText}</button>
-                    ${isResume ? '' : '<p style="margin-top:20px; color:#98A2B3; font-size:0.8rem;">Click button to enable secure workspace</p>'}
-                </div>
-                <style>@keyframes modalIn { to { transform: scale(1); opacity: 1; } }</style>
-            `;
-            document.body.appendChild(div);
-
-            if (!isResume) {
-                // Red overlay flash only for high-danger infractions
-                const flash = document.createElement('div');
-                flash.style.cssText = "position:fixed; inset:0; background:rgba(240,68,56,0.3); pointer-events:none; z-index:10001; animation: cameraFlash 0.5s ease-out;";
-                document.body.appendChild(flash);
-                setTimeout(() => flash.remove(), 500);
-            }
+            // SILENCED: User requested no overlays/warnings during proctoring.
+            console.warn("[SILENT] Fullscreen barrier suppressed.");
         }
 
         function enterFS() {
@@ -4973,7 +5319,7 @@
                 const b = document.getElementById('fsBarrier');
                 if (b) b.remove();
             }).catch(e => {
-                showToast("Fullscreen request denied. Please click the button again.", 'error');
+                console.error("FS Error:", e);
             });
         }
 
@@ -4985,24 +5331,65 @@
             currentAttempt.tabSwitchCount = (currentAttempt.tabSwitchCount || 0) + 1;
             db.updateAttempt(attemptId, { tabSwitchCount: currentAttempt.tabSwitchCount });
 
+            // Update header counters SILENTLY
             if (alertCount) alertCount.textContent = currentAttempt.tabSwitchCount;
 
-            const limit = currentExam?.security?.maxTabSwitches || 3;
-            const left = limit - currentAttempt.tabSwitchCount;
+            // SILENCED: Internal logging only. Limit check removed as per user request to let count keep increasing.
+            console.warn(`[SILENT-BLOCK] Infraction documented: ${type}. Current total: ${currentAttempt.tabSwitchCount}`);
+        }
 
-            // Update Integrity Score
-            const newScore = Math.max(0, Math.round(100 - (currentAttempt.tabSwitchCount / limit * 100)));
-            if (integrityDisplay) {
-                integrityDisplay.textContent = newScore + '%';
-                if (newScore < 50) integrityDisplay.style.color = 'var(--danger)';
-            }
+        function showDesktopMandatoryOverlay(examId) {
+            // Hide everything else
+            document.body.innerHTML = '';
+            document.body.style.background = '#f4f5f7';
 
-            if (left <= 0) {
-                showSecurityAlert("CRITICAL INFRACTION", "Maximum security violations reached. Your assessment is being submitted automatically.", true);
-                setTimeout(() => submitFinal(true, true), 3000);
-            } else {
-                showSecurityAlert("SECURITY ALERT: " + type, `Suspicious activity detected. You have <b>${left}</b> more warning(s) before automatic submission.`, false);
-            }
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f4f5f7;
+                z-index: 999999;
+                font-family: 'Outfit', sans-serif;
+            `;
+
+            const deepLink = `exampad://open-exam?id=${examId}`;
+
+            overlay.innerHTML = `
+                <div style="background: #fff; padding: 60px; border-radius: 32px; max-width: 600px; width: 90%; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.1); border: 1px solid #eee;">
+                    <div style="width: 100px; height: 100px; background: #FFF5F0; border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 32px;">
+                        <i class="fas fa-desktop" style="color: var(--primary); font-size: 3rem;"></i>
+                    </div>
+                    <h1 style="font-size: 2.2rem; font-weight: 900; color: #101828; margin-bottom: 16px;">SECURE ENVIRONMENT REQUIRED</h1>
+                    <p style="color: #475467; font-size: 1.15rem; line-height: 1.6; margin-bottom: 40px; font-weight: 500;">
+                        To ensure assessment integrity, this exam can only be attempted using the <b>EXAMPAD Desktop Application</b>. 
+                        Browser-based attempts are restricted for this session.
+                    </p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <a href="${deepLink}" style="background: var(--primary); color: #fff; text-decoration: none; padding: 20px; border-radius: 16px; font-weight: 800; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(217, 108, 51, 0.3); transition: transform 0.2s;">
+                            LAUNCH DESKTOP APPLICATION
+                        </a>
+                        <p style="font-size: 0.85rem; color: #98A2B3; font-weight: 600; margin-top: 8px;">
+                            If the app is not opening, please make sure it is installed on your system.
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid #f0f0f0;">
+                         <button onclick="window.location.replace('./student-dashboard.html')" style="background: none; border: none; color: #667085; font-weight: 700; cursor: pointer; font-size: 0.95rem;">
+                             <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Back to Dashboard
+                         </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            // Auto-trigger deep link after a small delay
+            setTimeout(() => {
+                window.location.href = deepLink;
+            }, 1500);
         }
 
         function showSecurityAlert(title, message, isCritical) {
@@ -5022,7 +5409,9 @@
                 width: 90%;
                 border-top: 6px solid ${isCritical ? '#F04438' : '#F79009'};
                 animation: slideDownFade 0.4s ease-out;
+                font-family: 'Open Sans', sans-serif;
             `;
+
 
             alertContainer.innerHTML = `
                 <div style="width: 70px; height: 70px; background: ${isCritical ? '#FEE4E2' : '#FEF0C7'}; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
@@ -5253,20 +5642,8 @@
                             el.textContent = cnt + 1;
                         }
 
-                        const blockScreen = document.createElement('div');
-                        blockScreen.style.cssText = "position:fixed; inset:40px; background:#fff; color:#101828; z-index:9999999; display:flex; align-items:center; justify-content:center; flex-direction:column; font-family:'Open Sans', sans-serif; border-radius: 20px; box-shadow: 0 40px 100px rgba(0,0,0,0.3); border: 2px solid #F04438; animation: slideDown 0.4s ease-out;";
-                        blockScreen.innerHTML = `
-                            <div style="width:80px; height:80px; background:#FEE4E2; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#F04438; font-size:2.5rem; margin-bottom:24px;">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div style="font-size:2rem; font-weight:900; color:#101828; text-align:center;">⚠ UNAUTHORIZED DESKTOP SWITCH DETECTED ⚠</div>
-                            <div style="font-size:1.2rem; margin-top:20px; font-weight:500; color:#475467; text-align:center; max-width:500px;">Your switch has been securely logged. To continue, return to your exam window immediately.</div>
-                        `;
-                        document.body.appendChild(blockScreen);
-
-                        setTimeout(() => {
-                            if (blockScreen && blockScreen.parentElement) blockScreen.remove();
-                        }, 5000);
+                        // SILENTIAL BLOCK: No warning/overlay as requested.
+                        console.warn("[SILENT-LOCK] Desktop/Tab switch detected.");
                     }
                 } catch (e) { }
             };

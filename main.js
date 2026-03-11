@@ -1,23 +1,75 @@
-const { app, BrowserWindow, ipcMain, globalShortcut, dialog } = require('electron');
+/**
+ * EXAMPAD MAIN PROCESS
+ * Environment: Node.js (Electron Main)
+ * Role: Desktop Controller / Secure Server
+ */
+
+const { app, BrowserWindow, ipcMain, globalShortcut, dialog, Menu, desktopCapturer, clipboard } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
 // AI Integration imports
 require('dotenv').config();
-const OpenAI = require('openai');
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
 
 let mainWindow;
 
-/**
- * CORE COMMANDS:
- * 1. TAB_CONTROL: Disable Alt+Tab / Win+Tab (Simulated via focus enforcement)
- * 2. SCREENSHOT_BLOCK: Disable PrintScreen / Cmd+Shift+4
- * 3. PROCTOR_COMMANDS: Remote capture and session locking
- */
+// --- DEEP LINKING SUPPORT ---
+if (process.defaultApp) {
+    if (process.argv.length >= 2) {
+        app.setAsDefaultProtocolClient('exampad', process.execPath, [path.resolve(process.argv[1])]);
+    }
+} else {
+    app.setAsDefaultProtocolClient('exampad');
+}
+
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+    app.quit();
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        // Someone tried to run a second instance, we should focus our window.
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
+
+            // Handle the URL from the command line (for Windows)
+            const url = commandLine.pop();
+            if (url && url.startsWith('exampad://')) {
+                handleIncomingURL(url);
+            }
+        }
+    });
+
+    app.whenReady().then(() => {
+        Menu.setApplicationMenu(null); // Remove default menu bar
+        createWindow();
+        registerSecurityShortcuts();
+
+        // Check if app was opened via protocol (on startup)
+        const url = process.argv.find(arg => arg.startsWith('exampad://'));
+        if (url) {
+            setTimeout(() => handleIncomingURL(url), 1500);
+        }
+
+        app.on('activate', function () {
+            if (BrowserWindow.getAllWindows().length === 0) createWindow();
+        });
+    });
+}
+
+function handleIncomingURL(url) {
+    try {
+        const fullUrl = new URL(url);
+        const examId = fullUrl.searchParams.get('id');
+        if (examId && mainWindow) {
+            // Signal renderer to navigate to this exam
+            mainWindow.webContents.send('open-exam-intent', { examId });
+        }
+    } catch (e) {
+        console.error('Failed to parse deep link URL:', url, e);
+    }
+}
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -25,33 +77,54 @@ function createWindow() {
         height: 900,
         backgroundColor: '#f4f5f7',
         title: "EXAMPAD COMMAND CENTER",
-        icon: path.join(__dirname, 'logo.jpg'), // Chitkara APP ICON
-        // titleBarStyle: 'hidden', // Removed to show standard OS buttons
-        show: false,
+        icon: path.join(__dirname, 'logo.jpg'), // Use Chitkara logo as app icon
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            contextIsolation: true,
             nodeIntegration: false,
-            sandbox: true
-        }
+            contextIsolation: true,
+            sandbox: true,
+            webSecurity: true,
+            devTools: false // Disable DevTools internally
+        },
+        show: false
     });
 
-    // Load the ERP Home
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile('index.html'); // Load root index.html to fix relative paths
 
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
     });
 
+    // SILENTLY close devtools if they try to open (secondary guard)
+    mainWindow.webContents.on('devtools-opened', () => {
+        mainWindow.webContents.closeDevTools();
+    });
+
+    // Prevent window closing during session if in kiosk
+    mainWindow.on('close', (e) => {
+        if (mainWindow && mainWindow.isKiosk()) {
+            e.preventDefault();
+        }
+    });
+
+    // Prevent minimizing
+    mainWindow.on('minimize', (e) => {
+        e.preventDefault();
+        mainWindow.restore();
+    });
+
     // --- TAB SWITCHING CONTROL ---
-    // In a real proctoring session, we enforce focus.
     mainWindow.on('blur', () => {
-        // Send violation signal to frontend
         mainWindow.webContents.send('proctor-event', {
             type: 'FOCUS_LOST',
             severity: 'CRITICAL',
             message: 'User navigated away from the application workspace.'
         });
+
+        if (mainWindow.isKiosk()) {
+            mainWindow.focus();
+            mainWindow.setAlwaysOnTop(true, 'screen-saver');
+        }
     });
 
     mainWindow.on('focus', () => {
@@ -61,43 +134,77 @@ function createWindow() {
         });
     });
 
-    // --- SECURITY OVERRIDES ---
-    mainWindow.on('close', (e) => {
-        // Option: Block accidental close during exam if a flag is set
-        // e.preventDefault();
+    // AGGRESSIVE DESKTOP LOCK: Prevent escape via Virtual Desktops (Win+Tab / Touchpad Swipes)
+    mainWindow.on('visibility-change', (event, state) => {
+        if (state === 'hidden' && mainWindow.isKiosk()) {
+            mainWindow.show();
+            mainWindow.focus();
+        }
+    });
+
+    mainWindow.on('leave-full-screen', () => {
+        if (mainWindow.isKiosk()) {
+            mainWindow.setFullScreen(true);
+        }
     });
 }
 
 function registerSecurityShortcuts() {
-    // Block common screenshot keys
-    const screenshotKeys = ['PrintScreen', 'CommandOrControl+Shift+4', 'CommandOrControl+Shift+3'];
+    const blockedKeys = [
+        'Escape',
+        'PrintScreen',
+        'CommandOrControl+Shift+4',
+        'CommandOrControl+Shift+3',
+        'Alt+Tab',
+        'Alt+Shift+Tab',
+        'Alt+F4',
+        'Alt+Esc',
+        'Alt+Space',
+        'Control+Esc',
+        'Super',         // Windows Key
+        'Meta',          // Windows Key
+        'CommandOrControl+Tab',
+        'CommandOrControl+H',
+        'CommandOrControl+Q',
+        'CommandOrControl+W',
+        'CommandOrControl+R',
+        'CommandOrControl+Shift+I',
+        'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
+        'Meta+D',
+        'Meta+Tab',
+        'Meta+L',
+        'Meta+I',
+        'Meta+A',
+        'Meta+S',
+        'Meta+Control+D',
+        'Meta+Control+Left',
+        'Meta+Control+Right'
+    ];
 
-    screenshotKeys.forEach(key => {
-        const res = globalShortcut.register(key, () => {
-            mainWindow.webContents.send('proctor-event', {
-                type: 'ILLEGAL_INPUT',
-                message: `Screenshot attempt blocked: ${key}`
+    blockedKeys.forEach(key => {
+        try {
+            globalShortcut.register(key, () => {
+                // SILENT BLOCKING: Sends event for counting, but clears clipboard for PrintScreen.
+                if (mainWindow) {
+                    mainWindow.webContents.send('proctor-event', {
+                        type: 'ILLEGAL_INPUT',
+                        message: `Action blocked: ${key}`
+                    });
+
+                    if (key === 'PrintScreen') {
+                        clipboard.clear();
+                    }
+                }
             });
-        });
-        if (!res) console.log(`Failed to register ${key}`);
+        } catch (e) {
+            console.error(`Error registering ${key}:`, e);
+        }
     });
 }
 
-app.whenReady().then(() => {
-    createWindow();
-    registerSecurityShortcuts();
-
-    app.on('activate', function () {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
-    });
-});
-
-// --- IPC HANDLERS FOR WINDOW CONTROL ---
+// --- IPC HANDLERS ---
 ipcMain.on('window-control', (event, action) => {
     switch (action) {
-        case 'minimize':
-            mainWindow.minimize();
-            break;
         case 'maximize':
             if (mainWindow.isMaximized()) {
                 mainWindow.unmaximize();
@@ -117,49 +224,47 @@ ipcMain.on('kiosk-mode', (event, enable) => {
             mainWindow.setKiosk(true);
             mainWindow.setAlwaysOnTop(true, 'screen-saver');
             mainWindow.setFullScreen(true);
+            mainWindow.setSkipTaskbar(true); // Hide from taskbar to block swipe-up/Win+Tab
+            mainWindow.setResizable(false);
+            mainWindow.setClosable(false);
+            // STICKY WINDOW: The window follows the user to any virtual desktop
+            // This effectively "blocks" switching because they see the same exam everywhere.
+            mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
         } else {
             mainWindow.setKiosk(false);
             mainWindow.setAlwaysOnTop(false);
             mainWindow.setFullScreen(false);
+            mainWindow.setSkipTaskbar(false);
+            mainWindow.setResizable(true);
+            mainWindow.setClosable(true);
+            mainWindow.setVisibleOnAllWorkspaces(false);
         }
     }
 });
 
 ipcMain.handle('take-forced-screenshot', async (event, filename) => {
     try {
-        const image = await mainWindow.webContents.capturePage();
-        const screenshotPath = path.join(app.getPath('userData'), 'audit_screens');
+        const sources = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 1920, height: 1080 } });
+        const primary = sources[0];
+        const screenshotPath = path.join(app.getPath('userData'), 'audit', filename);
 
-        if (!fs.existsSync(screenshotPath)) {
-            fs.mkdirSync(screenshotPath, { recursive: true });
+        if (!fs.existsSync(path.dirname(screenshotPath))) {
+            fs.mkdirSync(path.dirname(screenshotPath), { recursive: true });
         }
 
-        const fullPath = path.join(screenshotPath, filename || `audit_${Date.now()}.png`);
-        fs.writeFileSync(fullPath, image.toPNG());
-
-        return { success: true, path: fullPath };
-    } catch (err) {
-        return { success: false, error: err.message };
+        fs.writeFileSync(screenshotPath, primary.thumbnail.toPNG());
+        return { success: true, path: screenshotPath };
+    } catch (e) {
+        return { success: false, error: e.message };
     }
 });
 
-// IPC Handler for AI Requests via Direct OpenAI API
+// AI Controller Bridge
+const aiController = require('./controllers/aiController');
 ipcMain.handle('ask-ai', async (event, prompt) => {
-    try {
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                { role: "user", content: prompt }
-            ]
-        });
-        return { success: true, reply: response.choices[0].message.content };
-    } catch (err) {
-        console.error("OpenAI Inference Error:", err);
-        return { success: false, error: "AI Engine Offline. Check credentials." };
-    }
+    return await aiController.generateAIResponse(prompt);
 });
 
-// App lifecycle
 app.on('will-quit', () => {
     globalShortcut.unregisterAll();
 });

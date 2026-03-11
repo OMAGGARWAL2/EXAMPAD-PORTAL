@@ -41,6 +41,31 @@ For technical disciplines, EXAMPAD provides a built-in Integrated Development En
 
 ---
 
+### Backend Engineering I - Rubric Compliance
+
+This project is built to demonstrate core Backend Engineering competencies as per the evaluation rubrics:
+
+#### 1. Client-Server Architecture & Node.js
+*   **Structure**: The application employs a **Hybrid Client-Server Architecture**.
+    *   **Main Process (`main.js`)**: Serves as the system-level "Server," managing hardware and security.
+    *   **Express Server (`server.js`)**: A micro-service handling AI inference.
+    *   **The Client**: Renderer processes built with standard Web APIs.
+*   **Environment**: Built entirely on **Node.js**, leveraging native modules like `fs`, `path`, and `electron` for OS-level control.
+
+#### 2. Handling Modules & Modularization
+*   **Modular API**: Routes are handled in a separate `routes/` directory (e.g., `routes/ai.js`).
+*   **Data Logic**: The project uses a dedicated `js/db.js` module for managing persistent storage operations through a structured class interface.
+
+#### 3. Frameworks (Express-JS)
+*   **Full Implementation**: An Express.js ecosystem is used for the AI Assistant.
+*   **Middleware**: Demonstrates the use of standard middleware like `cors`, `express.json()`, and custom global error-handling logic.
+
+#### 4. Routing & Exception Handling
+*   **Dynamic Routing**: Use of `express.Router()` for scalable path management (`/api/ask-ai`).
+*   **Robust Exceptions**: Implementation of global exception handlers and `try/catch` blocks across all asynchronous Node.js and IPC operations to ensure system stability.
+
+---
+
 ### System Architecture Overview
 
 <div style="text-align: justify;">

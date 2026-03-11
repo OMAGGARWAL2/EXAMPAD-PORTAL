@@ -620,6 +620,14 @@
                 window.location.href = url;
             }, 400);
         }
+
+        // --- Deep Link Integration ---
+        if (window.proctorBridge && window.proctorBridge.onOpenExam) {
+            window.proctorBridge.onOpenExam(({ examId }) => {
+                console.log(`[DEEP LINK] Navigating to Exam: ${examId}`);
+                transitionTo(`pages/login.html?testId=${examId}`);
+            });
+        }
     </script>
 </body>
 
