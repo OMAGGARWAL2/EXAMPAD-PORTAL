@@ -372,8 +372,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(16, 24, 40, 0.4);
-            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             align-items: center;
             justify-content: center;
@@ -601,6 +600,10 @@
                             <div class="form-group">
                                 <label class="label">Minimum Reading Time (Minutes)</label>
                                 <input type="number" class="input" id="aMinTime" value="5" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Supplemental PDF URL (Optional)</label>
+                                <input type="text" class="input" id="aPdfUrl" placeholder="https://example.com/notes.pdf">
                             </div>
                             <div class="form-group">
                                 <label class="label">Content Editor</label>
@@ -873,12 +876,12 @@
         const urlParams = new URLSearchParams(window.location.search);
         const courseId = urlParams.get('id');
 
-        let currentCourse = {
+        var currentCourse = {
             title: '',
             description: '',
             modules: []
         };
-        let activeModuleIndex = -1;
+        var activeModuleIndex = -1;
 
         function init() {
             if (courseId) {
@@ -891,7 +894,7 @@
                 if (draft) {
                     try {
                         const parsed = JSON.parse(draft);
-                        if (parsed && typeof parsed === 'object') {
+                        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
                             currentCourse = parsed;
                         }
                     } catch (e) { console.error("Invalid draft", e); }
@@ -921,11 +924,14 @@
                 const name = title?.trim();
                 if (!name) return;
 
+                if (!currentCourse) currentCourse = { title: '', description: '', modules: [] };
                 if (!currentCourse.modules) currentCourse.modules = [];
+                
                 currentCourse.modules.push({
                     title: name,
                     items: []
                 });
+                
                 renderModules();
                 openModule(currentCourse.modules.length - 1);
                 autosave();
@@ -953,13 +959,14 @@
             };
 
             const handleConfirm = () => {
+                const val = input.value?.trim();
                 try {
-                    callback(input.value);
-                } catch (e) {
-                    console.error("Prompt callback error:", e);
-                    showToast("Error processing request", "danger");
-                } finally {
+                    callback(val);
                     cleanup();
+                } catch (e) {
+                    console.error("Prompt error:", e);
+                    showToast(`Error: ${e.message || "Request failed"}`, "danger");
+                    // We don't cleanup so the user can try again/fix input
                 }
             };
 
@@ -977,36 +984,66 @@
         }
 
         function autosave() {
-            currentCourse.title = document.getElementById('courseTitle').value;
-            currentCourse.description = document.getElementById('courseDesc').value;
+            if (!currentCourse) return;
+            const titleEl = document.getElementById('courseTitle');
+            const descEl = document.getElementById('courseDesc');
+            
+            currentCourse.title = titleEl ? titleEl.value : '';
+            currentCourse.description = descEl ? descEl.value : '';
             localStorage.setItem('exampad_course_draft', JSON.stringify(currentCourse));
         }
 
-        // Add event listeners for autosave
-        document.getElementById('courseTitle').addEventListener('input', autosave);
-        document.getElementById('courseDesc').addEventListener('input', autosave);
-
         function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
+            const modal = document.getElementById(id);
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Add event listeners for autosave
+        const titleInput = document.getElementById('courseTitle');
+        const descInput = document.getElementById('courseDesc');
+        if (titleInput) titleInput.addEventListener('input', autosave);
+        if (descInput) descInput.addEventListener('input', autosave);
+
+        function deleteModule(e, index) {
+            if (e) e.stopPropagation();
+            if (confirm("Permanently delete this module?")) {
+                if (currentCourse && currentCourse.modules) {
+                    currentCourse.modules.splice(index, 1);
+                    if (activeModuleIndex === index) {
+                        activeModuleIndex = -1;
+                        document.getElementById('moduleEditor').style.display = 'none';
+                        document.getElementById('welcomeState').style.display = 'block';
+                    } else if (activeModuleIndex > index) {
+                        activeModuleIndex--;
+                    }
+                    autosave();
+                    renderModules();
+                    showToast("Module removed", "success");
+                }
+            }
         }
 
         function renderModules() {
             const list = document.getElementById('moduleList');
             if (!list) return;
 
-            if (!currentCourse.modules) currentCourse.modules = [];
+            if (!currentCourse || !currentCourse.modules) return;
+
             list.innerHTML = currentCourse.modules.map((m, i) => `
                 <div class="module-item ${i === activeModuleIndex ? 'active' : ''}" onclick="openModule(${i})">
                     <div class="module-title" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:700;">${m.title}</span>
-                        <i class="fas fa-chevron-right" style="font-size: 0.7rem; opacity: 0.5;"></i>
+                        <span style="font-weight:700;">${m.title || 'Untitled Module'}</span>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <i class="fas fa-trash" style="font-size: 0.75rem; color: #999; cursor:pointer;" onclick="deleteModule(event, ${i})"></i>
+                            <i class="fas fa-chevron-right" style="font-size: 0.75rem; opacity: 0.5;"></i>
+                        </div>
                     </div>
                     <ul class="content-links" style="margin-top:8px;">
-                        ${(m.items || []).map(item => `
+                        ${(m.items || []).map(item => item ? `
                             <li class="content-link" style="font-size:0.85rem; padding:4px 0;">
-                                <i class="fas ${getIcon(item.type)}" style="width:20px; opacity:0.6;"></i> ${item.title}
+                                <i class="fas ${getIcon(item.type)}" style="width:20px; opacity:0.6;"></i> ${item.title || 'Untitled Item'}
                             </li>
-                        `).join('')}
+                        ` : '').join('')}
                     </ul>
                 </div>
             `).join('');
@@ -1023,10 +1060,17 @@
         }
 
         function openModule(index) {
+            if (!currentCourse || !currentCourse.modules[index]) return;
             activeModuleIndex = index;
-            document.getElementById('welcomeState').style.display = 'none';
-            document.getElementById('moduleEditor').style.display = 'block';
-            document.getElementById('editingModuleTitle').textContent = `Module: ${currentCourse.modules[index].title}`;
+            
+            const welcome = document.getElementById('welcomeState');
+            const editor = document.getElementById('moduleEditor');
+            const titleEl = document.getElementById('editingModuleTitle');
+
+            if (welcome) welcome.style.display = 'none';
+            if (editor) editor.style.display = 'block';
+            if (titleEl) titleEl.textContent = `Module: ${currentCourse.modules[index].title}`;
+            
             renderModules();
             closeContentEditor();
         }
@@ -1081,10 +1125,12 @@
                 };
             } else if (type === 'article') {
                 title = document.getElementById('aTitle').value;
+                const pdfInput = document.getElementById('aPdfUrl');
+                const timeInput = document.getElementById('aMinTime');
                 data = {
                     body: articleQuill.root.innerHTML,
-                    pdfUrl: document.getElementById('aPdfUrl').value,
-                    minTime: document.getElementById('aMinTime').value
+                    pdfUrl: pdfInput ? pdfInput.value : '',
+                    minTime: timeInput ? timeInput.value : '5'
                 };
             }
 
@@ -1121,14 +1167,26 @@
         }
 
         function saveCourse() {
-            showToast("Draft saved to cloud", "success");
+            currentCourse.title = document.getElementById('courseTitle').value || 'Untitled Course';
+            currentCourse.description = document.getElementById('courseDesc').value || '';
+            currentCourse.status = 'draft';
+
+            if (courseId) {
+                db.updateCourse(courseId, currentCourse);
+                showToast("Course draft updated!", "success");
+            } else {
+                const newCourse = db.createCourse(currentCourse, user.id);
+                // Redirect to the new ID so further saves are updates
+                window.location.href = `./course-creator.html?id=${newCourse.id}`;
+            }
         }
 
         function showToast(msg, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.style.borderLeft = `4px solid ${type === 'success' ? '#22c55e' : (type === 'error' ? '#ef4444' : '#3b82f6')}`;
+            const color = (type === 'success') ? '#22c55e' : (type === 'error' || type === 'danger' ? '#ef4444' : '#3b82f6');
+            toast.style.borderLeft = `4px solid ${color}`;
             toast.innerHTML = `<span>${msg}</span>`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);

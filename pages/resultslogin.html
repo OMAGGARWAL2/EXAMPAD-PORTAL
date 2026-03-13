@@ -149,10 +149,7 @@
             <input type="text" id="email" placeholder="e.g. 2024SR22720">
         </div>
 
-        <div class="form-group">
-            <label>Security Password</label>
-            <input type="password" id="pass" placeholder="••••••••">
-        </div>
+
 
         <button class="btn-login" onclick="performLogin()">Access Records</button>
 
@@ -175,20 +172,20 @@
 
         function performLogin() {
             const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('pass').value;
 
-            if (!email || !pass) {
-                showToast("Please enter both credentials.");
+            if (!email) {
+                showToast("Please enter Educational Email / Roll ID.");
                 return;
             }
 
-            // Simple login check against db
-            const user = db.authenticateUser(email, pass);
+            const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() || (u.rollNo && u.rollNo.toLowerCase() === email.toLowerCase()));
+
             if (user && user.role === 'student') {
                 sessionStorage.setItem('results_auth_user', JSON.stringify(user));
                 window.location.href = './resultsfinal.html';
             } else {
-                showToast("Invalid credentials. Please verify your ID.");
+                showToast("Invalid ID. Please verify your Roll Number.");
             }
         }
 

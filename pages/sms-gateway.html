@@ -4,159 +4,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad MESSAGING</title>
-    <!-- Google Fonts: Inter and Outfit -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <title>EXAMPAD | Professional Messaging ERP</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../logo.jpg">
     <style>
         :root {
-            --primary: #D92D20;
-            --primary-hover: #B42318;
-            --primary-soft: #FEF3F2;
-            --secondary: #667085;
-            --text-main: #101828;
-            --text-secondary: #475467;
-            --bg-body: #F9FAFB;
-            --bg-card: #FFFFFF;
-            --border: #EAECF0;
-            --radius-md: 12px;
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-dark: #1e40af;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --sidebar-w: 260px;
+            --header-h: 70px;
+            --radius-md: 10px;
             --radius-lg: 16px;
-            --whatsapp-color: #25D366;
-            --whatsapp-soft: #dcf8c6;
-            --sms-color: #0284c7;
-            --sms-soft: #e0f2fe;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
         }
 
         body {
-            background-color: var(--bg-body);
+            background: var(--bg-body);
             color: var(--text-main);
-            min-height: 100vh;
+            overflow: hidden;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
         }
 
-        h1,
-        h2,
-        h3,
-        .logo-text,
-        .nav-btn {
+        h1, h2, h3, .logo-text, .stat-value {
             font-family: 'Outfit', sans-serif;
         }
 
-        /* --- HEADER --- */
-        .site-header {
-            height: 72px;
-            background: #fff;
-            border-bottom: 1px solid var(--border);
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: #ffffff;
+            border-right: 1px solid var(--border);
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            flex-direction: column;
+            z-index: 100;
         }
 
-        .header-left {
+        .sidebar-header {
+            height: var(--header-h);
             display: flex;
             align-items: center;
-            gap: 24px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
+            padding: 0 24px;
             gap: 12px;
-            cursor: pointer;
-            text-decoration: none;
+            border-bottom: 1px solid var(--border);
         }
 
-        .logo-square {
+        .logo-box {
             width: 40px;
             height: 40px;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 6px;
         }
 
-        .logo-square img {
+        .logo-box img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
         .logo-text {
+            font-weight: 800;
             font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-main);
+            letter-spacing: -0.5px;
+            color: var(--primary);
         }
 
-        .btn-back {
+        .nav-list {
+            padding: 24px 12px;
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: #fff;
-            color: var(--text-secondary);
-            font-weight: 600;
-            cursor: pointer;
+            padding: 12px 16px;
+            gap: 12px;
             text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: 8px;
             transition: all 0.2s;
         }
 
-        .btn-back:hover {
+        .nav-link:hover {
+            background: var(--primary-light);
             color: var(--primary);
-            border-color: var(--primary);
-            background: var(--primary-soft);
         }
 
-        /* --- MAIN LAYOUT --- */
-        .main-container {
+        .nav-link.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .nav-link i {
+            width: 20px;
+            font-size: 1.1rem;
+        }
+
+        .nav-section-title {
+            padding: 16px 16px 8px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
             flex: 1;
-            padding: 40px 64px;
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        /* --- COMPOSER PANEL --- */
-        .composer-panel {
+        /* --- HEADER --- */
+        .header {
+            height: var(--header-h);
             background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 6px 6px 16px;
+            background: #f8fafc;
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .user-pill span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-pill img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* --- DASHBOARD GRID --- */
+        .view-port {
+            flex: 1;
+            overflow-y: auto;
             padding: 32px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* --- TOP STATS --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+            opacity: 0.1;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .stat-trend {
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+
+        /* --- ACTION GRID --- */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 32px;
+            align-items: start;
+        }
+
+        /* --- COMPOSER --- */
+        .composer-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-body {
+            padding: 32px;
             display: flex;
             flex-direction: column;
             gap: 24px;
         }
 
-        .panel-heading {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-main);
+        /* --- FORM STYLES --- */
+        .form-section {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 16px;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .form-group {
@@ -166,371 +311,588 @@
         }
 
         .form-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .input-box,
-        .select-box {
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .form-control {
             width: 100%;
             padding: 14px 16px;
+            padding-left: 44px;
             border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             font-size: 1rem;
+            background: #f8fafc;
             transition: all 0.2s;
-            background: var(--bg-body);
         }
 
-        .input-box:focus,
-        .select-box:focus {
+        .form-control:focus {
             outline: none;
-            border-color: var(--whatsapp-color);
-            box-shadow: 0 0 0 4px var(--whatsapp-soft);
+            border-color: var(--primary);
             background: #fff;
+            box-shadow: 0 0 0 4px var(--primary-light);
         }
 
-        .textarea-box {
-            resize: vertical;
-            min-height: 120px;
+        .form-select {
+            padding-left: 16px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
         }
 
-        .channel-selector {
-            display: flex;
-            gap: 16px;
-            margin-top: 8px;
+        textarea.form-control {
+            min-height: 140px;
+            resize: none;
+            padding-left: 16px;
         }
 
-        .channel-pill {
-            flex: 1;
-            padding: 16px;
-            border: 2px solid var(--border);
+        /* --- CHANNEL TOGGLE --- */
+        .channel-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 6px;
             border-radius: 12px;
+        }
+
+        .channel-btn {
+            padding: 12px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-secondary);
-            background: var(--bg-body);
+            gap: 8px;
         }
 
-        .channel-pill.whatsapp.active {
-            border-color: var(--whatsapp-color);
-            background: var(--whatsapp-soft);
-            color: #166534;
+        .channel-btn.active {
+            background: #fff;
+            color: var(--text-main);
+            box-shadow: var(--shadow-sm);
         }
 
-        .channel-pill.sms.active {
-            border-color: var(--sms-color);
-            background: var(--sms-soft);
-            color: #0c4a6e;
+        .channel-btn.whatsapp.active {
+            color: #25d366;
         }
 
-        .btn-push {
-            background: var(--whatsapp-color);
-            color: #fff;
-            border: none;
-            padding: 16px;
+        .channel-btn.sms.active {
+            color: #0284c7;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            padding: 16px 32px;
             border-radius: var(--radius-md);
-            font-weight: 800;
-            font-size: 1.1rem;
+            font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
+            border: none;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: auto;
         }
 
-        .btn-push:hover {
-            background: #1da851;
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
         }
 
         /* --- PREVIEW PANEL --- */
-        .preview-panel {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        .preview-pane {
             display: flex;
             flex-direction: column;
-            background-color: #f0f2f5;
+            gap: 24px;
         }
 
-        .phone-mockup {
+        .phone-frame {
             width: 100%;
-            height: 500px;
-            background: #efeae2;
-            /* WhatsApp chat bg */
-            border-radius: 24px;
-            border: 8px solid #333;
+            aspect-ratio: 9/18;
+            background: #1e293b;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .phone-inner {
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            border-radius: 30px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
-        .phone-header {
+        .phone-screen {
+            flex: 1;
+            background: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-nav {
             background: #008069;
             color: #fff;
-            padding: 16px;
+            padding: 40px 16px 12px; 
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 600;
         }
 
-        .phone-header .avatar {
+        .avatar-circle {
             width: 36px;
             height: 36px;
-            background: #fff;
+            background: #cbd5e1;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #008069;
+            color: #fff;
         }
 
-        .phone-body {
+        .chat-body {
             flex: 1;
             padding: 16px;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-size: contain;
             display: flex;
             flex-direction: column;
-            gap: 12px;
             overflow-y: auto;
-            position: relative;
         }
 
-        .phone-body::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            opacity: 0.06;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.1"><circle cx="50" cy="50" r="10" fill="%23000"/></svg>');
-            pointer-events: none;
-        }
-
-        .chat-bubble {
+        .msg-bubble {
             background: #fff;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 0 12px 12px 12px;
             max-width: 85%;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #111;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            white-space: pre-wrap;
+            font-size: 0.85rem;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
             position: relative;
-            z-index: 1;
+            margin-bottom: 8px;
         }
 
-        .chat-bubble.outbound {
+        .msg-bubble.outbound {
             background: #dcf8c6;
-            margin-left: auto;
+            align-self: flex-end;
             border-radius: 12px 0 12px 12px;
         }
 
-        .chat-time {
+        .msg-time {
             font-size: 0.7rem;
-            color: #667085;
+            color: #64748b;
             text-align: right;
             margin-top: 4px;
-            display: block;
         }
 
-        /* --- TOAST ALERTS --- */
-        #toast-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 9999;
+        /* --- LOGS TABLE --- */
+        .logs-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
         }
 
-        .toast {
-            min-width: 300px;
-            background: #101828;
-            color: #fff;
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        .logs-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border);
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
         }
+
+        .logs-table th {
+            text-align: left;
+            padding: 16px 32px;
+            background: #f8fafc;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logs-table td {
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-success { background: #d1fae5; color: #065f46; }
+        .status-pending { background: #fef3c7; color: #92400e; }
 
         /* --- LOADER --- */
-        .gateway-loader {
+        .gateway-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 10000;
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 1000;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            color: #fff;
         }
+
+        .loader-viz {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .loader-viz i {
+            font-size: 3rem;
+            z-index: 2;
+            animation: pulse 1.5s infinite;
+        }
+
+        .loader-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid var(--primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* --- TOAST --- */
+        #toast-box {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 2000;
+        }
+
+        .toast {
+            background: #fff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            border-left: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
     </style>
 </head>
 
 <body>
-    <header class="site-header">
-        <div class="header-left">
-            <a href="./teacher-dashboard.html" class="logo-container">
-                <div class="logo-square">
-                    <img src="../logo.jpg" alt="CHITKARA">
-                </div>
-                <div class="logo-text">EXAMPAD</div>
-            </a>
-            <div style="width: 1px; height: 32px; background: var(--border); margin: 0 16px;"></div>
-            <a href="./teacher-dashboard.html" class="btn-back">
-                <i class="fas fa-arrow-left"></i> Dashboard
-            </a>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-box">
+                <img src="../logo.jpg" alt="EXAMPAD">
+            </div>
+            <div class="logo-text">EXAMPAD</div>
         </div>
-    </header>
+        <ul class="nav-list">
+            <li class="nav-section-title">Main Menu</li>
+            <li class="nav-item">
+                <a href="./teacher-dashboard.html" class="nav-link">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-comment-alt"></i> Messaging Hub
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-address-book"></i> Contacts
+                </a>
+            </li>
+            
+            <li class="nav-section-title">Analytics</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-pie"></i> Delivery Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-history"></i> Logs Library
+                </a>
+            </li>
 
-    <div class="main-container">
-        <!-- Composer Panel -->
-        <div class="composer-panel">
-            <h2 class="panel-heading">
-                <i class="fas fa-paper-plane" style="color:var(--whatsapp-color);"></i> Notification Gateway
-            </h2>
+            <li class="nav-section-title">Systems</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i> Server Config
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="./erp-login.html" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Exit ERP
+                </a>
+            </li>
+        </ul>
+    </aside>
 
-            <div class="form-group">
-                <label class="form-label">Delivery Channel</label>
-                <div class="channel-selector">
-                    <div class="channel-pill whatsapp active" onclick="toggleChannel('whatsapp')" id="btnWa">
-                        <i class="fab fa-whatsapp" style="font-size:1.4rem;"></i> WhatsApp
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>Professional Notification ERP</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-pill">
+                    <span>ADMINSTRATOR</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff" alt="User">
+                </div>
+            </div>
+        </header>
+
+        <div class="view-port">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Messages Today</span>
+                    <span class="stat-value">1,284</span>
+                    <span class="stat-trend trend-up"><i class="fas fa-arrow-up"></i> 12.5%</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Success Rate</span>
+                    <span class="stat-value">99.8%</span>
+                    <span class="stat-trend trend-up"><i class="fas fa-check"></i> High Performance</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Gateway Status</span>
+                    <span class="stat-value" style="color: var(--success); font-size: 1.2rem;">
+                        <i class="fas fa-circle" style="font-size: 0.8rem;"></i> TWILIO-META-READY
+                    </span>
+                    <span class="stat-trend" style="color: var(--text-muted);">Ping: 42ms</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Available Credits</span>
+                    <span class="stat-value">42,500</span>
+                    <button style="border:none; background:none; color: var(--primary); font-size: 0.75rem; font-weight: 800; text-align: left; cursor: pointer;">TOP UP NOW</button>
+                </div>
+            </div>
+
+            <!-- Workspace -->
+            <div class="workspace-grid">
+                <!-- Composer -->
+                <div class="composer-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-paper-plane" style="color: var(--primary);"></i>
+                            Dispatch Engine
+                        </div>
                     </div>
-                    <div class="channel-pill sms active" onclick="toggleChannel('sms')" id="btnSms">
-                        <i class="fas fa-comment-sms" style="font-size:1.4rem;"></i> Standard SMS
+                    <div class="card-body">
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label class="form-label">DELIVERY MODALITY</label>
+                                <div class="channel-toggle">
+                                    <button class="channel-btn whatsapp active" id="btnWa" onclick="toggleChannel('whatsapp')">
+                                        <i class="fab fa-whatsapp"></i> WhatsApp
+                                    </button>
+                                    <button class="channel-btn sms active" id="btnSms" onclick="toggleChannel('sms')">
+                                        <i class="fas fa-comment-sms"></i> Cloud SMS
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">RECIPIENT COHORT</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-users"></i>
+                                    <select class="form-control form-select" id="targetSelect">
+                                        <option value="all">All Registered Students (1,284)</option>
+                                        <option value="cs">Faculty of Engineering</option>
+                                        <option value="exam">End-Term Candidates</option>
+                                        <option value="test">Single Test Number</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="testPhoneGroup" style="display: none;">
+                                <label class="form-label">TARGET PHONE</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-phone"></i>
+                                    <input type="text" id="testPhoneInput" class="form-control" placeholder="e.g. 919876543210">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">TEMPLATE SELECTION</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-file-alt"></i>
+                                    <select class="form-control form-select" id="templateSelect" onchange="loadTemplate()">
+                                        <option value="admit_card">ERP-ADMIT-CARD-RELEASE</option>
+                                        <option value="fee">ERP-FEE-REMINDER-GENERAL</option>
+                                        <option value="notice">ERP-URGENT-CIRCULAR</option>
+                                        <option value="custom">ERP-CUSTOM-BROADCAST</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">MESSAGE PAYLOAD</label>
+                                <textarea id="messageInput" class="form-control" oninput="updatePreview()"></textarea>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; font-weight: 600;">
+                                    <span>Chars: <span id="charCount">0</span></span>
+                                    <span>Segment: 1/5</span>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" onclick="pushNotification()">
+                                <i class="fas fa-bolt"></i> EXECUTE DISPATCH
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="preview-pane">
+                    <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-muted);">LIVE REAL-TIME PREVIEW</h3>
+                    <div class="phone-frame">
+                        <div class="phone-inner">
+                            <div class="phone-screen">
+                                <div class="phone-nav" id="previewHeader">
+                                    <div class="avatar-circle">
+                                        <i class="fas fa-university"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 0.9rem;" id="previewTitle">Chitkara University</div>
+                                        <div style="font-size: 0.7rem; opacity: 0.8;">Official Notification Bot</div>
+                                    </div>
+                                </div>
+                                <div class="chat-body" id="chatWall">
+                                    <div class="msg-bubble outbound" id="previewBubble">
+                                        Welcome to EXAMPAD Messaging Gateway...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Target Audience</label>
-                <select class="select-box" id="targetSelect">
-                    <option value="all">All Registered Students</option>
-                    <option value="cs">Computer Science Dept</option>
-                    <option value="reexam">Re-examination Candidates</option>
-                </select>
+            <!-- Recent Logs -->
+            <div class="logs-card">
+                <div class="logs-header">
+                    <h3 style="font-weight: 800;">RECENT DISPATCH LOGS</h3>
+                    <button class="btn" style="padding: 8px 16px; font-size: 0.8rem; background: #f1f5f9; color: var(--text-main);">
+                        <i class="fas fa-download"></i> EXPORT CSV
+                    </button>
+                </div>
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Recipient ID</th>
+                            <th>Timestamp</th>
+                            <th>Channel</th>
+                            <th>Status</th>
+                            <th>Latency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#241099120</td>
+                            <td>Today, 10:42 AM</td>
+                            <td><i class="fab fa-whatsapp" style="color:#25d366"></i> WhatsApp</td>
+                            <td><span class="status-badge status-success">Delivered</span></td>
+                            <td>1.2s</td>
+                        </tr>
+                        <tr>
+                            <td>#241099451</td>
+                            <td>Today, 10:41 AM</td>
+                            <td><i class="fas fa-comment-sms" style="color:#0284c7"></i> SMS</td>
+                            <td><span class="status-badge status-success">Delivered</span></td>
+                            <td>0.5s</td>
+                        </tr>
+                        <tr>
+                            <td>Broadcast Group (240)</td>
+                            <td>Today, 09:15 AM</td>
+                            <td><i class="fab fa-whatsapp" style="color:#25d366"></i> WhatsApp</td>
+                            <td><span class="status-badge status-pending">In Queue</span></td>
+                            <td>--</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-            <div class="form-group">
-                <label class="form-label">Notification Type</label>
-                <select class="select-box" id="templateSelect" onchange="loadTemplate()">
-                    <option value="admit_card">Admit Card Release</option>
-                    <option value="circular">New Circular / Notice</option>
-                    <option value="result">Result Publishing</option>
-                    <option value="custom">Custom Message</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Message Payload</label>
-                <textarea id="messageInput" class="input-box textarea-box" oninput="updatePreview()"></textarea>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label class="form-label" style="color: var(--whatsapp-color);"><i class="fab fa-whatsapp"></i> Live
-                    Test: Target Phone Number (Optional)</label>
-                <input type="text" id="testPhoneInput" class="input-box"
-                    placeholder="e.g. 919876543210 (with country code)">
-                <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Enter your number to
-                    send a real WhatsApp message via Web API.</span>
-            </div>
-
-            <button class="btn-push" onclick="pushNotification()">
-                <i class="fas fa-bolt"></i> Push Notification Now
-            </button>
         </div>
+    </main>
 
-        <!-- Preview Panel -->
-        <div class="preview-panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h3 style="font-size: 1.2rem; font-weight: 700;">Live Device Preview</h3>
-                <span
-                    style="font-size: 0.8rem; font-weight: 700; color: #008069; background: #dcf8c6; padding: 4px 12px; border-radius: 12px;">WHATSAPP</span>
-            </div>
-
-            <div class="phone-mockup">
-                <div class="phone-header">
-                    <div class="avatar"><i class="fas fa-building"></i></div>
-                    <div>
-                        <div style="font-size: 1rem;">Chitkara University</div>
-                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">Official EXAMPAD Bot</div>
-                    </div>
-                </div>
-                <div class="phone-body">
-                    <div style="text-align: center; margin: 10px 0;">
-                        <span
-                            style="background: rgba(0,0,0,0.1); color: #555; padding: 4px 12px; border-radius: 8px; font-size: 0.75rem;">Today</span>
-                    </div>
-                    <div class="chat-bubble outbound" id="previewBubble">
-                        Welcome to Exampad!
-                    </div>
-                </div>
-            </div>
+    <!-- Overlay Loader -->
+    <div class="gateway-overlay" id="gatewayLoader">
+        <div class="loader-viz">
+            <div class="loader-ring"></div>
+            <i class="fas fa-satellite-dish"></i>
         </div>
+        <h2 style="margin-top: 24px; font-size: 1.5rem;">TRANSMITTING...</h2>
+        <p style="color: var(--text-muted); margin-top: 8px;" id="progressText">Connecting to Twilio Global Gateway...</p>
     </div>
 
-    <div id="toast-container"></div>
-
-    <!-- Gateway Loader -->
-    <div class="gateway-loader" id="gatewayLoader">
-        <i class="fas fa-satellite-dish"
-            style="font-size: 4rem; color: #fff; margin-bottom: 24px; animation: pulse 1s infinite alternate;"></i>
-        <h2 style="color: #fff; font-size: 2rem; margin-bottom: 8px;">Transmitting via Twilio/Meta Gateway...</h2>
-        <p style="color: #a1a1aa; font-size: 1.1rem;" id="progressText">Connecting to infrastructure...</p>
-        <style>
-            @keyframes pulse {
-                from {
-                    opacity: 0.5;
-                    transform: scale(0.9);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: scale(1.1);
-                }
-            }
-        </style>
-    </div>
+    <div id="toast-box"></div>
 
     <script>
         const templates = {
-            admit_card: "📢 *Admit Card Released*\n\nDear Student,\nYour admit card for the upcoming Fall 2025 examinations is now available for download.\n\nPlease log in to EXAMPAD to download and print it.\n\n_Note: It is mandatory to carry a printed copy to the examination hall._",
-            circular: "📋 *Official Notice/Circular*\n\nA new circular has been published on the EXAMPAD portal regarding examination regulations.\n\nPlease review it immediately to ensure compliance.\n\nLink: portal.exampad.com/circulars",
-            result: "🎓 *Results Published*\n\nDear Student,\nThe official results for your recent assessment are now live.\n\nLog in to EXAMPAD Performance Registry to view your official transcript.",
+            admit_card: "📢 *ADMIT CARD RELEASED*\n\nDear Student,\nYour Admit Card for the *FALL 2025* End-Term Exams is now available in the portal.\n\nLink: portal.exampad.com/admit-card\n\n_Note: Please carry a hard copy._",
+            fee: "💰 *FEE REMINDER*\n\nYour Semester III fees are due by *September 15th, 2025*.\n\nPlease clear the balance to avoid service interruption.\n\nRegard,\nAccounts Dept.",
+            notice: "🚨 *URGENT NOTICE*\n\nThe practical exam for *CS101* scheduled for tomorrow has been rescheduled to *Wednesday*.\n\nCheck official bulletin for details.",
             custom: "Type your message here..."
         };
 
@@ -538,15 +900,27 @@
 
         window.onload = () => {
             loadTemplate();
+            
+            // Toggle visibility for phone input based on cohort
+            document.getElementById('targetSelect').addEventListener('change', function() {
+                const group = document.getElementById('testPhoneGroup');
+                group.style.display = (this.value === 'test') ? 'flex' : 'none';
+            });
         };
 
         function toggleChannel(channel) {
             activeChannels[channel] = !activeChannels[channel];
             const btn = document.getElementById(channel === 'whatsapp' ? 'btnWa' : 'btnSms');
-            if (activeChannels[channel]) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
+            btn.classList.toggle('active');
+            
+            // Switch preview style
+            const header = document.getElementById('previewHeader');
+            if(channel === 'whatsapp' && activeChannels.whatsapp) {
+                header.style.background = '#008069';
+                document.getElementById('previewTitle').textContent = 'Chitkara University';
+            } else if (!activeChannels.whatsapp) {
+                header.style.background = '#0284c7';
+                document.getElementById('previewTitle').textContent = 'SMS Gateway';
             }
         }
 
@@ -559,34 +933,37 @@
         function updatePreview() {
             const val = document.getElementById('messageInput').value;
             const bubble = document.getElementById('previewBubble');
+            document.getElementById('charCount').textContent = val.length;
 
-            // Format for WhatsApp preview (bolding)
+            // Simple formatting for preview
             let formatted = val.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
             formatted = formatted.replace(/\_(.*?)\_/g, '<em>$1</em>');
+            formatted = formatted.replace(/\n/g, '<br>');
 
-            const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            bubble.innerHTML = `${formatted} <span class="chat-time">${time} <i class="fas fa-check-double" style="color: #53bdeb; margin-left: 4px;"></i></span>`;
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            bubble.innerHTML = `${formatted} <div class="msg-time">${time} <i class="fas fa-check-double" style="color: #53bdeb; margin-left: 4px;"></i></div>`;
         }
 
         function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
+            const box = document.getElementById('toast-box');
             const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-
-            const icon = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
-
+            toast.className = 'toast';
+            if(type === 'error') toast.style.borderColor = 'var(--danger)';
+            
             toast.innerHTML = `
-                <i class="fas ${icon}" style="font-size: 1.25rem;"></i>
-                <div style="font-weight: 500;">${message}</div>
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}" style="color: ${type === 'success' ? 'var(--success)' : 'var(--danger)'}"></i>
+                <div>
+                   <div style="font-weight:700">${type.toUpperCase()}</div>
+                   <div style="font-size:0.8rem; color: var(--text-muted)">${message}</div>
+                </div>
             `;
-
-            container.appendChild(toast);
+            box.appendChild(toast);
             setTimeout(() => toast.remove(), 4000);
         }
 
         function pushNotification() {
             if (!activeChannels.whatsapp && !activeChannels.sms) {
-                showToast("Please select at least one delivery channel.", "error");
+                showToast("Select at least one delivery Modal.", "error");
                 return;
             }
 
@@ -594,31 +971,34 @@
             const pt = document.getElementById('progressText');
             loader.style.display = 'flex';
 
-            let count = parseInt(document.getElementById('targetSelect').value === 'all' ? 840 : 120);
-            const testPhone = document.getElementById('testPhoneInput').value.trim();
+            const targets = {
+                'all': 1284,
+                'cs': 420,
+                'exam': 150,
+                'test': 1
+            };
+            const count = targets[document.getElementById('targetSelect').value];
 
-            setTimeout(() => { pt.textContent = "Authenticating with Meta Business API..."; }, 800);
-            setTimeout(() => { pt.textContent = testPhone ? `Generating deep-link payload for ${testPhone}...` : `Dispatching payload to ${count} recipients...`; }, 1800);
-            setTimeout(() => { pt.textContent = "Awaiting delivery receipts..."; }, 3000);
+            setTimeout(() => { pt.textContent = "Authenticating with Meta Business Cloud API..."; }, 1200);
+            setTimeout(() => { pt.textContent = `Batch Dispatching to ${count} Recipients...`; }, 2500);
+            setTimeout(() => { pt.textContent = "Finalizing Handshake with SMS Gateway..."; }, 3800);
 
             setTimeout(() => {
                 loader.style.display = 'none';
-                pt.textContent = "Connecting to infrastructure...";
-
-                let channelsStr = [];
-                if (activeChannels.whatsapp) channelsStr.push("WhatsApp");
-                if (activeChannels.sms) channelsStr.push("SMS");
-
-                if (testPhone && activeChannels.whatsapp) {
-                    showToast(`Redirecting to WhatsApp for ${testPhone}...`, 'success');
-                    const message = document.getElementById('messageInput').value;
-                    const cleanPhone = testPhone.replace(/[^0-9]/g, '');
-                    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-                    window.open(waUrl, '_blank');
+                pt.textContent = "Connecting to Twilio Global Gateway...";
+                
+                const testPhone = document.getElementById('testPhoneInput').value.trim();
+                if (testPhone && document.getElementById('targetSelect').value === 'test') {
+                    showToast(`Payload pushed to ${testPhone} successfully.`, 'success');
+                    if(activeChannels.whatsapp) {
+                        const clean = testPhone.replace(/\D/g,'');
+                        const msg = document.getElementById('messageInput').value;
+                        window.open(`https://wa.me/${clean}?text=${encodeURIComponent(msg)}`, '_blank');
+                    }
                 } else {
-                    showToast(`Successfully pushed to ${count} recipients via ${channelsStr.join(' & ')}!`, 'success');
+                    showToast(`Broadcast completed for ${count} users. Check logs for delivery receipts.`, 'success');
                 }
-            }, 4200);
+            }, 5000);
         }
     </script>
 </body>

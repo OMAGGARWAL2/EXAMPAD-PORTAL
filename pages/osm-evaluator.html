@@ -3596,13 +3596,14 @@
                 return;
             }
 
-            if (scriptSeconds < 300) {
+            if (scriptSeconds < 300 && !batch[cB].policyWarningShown) {
+                batch[cB].policyWarningShown = true; // Mark as warned so second click bypasses
                 const remaining = 300 - scriptSeconds;
                 const m = Math.floor(remaining / 60);
                 const s = remaining % 60;
                 sysAlert("Evaluation Precision Interval",
                     `In accordance with CHITKARA UNIVERSITY policy, each answer booklet requires a minimum evaluation time of 5 minutes to prevent oversight. \n\nPlease re-review the script for another ${m}m ${s}s to ensure integrity.`,
-                    "error");
+                    "warning");
                 return;
             }
 

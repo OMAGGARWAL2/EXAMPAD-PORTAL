@@ -396,7 +396,7 @@
             padding: 20px 24px;
             border-radius: 8px;
             font-family: 'Consolas', 'Courier New', monospace;
-            font-size: calc(1.1rem * var(--text-scale));
+            font-size: 1.1rem;
             color: #101828;
             white-space: pre-wrap;
             min-height: 50px;
@@ -537,7 +537,7 @@
         }
 
         .section-label {
-            font-size: calc(16px * var(--text-scale));
+            font-size: 0.889rem;
             font-weight: 600;
             color: #CF5927;
             text-transform: none;
@@ -556,7 +556,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 500;
-            font-size: calc(18px * var(--text-scale));
+            font-size: 1rem;
             color: #000;
             cursor: pointer;
             position: relative;
@@ -827,7 +827,7 @@
 
         .q-title {
             font-family: inherit;
-            font-size: calc(24px * var(--text-scale));
+            font-size: 1.333rem;
             font-weight: 700;
             color: #000;
             margin-bottom: 20px;
@@ -836,7 +836,7 @@
 
         .q-body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            font-size: calc(18px * var(--text-scale));
+            font-size: 1rem;
             font-weight: 400;
             line-height: 1.7;
             color: #101828;
@@ -887,7 +887,7 @@
             border-radius: 12px;
             overflow-x: auto;
             font-family: 'JetBrains Mono', monospace;
-            font-size: calc(17px * var(--text-scale));
+            font-size: 0.944rem;
             color: #333333;
             line-height: 1.5;
             letter-spacing: -0.2px;
@@ -913,7 +913,7 @@
 
         /* MCQ Styling (Screenshot Match) */
         .mcq-option {
-            padding: calc(12px * var(--text-scale)) 0;
+            padding: 0.667rem 0;
             border: none;
             border-radius: 0;
             display: flex;
@@ -927,7 +927,7 @@
 
         .mcq-option span {
             font-family: 'Open Sans', sans-serif;
-            font-size: calc(18px * var(--text-scale));
+            font-size: 1rem;
             font-weight: 400;
             color: #333;
         }
@@ -960,7 +960,7 @@
 
         .mcq-prompt {
             font-family: 'Open Sans', sans-serif;
-            font-size: calc(20px * var(--text-scale));
+            font-size: 1.111rem;
             font-weight: 700;
             color: #333;
             margin-bottom: 24px;
@@ -982,7 +982,7 @@
             width: 100%;
             height: 320px;
             text-align: left;
-            font-size: calc(18px * var(--text-scale));
+            font-size: 1rem;
             line-height: 1.6;
             padding: 24px;
             border: 1px solid #EAECF0;
@@ -1000,7 +1000,7 @@
             margin-top: 32px;
             text-align: left;
             padding: 12px 20px;
-            font-size: calc(28px * var(--text-scale));
+            font-size: 1.556rem;
             border-bottom: 2px solid #A01E17;
             border-radius: 0;
             background: transparent;
@@ -1272,7 +1272,7 @@
             padding: 16px;
             font-family: 'JetBrains Mono', monospace !important;
             overflow-y: auto;
-            font-size: calc(18px * var(--text-scale));
+            font-size: 1rem;
             line-height: 1.6;
             width: 100%;
         }
@@ -1376,7 +1376,7 @@
             padding: 18px 24px;
             font-family: 'Open Sans', sans-serif !important;
             white-space: pre-wrap;
-            font-size: calc(1.25rem * var(--text-scale));
+            font-size: 1.25rem;
             line-height: 1.6;
             color: #101828;
             margin-bottom: 24px;
@@ -1807,6 +1807,15 @@
             color: var(--text-main);
         }
 
+        .timer-display {
+            font-size: 27px;
+            font-weight: 800;
+            color: var(--text-main);
+            font-family: 'Open Sans', sans-serif;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+
         .dash-card.primary {
             border-left: 4px solid var(--primary);
         }
@@ -2067,7 +2076,8 @@
         .top-bar-wrapper::-webkit-scrollbar {
             display: none;
         }
-    </style>
+</style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 </head>
 
 <body>
@@ -2280,10 +2290,10 @@
                         <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara"
                             style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
-                    <div style="font-weight:700; color:#101828; font-size:calc(15px * var(--text-scale)); font-family:'Outfit', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;"
+                    <div style="font-weight:700; color:#101828; font-size:0.833rem; font-family:'Outfit', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;"
                         id="testTag">MCQ3-G3</div>
                     <div class="time-left-text"
-                        style="font-weight:600; color:#101828; font-size:calc(14px * var(--text-scale)); margin-left:8px; white-space: nowrap; flex-shrink: 0;">
+                        style="font-weight:600; color:#101828; font-size:0.778rem; margin-left:8px; white-space: nowrap; flex-shrink: 0;">
                         time left <span id="timerDisplay">00:00:00</span></div>
                 </div>
 
@@ -2299,9 +2309,9 @@
                             <path d="M21 3l-7 7" />
                             <path d="M3 21l7-7" />
                         </svg>
-                        <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
+                        <span style="font-weight:700; font-size:1rem;">:</span>
                         <span id="fsCount"
-                            style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
+                            style="color:#E02424; font-size:1.222rem; font-weight:700; margin-left:2px;">0</span>
                     </div>
 
                     <div class="stat-indicator" title="Tab Switches"
@@ -2313,9 +2323,9 @@
                             <path d="M14 10l7-7" />
                             <path d="M10 14l-7 7" />
                         </svg>
-                        <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
+                        <span style="font-weight:700; font-size:1rem;">:</span>
                         <span id="switchCountHeader"
-                            style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
+                            style="color:#E02424; font-size:1.222rem; font-weight:700; margin-left:2px;">0</span>
                     </div>
 
                     <div class="stat-indicator" title="Reloads/Out"
@@ -2325,9 +2335,9 @@
                             <path d="M14 4.5A9 9 0 1 0 14 19.5" />
                             <path d="M10 12h13m-4-4l4 4-4 4" />
                         </svg>
-                        <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
+                        <span style="font-weight:700; font-size:1rem;">:</span>
                         <span
-                            style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
+                            style="color:#E02424; font-size:1.222rem; font-weight:700; margin-left:2px;">0</span>
                     </div>
 
                     <div class="stat-indicator" title="Exits/In"
@@ -2337,57 +2347,53 @@
                             <path d="M10 4.5A9 9 0 1 1 10 19.5" />
                             <path d="M1 12h13m-4-4l4 4-4 4" />
                         </svg>
-                        <span style="font-weight:700; font-size:calc(18px * var(--text-scale));">:</span>
+                        <span style="font-weight:700; font-size:1rem;">:</span>
                         <span
-                            style="color:#E02424; font-size:calc(22px * var(--text-scale)); font-weight:700; margin-left:2px;">0</span>
+                            style="color:#E02424; font-size:1.222rem; font-weight:700; margin-left:2px;">0</span>
+                    </div>
+
+                    <!-- WIFI / NETWORK STATUS (Precised Sr2 Design) -->
+                    <div id="wifiGroup" onmouseenter="showWifiTooltip()" onmouseleave="hideWifiTooltip()"
+                        style="display: flex; align-items: center; gap: 12px; cursor: help; padding: 0 12px; position: relative;">
+                        <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+                            <i id="wifiIcon" class="fas fa-wifi"
+                                style="font-size: 24px; color: #12B76A; transition: color 0.3s;"></i>
+                            <div id="wifiErrorIcon"
+                                style="display: none; position: absolute; -right: 8px; -top: -4px; width: 14px; height: 14px; background: #D92D20; border-radius: 50%; border: 2px solid #fff; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 10;">
+                                <i class="fas fa-exclamation"
+                                    style="color: #fff; font-size: 8px; font-weight: 900;"></i>
+                            </div>
+                        </div>
+                        <div id="wifiWarning"
+                            style="display: none; color: #344054; font-size: 14px; font-weight: 600; line-height: 1.1; font-family: 'Open Sans', sans-serif; text-align: left;">
+                            Your<br>internet<br>connection<br>is poor.
+                        </div>
+                        <!-- Styled Custom Tooltip -->
+                        <div class="wifi-tooltip">
+                            <div class="wifi-tooltip-header">Network Performance</div>
+                            <div class="wifi-tooltip-item">
+                                <span class="wifi-tooltip-label"><i class="fas fa-signal"></i> Strength</span>
+                                <span class="wifi-tooltip-value" id="ttStrength">Checking...</span>
+                            </div>
+                            <div class="wifi-tooltip-item">
+                                <span class="wifi-tooltip-label"><i class="fas fa-bolt"></i> Latency</span>
+                                <span class="wifi-tooltip-value" id="ttLatency">---</span>
+                            </div>
+                            <div class="wifi-tooltip-item">
+                                <span class="wifi-tooltip-label"><i class="fas fa-download"></i> Speed</span>
+                                <span class="wifi-tooltip-value" id="ttUpload">---</span>
+                            </div>
+                            <div class="wifi-tooltip-item">
+                                <span class="wifi-tooltip-label"><i class="fas fa-shield-alt"></i> Stability</span>
+                                <span class="wifi-tooltip-value" id="ttStability">Checking...</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="font-size-control"
                         style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                        <div id="wifiGroup"
-                            style="display: flex; align-items: center; gap: 12px; margin-right: 12px; transition: all 0.3s ease; position: relative;"
-                            onmouseenter="showWifiTooltip()" onmouseleave="hideWifiTooltip()">
-                            <div
-                                style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding: 6px; background: rgba(255, 255, 255, 0.9); border-radius: 12px;">
-                                <div
-                                    style="position: relative; display: flex; align-items: center; justify-content: center; margin-top: 4px;">
-                                    <i class="fas fa-wifi" id="wifiIcon"
-                                        style="color:#12B76A; font-size: 38px; transition: all 0.3s ease;"></i>
-                                    <div id="wifiErrorIcon"
-                                        style="position: absolute; top: -6px; right: -10px; background: #D92D20; border-radius: 50%; width: 28px; height: 28px; display: none; align-items: center; justify-content: center; border: 3px solid #fff; box-shadow: 0 4px 12px rgba(217, 45, 32, 0.4);">
-                                        <i class="fas fa-exclamation"
-                                            style="color:#fff; font-size: 16px; font-weight: 900;"></i>
-                                    </div>
-                                </div>
-                                <div id="wifiWarning"
-                                    style="display: none; font-size: 2.2rem; font-weight: 800; line-height: 1.1; color: #D92D20; text-align: left; font-family: 'Outfit', sans-serif; letter-spacing: -0.02em;">
-                                    Your<br>connection<br>is poor or slow.
-                                </div>
-                            </div>
-
-                            <!-- Styled Custom Tooltip -->
-                            <div class="wifi-tooltip">
-                                <div class="wifi-tooltip-header">Network Performance</div>
-                                <div class="wifi-tooltip-item">
-                                    <span class="wifi-tooltip-label"><i class="fas fa-signal"></i> Strength</span>
-                                    <span class="wifi-tooltip-value" id="ttStrength">Checking...</span>
-                                </div>
-                                <div class="wifi-tooltip-item">
-                                    <span class="wifi-tooltip-label"><i class="fas fa-bolt"></i> Latency</span>
-                                    <span class="wifi-tooltip-value" id="ttLatency">---</span>
-                                </div>
-                                <div class="wifi-tooltip-item">
-                                    <span class="wifi-tooltip-label"><i class="fas fa-download"></i> Speed</span>
-                                    <span class="wifi-tooltip-value" id="ttUpload">---</span>
-                                </div>
-                                <div class="wifi-tooltip-item">
-                                    <span class="wifi-tooltip-label"><i class="fas fa-shield-alt"></i> Stability</span>
-                                    <span class="wifi-tooltip-value" id="ttStability">Checking...</span>
-                                </div>
-                            </div>
-                        </div>
                         <span
-                            style="font-size:calc(1.15rem * var(--text-scale)); font-weight:400; color:#555; white-space: nowrap;">Font
+                            style="font-size:1.15rem; font-weight:400; color:#555; white-space: nowrap;">Font
                             Size</span>
                         <div class="font-sizer-wrapper" onmousemove="showFontSizeTooltip(event)"
                             onmouseleave="hideFontSizeTooltip()">
@@ -2398,36 +2404,36 @@
                         <i class="fas fa-home" style="color:#A01E17; font-size:1.6rem; cursor:pointer;"
                             onclick="showDashboard()"></i>
                     </div>
-                </div>
 
-                <!-- HEADER RIGHT -->
-                <div class="header-right" style="display: flex; align-items: center; gap: 16px; flex: 0 0 auto;">
-                    <div class="attempted-box"
-                        style="background: #FFF0E6; padding: 0 24px; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 88px; margin: 0; flex-shrink: 0; border: none; border-left: 1px solid #FFE4D6; border-right: 1px solid #FFE4D6;">
-                        <span class="attempted-label"
-                            style="color:#A01E17; font-size: 14px; font-weight: 700; letter-spacing: 0.2px;">attempted</span>
-                        <span class="attempted-val" id="attemptedCount"
-                            style="color:#A01E17; font-size: 26px; font-weight: 900; margin-top: 1px; line-height: 1;">4/64</span>
-                    </div>
+                    <!-- HEADER RIGHT -->
+                    <div class="header-right" style="display: flex; align-items: center; gap: 16px; flex: 0 0 auto;">
+                        <div class="attempted-box"
+                            style="background: #FFF0E6; padding: 0 24px; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 88px; margin: 0; flex-shrink: 0; border: none; border-left: 1px solid #FFE4D6; border-right: 1px solid #FFE4D6;">
+                            <span class="attempted-label"
+                                style="color:#A01E17; font-size: 14px; font-weight: 700; letter-spacing: 0.2px;">attempted</span>
+                            <span class="attempted-val" id="attemptedCount"
+                                style="color:#A01E17; font-size: 26px; font-weight: 900; margin-top: 1px; line-height: 1;">4/64</span>
+                        </div>
 
-                    <div class="user-block" onclick="toggleProfileMenu(event)"
-                        style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                        <div class="user-info"
-                            style="display: flex; flex-direction: column; align-items: flex-end; min-width: 0;">
-                            <div class="user-name" id="userName"
-                                style="font-weight: 300 !important; font-size: calc(20px * var(--text-scale)) !important; color: #808080 !important; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; font-family: 'Roboto', sans-serif !important; margin-bottom: -6px;">
-                                Om Aggarwal</div>
-                            <div class="user-id" id="userId"
-                                style="font-size: calc(28px * var(--text-scale)) !important; color: #9E9E9E !important; font-family: 'Roboto', sans-serif !important; font-weight: 400 !important; margin-top: -4px; letter-spacing: 0.5px;">
-                                2410990257</div>
-                        </div>
-                        <div
-                            style="width: calc(64px * var(--text-scale)); height: calc(64px * var(--text-scale)); border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #EAECF0; flex-shrink: 0;">
-                            <img src="https://course.testpad.chitkara.edu.in/icons/portrait_placeholder_circle.png"
-                                alt="User Profile" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">
+                        <div class="user-block" onclick="toggleProfileMenu(event)"
+                            style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                            <div class="user-info"
+                                style="display: flex; flex-direction: column; align-items: flex-end; min-width: 0;">
+                                <div class="user-name" id="userName"
+                                    style="font-weight: 300 !important; font-size: 20px !important; color: #808080 !important; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; font-family: 'Roboto', sans-serif !important; margin-bottom: -6px;">
+                                    Om Aggarwal</div>
+                                <div class="user-id" id="userId"
+                                    style="font-size: 28px !important; color: #9E9E9E !important; font-family: 'Roboto', sans-serif !important; font-weight: 400 !important; margin-top: -4px; letter-spacing: 0.5px;">
+                                    2410990257</div>
+                            </div>
+                            <div
+                                style="width: 3.556rem; height: 3.556rem; border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #EAECF0; flex-shrink: 0;">
+                                <img src="https://course.testpad.chitkara.edu.in/icons/portrait_placeholder_circle.png"
+                                    alt="User Profile"
+                                    style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">
+                            </div>
                         </div>
                     </div>
-                </div>
             </header>
         </div>
 
@@ -2475,7 +2481,7 @@
                     <section class="pane-left" id="paneLeft">
                         <div class="pane-content" style="padding: 60px 40px;">
                             <div id="qTypeBox"
-                                style="font-size: calc(16px * var(--text-scale)); color: #666; font-weight: 500; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
+                                style="font-size: 0.889rem; color: #666; font-weight: 500; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
                                 MCQ</div>
                             <div style="width: fit-content; min-width: 350px; max-width: 100%;">
                                 <h1 class="q-title" id="qHeadingText"
@@ -2573,18 +2579,18 @@
         <div
             style="background: #efefef; width: 680px; padding: 30px 50px; border-radius: 8px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center;">
             <button onclick="closeModal('confirmModal')"
-                style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center;">
+                style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 21.6px; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center;">
                 <i style="font-style: normal; font-weight: 300; font-family: inherit;">✕</i>
             </button>
             <p id="confirmModalMsg"
-                style="font-size: 1.55rem; color: #111; margin-top: 25px; margin-bottom: 35px; font-weight: 500; text-align: left; width: 100%;">
+                style="font-size: 27.9px; color: #111; margin-top: 25px; margin-bottom: 35px; font-weight: 500; text-align: left; width: 100%;">
                 Please use <strong id="submissionOtpCode" style="font-weight: 700;">0000</strong> to submit test.
             </p>
             <div style="display: flex; flex-direction: column; align-items: center; width: 85%; gap: 15px;">
                 <input type="text" id="submissionOtpInput" placeholder="Enter Otp" autocomplete="off"
-                    style="width: 100%; border: none; border-bottom: 1.2px solid #D17D56; background: transparent; padding: 10px 0; font-size: 1.4rem; text-align: center; outline: none; color: #333; font-family: inherit;">
+                    style="width: 100%; border: none; border-bottom: 1.2px solid #D17D56; background: transparent; padding: 10px 0; font-size: 25.2px; text-align: center; outline: none; color: #333; font-family: inherit;">
                 <button onclick="verifySubmissionOtp()"
-                    style="background: #CF5927; color: #fff; border: none; border-radius: 30px; padding: 12px 65px; font-size: 1.8rem; cursor: pointer; font-weight: 500; font-family: inherit; margin-top: 20px;">
+                    style="background: #CF5927; color: #fff; border: none; border-radius: 30px; padding: 12px 65px; font-size: 32.4px; cursor: pointer; font-weight: 500; font-family: inherit; margin-top: 20px;">
                     Submit
                 </button>
             </div>
@@ -2597,32 +2603,32 @@
         <div
             style="background: #efefef; width: 680px; padding: 30px 50px; border-radius: 8px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
             <button onclick="closeModal('sectionModal')"
-                style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center;">
+                style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 21.6px; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center;">
                 <i style="font-style: normal; font-weight: 300; font-family: inherit;">✕</i>
             </button>
             <div id="sectionConfirmStep" style="display: block;">
                 <p
-                    style="font-size: 1.55rem; color: #111; margin-top: 25px; margin-bottom: 35px; font-weight: 500; text-align: left; line-height: 1.5; width: 100%;">
+                    style="font-size: 27.9px; color: #111; margin-top: 25px; margin-bottom: 35px; font-weight: 500; text-align: left; line-height: 1.5; width: 100%;">
                     Do you really want to submit this section? If you submit, this section will be locked.
                 </p>
                 <div style="display: flex; justify-content: flex-end; gap: 40px; margin-top: 20px;">
                     <span onclick="closeModal('sectionModal')"
-                        style="cursor: pointer; color: #666; font-weight: 500; font-size: 1.3rem; align-self: center;">no</span>
+                        style="cursor: pointer; color: #666; font-weight: 500; font-size: 23.4px; align-self: center;">no</span>
                     <button onclick="showSectionOtpStep()"
-                        style="background: #CF5927; color: #fff; border: none; border-radius: 30px; padding: 10px 45px; font-size: 1.2rem; cursor: pointer; font-weight: 500;">yes</button>
+                        style="background: #CF5927; color: #fff; border: none; border-radius: 30px; padding: 10px 45px; font-size: 21.6px; cursor: pointer; font-weight: 500;">yes</button>
                 </div>
             </div>
             <div id="sectionOtpStep" style="display: none; flex-direction: column; align-items: center; width: 100%;">
                 <p id="sectionModalMsg"
-                    style="font-size: 1.55rem; color: #111; margin-top: 25px; margin-bottom: 35px; font-weight: 500; text-align: left; width: 100%;">
+                    style="font-size: 27.9px; color: #111; margin-top: 25px; margin-bottom: 35px; font-weight: 500; text-align: left; width: 100%;">
                     Please use <strong id="sectionOtpCode" style="font-weight: 700;">0000</strong> to submit
                     section.
                 </p>
                 <div style="display: flex; flex-direction: column; align-items: center; width: 85%; gap: 15px;">
                     <input type="text" id="sectionOtpInput" placeholder="Enter Otp" autocomplete="off"
-                        style="width: 100%; border: none; border-bottom: 1.2px solid #D17D56; background: transparent; padding: 10px 0; font-size: 1.4rem; text-align: center; outline: none; color: #333; font-family: inherit;">
+                        style="width: 100%; border: none; border-bottom: 1.2px solid #D17D56; background: transparent; padding: 10px 0; font-size: 25.2px; text-align: center; outline: none; color: #333; font-family: inherit;">
                     <button id="sectionSubmitConfirmBtn"
-                        style="background: #CF5927; color: #fff; border: none; border-radius: 30px; padding: 12px 65px; font-size: 1.8rem; cursor: pointer; font-weight: 500; font-family: inherit; margin-top: 20px;">
+                        style="background: #CF5927; color: #fff; border: none; border-radius: 30px; padding: 12px 65px; font-size: 32.4px; cursor: pointer; font-weight: 500; font-family: inherit; margin-top: 20px;">
                         Submit
                     </button>
                 </div>
@@ -3058,6 +3064,11 @@
                     document.getElementById('questionView').style.display = 'none';
                     document.getElementById('testDashboardView').style.display = 'none';
                     document.getElementById('feedbackView').style.display = 'flex';
+                    
+                    // Reset font size to default for feedback page
+                    document.documentElement.style.fontSize = "18px";
+                    if (document.getElementById('fontSizeSlider')) document.getElementById('fontSizeSlider').value = 100;
+                    if (document.getElementById('fontSizeTooltip')) document.getElementById('fontSizeTooltip').textContent = "100%";
 
                     // Release Kiosk mode and Anti-cheat for Feedback page
                     if (window.proctorBridge) window.proctorBridge.setKioskMode(false);
@@ -3079,10 +3090,10 @@
             }
 
             // Restore progress if possible
-            const savedQ = sessionStorage.getItem(`exam_q_${attemptId} `);
+            const savedQ = sessionStorage.getItem(`exam_q_${attemptId}`);
             if (savedQ !== null) currentQuestionIndex = parseInt(savedQ);
 
-            const hasStarted = sessionStorage.getItem(`exam_started_${attemptId} `);
+            const hasStarted = sessionStorage.getItem(`exam_started_${attemptId}`);
             if (hasStarted === 'true' || isPractice) {
                 document.getElementById('securityCheckOverlay').style.display = 'none';
                 document.getElementById('page-loader').style.display = 'none';
@@ -3134,10 +3145,13 @@
             (async () => {
                 const speedStart = performance.now();
                 try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 600);
                     // Fast ping to a lightweight reliable endpoint
-                    await fetch('https://api.github.com/zen', { mode: 'no-cors', cache: 'no-store' });
+                    await fetch('https://api.github.com/zen', { mode: 'no-cors', cache: 'no-store', signal: controller.signal });
+                    clearTimeout(timeoutId);
                     const pingTime = Math.round(performance.now() - speedStart);
-                    const pingQuality = pingTime < 200 ? 'Excellent' : (pingTime < 800 ? 'Satisfactory' : 'Slow/Unstable');
+                    const pingQuality = pingTime < 200 ? 'Excellent' : (pingTime < 600 ? 'Satisfactory' : 'Slow/Unstable');
                     updateCheckStatus('check-speed', true, `${pingTime}ms Latency (${pingQuality})`);
                 } catch (e) {
                     updateCheckStatus('check-speed', true, "Connected"); // Fallback if CORS/Network blocks the ping but we are online
@@ -3290,7 +3304,7 @@
         });
 
         function startExamSession() {
-            sessionStorage.setItem(`exam_started_${attemptId} `, 'true');
+            sessionStorage.setItem(`exam_started_${attemptId}`, 'true');
             document.getElementById('securityCheckOverlay').style.display = 'none';
             document.getElementById('page-loader').style.display = 'none';
             enterFS();
@@ -3613,7 +3627,7 @@
                 if (isSubmitted) headerColor = '#12B76A'; // Green if submitted
                 if (isLocked) headerColor = '#94a3b8'; // Grey if locked
 
-                header.style = `background: ${headerColor}; color: #fff; padding: 16px 25px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: calc(18px * var(--text-scale)); font-family: 'Open Sans', sans-serif; cursor: ${isLocked ? 'not-allowed' : 'pointer'}; border-top-left-radius: 8px; border-top-right-radius: 8px;`;
+                header.style = `background: ${headerColor}; color: #fff; padding: 16px 25px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 1rem; font-family: 'Open Sans', sans-serif; cursor: ${isLocked ? 'not-allowed' : 'pointer'}; border-top-left-radius: 8px; border-top-right-radius: 8px;`;
 
                 if (!isLocked) {
                     header.onclick = () => {
@@ -3627,7 +3641,7 @@
 
                 header.innerHTML = `
                     <span>${sName}${sectionType}</span>
-                    <div style="display: flex; align-items: center; gap: 4px; font-size: calc(15px * var(--text-scale)); opacity: 1;">
+                    <div style="display: flex; align-items: center; gap: 4px; font-size: 0.833rem; opacity: 1;">
                         <span>${subCount}/${qs.length} Questions</span>
                         ${indicatorIcon}
                     </div>
@@ -3639,7 +3653,7 @@
                     tableWrap.style = "padding: 30px 40px;";
 
                     const table = document.createElement('table');
-                    table.style = "width: 100%; border-collapse: collapse; text-align: left; font-family: 'Open Sans', sans-serif; font-size: calc(15px * var(--text-scale));";
+                    table.style = "width: 100%; border-collapse: collapse; text-align: left; font-family: 'Open Sans', sans-serif; font-size: 0.833rem;";
                     table.innerHTML = `
                         <thead>
                             <tr style="border-bottom: none;">
@@ -3718,7 +3732,7 @@
                             const subBtnContainer = document.createElement('div');
                             subBtnContainer.style = "padding: 20px 40px 40px 40px; display: flex; justify-content: center;";
                             const sBtn = document.createElement('button');
-                            sBtn.style = "background: #e68a5c; color: #fff; border: none; padding: 12px 60px; border-radius: 4px; font-weight: 700; font-size: calc(16px * var(--text-scale)); cursor: pointer; transition: background 0.2s;";
+                            sBtn.style = "background: #e68a5c; color: #fff; border: none; padding: 12px 60px; border-radius: 4px; font-weight: 700; font-size: 0.889rem; cursor: pointer; transition: background 0.2s;";
                             sBtn.innerText = "submit section";
                             sBtn.onmouseover = () => sBtn.style.background = "#d17a4e";
                             sBtn.onmouseout = () => sBtn.style.background = "#e68a5c";
@@ -3742,14 +3756,14 @@
 
                 if (window.showSubmitConfirm) {
                     const confirmText = document.createElement('div');
-                    confirmText.style = "font-size: calc(18px * var(--text-scale)); font-weight: 500; color: #333; margin-bottom: 20px; text-align: center; line-height: 1.5;";
+                    confirmText.style = "font-size: 1rem; font-weight: 500; color: #333; margin-bottom: 20px; text-align: center; line-height: 1.5;";
                     confirmText.innerHTML = "Do you really want to submit<br>the test?";
 
                     const btnGroup = document.createElement('div');
                     btnGroup.style = "display: flex; align-items: center; gap: 40px;";
 
                     const yesBtn = document.createElement('button');
-                    yesBtn.style = "background: #e68a5c; color: #fff; border: none; padding: 8px 35px; border-radius: 20px; font-weight: 700; font-size: calc(16px * var(--text-scale)); cursor: pointer; box-shadow: 0 4px 10px rgba(230,138,92,0.3);";
+                    yesBtn.style = "background: #e68a5c; color: #fff; border: none; padding: 8px 35px; border-radius: 20px; font-weight: 700; font-size: 0.889rem; cursor: pointer; box-shadow: 0 4px 10px rgba(230,138,92,0.3);";
                     yesBtn.innerText = "yes";
                     yesBtn.onclick = () => {
                         window.showSubmitConfirm = false;
@@ -3757,7 +3771,7 @@
                     };
 
                     const noBtn = document.createElement('span');
-                    noBtn.style = "color: #333; font-weight: 500; font-size: calc(16px * var(--text-scale)); cursor: pointer;";
+                    noBtn.style = "color: #333; font-weight: 500; font-size: 0.889rem; cursor: pointer;";
                     noBtn.innerText = "no";
                     noBtn.onclick = () => {
                         window.showSubmitConfirm = false;
@@ -3772,7 +3786,7 @@
                 }
 
                 const submitLink = document.createElement('div');
-                submitLink.style = "color: #e68a5c; font-size: calc(20px * var(--text-scale)); font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent;";
+                submitLink.style = "color: #e68a5c; font-size: 1.111rem; font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent;";
                 submitLink.innerText = "submit test";
                 submitLink.onclick = () => {
                     window.showSubmitConfirm = true;
@@ -3939,6 +3953,138 @@
                 subBtn.onclick = () => submitQuestion(q.id);
                 pane.appendChild(subBtn);
                 pane.appendChild(wrap);
+            } else if (q.type === 'drawing') {
+                const wrap = document.createElement('div');
+                wrap.className = 'pane-content';
+                wrap.style.display = 'flex';
+                wrap.style.flexDirection = 'column';
+                wrap.style.height = '600px';
+
+                wrap.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 class="mcq-prompt">Diagram / Canvas</h3>
+                        <div class="drawing-tools" style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                            <button id="drawModeBtn" class="btn-ghost" style="padding:4px 8px;" title="Draw Mode"><i class="fas fa-pencil-alt"></i></button>
+                            <input type="color" id="drawColor" value="#000000" style="padding:0; width:36px; height:36px; border:none; cursor:pointer;" title="Color">
+                            <input type="range" id="drawBrushSize" min="1" max="25" value="5" style="width:100px;" title="Brush Size">
+                            <button id="addRectBtn" class="btn-ghost" style="padding:4px 8px;" title="Rectangle"><i class="far fa-square"></i></button>
+                            <button id="addCircleBtn" class="btn-ghost" style="padding:4px 8px;" title="Circle"><i class="far fa-circle"></i></button>
+                            <button id="addTextBtn" class="btn-ghost" style="padding:4px 8px;" title="Text"><i class="fas fa-font"></i></button>
+                            <button id="deleteSelBtn" class="btn-ghost" style="padding:4px 8px;" title="Delete Selection"><i class="fas fa-eraser"></i></button>
+                            <button id="clearBoardBtn" class="btn-ghost" style="color:var(--danger); padding:4px 8px;" title="Clear Board"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div style="flex:1; border:2px solid #eaecf0; border-radius:12px; overflow:hidden; background:#fff; position:relative;">
+                        <canvas id="drawingCanvas"></canvas>
+                    </div>
+                `;
+
+                const subBtn = document.createElement('button');
+                subBtn.className = "btn-q-submit";
+                subBtn.style = "position:absolute; bottom:32px; right:32px; z-index:10;";
+                subBtn.textContent = "submit";
+
+                pane.appendChild(wrap);
+                pane.appendChild(subBtn);
+
+                setTimeout(() => {
+                    const canvasEl = document.getElementById('drawingCanvas');
+                    const container = canvasEl.parentElement;
+                    const fCanvas = new fabric.Canvas('drawingCanvas', {
+                        width: container.clientWidth,
+                        height: container.clientHeight,
+                        isDrawingMode: true
+                    });
+                    
+                    if (existingValue && typeof existingValue === 'string') {
+                        try {
+                            fCanvas.loadFromJSON(existingValue, fCanvas.renderAll.bind(fCanvas));
+                        } catch(e) {}
+                    }
+                    
+                    let drawColor = '#000000';
+                    let brushSize = 5;
+
+                    fCanvas.freeDrawingBrush.color = drawColor;
+                    fCanvas.freeDrawingBrush.width = brushSize;
+
+                    // Update UI state for Drawing Mode
+                    const setModeHighlight = () => {
+                        document.getElementById('drawModeBtn').style.background = fCanvas.isDrawingMode ? '#e68a5c' : 'transparent';
+                        document.getElementById('drawModeBtn').style.color = fCanvas.isDrawingMode ? '#fff' : 'var(--text-secondary)';
+                        document.getElementById('drawModeBtn').style.borderColor = fCanvas.isDrawingMode ? '#e68a5c' : 'var(--border)';
+                    };
+                    setModeHighlight();
+
+                    document.getElementById('drawModeBtn').onclick = () => {
+                        fCanvas.isDrawingMode = !fCanvas.isDrawingMode;
+                        setModeHighlight();
+                    };
+
+                    document.getElementById('drawColor').oninput = (e) => {
+                        drawColor = e.target.value;
+                        fCanvas.freeDrawingBrush.color = drawColor;
+                        let active = fCanvas.getActiveObject();
+                        if(active && active.set) {
+                           active.set('fill', drawColor);
+                           if(active.type === 'path') active.set('stroke', drawColor);
+                           fCanvas.renderAll();
+                        }
+                    };
+                    
+                    document.getElementById('drawBrushSize').oninput = (e) => {
+                        brushSize = parseInt(e.target.value, 10);
+                        fCanvas.freeDrawingBrush.width = brushSize;
+                    };
+
+                    document.getElementById('addRectBtn').onclick = () => {
+                        fCanvas.isDrawingMode = false; setModeHighlight();
+                        const r = new fabric.Rect({ left: 100, top: 100, fill: drawColor, width: 60, height: 60 });
+                        fCanvas.add(r); fCanvas.setActiveObject(r);
+                    };
+
+                    document.getElementById('addCircleBtn').onclick = () => {
+                        fCanvas.isDrawingMode = false; setModeHighlight();
+                        const c = new fabric.Circle({ left: 100, top: 100, fill: drawColor, radius: 40 });
+                        fCanvas.add(c); fCanvas.setActiveObject(c);
+                    };
+
+                    document.getElementById('addTextBtn').onclick = () => {
+                        fCanvas.isDrawingMode = false; setModeHighlight();
+                        const t = new fabric.IText('Text', { left: 100, top: 100, fill: drawColor, fontSize: 24 });
+                        fCanvas.add(t); fCanvas.setActiveObject(t);
+                    };
+
+                    document.getElementById('deleteSelBtn').onclick = () => {
+                        const active = fCanvas.getActiveObjects();
+                        if (active.length) {
+                            fCanvas.discardActiveObject();
+                            active.forEach(o => fCanvas.remove(o));
+                        }
+                    };
+
+                    document.getElementById('clearBoardBtn').onclick = () => {
+                        if(confirm("Are you sure you want to clear the canvas?")) {
+                            fCanvas.clear();
+                            fCanvas.backgroundColor = '#ffffff';
+                            fCanvas.renderAll();
+                        }
+                    };
+
+                    function saveCanvas() {
+                        saveResponse(q.id, JSON.stringify(fCanvas));
+                    }
+                    
+                    fCanvas.on('object:modified', saveCanvas);
+                    fCanvas.on('object:added', saveCanvas);
+                    fCanvas.on('object:removed', saveCanvas);
+                    fCanvas.on('path:created', saveCanvas);
+                    
+                    subBtn.onclick = () => {
+                        saveCanvas();
+                        submitQuestion(q.id);
+                    };
+                }, 100);
             } else if (q.type === 'subjective') {
                 const wrap = document.createElement('div');
                 wrap.className = 'pane-content';
@@ -3966,16 +4112,16 @@
                     <div class="coding-ui" style="background: #fff;">
                         <div class="toolbar-top" style="padding: 12px 16px; position: relative; display: flex; align-items: center; justify-content: space-between;">
                             <div style="display:flex; align-items:center;">
-                                <select class="lang-select" id="langSelector" onchange="resetTemplate()">
-                                    ${q.languages.map(l => `<option value="${l}">${l.charAt(0).toUpperCase() + l.slice(1)}</option>`).join('')}
-                                FAMILY: 'Open Sans', sans-serif;
+                                <select class="lang-select" id="langSelector" onchange="changeLanguage()">
+                                    ${q.languages.map(l => {
+                    const savedLang = currentAttempt.responses[q.id]?.lang || q.languages[0];
+                    return `<option value="${l}" ${savedLang === l ? 'selected' : ''}>${l.charAt(0).toUpperCase() + l.slice(1)}</option>`;
+                }).join('')}
                                 </select>
                                 <i class="fas fa-caret-down" style="margin-left: -22px; pointer-events: none; color: #111; font-size: 10px;"></i>
                             </div>
                             <div style="display:flex; gap:20px; align-items:center;">
-                                <div id="libStatusTag" style="font-size: 11px; padding: 4px 12px; border-radius: 12px; font-weight: 700; display: none;">
-                                    <i class="fas fa-book"></i> Detecting Libraries...
-                                </div>
+                                <!-- Library tag removed as per user request -->
                             </div>
                             <i class="fas fa-expand-arrows-alt fs-icon-toggle" onclick="enterFS()" style="cursor: pointer; font-size: 1.3rem; color: #111; transition: opacity 0.2s;" title="Fullscreen Mode" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'"></i>
                         </div>
@@ -4006,7 +4152,7 @@
                                     <div id="consoleOutputText" style="padding:16px;"></div>
                                 </div>
                                 <div class="tray-content" id="trayCustom" style="display:none; padding:16px; flex:1; background:#fff; overflow:hidden;">
-                                     <textarea id="customInputField" style="width:100%; height:100%; border:1px solid #E5E7EB; border-radius:10px; padding:20px; font-family:'JetBrains Mono', monospace; font-size:calc(22px * var(--text-scale)); font-weight:500; resize:none; outline:none; color:#101828;" placeholder="enter a custom input"></textarea>
+                                     <textarea id="customInputField" style="width:100%; height:100%; border:1px solid #E5E7EB; border-radius:10px; padding:20px; font-family:'JetBrains Mono', monospace; font-size:1.222rem; font-weight:500; resize:none; outline:none; color:#101828;" placeholder="enter a custom input"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -4143,7 +4289,6 @@
                     });
 
                     const lang = document.getElementById('langSelector').value;
-                    updateLibStatusTag(lang);
                     const qCode = q.code ? q.code[lang] : null;
                     let prefix = qCode?.prefix || '';
                     let middle = qCode?.middle || '';
@@ -4280,6 +4425,9 @@
                         const dynamicEditableEnd = suffixLines > 0 ? total - suffixLines - 3 : total;
                         const editablePart = lines.slice(editableStart - 1, dynamicEditableEnd).join('\n');
                         saveResponse(q.id, editablePart);
+                        if (currentAttempt.responses[q.id]) {
+                            currentAttempt.responses[q.id].lang = lang;
+                        }
                     });
                     const samples = (q.testCases || []).filter(tc => tc.isSample);
                     if (samples.length > 0) {
@@ -4288,6 +4436,34 @@
                 });
             }
         }
+
+        window.changeLanguage = function () {
+            const q = currentExam.questions[currentQuestionIndex];
+            if (!q) return;
+            const newLang = document.getElementById('langSelector').value;
+            const hasCode = currentAttempt.responses[q.id]?.value && currentAttempt.responses[q.id].value.trim() !== '';
+
+            if (hasCode) {
+                if (!confirm("Switching languages will reset your code and load the new template. Continue?")) {
+                    const oldLang = currentAttempt.responses[q.id].lang || q.languages[0];
+                    document.getElementById('langSelector').value = oldLang;
+                    return;
+                }
+            }
+            if (!currentAttempt.responses[q.id]) currentAttempt.responses[q.id] = {};
+            currentAttempt.responses[q.id].value = ''; // Wipe code to load fresh template
+            currentAttempt.responses[q.id].lang = newLang; // Store preference
+            renderInteraction(q);
+        };
+
+        window.resetTemplate = function () {
+            const q = currentExam.questions[currentQuestionIndex];
+            if (!q) return;
+            if (confirm("Resetting the template will completely clear your current code. Continue?")) {
+                if (currentAttempt.responses[q.id]) currentAttempt.responses[q.id].value = '';
+                renderInteraction(q);
+            }
+        };
 
         function showFontSizeTooltip(e) {
             const slider = document.getElementById('fontSizeSlider');
@@ -4319,16 +4495,23 @@
         let fontResizeTimer = null;
 
         function updateFontSize(val) {
+            // Do not update font size if feedback page is visible
+            const feedbackView = document.getElementById('feedbackView');
+            if (feedbackView && feedbackView.style.display === 'flex') {
+                return;
+            }
+
             clearTimeout(fontResizeTimer);
 
             fontResizeTimer = setTimeout(() => {
                 const scale = val / 100;
+                const newSize = Math.max(12, Math.min(40, Math.round(18 * scale)));
 
-                document.documentElement.style.setProperty('--text-scale', scale);
+                document.documentElement.style.fontSize = newSize + "px";
 
                 if (editorInstance) {
                     editorInstance.updateOptions({
-                        fontSize: Math.max(12, Math.min(40, 18 * scale))
+                        fontSize: newSize
                     });
                 }
 
@@ -4441,15 +4624,16 @@
                 if (showWarning) {
                     wifiWarning.innerHTML = msg;
                     wifiWarning.style.display = 'block';
+                    wifiWarning.style.color = '#344054'; // Professional Dark Grey as in sr2
                     if (wifiErrorIcon) {
                         wifiErrorIcon.style.display = 'flex';
                         wifiErrorIcon.style.background = color;
                     }
 
-                    // Dynamic Header Expansion - "Increase a lil more"
-                    const expandedHeight = "135px";
-                    if (topBar) topBar.style.height = expandedHeight;
-                    attemptedBoxes.forEach(box => box.style.height = expandedHeight);
+                    // Dynamic Header Expansion - Removed as requested to keep it "in bounds"
+                    // const expandedHeight = "135px";
+                    // if (topBar) topBar.style.height = expandedHeight;
+                    // attemptedBoxes.forEach(box => box.style.height = expandedHeight);
                 } else {
                     wifiWarning.style.display = 'none';
                     if (wifiErrorIcon) wifiErrorIcon.style.display = 'none';
@@ -4473,11 +4657,11 @@
 
             showToast("📸 Integrity Snapshot Taken", 'success');
         }
-        // Take an initial screenshot and then random intervals
+        // Take an initial screenshot and then regular intervals for fast/good integrity checks
         setTimeout(captureSecurityEvidence, 2000);
         setInterval(() => {
-            if (Math.random() > 0.7) captureSecurityEvidence();
-        }, 60000 * 2);
+            captureSecurityEvidence();
+        }, 30000); // Trigger every 30 seconds for better security coverage
 
         function buildExecutableCode(q, lang) {
             const qCode = q.code?.[lang] || {};
@@ -4826,10 +5010,10 @@
 
                 const result = await executeRunner({ language: lang, code, stdin: customVal });
                 if (result.success) {
-                    cText.innerHTML = `<div style="padding:0; line-height:1.6; white-space:pre-wrap; font-family:'Open Sans', sans-serif; color:#fff; font-size:calc(18px * var(--text-scale)); font-weight:400;">${escapeHtml(result.stdout) || 'Process exited with no output.'}</div>`;
+                    cText.innerHTML = `<div style="padding:0; line-height:1.6; white-space:pre-wrap; font-family:'Open Sans', sans-serif; color:#fff; font-size:1rem; font-weight:400;">${escapeHtml(result.stdout) || 'Process exited with no output.'}</div>`;
                 } else {
                     switchTray('console');
-                    cText.innerHTML = `<div style="color:#fff; white-space:pre-wrap; font-family:'Open Sans', sans-serif; font-size:calc(18px * var(--text-scale)); font-weight:400;">${escapeHtml(result.error)}</div>`;
+                    cText.innerHTML = `<div style="color:#fff; white-space:pre-wrap; font-family:'Open Sans', sans-serif; font-size:1rem; font-weight:400;">${escapeHtml(result.error)}</div>`;
                 }
             } else {
                 // Pre-run cleanup
@@ -4956,7 +5140,7 @@
                 `;
 
                 if (summaryContent) summaryContent.innerHTML = summaryHtml;
-                const finalStatusHtml = `<div style="color:#fff; font-family:'Open Sans', sans-serif; font-size:calc(18px * var(--text-scale)); font-weight:400; line-height:1.6;">Execution Complete.\n\nSample: ${samplePassed}/${totalSamples} passed\nHidden: ${hiddenPassed}/${totalHidden} passed</div>`;
+                const finalStatusHtml = `<div style="color:#fff; font-family:'Open Sans', sans-serif; font-size:1rem; font-weight:400; line-height:1.6;">Execution Complete.\n\nSample: ${samplePassed}/${totalSamples} passed\nHidden: ${hiddenPassed}/${totalHidden} passed</div>`;
                 cText.innerHTML = finalStatusHtml;
 
                 // Tab Redirection Logic
@@ -5004,7 +5188,7 @@
 
             const formatOutput = (text) => {
                 if (!text) return '<span style="color:#667085; font-style:italic;">(No output)</span>';
-                return `<div style="white-space: pre-wrap; font-family: 'Open Sans', sans-serif; font-size: calc(19px * var(--text-scale)); color: #000; font-weight: 500;">${escapeHtml(text)}</div>`;
+                return `<div style="white-space: pre-wrap; font-family: 'Open Sans', sans-serif; font-size: 1.056rem; color: #000; font-weight: 500;">${escapeHtml(text)}</div>`;
             };
 
             if (!isSample) {
@@ -5231,6 +5415,14 @@
             const feedbackView = document.getElementById('feedbackView');
             feedbackView.style.display = 'flex';
 
+            // Reset font size to default (18px) for feedback page
+            document.documentElement.style.fontSize = "18px";
+            if (document.getElementById('fontSizeSlider')) document.getElementById('fontSizeSlider').value = 100;
+            if (document.getElementById('fontSizeTooltip')) document.getElementById('fontSizeTooltip').textContent = "100%";
+            if (editorInstance) {
+                editorInstance.updateOptions({ fontSize: 16 });
+            }
+
             // Kiosk mode persists through Feedback page as requested
 
             sessionStorage.setItem(`exam_started_${attemptId}`, 'false');
@@ -5251,7 +5443,10 @@
         function finalizeFeedback() {
             if (window.proctorBridge) {
                 // In Desktop version, close immediately as requested
-                window.proctorBridge.close();
+                window.proctorBridge.setKioskMode(false);
+                setTimeout(() => {
+                    window.proctorBridge.close();
+                }, 100);
                 return;
             }
 
@@ -5459,7 +5654,7 @@
                 border-radius: 12px;
                 font-weight: 500;
                 z-index: 100001;
-                font-size: 1.4rem;
+                font-size: 25.2px;
                 font-family: 'Open Sans', sans-serif;
                 box-shadow: 0 12px 32px rgba(0,0,0,0.08);
                 display: flex;
@@ -5632,7 +5827,6 @@
             document.addEventListener('copy', e => { e.clipboardData.setData('text/plain', ''); e.preventDefault(); });
             document.addEventListener('cut', e => e.preventDefault());
             document.addEventListener('paste', e => e.preventDefault());
-
             const enforceFocus = () => {
                 try {
                     if (typeof isPractice !== 'undefined' && !isPractice && typeof attemptId !== 'undefined' && sessionStorage.getItem(`exam_started_${attemptId}`) === 'true') {
@@ -5641,13 +5835,11 @@
                             let cnt = parseInt(el.textContent) || 0;
                             el.textContent = cnt + 1;
                         }
-
                         // SILENTIAL BLOCK: No warning/overlay as requested.
                         console.warn("[SILENT-LOCK] Desktop/Tab switch detected.");
                     }
                 } catch (e) { }
             };
-
             window.addEventListener('blur', enforceFocus);
             document.addEventListener('visibilitychange', () => { if (document.hidden) enforceFocus(); });
         })();

@@ -1857,6 +1857,8 @@
                     Assertion Reason</div>
                 <div class="type-tab" id="type-subjective" onclick="selectQuestionType('subjective')">Short/Long Answer
                 </div>
+                <div class="type-tab" id="type-drawing" onclick="selectQuestionType('drawing')">Diagram Drawing
+                </div>
                 <div class="type-tab" id="type-single_integer" onclick="selectQuestionType('single_integer')">Single
                     Integer</div>
                 <div class="type-tab" id="type-numeric" onclick="selectQuestionType('numeric')">Numeric Value</div>
@@ -2958,7 +2960,7 @@
 
         // Toggle containers
         document.getElementById('optionsContainer').style.display = (type === 'mcq' || type === 'true_false' || type === 'assertion_reason') ? 'block' : 'none';
-        document.getElementById('subjectiveContainer').style.display = type === 'subjective' ? 'block' : 'none';
+        document.getElementById('subjectiveContainer').style.display = (type === 'subjective' || type === 'drawing') ? 'block' : 'none';
         document.getElementById('numericContainer').style.display = (type === 'numeric' || type === 'single_integer') ? 'block' : 'none';
         document.getElementById('fileUploadContainer').style.display = type === 'file_upload' ? 'block' : 'none';
         document.getElementById('codingContainer').style.display = type === 'coding' ? 'block' : 'none';
@@ -3119,7 +3121,7 @@
             q.correctAnswer = getCorrectAnswer();
             if (!q.correctAnswer) { showToast('Select the correct option (orange circle)'); return; }
         }
-        else if (currentQuestionType === 'subjective') {
+        else if (currentQuestionType === 'subjective' || currentQuestionType === 'drawing') {
             q.keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
         } else if (currentQuestionType === 'numeric' || currentQuestionType === 'single_integer') {
             q.correctNumeric = parseFloat(document.getElementById('correctNumeric').value);

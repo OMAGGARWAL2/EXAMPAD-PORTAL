@@ -25,6 +25,9 @@ const aiRoutes = require("./routes/ai");
 // Register Routes
 app.use("/api", aiRoutes);
 
+// Serve static files (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname)));
+
 // --- Backend Architecture Overview ---
 // This Express application serves as a dedicated microservice for AI processing,
 // demonstrating a separation of concerns between the desktop client (Electron)
@@ -44,8 +47,6 @@ app.use((err, req, res, next) => {
 // Export the app for Vercel's serverless environment
 module.exports = app;
 
-if (require.main === module) {
-    app.listen(PORT, () => {
-        console.log(`EXAMPAD Backend System operational on port ${PORT}`);
-    });
-}
+app.listen(PORT, () => {
+    console.log(`EXAMPAD Backend System operational on port ${PORT}`);
+});
