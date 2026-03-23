@@ -8,6 +8,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="logo.jpg">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
@@ -506,6 +508,7 @@
             </a>
 
             <div class="system-badge">
+                <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
                 <div class="status-dot"></div>
                 Exampad Secure Hub v2.0
             </div>
@@ -516,7 +519,7 @@
     <main>
         <section class="hero container">
             <div class="hero-badge">
-                <i class="fas fa-shield-alt"></i> Enterprise Proctoring Active
+                <i data-lucide="shield" style="width: 18px; height: 18px;"></i> Enterprise Proctoring Active
             </div>
             <h1 class="hero-title">
                 The Secure Hub for <br><span>Academic Excellence</span>
@@ -530,7 +533,7 @@
                 <!-- Administrative / Instructor Login -->
                 <div class="portal-card" onclick="transitionTo('pages/login.html?role=teacher')">
                     <div class="card-icon-wrapper">
-                        <i class="fas fa-chalkboard-teacher"></i>
+                        <i data-lucide="presentation"></i>
                     </div>
                     <h2 class="card-title">Instructor Portal</h2>
                     <p class="card-desc">
@@ -538,14 +541,14 @@
                         On-Screen Marking (OSM) system for rapid evaluations.
                     </p>
                     <div class="card-action">
-                        Launch Dashboard <i class="fas fa-arrow-right"></i>
+                        Launch Dashboard <i data-lucide="arrow-right"></i>
                     </div>
                 </div>
 
                 <!-- Student Login -->
                 <div class="portal-card" onclick="transitionTo('pages/login.html?role=student')">
                     <div class="card-icon-wrapper">
-                        <i class="fas fa-user-graduate"></i>
+                        <i data-lucide="user-square-2"></i>
                     </div>
                     <h2 class="card-title">Candidate Gateway</h2>
                     <p class="card-desc">
@@ -553,7 +556,7 @@
                         tracking, full-screen enforcement, and an embedded Monaco code editor.
                     </p>
                     <div class="card-action">
-                        Begin Session <i class="fas fa-arrow-right"></i>
+                        Begin Session <i data-lucide="arrow-right"></i>
                     </div>
                 </div>
             </div>
@@ -564,7 +567,7 @@
             <div class="container">
                 <div class="features-grid">
                     <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-laptop-code"></i></div>
+                        <div class="feature-icon"><i data-lucide="code-2"></i></div>
                         <div class="feature-text">
                             <h4>Advanced IDE Integration</h4>
                             <p>Seamless Monaco-powered coding challenges with real-time compilation capabilities
@@ -572,7 +575,7 @@
                         </div>
                     </div>
                     <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-fingerprint"></i></div>
+                        <div class="feature-icon"><i data-lucide="fingerprint"></i></div>
                         <div class="feature-text">
                             <h4>Proctoring & Identity</h4>
                             <p>Continuous AI-based visual monitoring, tab-switching detection, and strict environment
@@ -580,7 +583,7 @@
                         </div>
                     </div>
                     <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="feature-icon"><i data-lucide="trending-up"></i></div>
                         <div class="feature-text">
                             <h4>Data & Analytics</h4>
                             <p>Deep insights generation, historical logs, and professional PDF rendering via LaTeX
@@ -605,9 +608,9 @@
                 </div>
             </div>
             <div class="footer-links">
-                <a href="#">System Integrity Policy</a>
-                <a href="#">Support Documents</a>
-                <a href="#">Exampad Platform terms</a>
+                <a href="#"><i data-lucide="shield-check" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i> System Integrity Policy</a>
+                <a href="#"><i data-lucide="file-text" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i> Support Documents</a>
+                <a href="#"><i data-lucide="scale" style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i> Exampad Platform terms</a>
             </div>
         </div>
     </footer>
@@ -627,6 +630,11 @@
                 console.log(`[DEEP LINK] Navigating to Exam: ${examId}`);
                 transitionTo(`pages/login.html?testId=${examId}`);
             });
+        }
+
+        // Initialize Lucide Icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
         }
     </script>
 </body>

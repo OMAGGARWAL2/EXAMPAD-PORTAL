@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad | Course Architect</title>
+    <title>Course Architect | EXAMPAD</title>
     <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,46 +19,76 @@
     <!-- Monaco Editor Resources -->
     <link rel="stylesheet" data-name="vs/editor/editor.main"
         href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/editor/editor.main.min.css">
+
     <style>
         :root {
-            --primary: #D92D20;
-            --primary-soft: #FEF3F2;
-            --bg: #F9FAFB;
-            --white: #FFFFFF;
-            --border: #EAECF0;
-            --text-main: #101828;
-            --text-muted: #475467;
+            --primary: #D96C33;
+            --primary-light: #FF8D4D;
+            --primary-soft: #fff5f0;
+            --bg-body: #ffffff;
+            --bg-sidebar: #f8f9fa;
+            --text-main: #202124;
+            --text-secondary: #5f6368;
+            --border: #e0e0e0;
             --radius: 12px;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: var(--bg);
+            background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Header */
-        header {
-            height: 72px;
-            background: var(--white);
+        /* Premium Header */
+        .site-header {
+            height: 64px;
+            background: #fff;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 32px;
+            padding: 0 24px;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-svg {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        .icon-svg.large {
+            width: 32px;
+            height: 32px;
+        }
+
+        .rail-item .icon-svg {
+            filter: grayscale(1) opacity(0.6);
+        }
+
+        .rail-item.active .icon-svg {
+            filter: none;
+            opacity: 1;
         }
 
         .logo-box {
@@ -69,213 +101,337 @@
         .logo-sq {
             width: 36px;
             height: 36px;
-            background: transparent;
-            color: #fff;
-            border-radius: 0;
+            background: #f04438;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
         .logo-sq img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) invert(1);
         }
 
-        .header-actions {
+        .brand-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-sub {
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-left: 8px;
+            padding-left: 8px;
+            border-left: 1px solid var(--border);
+        }
+
+        .header-right {
             display: flex;
+            align-items: center;
             gap: 16px;
         }
 
+        /* Buttons */
         .btn {
-            padding: 10px 20px;
+            height: 40px;
+            padding: 0 20px;
             border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            border: 1px solid var(--border);
-            transition: all 0.2s;
+            font-weight: 600;
             font-size: 0.9rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-main);
         }
 
         .btn-primary {
             background: var(--primary);
             color: #fff;
             border: none;
+            box-shadow: 0 4px 12px rgba(217, 108, 51, 0.2);
         }
 
         .btn-primary:hover {
-            background: #b42318;
+            background: var(--primary-light);
             transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(217, 108, 51, 0.3);
         }
 
-        /* Main Layout */
-        main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 0;
-        }
-
-        /* Left: Course Structure */
-        .curriculum-sidebar {
-            background: var(--white);
-            border-right: 1px solid var(--border);
-            padding: 32px 24px;
-            overflow-y: auto;
-            max-height: calc(100vh - 72px);
-        }
-
-        .curriculum-sidebar h3 {
-            font-size: 1.1rem;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .module-item {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 16px;
-            padding: 16px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .module-item:hover {
-            border-color: var(--primary);
-        }
-
-        .module-item.active {
-            border-color: var(--primary);
-            background: var(--primary-soft);
-        }
-
-        .module-title {
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .content-links {
-            list-style: none;
-            margin-top: 12px;
-        }
-
-        .content-link {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            padding: 8px 0;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .content-link i {
-            width: 16px;
-            text-align: center;
-        }
-
-        .add-module-btn {
-            width: 100%;
-            border: 2px dashed var(--border);
+        .btn-ghost {
+            border: none;
             background: transparent;
-            padding: 16px;
-            border-radius: var(--radius);
-            color: var(--text-muted);
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-sidebar);
+            color: var(--text-main);
+        }
+
+        /* Layout Grid */
+        .workspace {
+            display: grid;
+            grid-template-columns: 80px 320px 1fr;
+            height: calc(100vh - 64px);
+        }
+
+        /* Context Rail (Far Left) */
+        .context-rail {
+            background: #fff;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 0;
+            gap: 20px;
+        }
+
+        .rail-item {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
+            transition: var(--transition);
         }
 
-        .add-module-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+        .rail-item:hover,
+        .rail-item.active {
             background: var(--primary-soft);
+            color: var(--primary);
         }
 
-        /* Right: Editor Area */
-        .editor-area {
-            padding: 48px 64px;
+        /* Curriculum Sidebar (Middle) */
+        .sidebar {
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .module-list {
+            flex: 1;
             overflow-y: auto;
+            padding: 16px;
+        }
+
+        .module-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .module-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .module-card.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .module-head {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
             background: #fff;
         }
 
-        .editor-header {
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 24px;
+        .module-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .course-title-input {
-            font-size: 2rem;
-            font-weight: 800;
-            border: none;
-            outline: none;
-            width: 100%;
-            color: var(--text-main);
-            margin-bottom: 8px;
+        .module-index {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-sidebar);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
         }
 
-        .course-desc-input {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            border: none;
-            outline: none;
-            width: 100%;
-            resize: none;
+        .module-title {
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
-        .form-group {
+        .lesson-list {
+            background: #fafafa;
+            border-top: 1px solid #f0f0f0;
+            padding: 8px 0;
+        }
+
+        .lesson-item {
+            padding: 10px 16px 10px 48px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .lesson-item:hover {
+            background: #fff;
+            color: var(--primary);
+        }
+
+        .lesson-item.active {
+            color: var(--primary);
+            font-weight: 600;
+            background: #fff;
+        }
+
+        .delete-action {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #ccc;
+            opacity: 0;
+            transition: var(--transition);
+            margin-left: auto;
+        }
+
+        .module-head:hover .delete-action,
+        .lesson-item:hover .delete-action {
+            opacity: 1;
+        }
+
+        .delete-action:hover {
+            background: #fee2e2 !important;
+            color: #ef4444 !important;
+        }
+
+        .lesson-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary);
+        }
+
+        /* Main Editor Area */
+        .editor-container {
+            overflow-y: auto;
+            background: #fff;
+            position: relative;
+        }
+
+        .editor-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 48px 40px;
+        }
+
+        /* Field Elements */
+        .field-group {
             margin-bottom: 32px;
         }
 
-        .label {
+        .field-label {
             display: block;
-            font-weight: 700;
-            font-size: 0.95rem;
-            margin-bottom: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--primary);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
         }
 
-        .input {
+        .premium-input {
             width: 100%;
-            padding: 14px;
+            border: none;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 12px 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .premium-input:focus {
+            border-bottom-color: var(--primary);
+        }
+
+        .standard-input {
+            width: 100%;
+            padding: 12px 16px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            outline: none;
             font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
         }
 
-        .input:focus {
+        .standard-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px var(--primary-soft);
         }
 
-        /* Content Types Grid */
-        .content-type-grid {
+        /* Content Type Grid */
+        .type-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
         }
 
         .type-card {
+            background: #fff;
             border: 1px solid var(--border);
+            border-radius: 16px;
             padding: 24px;
-            border-radius: var(--radius);
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
         }
 
         .type-card:hover {
@@ -285,10 +441,10 @@
         }
 
         .type-card i {
+            display: block;
             font-size: 2rem;
             color: var(--primary);
             margin-bottom: 16px;
-            display: block;
         }
 
         .type-card span {
@@ -296,107 +452,51 @@
             font-size: 0.9rem;
         }
 
-        /* Dynamic Form Area */
-        .content-editor {
-            margin-top: 40px;
-            padding: 40px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            display: none;
-            max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
+        /* Tri-Orange Line */
+        .tri-line {
+            display: flex;
+            height: 4px;
+            width: 100px;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 24px;
         }
 
-        /* Custom Toast */
+        .tl-1 {
+            background: var(--primary-soft);
+            flex: 1;
+        }
+
+        .tl-2 {
+            background: var(--primary-light);
+            flex: 1;
+        }
+
+        .tl-3 {
+            background: var(--primary);
+            flex: 2;
+        }
+
+        /* Toast */
         #toast-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
+            bottom: 24px;
+            right: 24px;
+            z-index: 2000;
         }
 
         .toast {
-            background: #333;
+            background: #323232;
             color: #fff;
-            padding: 16px 24px;
+            padding: 12px 24px;
             border-radius: 8px;
-            margin-top: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            animation: slideIn 0.3s forwards;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* Video Options */
-        .video-options {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .v-opt {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .v-opt.active {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-        }
-
-        /* Modal Base */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            animation: fadeIn 0.3s forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .modal-content {
-            background: #fff;
-            width: 480px;
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-            transform: translateY(20px);
+            margin-top: 8px;
             animation: slideUp 0.3s forwards;
         }
 
@@ -412,784 +512,1357 @@
             }
         }
 
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            margin-bottom: 24px;
-        }
-
-        .ql-toolbar.ql-snow {
-            border: 1px solid var(--border) !important;
-            border-radius: 8px 8px 0 0;
-            background: #fafafa;
-        }
-
-        .ql-container.ql-snow {
-            border: 1px solid var(--border) !important;
-            border-radius: 0 0 8px 8px;
-            font-size: 1rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 32px;
-        }
-
-        /* Coding Editor Fields */
-        .code-block-field {
-            font-family: 'JetBrains Mono', monospace;
-            background: #f5f5f5;
-            color: #333;
-            width: 100%;
-            height: 120px;
-            padding: 12px;
+        /* Monaco */
+        .monaco-wrapper {
+            height: 400px;
             border: 1px solid var(--border);
             border-radius: 8px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        /* Coding Workspace Styles from Exam Creator */
+        .workspace-lang-title {
+            background: #f2f2f2;
+            color: #333;
+            padding: 14px 24px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .code-workspace-block {
+            margin-bottom: 40px;
+            padding-bottom: 32px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .code-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .code-label-main {
+            font-weight: 700;
             font-size: 0.9rem;
-            resize: none;
-            outline: none;
-            margin-bottom: 12px;
+            color: #444;
+            letter-spacing: 0.3px;
         }
 
-        .ql-snow .ql-editor pre.ql-syntax {
-            background-color: #f5f5f5 !important;
-            color: #333 !important;
-            border: 1px solid #eee !important;
-            border-radius: 8px !important;
-            padding: 12px !important;
+        .code-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
         }
 
-        .tri-orange-line {
-            height: 4px;
-            background: #ffe8dd;
-            margin-top: 8px;
-            border-radius: 2px;
+        .monaco-inline-wrapper {
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f2f2f2;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-fullscreen-toggle {
+            height: 32px;
+            padding: 0 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            color: #666;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-fullscreen-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Test Case UI Refined */
+        .test-case-card {
+            background: #fff;
+            padding: 24px;
+            border: 1px solid #eee;
+            border-radius: 12px;
             position: relative;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+        }
+
+        .test-case-card:hover {
+            border-color: var(--primary);
+        }
+
+        .test-case-input-group {
+            margin-bottom: 16px;
+        }
+
+        .remove-case {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .remove-case:hover {
+            background: #fee2e2;
+        }
+
+        .lang-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        /* Split Builder Layout (Exam Creator Style) */
+        .split-builder {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+            margin-top: 24px;
+            height: calc(100vh - 220px);
             overflow: hidden;
         }
 
-        .tri-orange-line::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 30%;
-            background: var(--primary);
+        .builder-left,
+        .builder-right {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .mini-tool-btn {
-            background: none;
-            border: none;
-            font-size: 0.65rem;
-            font-weight: 800;
+        .builder-right {
+            background: #fdfdfd;
+            border-color: #f0f0f0;
+        }
+
+        .delete-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-action:hover {
+            color: #f04438;
+            background: #fff1f0;
+        }
+
+        .delete-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-action:hover {
+            color: #f04438;
+            background: #fff1f0;
+        }
+
+        .ql-container {
+            pointer-events: auto !important;
+        }
+
+        .type-grid {
+            display: grid;
+            gap: 12px;
+            width: 100%;
+        }
+
+        /* High Performance Editor Container */
+        .editor-workspace {
+            position: relative;
+            display: block;
+            /* Fixed: Flex was breaking Quill */
+            min-height: 250px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fff;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .editor-workspace .ql-container {
+            height: auto;
+            min-height: 200px;
+        }
+
+        .editor-workspace .ql-editor {
+            min-height: 200px;
+        }
+
+        .editor-workspace:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.1);
+        }
+
+        .ql-editor {
+            min-height: 120px;
+            cursor: text;
+        }
+
+        .ql-editor p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        /* Language Tags */
+        .lang-check {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-check:has(input:checked) {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.1);
+        }
+
+        .lang-check input {
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Normalize Rich Text Content */
+        .ql-editor p,
+        .article-wrap p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .ql-editor h1,
+        .ql-editor h2,
+        .article-wrap h1,
+        .article-wrap h2 {
+            margin-top: 16px;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .split-builder {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow: visible;
+            }
+        }
+
+        /* MCQ */
+        .mcq-option {
+            display: grid;
+            grid-template-columns: 40px 1fr 40px;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+            background: var(--bg-sidebar);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .opt-check {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 4px;
-            text-transform: uppercase;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background 0.2s;
+            justify-content: center;
         }
 
-        .mini-tool-btn:hover {
-            background: rgba(0, 0, 0, 0.05);
+        .mcq-option.correct {
+            border-color: #12B76A;
+            background: #ECFDF3;
         }
 
-        .code-label {
-            display: inline-block;
-            background: #333;
+        .mcq-option.correct .opt-check {
+            background: #12B76A;
+            border-color: #12B76A;
+        }
+
+        .mcq-option.correct .opt-check::after {
+            content: '✓';
             color: #fff;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            margin-bottom: 8px;
-            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 450px;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 
 <body>
-
-    <header>
-        <div class="logo-box" onclick="location.href='./teacher-dashboard.html'">
-            <div class="logo-sq">
-                <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara">
+    <header class="site-header">
+        <div class="header-left">
+            <div class="logo-box" onclick="location.href='./teacher-dashboard.html'">
+                <div class="logo-sq">
+                    <img src="https://course.testpad.chitkara.edu.in/icons/menu-active.svg" alt="Menu">
+                </div>
+                <div class="brand-text">EXAMPAD <span class="brand-sub">COURSE ARCHITECT</span></div>
             </div>
-            <div style="font-weight: 800; font-size: 1.2rem;">EXAMPAD <span
-                    style="font-weight: 400; color:var(--text-muted);">| ARCHITECT</span></div>
+            <nav class="nav-tabs" style="display:flex; gap:32px; height:64px; margin-left:40px;">
+                <div class="nav-tab active" style="height:64px; display:flex; align-items:center; font-weight:700; color:var(--primary); border-bottom:3px solid var(--primary); cursor:pointer;">Creator</div>
+                <div class="nav-tab" onclick="location.href='./teacher-dashboard.html'" style="height:64px; display:flex; align-items:center; font-weight:600; color:var(--text-secondary); cursor:pointer;">Dashboard</div>
+            </nav>
         </div>
-        <div class="header-actions">
-            <button class="btn" onclick="saveCourse()"><i class="fas fa-save"></i> SAVE DRAFT</button>
-            <button class="btn btn-primary" onclick="publishCourse()"><i class="fas fa-rocket"></i> PUBLISH
-                COURSE</button>
+        <div class="header-right">
+            <div class="btn btn-ghost" onclick="saveDraft()"><i class="far fa-save"></i> Save Draft</div>
+            <button class="btn btn-primary" onclick="publishCourse()"><i class="fas fa-rocket"></i> Publish Course</button>
+            <div style="width:1px; height:24px; background:var(--border); margin:0 8px;"></div>
+            <div class="avatar-circle" style="width:36px; height:36px; border-radius:50%; background:#E0E4EC; color:#555; display:flex; align-items:center; justify-content:center; font-weight:700;">A</div>
         </div>
     </header>
 
-    <main>
-        <aside class="curriculum-sidebar">
-            <div id="sidebarHeader">
-                <h3>Curriculum <button class="btn" style="padding: 4px 8px; font-size: 0.7rem;" onclick="addModule()">+
-                        MODULE</button></h3>
+    <main class="workspace">
+        <aside class="context-rail">
+            <div class="rail-item active" title="Curriculum Builder">
+                <img src="https://course.testpad.chitkara.edu.in/icons/folder-2.svg" class="icon-svg">
             </div>
-
-            <div id="moduleList">
-                <!-- Modules will be listed here -->
+            <div class="rail-item" title="Interactive Quizzes">
+                <img src="https://course.testpad.chitkara.edu.in/icons/quiz.svg" class="icon-svg" style="filter:grayscale(1) opacity(0.5);">
             </div>
-
-            <button class="add-module-btn" style="margin-top: 20px;" onclick="addModule()">
-                <i class="fas fa-plus"></i> ADD NEW MODULE
-            </button>
+            <div class="rail-item" title="Course Analytics">
+                <img src="https://course.testpad.chitkara.edu.in/icons/statistics-active.svg" class="icon-svg" style="filter:grayscale(1) opacity(0.5);">
+            </div>
         </aside>
 
-        <section class="editor-area">
-            <div class="editor-header">
-                <input type="text" class="course-title-input" id="courseTitle"
-                    placeholder="Untitled Professional Course">
-                <textarea class="course-desc-input" id="courseDesc"
-                    placeholder="Enter course description, learning objectives, and outcomes..." rows="2"></textarea>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Curriculum</h3>
+                <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.75rem;" onclick="addNewModule()">+
+                    MODULE</button>
             </div>
+            <div class="module-list" id="curriculumList"></div>
+        </aside>
 
-            <div id="moduleEditor" style="display: none;">
-                <h4 id="editingModuleTitle" style="font-size: 1.4rem; margin-bottom: 24px;">Module: Introduction</h4>
-
-                <div class="form-group">
-                    <label class="label">Choose Content Type to Add</label>
-                    <div class="content-type-grid">
-                        <div class="type-card" onclick="openContentEditor('video')">
-                            <i class="fas fa-video"></i>
-                            <span>Video Lesson</span>
-                        </div>
-                        <div class="type-card" onclick="openContentEditor('coding')">
-                            <i class="fas fa-laptop-code"></i>
-                            <span>Coding Practice</span>
-                        </div>
-                        <div class="type-card" onclick="openContentEditor('quiz')">
-                            <i class="fas fa-tasks"></i>
-                            <span>Graded Quiz</span>
-                        </div>
-                        <div class="type-card" onclick="openContentEditor('article')">
-                            <i class="fas fa-file-alt"></i>
-                            <span>Reading Article</span>
-                        </div>
+        <section class="editor-container">
+            <div class="editor-content" id="mainEditorArea">
+                <!-- Welcome State -->
+                <div id="welcomeState">
+                    <div class="tri-line">
+                        <div class="tl-1"></div>
+                        <div class="tl-2"></div>
+                        <div class="tl-3"></div>
                     </div>
-                </div>
+                    <h1 style="font-family: 'Outfit'; font-size: 2.5rem; font-weight: 800; margin-bottom: 8px;">Course
+                        Master Plan</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 40px;">Design your professional learning
+                        journey.</p>
 
-                <!-- Content Creator Forms -->
-                <div id="formArticle" class="content-editor">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                        <h5 style="font-size: 1.2rem; font-weight: 700;">Add Reading Material</h5>
-                        <div style="display: flex; gap: 12px;">
-                            <button class="btn btn-ghost" onclick="togglePreview()">Live Preview</button>
-                            <button class="btn btn-primary" onclick="saveContent('article')">Add Article</button>
-                            <button class="btn" onclick="closeContentEditor()">Cancel</button>
-                        </div>
+                    <div class="field-group">
+                        <label class="field-label">Course Brand Title</label>
+                        <input type="text" class="premium-input" id="courseTitle"
+                            placeholder="e.g. Advanced System Design Masterclass">
                     </div>
 
-                    <div class="split-editor-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
-                        <div class="editor-pane">
-                            <div class="form-group">
-                                <label class="label">Article Title</label>
-                                <input type="text" class="input" id="aTitle"
-                                    placeholder="e.g. History of Web Development">
-                            </div>
-                            <div class="form-group">
-                                <label class="label">Minimum Reading Time (Minutes)</label>
-                                <input type="number" class="input" id="aMinTime" value="5" min="1">
-                            </div>
-                            <div class="form-group">
-                                <label class="label">Supplemental PDF URL (Optional)</label>
-                                <input type="text" class="input" id="aPdfUrl" placeholder="https://example.com/notes.pdf">
-                            </div>
-                            <div class="form-group">
-                                <label class="label">Content Editor</label>
-                                <div style="margin-bottom: 12px; display: flex; gap: 8px;">
-                                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.7rem;"
-                                        onclick="insertHero(articleQuill, 'h1')">H1 HERO</button>
-                                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.7rem;"
-                                        onclick="insertHero(articleQuill, 'button')">BTN</button>
-                                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.7rem;"
-                                        onclick="insertHero(articleQuill, 'divider')">DIVIDER</button>
-                                </div>
-                                <div id="article-quill" style="height: 500px; background: #fff;"></div>
-                            </div>
-                        </div>
-
-                        <div class="preview-pane" id="articlePreview"
-                            style="background: #fdfdfd; border: 1px solid var(--border); border-radius: 8px; padding: 40px; overflow-y: auto; height: 750px;">
-                            <div style="color: #999; text-align: center; margin-top: 100px;">
-                                <i class="fas fa-eye" style="font-size: 3rem; opacity: 0.2; margin-bottom: 20px;"></i>
-                                <p>Live preview will appear here as you type...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="formVideo" class="content-editor">
-                    <h5 style="margin-bottom: 20px;">Add Video Tutorial</h5>
-                    <div class="form-group">
-                        <label class="label">Video Title</label>
-                        <input type="text" class="input" id="vTitle" placeholder="e.g. Setting up the environment">
-                    </div>
-                    <div class="form-group">
-                        <label class="label">Source Type</label>
-                        <div class="video-options">
-                            <div class="v-opt active" onclick="setVType(this, 'record')"><i
-                                    class="fas fa-record-vinyl"></i> Record on Platform</div>
-                            <div class="v-opt" onclick="setVType(this, 'upload')"><i class="fas fa-upload"></i> Upload
-                                File</div>
-                            <div class="v-opt" onclick="setVType(this, 'youtube')"><i class="fab fa-youtube"></i>
-                                YouTube Link</div>
-                        </div>
-                        <div id="vSourceInput" style="margin-top: 20px;">
-                            <div id="recordInterface"
-                                style="background:#f0f0f0; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
-                                <i class="fas fa-video-slash"></i> [ Camera Interface Preview ]
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="label">Video Transcript / Description</label>
-                        <textarea class="input" id="vTranscript" rows="4"
-                            placeholder="Enter video script or notes here..."></textarea>
-                    </div>
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn btn-primary" onclick="saveContent('video')">Add Content</button>
-                        <button class="btn" onclick="closeContentEditor()">Cancel</button>
-                    </div>
-                </div>
-
-                <div id="formCoding" class="content-editor">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <label class="label"
-                            style="letter-spacing:1px; color:#999; font-size:0.7rem; font-weight:700; margin:0;">CODING
-                            ARCHITECT</label>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="mini-tool-btn" style="color: #6366f1;"><i class="fas fa-database"></i>
-                                Pool</button>
-                            <button class="mini-tool-btn" style="color: var(--primary);"><i class="fas fa-robot"></i>
-                                AI</button>
-                            <button class="mini-tool-btn" style="color: #333;"><i class="fas fa-code"></i>
-                                Template</button>
-                        </div>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 24px;">
-                        <input type="text" class="input" id="cTitle" placeholder="e.g. Reverse a String in Python"
-                            style="border:none; font-size:1.4rem; font-weight:700; padding:0; height:auto; margin-bottom:8px;">
-                        <div class="tri-orange-line"></div>
-                    </div>
-                    <div class="form-group">
-                        <label class="label">Problem Statement (Rich Text)</label>
-                        <div id="coding-quill" style="height: 200px;"></div>
+                    <div class="field-group">
+                        <label class="field-label">Executive Summary</label>
+                        <textarea class="standard-input" id="courseSummary" rows="4"
+                            placeholder="Briefly describe the professional impact..."></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label class="label" style="display: flex; justify-content: space-between;">
-                            <span>Prefilled Code (Python Primary)</span>
-                            <span style="font-size: 0.7rem; color: var(--primary);">JETBRAINS ENHANCED</span>
-                        </label>
-
-                        <span class="code-label">Header (Prefix - Read Only)</span>
-                        <div id="monaco-cPrefix" class="code-block-field" style="height: 150px;"></div>
-
-                        <span class="code-label">Boilerplate (Editable by Student)</span>
-                        <div id="monaco-cBoilerplate" class="code-block-field" style="height: 200px;"></div>
-
-                        <span class="code-label">Footer (Suffix - Read Only)</span>
-                        <div id="monaco-cSuffix" class="code-block-field" style="height: 150px;"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="label">Difficulty</label>
-                        <select class="input" id="cDiff">
-                            <option>Easy</option>
-                            <option>Medium</option>
-                            <option>Hard</option>
+                    <div class="field-group">
+                        <label class="field-label">Primary Category</label>
+                        <select class="standard-input" id="courseCategory">
+                            <option>Engineering & Technology</option>
+                            <option>Data Science & AI</option>
+                            <option>Management & Business</option>
+                            <option>Creative Arts & Design</option>
                         </select>
                     </div>
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn btn-primary" onclick="saveContent('coding')">Build Challenge</button>
-                        <button class="btn" onclick="closeContentEditor()">Cancel</button>
-                    </div>
                 </div>
 
-                <div id="formQuiz" class="content-editor">
-                    <h5 style="margin-bottom: 20px;">Add Graded Quiz</h5>
-                    <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">Build a Coursera-style
-                        assessment with multiple choice or subjective questions.</p>
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn btn-primary"
-                            onclick="location.href='./exam-creator.html?source=course'">Launch Exam Builder</button>
-                        <button class="btn" onclick="closeContentEditor()">Cancel</button>
+                <!-- Lesson Editor -->
+                <div id="lessonEditor" style="display: none;">
+                    <div class="tri-line">
+                        <div class="tl-1"></div>
+                        <div class="tl-2"></div>
+                        <div class="tl-3"></div>
                     </div>
-                </div>
-            </div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+                        <div>
+                            <span id="currentModuleLabel"
+                                style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">Module
+                                1</span>
+                            <h2 id="lessonTypeTitle" style="font-family: 'Outfit'; font-size: 2rem; font-weight: 800;">
+                                Lesson Editor</h2>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn" onclick="goBackToOverview()"><i class="fas fa-times"></i></button>
+                            <button class="btn btn-primary" onclick="saveCurrentLesson()"><i class="fas fa-check"></i>
+                                BUILD CONTENT</button>
+                        </div>
+                    </div>
 
-            <div id="welcomeState" style="text-align: center; padding: 100px 0; color: var(--text-muted);">
-                <i class="fas fa-compass" style="font-size: 4rem; margin-bottom: 24px; opacity: 0.2;"></i>
-                <h3 style="margin-bottom: 12px;">Welcome to Course Architect</h3>
-                <p>Start by naming your course or adding your first learning module on the left.</p>
+                    <div class="field-group">
+                        <label class="field-label">Lesson Header</label>
+                        <input type="text" class="premium-input" id="lTitle" placeholder="Enter lesson title...">
+                    </div>
+
+                    <div id="typeSelector">
+                        <label class="field-label">Add Intellectual Content</label>
+                        <div class="type-grid">
+                            <div class="type-card" onclick="initLessonType('video')"><i
+                                    class="fas fa-video"></i><span>Video Tutorial</span></div>
+                            <div class="type-card" onclick="initLessonType('reading')"><i
+                                    class="fas fa-book-open"></i><span>Deep Dive Article</span></div>
+                            <div class="type-card" onclick="initLessonType('coding')"><img
+                                    src="https://course.testpad.chitkara.edu.in/icons/playground.svg"
+                                    class="icon-svg large" style="margin: 0 auto 16px; display:block;"><span>Coding
+                                    Challenge</span></div>
+                            <div class="type-card" onclick="initLessonType('mcq')"><img
+                                    src="https://course.testpad.chitkara.edu.in/icons/quiz.svg" class="icon-svg large"
+                                    style="margin: 0 auto 16px; display:block;"><span>Multiple Choice</span></div>
+                            <div class="type-card" onclick="initLessonType('drawing')"><i
+                                    class="fas fa-paint-brush"></i><span>Drawing Board</span></div>
+                            <div class="type-card" onclick="initLessonType('assertion')"><i
+                                    class="fas fa-balance-scale"></i><span>Assertion Reason</span></div>
+                            <div class="type-card" onclick="initLessonType('diagram')"><i
+                                    class="fas fa-project-diagram"></i><span>Diagram Logic</span></div>
+                            <div class="type-card" onclick="initLessonType('quiz')"><i
+                                    class="fas fa-tasks"></i><span>Interactive Quiz</span></div>
+                        </div>
+                    </div>
+
+                    <div id="formContainer" style="margin-top: 40px;"></div>
+                </div>
             </div>
         </section>
     </main>
 
-    <div id="toast-container"></div>
-
-    <!-- Modals -->
-    <div id="promptModal" class="modal-overlay">
-        <div class="modal-content" style="max-width:400px; width:90%;">
-            <h3 class="modal-title" id="promptTitle" style="font-size:1.5rem; font-weight:800; margin-bottom:24px;">
-                Enter Information</h3>
-            <div class="form-group" style="margin-bottom:0;">
-                <input type="text" id="promptInput" class="input" placeholder="..."
-                    style="margin-bottom:20px; font-size:1.1rem; padding:16px;">
-                <button class="btn btn-primary" id="promptConfirmBtn"
-                    style="width:100%; padding:14px; font-weight:700; font-size:1rem;">Confirm</button>
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle" style="font-family: 'Outfit'; margin-bottom: 8px;">Modal Title</h3>
+            <p id="modalDesc" style="color: var(--text-secondary); margin-bottom: 24px; font-size: 0.9rem;">Description.
+            </p>
+            <div id="modalBody"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
+                <button class="btn btn-primary" onclick="publishCourse()">Publish Course</button>
+                <button class="btn btn-ghost" style="border:1px solid #ddd;" onclick="saveDraft()">Save Draft</button>
+                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
             </div>
         </div>
     </div>
+
+    <div id="toast-container"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="../js/db.js"></script>
     <script src="../js/auth.js"></script>
     <script>
-        // Init Monaco State
-        let editorPrefix, editorBoilerplate, editorSuffix;
+        let courseData = { title: '', summary: '', category: 'Engineering & Technology', modules: [] };
+        let currentModuleIndex = -1;
+        let currentLessonType = '';
+        let quillEditor = null;
+        let monacoEditors = {};
 
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' } });
-        require(['vs/editor/editor.main'], function () {
-            monaco.editor.defineTheme('grey-theme-monaco', {
-                base: 'vs',
-                inherit: true,
-                rules: [
-                    { token: 'comment', foreground: '008000', fontStyle: 'italic' },
-                    { token: 'keyword', foreground: '0000ff' },
-                    { token: 'string', foreground: 'a31515' },
-                    { token: 'identifier', foreground: '000000' }
-                ],
-                colors: {
-                    'editor.background': '#f5f5f5',
-                    'editorLineNumber.foreground': '#999999',
-                    'editor.lineHighlightBackground': '#eeeeee',
-                    'editor.selectionBackground': '#d0d0d0'
-                }
-            });
-
-            const commonConfig = {
-                language: 'python',
-                theme: 'grey-theme-monaco',
-                fontSize: 14,
-                fontFamily: 'JetBrains Mono',
-                automaticLayout: true,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-                renderLineHighlight: 'none',
-                scrollbar: { vertical: 'auto', horizontal: 'auto' }
-            };
-
-            editorPrefix = monaco.editor.create(document.getElementById('monaco-cPrefix'), {
-                ...commonConfig, value: "import sys\n\ndef main():\n    # Prefix code here"
-            });
-            editorBoilerplate = monaco.editor.create(document.getElementById('monaco-cBoilerplate'), {
-                ...commonConfig, value: "def solution():\n    # Student implementation"
-            });
-            editorSuffix = monaco.editor.create(document.getElementById('monaco-cSuffix'), {
-                ...commonConfig, value: "if __name__ == '__main__':\n    print(solution())"
-            });
-        });
-
-        // Custom Font & Size registration for Quill
-        const Font = Quill.import('attributors/style/font');
-        Font.whitelist = ['Inter', 'Outfit', 'Roboto', 'Arial', 'Times New Roman', 'Georgia', 'Garamond', 'Tex Gyre Schola', 'Century Schoolbook', 'JetBrains Mono'];
-        Quill.register(Font, true);
-
-        const Size = Quill.import('attributors/style/size');
-        Size.whitelist = ['10px', '12px', '13px', '14px', '16px', '18px', '20px', '22px', '24px', '28px', '32px', '36px', '48px', '64px'];
-        Quill.register(Size, true);
-
-        // Init Quills with Very Rich Toolbar
-        const richToolbar = [
-            [{ 'header': [1, 2, 3, false] }],
-            [{ 'font': Font.whitelist }, { 'size': Size.whitelist }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'align': [] }],
-            ['code-block', 'link', 'image'],
-            ['clean']
-        ];
-
-        const articleQuill = new Quill('#article-quill', {
-            theme: 'snow',
-            modules: { toolbar: richToolbar },
-            placeholder: 'Draft your premium reading material...'
-        });
-
-        articleQuill.on('text-change', () => {
-            const preview = document.getElementById('articlePreview');
-            preview.innerHTML = articleQuill.root.innerHTML;
-            if (!articleQuill.root.innerText.trim()) {
-                preview.innerHTML = `
-                    <div style="color: #999; text-align: center; margin-top: 100px;">
-                        <i class="fas fa-eye" style="font-size: 3rem; opacity: 0.2; margin-bottom: 20px;"></i>
-                        <p>Live preview will appear here as you type...</p>
-                    </div>`;
+        window.onload = () => {
+            const saved = localStorage.getItem('current_editing_course');
+            if (saved) {
+                courseData = JSON.parse(saved);
+                document.getElementById('courseTitle').value = courseData.title;
+                document.getElementById('courseSummary').value = courseData.summary;
+                document.getElementById('courseCategory').value = courseData.category;
+                renderCurriculum();
+            } else {
+                courseData.modules.push({ title: 'Introduction', lessons: [] });
+                renderCurriculum();
             }
-        });
-
-        const codingQuill = new Quill('#coding-quill', {
-            theme: 'snow',
-            modules: { toolbar: [richToolbar[0], richToolbar[2], richToolbar[6], richToolbar[7]] },
-            placeholder: 'Describe the coding challenge requirements...'
-        });
-
-        // Advanced Designer Helper Functions
-        function insertHero(quillTarget, type) {
-            const range = quillTarget.getSelection();
-            if (!range) return showToast('Click inside editor first', 'info');
-
-            let html = '';
-            switch (type) {
-                case 'h1':
-                    html = '<h1 style="color:var(--primary); border-left: 5px solid var(--primary); padding-left:15px; margin: 20px 0;">Premium Heading Title</h1>';
-                    break;
-                case 'button':
-                    html = '<a href="#" style="display:inline-block; background:var(--primary); color:#fff; padding:12px 30px; border-radius:30px; text-decoration:none; font-weight:700; box-shadow: 0 4px 15px rgba(217,45,32,0.3); margin: 10px 0;">ACTION BUTTON</a>';
-                    break;
-                case 'divider':
-                    html = '<hr style="border:none; height:1px; background:linear-gradient(to right, transparent, #eee, transparent); margin: 30px 0;">';
-                    break;
-            }
-            if (html) quillTarget.clipboard.dangerouslyPasteHTML(range.index, html);
-        }
-
-        if (!auth.isLoggedIn() || !auth.isTeacher()) {
-            window.location.replace('./login.html?role=teacher');
-        }
-
-        const user = auth.getCurrentUser();
-        const urlParams = new URLSearchParams(window.location.search);
-        const courseId = urlParams.get('id');
-
-        var currentCourse = {
-            title: '',
-            description: '',
-            modules: []
         };
-        var activeModuleIndex = -1;
 
-        function init() {
-            if (courseId) {
-                const existing = db.getCourseById(courseId);
-                if (existing) {
-                    currentCourse = existing;
+        function initMonaco() {
+            if (window.monacoLoaded) return;
+            window.monacoLoaded = true;
+
+            require.config({
+                paths: {
+                    'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs'
                 }
-            } else {
-                const draft = localStorage.getItem('exampad_course_draft');
-                if (draft) {
-                    try {
-                        const parsed = JSON.parse(draft);
-                        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-                            currentCourse = parsed;
-                        }
-                    } catch (e) { console.error("Invalid draft", e); }
-                }
-            }
-
-            if (!currentCourse.modules) currentCourse.modules = [];
-
-            // Always set these even if values are empty
-            document.getElementById('courseTitle').value = currentCourse.title || '';
-            document.getElementById('courseDesc').value = currentCourse.description || '';
-            renderModules();
-
-            if (currentCourse.modules.length > 0) {
-                openModule(0);
-            } else {
-                // Show welcome if no modules
-                document.getElementById('welcomeState').style.display = 'block';
-                document.getElementById('moduleEditor').style.display = 'none';
-            }
-        }
-
-        init();
-
-        function addModule() {
-            showPrompt("", "Enter Module Name:", (title) => {
-                const name = title?.trim();
-                if (!name) return;
-
-                if (!currentCourse) currentCourse = { title: '', description: '', modules: [] };
-                if (!currentCourse.modules) currentCourse.modules = [];
-                
-                currentCourse.modules.push({
-                    title: name,
-                    items: []
-                });
-                
-                renderModules();
-                openModule(currentCourse.modules.length - 1);
-                autosave();
-                showToast(`Module "${name}" created`, 'success');
             });
         }
 
-        function showPrompt(defaultValue, title, callback) {
-            const modal = document.getElementById('promptModal');
-            const input = document.getElementById('promptInput');
-            const confirmBtn = document.getElementById('promptConfirmBtn');
-            const titleEl = document.getElementById('promptTitle');
-
-            titleEl.textContent = title;
-            input.value = defaultValue || '';
-            modal.style.display = 'flex';
-
-            // Wait for display change before focus
-            setTimeout(() => input.focus(), 10);
-
-            const cleanup = () => {
-                closeModal('promptModal');
-                confirmBtn.removeEventListener('click', handleConfirm);
-                input.removeEventListener('keydown', handleKeyDown);
-            };
-
-            const handleConfirm = () => {
-                const val = input.value?.trim();
-                try {
-                    callback(val);
-                    cleanup();
-                } catch (e) {
-                    console.error("Prompt error:", e);
-                    showToast(`Error: ${e.message || "Request failed"}`, "danger");
-                    // We don't cleanup so the user can try again/fix input
-                }
-            };
-
-            const handleKeyDown = (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleConfirm();
-                } else if (e.key === 'Escape') {
-                    cleanup();
-                }
-            };
-
-            confirmBtn.addEventListener('click', handleConfirm);
-            input.addEventListener('keydown', handleKeyDown);
-        }
-
-        function autosave() {
-            if (!currentCourse) return;
-            const titleEl = document.getElementById('courseTitle');
-            const descEl = document.getElementById('courseDesc');
-            
-            currentCourse.title = titleEl ? titleEl.value : '';
-            currentCourse.description = descEl ? descEl.value : '';
-            localStorage.setItem('exampad_course_draft', JSON.stringify(currentCourse));
-        }
-
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) modal.style.display = 'none';
-        }
-
-        // Add event listeners for autosave
-        const titleInput = document.getElementById('courseTitle');
-        const descInput = document.getElementById('courseDesc');
-        if (titleInput) titleInput.addEventListener('input', autosave);
-        if (descInput) descInput.addEventListener('input', autosave);
-
-        function deleteModule(e, index) {
-            if (e) e.stopPropagation();
-            if (confirm("Permanently delete this module?")) {
-                if (currentCourse && currentCourse.modules) {
-                    currentCourse.modules.splice(index, 1);
-                    if (activeModuleIndex === index) {
-                        activeModuleIndex = -1;
-                        document.getElementById('moduleEditor').style.display = 'none';
-                        document.getElementById('welcomeState').style.display = 'block';
-                    } else if (activeModuleIndex > index) {
-                        activeModuleIndex--;
-                    }
-                    autosave();
-                    renderModules();
-                    showToast("Module removed", "success");
-                }
-            }
-        }
-
-        function renderModules() {
-            const list = document.getElementById('moduleList');
-            if (!list) return;
-
-            if (!currentCourse || !currentCourse.modules) return;
-
-            list.innerHTML = currentCourse.modules.map((m, i) => `
-                <div class="module-item ${i === activeModuleIndex ? 'active' : ''}" onclick="openModule(${i})">
-                    <div class="module-title" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:700;">${m.title || 'Untitled Module'}</span>
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <i class="fas fa-trash" style="font-size: 0.75rem; color: #999; cursor:pointer;" onclick="deleteModule(event, ${i})"></i>
-                            <i class="fas fa-chevron-right" style="font-size: 0.75rem; opacity: 0.5;"></i>
+        function renderCurriculum() {
+            const list = document.getElementById('curriculumList');
+            list.innerHTML = '';
+            courseData.modules.forEach((mod, mIdx) => {
+                const card = document.createElement('div');
+                card.className = `module-card ${currentModuleIndex === mIdx ? 'active' : ''}`;
+                card.innerHTML = `
+                    <div class="module-head" onclick="toggleModule(${mIdx})">
+                        <div class="module-info">
+                            <div class="module-index">${mIdx + 1}</div>
+                            <span class="module-title">${mod.title}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="delete-action" title="Delete Module" onclick="event.stopPropagation(); confirmDeleteModule(${mIdx})">
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                            <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: #ccc;"></i>
                         </div>
                     </div>
-                    <ul class="content-links" style="margin-top:8px;">
-                        ${(m.items || []).map(item => item ? `
-                            <li class="content-link" style="font-size:0.85rem; padding:4px 0;">
-                                <i class="fas ${getIcon(item.type)}" style="width:20px; opacity:0.6;"></i> ${item.title || 'Untitled Item'}
-                            </li>
-                        ` : '').join('')}
-                    </ul>
-                </div>
-            `).join('');
+                    <div class="lesson-list" style="display: ${currentModuleIndex === mIdx ? 'block' : 'none'}">
+                        ${mod.lessons.map((less, lIdx) => `
+                            <div class="lesson-item" onclick="editLesson(${mIdx}, ${lIdx})">
+                                ${getIcon(less.type)}
+                                <span>${less.title}</span>
+                                <div class="delete-action" title="Delete Lesson" onclick="event.stopPropagation(); deleteLesson(${mIdx}, ${lIdx})">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                        `).join('')}
+                        <div class="lesson-item" style="color: var(--primary); font-weight: 600;" onclick="startNewLesson(${mIdx})">
+                            <i class="fas fa-plus"></i><span>Add Content</span>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
         }
 
-        function getIcon(type) {
-            switch (type) {
-                case 'video': return 'fa-video';
-                case 'coding': return 'fa-code';
-                case 'quiz': return 'fa-tasks';
-                case 'article': return 'fa-file-alt';
-                default: return 'fa-circle';
+        function confirmDeleteModule(mIdx) {
+            if (confirm(`Confirm: Removal of module "${courseData.modules[mIdx].title}" will also delete all associated nested content.`)) {
+                courseData.modules.splice(mIdx, 1);
+                if (currentModuleIndex >= courseData.modules.length) {
+                    currentModuleIndex = -1;
+                    goBackToOverview();
+                }
+                renderCurriculum();
+                saveToLocal();
+                showToast("Module archived.");
             }
         }
 
-        function openModule(index) {
-            if (!currentCourse || !currentCourse.modules[index]) return;
-            activeModuleIndex = index;
-            
-            const welcome = document.getElementById('welcomeState');
-            const editor = document.getElementById('moduleEditor');
-            const titleEl = document.getElementById('editingModuleTitle');
-
-            if (welcome) welcome.style.display = 'none';
-            if (editor) editor.style.display = 'block';
-            if (titleEl) titleEl.textContent = `Module: ${currentCourse.modules[index].title}`;
-            
-            renderModules();
-            closeContentEditor();
-        }
-
-        function openContentEditor(type) {
-            closeContentEditor();
-            if (type === 'video') document.getElementById('formVideo').style.display = 'block';
-            if (type === 'coding') document.getElementById('formCoding').style.display = 'block';
-            if (type === 'quiz') document.getElementById('formQuiz').style.display = 'block';
-            if (type === 'article') document.getElementById('formArticle').style.display = 'block';
-        }
-
-        function closeContentEditor() {
-            document.querySelectorAll('.content-editor').forEach(f => f.style.display = 'none');
-        }
-
-        function setVType(el, type) {
-            document.querySelectorAll('.v-opt').forEach(o => o.classList.remove('active'));
-            el.classList.add('active');
-            const inputArea = document.getElementById('vSourceInput');
-            if (type === 'youtube') {
-                inputArea.innerHTML = `<label class="label">YouTube URL</label><input type="text" class="input" id="vUrl" placeholder="https://youtube.com/watch?v=...">`;
-            } else if (type === 'upload') {
-                inputArea.innerHTML = `<label class="label">Select Video File</label><input type="file" class="input">`;
-            } else {
-                inputArea.innerHTML = `<div id="recordInterface" style="background:#f0f0f0; height: 160px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i class="fas fa-video-slash"></i> [ Camera Interface Preview ]</div>`;
+        function deleteLesson(mIdx, lIdx) {
+            if (confirm("Permanently archive this content asset?")) {
+                courseData.modules[mIdx].lessons.splice(lIdx, 1);
+                renderCurriculum();
+                saveToLocal();
+                showToast("Content archived.");
             }
         }
 
-        function saveContent(type) {
-            if (activeModuleIndex === -1) return;
+        function deleteModule(mIdx) {
+            courseData.modules.splice(mIdx, 1);
+            if (currentModuleIndex === mIdx) {
+                goBackToOverview();
+            } else if (currentModuleIndex > mIdx) {
+                currentModuleIndex--;
+            }
+            saveToLocal();
+            renderCurriculum();
+            showToast("Module deleted");
+        }
 
-            let title = '';
-            let data = {};
+        function deleteLesson(mIdx, lIdx) {
+            const mod = courseData.modules[mIdx];
+            const less = mod.lessons[lIdx];
+            if (confirm(`Delete lesson "${less.title}"?`)) {
+                mod.lessons.splice(lIdx, 1);
+                saveToLocal();
+                renderCurriculum();
+                // If we were editing this lesson, go back
+                goBackToOverview();
+                showToast("Lesson deleted");
+            }
+        }
+
+        function getIcon(t) {
+            const map = {
+                video: '<i class="fas fa-play-circle"></i>',
+                reading: '<i class="fas fa-book-open"></i>',
+                coding: '<img src="https://course.testpad.chitkara.edu.in/icons/playground.svg" style="width:18px;height:18px;">',
+                mcq: '<img src="https://course.testpad.chitkara.edu.in/icons/quiz.svg" style="width:18px;height:18px;">',
+                drawing: '<i class="fas fa-paint-brush"></i>',
+                assertion: '<i class="fas fa-balance-scale"></i>',
+                diagram: '<i class="fas fa-project-diagram"></i>',
+                quiz: '<i class="fas fa-tasks"></i>'
+            };
+            return map[t] || '<i class="fas fa-circle"></i>';
+        }
+
+        function toggleModule(idx) {
+            currentModuleIndex = currentModuleIndex === idx ? -1 : idx;
+            renderCurriculum();
+        }
+
+        function addNewModule() {
+            showPrompt("New Module", "Enter module title:", "e.g. Fundamentals", (t) => {
+                courseData.modules.push({ title: t, lessons: [] });
+                renderCurriculum();
+                saveToLocal();
+            });
+        }
+
+        function startNewLesson(mIdx) {
+            currentModuleIndex = mIdx;
+            document.getElementById('welcomeState').style.display = 'none';
+            document.getElementById('lessonEditor').style.display = 'block';
+            document.getElementById('typeSelector').style.display = 'block';
+            document.getElementById('formContainer').innerHTML = '';
+            document.getElementById('lTitle').value = '';
+        }
+
+        let inlineMonacoEditors = {};
+        let activeQuills = {};
+
+        function destroyQuills() {
+            Object.values(activeQuills).forEach(q => {
+                try { q.disable(); } catch (e) { }
+            });
+            activeQuills = {};
+        }
+
+        function initLessonType(type) {
+            destroyQuills();
+            currentLessonType = type;
+            document.getElementById('typeSelector').style.display = 'none';
+            const container = document.getElementById('formContainer');
+            container.innerHTML = '';
 
             if (type === 'video') {
-                title = document.getElementById('vTitle').value;
-                const vUrlInput = document.getElementById('vUrl');
-                data = {
-                    source: 'external',
-                    url: vUrlInput ? vUrlInput.value : '',
-                    transcript: document.getElementById('vTranscript').value
-                };
+                container.innerHTML = `
+                    <div class="field-group"><label class="field-label">Video URL</label><input type="text" id="vUrl" class="standard-input" placeholder="YouTube or direct link..."></div>
+                    <div class="field-group"><label class="field-label">Notes</label><div id="q-video" style="height:300px"></div></div>
+                `;
+                setTimeout(() => initQuill('q-video'), 50);
+            } else if (type === 'reading') {
+                container.innerHTML = `<div class="field-group"><label class="field-label">Article</label><div id="q-read" style="height:600px"></div></div>`;
+                setTimeout(() => initQuill('q-read'), 50);
             } else if (type === 'coding') {
-                title = document.getElementById('cTitle').value;
-                data = {
-                    difficulty: document.getElementById('cDiff').value,
-                    problemStatement: codingQuill.root.innerHTML,
-                    prefix: editorPrefix ? editorPrefix.getValue() : '',
-                    boilerplate: editorBoilerplate ? editorBoilerplate.getValue() : '',
-                    suffix: editorSuffix ? editorSuffix.getValue() : ''
-                };
-            } else if (type === 'article') {
-                title = document.getElementById('aTitle').value;
-                const pdfInput = document.getElementById('aPdfUrl');
-                const timeInput = document.getElementById('aMinTime');
-                data = {
-                    body: articleQuill.root.innerHTML,
-                    pdfUrl: pdfInput ? pdfInput.value : '',
-                    minTime: timeInput ? timeInput.value : '5'
-                };
+                container.innerHTML = `
+                    <div class="split-builder">
+                        <!-- Left: Problem Statement -->
+                        <div class="builder-left">
+                            <div class="field-group">
+                                <label class="field-label" style="display:flex; justify-content:space-between; align-items:center;">
+                                    Problem Statement
+                                    <span style="font-size:0.7rem; color:var(--primary); font-weight:700;">QUILL EDITOR ACTIVE</span>
+                                </label>
+                                <div id="q-code" class="editor-workspace"></div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Logic & Code Templates -->
+                        <div class="builder-right">
+                            <div class="field-group">
+                                <label class="field-label">Configure Logic</label>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                    <span style="font-size:0.8rem; color:#666;">Allowed Languages</span>
+                                    <button class="btn btn-ghost" style="font-size:0.7rem;" onclick="toggleAllLangs()">Select All</button>
+                                </div>
+                                <div class="type-grid" id="langSelectorGrid" style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); margin-top:0;"></div>
+                            </div>
+
+                            <div id="languageCodeTemplates" style="margin-top:24px;"></div>
+
+                            <div class="field-group" style="margin-top:32px; border-top:1px dashed #ddd; padding-top:24px;">
+                                <label class="field-label">Validation Suite</label>
+                                <div id="testCasesContainer"></div>
+                                <button class="btn btn-ghost" style="width:100%; border:1px dashed #ddd; background:#fff;" onclick="addTestCaseRow()">+ ADD TEST CASE</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    initQuill('q-code');
+                    initMonaco();
+                    populateLanguages();
+                    addTestCaseRow('// Input', '// Output', 20, true);
+                }, 50);
+            } else if (type === 'assertion') {
+                container.innerHTML = `
+                    <div class="field-group">
+                        <label class="field-label">Assertion (Statement A)</label>
+                        <div id="q-assertion" class="editor-workspace" style="height:150px"></div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Reason (Statement R)</label>
+                        <div id="q-reason" class="editor-workspace" style="height:150px"></div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Answer Pattern</label>
+                        <select id="arAns" class="standard-input">
+                            <option value="1">Both A & R true, R is correct explanation</option>
+                            <option value="2">Both true, R not correct explanation</option>
+                            <option value="3">A is true, R is false</option>
+                            <option value="4">A is false, R is true</option>
+                        </select>
+                    </div>
+                `;
+                setTimeout(() => {
+                    initQuill('q-assertion');
+                    initQuill('q-reason');
+                }, 50);
+            } else if (type === 'diagram') {
+                container.innerHTML = `
+                    <div class="field-group"><label class="field-label">Reference Image URL</label><input type="text" id="diagUrl" class="standard-input" placeholder="https://..."></div>
+                    <label class="field-label">Question Text</label>
+                    <div id="q-diag" class="editor-workspace" style="height:200px"></div>
+                    <div id="diagOptions" style="margin-top:20px; display:flex; flex-direction:column; gap:16px;"></div>
+                    <button class="btn btn-ghost" style="width:100%; border:1px dashed #ddd; margin-top:12px;" onclick="addDiagOpt()">+ Add Option</button>
+                `;
+                setTimeout(() => initQuill('q-diag'), 50);
+                addDiagOpt(); addDiagOpt();
+            } else if (type === 'mcq') {
+                container.innerHTML = `
+                    <div class="field-group">
+                        <label class="field-label">Question Text</label>
+                        <div id="q-mcq" class="editor-workspace" style="height:250px"></div>
+                    </div>
+                    <div id="mcqOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
+                    <button class="btn btn-ghost" style="width:100%; border:1px dashed #ddd; margin-top:12px;" onclick="addMcqOpt()">+ Add Option</button>
+                `;
+                setTimeout(() => initQuill('q-mcq'), 50);
+                addMcqOpt(); addMcqOpt(); addMcqOpt(); addMcqOpt();
+            } else if (type === 'drawing') {
+                container.innerHTML = `
+                    <div class="field-group">
+                        <label class="field-label">Instruction / Problem Statement</label>
+                        <div id="drawing-editor" class="editor-workspace"></div>
+                    </div>
+                `;
+                setTimeout(() => initQuill('drawing-editor'), 50);
+            } else if (type === 'quiz') {
+                container.innerHTML = `
+                    <div class="field-group">
+                        <label class="field-label">Quiz Question</label>
+                        <div id="q-quiz" class="editor-workspace" style="height:200px"></div>
+                    </div>
+                    <div id="quizOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
+                    <button class="btn btn-ghost" style="width:100%; border:1px dashed #ddd; margin-top:12px;" onclick="addQuizOpt()">+ Add Option</button>
+                `;
+                setTimeout(() => initQuill('q-quiz'), 50);
+                addQuizOpt(); addQuizOpt();
             }
+        }
 
-            if (!title) return showToast("Please enter a title", "error");
+        function addMcqOpt() {
+            const id = 'opt_' + Math.random().toString(36).substr(2, 9);
+            const div = document.createElement('div');
+            div.className = 'mcq-option';
+            div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="opt-check" onclick="setMcqCorrect(this)"></div>
+                        <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
+                    </div>
+                    <i class="fas fa-trash" style="color:#F04438; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                </div>
+                <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+            `;
+            document.getElementById('mcqOptions').appendChild(div);
+            setTimeout(() => initQuill(id), 50);
+        }
 
-            currentCourse.modules[activeModuleIndex].items.push({
-                id: 'item_' + Date.now(),
-                type: type,
-                title: title,
-                data: data
+        function setMcqCorrect(el) {
+            document.querySelectorAll('#mcqOptions .mcq-option').forEach(o => o.classList.remove('correct'));
+            el.parentElement.parentElement.parentElement.classList.add('correct');
+        }
+
+        function applyCodingTemplate() {
+            const langs = Array.from(document.querySelectorAll('#langSelectorGrid input:checked')).map(c => c.value);
+            if (langs.length === 0) return showToast("Select languages first");
+
+            const templates = {
+                python: {
+                    prefix: "# Import necessary modules\nimport math\n",
+                    middle: "def solution(n):\n    # Write your logic here\n    return n\n",
+                    suffix: "# Test Execution\nif __name__ == '__main__':\n    import sys\n    input_val = sys.stdin.read().strip()\n    print(solution(int(input_val)))\n"
+                },
+                javascript: {
+                    prefix: "// Global utilities\nconst _ = require('lodash');\n",
+                    middle: "function solution(n) {\n    // Write your logic here\n    return n;\n}\n",
+                    suffix: "// Execution logic\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8').trim();\nconsole.log(solution(parseInt(input)));\n"
+                },
+                cpp: {
+                    prefix: "#include <iostream>\n#include <vector>\nusing namespace std;\n",
+                    middle: "int solution(int n) {\n    // Write your code here\n    return n;\n}\n",
+                    suffix: "int main() {\n    int n;\n    cin >> n;\n    cout << solution(n) << endl;\n    return 0;\n}\n"
+                },
+                java: {
+                    prefix: "import java.util.*;\n",
+                    middle: "class Solution {\n    public int solve(int n) {\n        // Your code here\n        return n;\n    }\n}\n",
+                    suffix: "public class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        System.out.println(new Solution().solve(n));\n    }\n}\n"
+                }
+            };
+
+            langs.forEach(l => {
+                const t = templates[l];
+                if (t && inlineMonacoEditors[`prefix_${l}`]) {
+                    inlineMonacoEditors[`prefix_${l}`].setValue(t.prefix);
+                    inlineMonacoEditors[`middle_${l}`].setValue(t.middle);
+                    inlineMonacoEditors[`suffix_${l}`].setValue(t.suffix);
+                }
+            });
+            showToast("Boilerplate templates applied!");
+        }
+
+        function populateLanguages() {
+            const grid = document.getElementById('langSelectorGrid');
+            if (!grid) {
+                console.error("Language Grid not found in DOM!");
+                return;
+            }
+            const langs = [{ id: 'python', name: 'Python' }, { id: 'javascript', name: 'JavaScript' }, { id: 'java', name: 'Java' }, { id: 'cpp', name: 'C++' }];
+            grid.innerHTML = langs.map(l => `
+                <label class="lang-check" style="min-width:120px; border:1px solid #ddd; background:#fff; padding:12px; border-radius:8px; display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" value="${l.id}" onchange="updateLanguages()" style="width:18px; height:18px;">
+                    <span style="font-weight:700;">${l.name}</span>
+                </label>
+            `).join('');
+            console.log("Languages Populated");
+        }
+
+        function toggleAllLangs() {
+            const checks = document.querySelectorAll('#langSelectorGrid input');
+            const anyUnchecked = Array.from(checks).some(c => !c.checked);
+            checks.forEach(c => c.checked = anyUnchecked);
+            updateLanguages();
+        }
+
+        function updateLanguages(savedCodes = null) {
+            const langs = Array.from(document.querySelectorAll('#langSelectorGrid input:checked')).map(c => c.value);
+            const container = document.getElementById('languageCodeTemplates');
+
+            // Dispose existing
+            Object.values(inlineMonacoEditors).forEach(ed => ed.dispose());
+            inlineMonacoEditors = {};
+
+            container.innerHTML = langs.map(l => `
+                <div class="code-workspace-block">
+                    <div class="workspace-lang-title">${l.toUpperCase()} WORKSPACE</div>
+                    <div class="code-sub-container">
+                        <div class="code-header-row"><span class="code-label-main">HEADER (HIDDEN)</span></div>
+                        <div id="prefix_${l}" class="monaco-inline-wrapper" style="height:100px;"></div>
+                    </div>
+                    <div class="code-sub-container" style="margin-top:16px;">
+                        <div class="code-header-row"><span class="code-label-main">STUDENT TEMPLATE</span></div>
+                        <div id="middle_${l}" class="monaco-inline-wrapper" style="height:200px;"></div>
+                    </div>
+                    <div class="code-sub-container" style="margin-top:16px;">
+                        <div class="code-header-row"><span class="code-label-main">FOOTER (READ-ONLY)</span></div>
+                        <div id="suffix_${l}" class="monaco-inline-wrapper" style="height:100px;"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            langs.forEach(l => {
+                const code = savedCodes ? savedCodes[l] : null;
+                initMonacoInline(`prefix_${l}`, l, code ? code.prefix : '// Setup...');
+                initMonacoInline(`middle_${l}`, l, code ? code.middle : '// Your code here...');
+                initMonacoInline(`suffix_${l}`, l, code ? code.suffix : '// Execution...');
+            });
+        }
+
+        function initMonacoInline(id, lang, val) {
+            require(['vs/editor/editor.main'], () => {
+                inlineMonacoEditors[id] = monaco.editor.create(document.getElementById(id), {
+                    value: val,
+                    language: lang === 'cpp' ? 'cpp' : (lang === 'python' ? 'python' : 'javascript'),
+                    theme: 'vs-light',
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    fontSize: 13
+                });
+            });
+        }
+
+        function addTestCaseRow(input = '', output = '', marks = 20, isSample = false) {
+            const container = document.getElementById('testCasesContainer');
+            const div = document.createElement('div');
+            div.className = 'test-case-card';
+            div.innerHTML = `
+                <span class="remove-case" onclick="this.parentElement.remove()">&times;</span>
+                <div class="test-case-input-group">
+                    <label class="field-label" style="color:#666;">SAMPLE INPUT</label>
+                    <textarea class="standard-input t-input" style="font-family:'JetBrains Mono'; height:80px;">${input}</textarea>
+                </div>
+                <div class="test-case-input-group">
+                    <label class="field-label" style="color:#666;">EXPECTED OUTPUT</label>
+                    <textarea class="standard-input t-output" style="font-family:'JetBrains Mono'; height:80px;">${output}</textarea>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <input type="number" class="standard-input t-marks" value="${marks}" style="width:100px;" placeholder="Marks">
+                    <label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; cursor:pointer;">
+                        <input type="checkbox" class="t-sample" ${isSample ? 'checked' : ''}> Mark as Sample
+                    </label>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function addDiagOpt() {
+            const id = 'opt_diag_' + Math.random().toString(36).substr(2, 9);
+            const div = document.createElement('div');
+            div.className = 'mcq-option';
+            div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="opt-check" onclick="setDiagCorrect(this)"></div>
+                        <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
+                    </div>
+                    <i class="fas fa-trash" style="color:#F04438; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                </div>
+                <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+            `;
+            document.getElementById('diagOptions').appendChild(div);
+            setTimeout(() => initQuill(id), 50);
+        }
+
+        function setDiagCorrect(el) {
+            document.querySelectorAll('#diagOptions .mcq-option').forEach(o => o.classList.remove('correct'));
+            el.parentElement.parentElement.parentElement.classList.add('correct');
+        }
+
+        function addQuizOpt() {
+            const id = 'opt_quiz_' + Math.random().toString(36).substr(2, 9);
+            const div = document.createElement('div');
+            div.className = 'mcq-option';
+            div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="opt-check" onclick="setQuizCorrect(this)"></div>
+                        <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
+                    </div>
+                    <i class="fas fa-trash" style="color:#F04438; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                </div>
+                <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+            `;
+            document.getElementById('quizOptions').appendChild(div);
+            setTimeout(() => initQuill(id), 50);
+        }
+
+        function setQuizCorrect(el) {
+            document.querySelectorAll('#quizOptions .mcq-option').forEach(o => o.classList.remove('correct'));
+            el.parentElement.parentElement.parentElement.classList.add('correct');
+        }
+
+        function initQuill(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            activeQuills[id] = new Quill('#' + id, {
+                theme: 'snow',
+                placeholder: 'Craft your content here...',
+                modules: {
+                    toolbar: [
+                        [{ header: [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        ['link', 'image', 'code-block'],
+                        ['clean']
+                    ]
+                }
             });
 
-            showToast(`${type.toUpperCase()} added to curriculum!`, "success");
-            renderModules();
-            closeContentEditor();
-            autosave();
+            const editor = el.querySelector('.ql-editor');
+            if (editor) {
+                editor.style.minHeight = el.style.height || '150px';
+            }
+        }
+
+        function editLesson(mIdx, lIdx) {
+            const less = courseData.modules[mIdx].lessons[lIdx];
+            currentModuleIndex = mIdx;
+            startNewLesson(mIdx);
+            document.getElementById('lTitle').value = less.title;
+            initLessonType(less.type);
+
+            // Polling to ensure Quill is ready
+            const setContent = (id, content) => {
+                const wait = setInterval(() => {
+                    if (activeQuills[id]) {
+                        activeQuills[id].root.innerHTML = content;
+                        clearInterval(wait);
+                    }
+                }, 50);
+                setTimeout(() => clearInterval(wait), 2000); // Guard
+            };
+
+            if (less.type === 'video') {
+                document.getElementById('vUrl').value = less.data.url || '';
+                setContent('q-video', less.data.notes || '');
+            } else if (less.type === 'reading') {
+                setContent('q-read', less.data.content || '');
+            } else if (less.type === 'coding') {
+                setContent('q-code', less.data.description || '');
+                const checks = document.querySelectorAll('#langSelectorGrid input');
+                checks.forEach(c => c.checked = less.data.languages?.includes(c.value));
+                updateLanguages(less.data.code);
+                document.getElementById('testCasesContainer').innerHTML = '';
+                (less.data.testCases || []).forEach(tc => addTestCaseRow(tc.input, tc.output, tc.marks, tc.isSample));
+            } else if (less.type === 'assertion') {
+                setContent('q-assertion', less.data.assertion || '');
+                setContent('q-reason', less.data.reason || '');
+                document.getElementById('arAns').value = less.data.correct || '1';
+            } else if (less.type === 'mcq') {
+                setContent('q-mcq', less.data.question || '');
+                document.getElementById('mcqOptions').innerHTML = '';
+                (less.data.options || []).forEach(o => {
+                    const optId = 'opt_' + Math.random().toString(36).substr(2, 9);
+                    const div = document.createElement('div');
+                    div.className = `mcq-option ${o === less.data.correct ? 'correct' : ''}`;
+                    div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="opt-check" onclick="setMcqCorrect(this)"></div>
+                                <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
+                            </div>
+                            <i class="fas fa-trash" style="color:#F04438; cursor:pointer; font-size:0.9rem;" onclick="this.parentElement.parentElement.remove()"></i>
+                        </div>
+                        <div id="${optId}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+                    `;
+                    document.getElementById('mcqOptions').appendChild(div);
+                    setTimeout(() => {
+                        initQuill(optId);
+                        setContent(optId, o);
+                    }, 50);
+                });
+            } else if (less.type === 'drawing') {
+                setContent('drawing-editor', less.data.instruction || '');
+            } else if (less.type === 'diagram') {
+                document.getElementById('diagUrl').value = less.data.url || '';
+                setContent('q-diag', less.data.desc || '');
+                document.getElementById('diagOptions').innerHTML = '';
+                (less.data.options || []).forEach(o => {
+                    const optId = 'opt_diag_' + Math.random().toString(36).substr(2, 9);
+                    const div = document.createElement('div');
+                    div.className = `mcq-option ${o === less.data.correct ? 'correct' : ''}`;
+                    div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="opt-check" onclick="setDiagCorrect(this)"></div>
+                                <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
+                            </div>
+                            <i class="fas fa-trash" style="color:#F04438; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                        </div>
+                        <div id="${optId}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+                    `;
+                    document.getElementById('diagOptions').appendChild(div);
+                    setTimeout(() => {
+                        initQuill(optId);
+                        setContent(optId, o);
+                    }, 50);
+                });
+            } else if (less.type === 'quiz') {
+                setContent('q-quiz', less.data.question || '');
+                document.getElementById('quizOptions').innerHTML = '';
+                (less.data.options || []).forEach(o => {
+                    const optId = 'opt_quiz_' + Math.random().toString(36).substr(2, 9);
+                    const div = document.createElement('div');
+                    div.className = `mcq-option ${o === less.data.correct ? 'correct' : ''}`;
+                    div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="opt-check" onclick="setQuizCorrect(this)"></div>
+                                <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
+                            </div>
+                            <i class="fas fa-trash" style="color:#F04438; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                        </div>
+                        <div id="${optId}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+                    `;
+                    document.getElementById('quizOptions').appendChild(div);
+                    setTimeout(() => {
+                        initQuill(optId);
+                        setContent(optId, o);
+                    }, 50);
+                });
+            }
+        }
+
+        function saveCurrentLesson() {
+            const title = document.getElementById('lTitle').value;
+            if (!title) return showToast("Enter title");
+
+            const lesson = { id: 'less_' + Date.now(), title, type: currentLessonType, data: {} };
+
+            if (currentLessonType === 'video') {
+                lesson.data.url = document.getElementById('vUrl').value;
+                lesson.data.notes = activeQuills['q-video'] ? activeQuills['q-video'].root.innerHTML : '';
+            } else if (currentLessonType === 'reading') {
+                lesson.data.content = activeQuills['q-read'] ? activeQuills['q-read'].root.innerHTML : '';
+            } else if (currentLessonType === 'coding') {
+                lesson.data.description = activeQuills['q-code'] ? activeQuills['q-code'].root.innerHTML : '';
+                lesson.data.languages = Array.from(document.querySelectorAll('#langSelectorGrid input:checked')).map(c => c.value);
+                lesson.data.code = {};
+                lesson.data.languages.forEach(l => {
+                    lesson.data.code[l] = {
+                        prefix: inlineMonacoEditors[`prefix_${l}`].getValue(),
+                        middle: inlineMonacoEditors[`middle_${l}`].getValue(),
+                        suffix: inlineMonacoEditors[`suffix_${l}`].getValue()
+                    };
+                });
+                lesson.data.testCases = Array.from(document.querySelectorAll('.test-case-card')).map(card => ({
+                    input: card.querySelector('.t-input').value,
+                    output: card.querySelector('.t-output').value,
+                    marks: parseInt(card.querySelector('.t-marks').value) || 0,
+                    isSample: card.querySelector('.t-sample').checked
+                }));
+            } else if (currentLessonType === 'assertion') {
+                lesson.data.assertion = activeQuills['q-assertion'] ? activeQuills['q-assertion'].root.innerHTML : '';
+                lesson.data.reason = activeQuills['q-reason'] ? activeQuills['q-reason'].root.innerHTML : '';
+                lesson.data.correct = document.getElementById('arAns').value;
+                lesson.data.desc = "Choose the correct option based on the Assertion and Reason provided:";
+            } else if (currentLessonType === 'mcq') {
+                lesson.data.question = activeQuills['q-mcq'] ? activeQuills['q-mcq'].root.innerHTML : '';
+                lesson.data.options = [];
+                document.querySelectorAll('#mcqOptions .mcq-option').forEach(node => {
+                    const editorId = node.querySelector('.editor-workspace').id;
+                    if (activeQuills[editorId]) {
+                        lesson.data.options.push(activeQuills[editorId].root.innerHTML);
+                    }
+                });
+                const correctEl = document.querySelector('#mcqOptions .mcq-option.correct');
+                if (correctEl) {
+                    const edId = correctEl.querySelector('.editor-workspace').id;
+                    lesson.data.correct = activeQuills[edId].root.innerHTML;
+                } else {
+                    lesson.data.correct = lesson.data.options[0];
+                }
+            } else if (currentLessonType === 'diagram') {
+                lesson.data.url = document.getElementById('diagUrl').value;
+                lesson.data.desc = activeQuills['q-diag'] ? activeQuills['q-diag'].root.innerHTML : '';
+                lesson.data.options = [];
+                document.querySelectorAll('#diagOptions .mcq-option').forEach(node => {
+                    const editorId = node.querySelector('.editor-workspace').id;
+                    if (activeQuills[editorId]) {
+                        lesson.data.options.push(activeQuills[editorId].root.innerHTML);
+                    }
+                });
+                const correctEl = document.querySelector('#diagOptions .mcq-option.correct');
+                if (correctEl) {
+                    const edId = correctEl.querySelector('.editor-workspace').id;
+                    lesson.data.correct = activeQuills[edId].root.innerHTML;
+                } else {
+                    lesson.data.correct = lesson.data.options[0];
+                }
+            } else if (currentLessonType === 'quiz') {
+                lesson.data.question = activeQuills['q-quiz'] ? activeQuills['q-quiz'].root.innerHTML : '';
+                lesson.data.options = [];
+                document.querySelectorAll('#quizOptions .mcq-option').forEach(node => {
+                    const editorId = node.querySelector('.editor-workspace').id;
+                    if (activeQuills[editorId]) {
+                        lesson.data.options.push(activeQuills[editorId].root.innerHTML);
+                    }
+                });
+                const correctEl = document.querySelector('#quizOptions .mcq-option.correct');
+                if (correctEl) {
+                    const edId = correctEl.querySelector('.editor-workspace').id;
+                    lesson.data.correct = activeQuills[edId].root.innerHTML;
+                } else {
+                    lesson.data.correct = lesson.data.options[0];
+                }
+            }
+
+            // Check if editing
+            const mod = courseData.modules[currentModuleIndex];
+            const existingIdx = mod.lessons.findIndex(l => l.title === title);
+            if (existingIdx !== -1) mod.lessons[existingIdx] = lesson;
+            else mod.lessons.push(lesson);
+
+            saveToLocal();
+            renderCurriculum();
+            goBackToOverview();
+            showToast("Lesson built!");
+        }
+
+        function goBackToOverview() {
+            document.getElementById('lessonEditor').style.display = 'none';
+            document.getElementById('welcomeState').style.display = 'block';
+            currentModuleIndex = -1;
+            renderCurriculum();
+        }
+
+        function saveToLocal() {
+            courseData.title = document.getElementById('courseTitle').value;
+            courseData.summary = document.getElementById('courseSummary').value;
+            courseData.category = document.getElementById('courseCategory').value;
+            localStorage.setItem('current_editing_course', JSON.stringify(courseData));
         }
 
         function publishCourse() {
-            currentCourse.title = document.getElementById('courseTitle').value;
-            currentCourse.description = document.getElementById('courseDesc').value;
-
-            if (!currentCourse.title) return showToast("Course title required", "error");
-            if (currentCourse.modules.length === 0) return showToast("Add at least one module", "error");
-
-            if (courseId) {
-                db.updateCourse(courseId, currentCourse);
-                showToast("Course updated successfully!", "success");
-            } else {
-                db.createCourse(currentCourse, user.id);
-                showToast("Course published successfully!", "success");
-            }
-            setTimeout(() => window.location.href = './teacher-dashboard.html', 1500);
+            if (!courseData.title) return showToast("Enter course title");
+            courseData.status = 'published';
+            saveToDB();
         }
 
-        function saveCourse() {
-            currentCourse.title = document.getElementById('courseTitle').value || 'Untitled Course';
-            currentCourse.description = document.getElementById('courseDesc').value || '';
-            currentCourse.status = 'draft';
+        function saveDraft() {
+            if (!courseData.title) return showToast("Enter course title");
+            courseData.status = 'draft';
+            saveToDB();
+        }
 
-            if (courseId) {
-                db.updateCourse(courseId, currentCourse);
-                showToast("Course draft updated!", "success");
+        function saveToDB() {
+            showProcessing();
+            setTimeout(() => {
+                const user = auth.getCurrentUser();
+                // Check if updating
+                const urlParams = new URLSearchParams(window.location.search);
+                const editingId = urlParams.get('id');
+
+                if (editingId) {
+                    db.updateCourse(editingId, courseData);
+                } else {
+                    db.createCourse(courseData, user.id);
+                }
+
+                hideLoader();
+                showSuccessModal(courseData.status === 'draft' ? "DRAFT SAVED" : "COURSE DEPLOYED");
+                localStorage.removeItem('current_editing_course');
+            }, 1000);
+        }
+
+        function showProcessing() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('modalTitle').innerText = "Processing Curriculum...";
+            document.getElementById('modalDesc').innerText = "Syncing with the global network.";
+            document.getElementById('modalBody').innerHTML = `<div style="text-align:center; padding:20px;"><i class="fas fa-circle-notch fa-spin" style="font-size:2rem; color:var(--primary);"></i></div>`;
+        }
+
+        function hideLoader() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        function showSuccessModal(title) {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = title.includes('SAVED') ? "Your draft has been securely stored." : "Your curriculum is now live and available for enrollment.";
+            document.getElementById('modalBody').innerHTML = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; border:1px solid #eee; text-align:center; font-weight:700; color:var(--primary);">${courseData.title}</div>`;
+            const btn = document.getElementById('modalConfirmBtn');
+            if (btn) {
+                btn.style.display = 'block';
+                btn.innerText = "Return to Dashboard";
+                btn.onclick = () => location.href = './teacher-dashboard.html';
             } else {
-                const newCourse = db.createCourse(currentCourse, user.id);
-                // Redirect to the new ID so further saves are updates
-                window.location.href = `./course-creator.html?id=${newCourse.id}`;
+                // If it's the prompt modal body replacement, we might need to recreate a button or just use the cancel button
+                document.getElementById('modalConfirmBtn')?.remove();
+                const footer = document.querySelector('.modal-footer');
+                footer.innerHTML = `<button class="btn btn-primary" onclick="location.href='./teacher-dashboard.html'">Return to Dashboard</button>`;
             }
         }
 
-        function showToast(msg, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            const color = (type === 'success') ? '#22c55e' : (type === 'error' || type === 'danger' ? '#ef4444' : '#3b82f6');
-            toast.style.borderLeft = `4px solid ${color}`;
-            toast.innerHTML = `<span>${msg}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+        function showPrompt(title, desc, placeholder, onConfirm) {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.classList.add('active');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('modalBody').innerHTML = `<input type="text" id="promptInput" class="standard-input" placeholder="${placeholder}">`;
+            const btn = document.getElementById('modalConfirmBtn');
+            btn.style.display = 'block';
+            btn.innerText = "Confirm";
+            btn.onclick = () => {
+                const val = document.getElementById('promptInput').value;
+                if (val) {
+                    onConfirm(val);
+                    closeModal();
+                }
+            };
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        function showToast(m) {
+            const c = document.getElementById('toast-container');
+            const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<i class="fas fa-check-circle"></i> ${m}`;
+            c.appendChild(t); setTimeout(() => t.remove(), 3000);
         }
     </script>
 </body>

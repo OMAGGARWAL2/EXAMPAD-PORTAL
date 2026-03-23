@@ -820,40 +820,110 @@
             color: #e5e7eb;
         }
 
-        /* Language Selector */
+        /* Language Selector Premium Styles */
         .language-selector {
             padding: 0.75rem 1.5rem;
-            background: #F8FAFC;
-            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            border-bottom: 1px solid #E2E8F0;
             display: flex;
             align-items: center;
             gap: 1.25rem;
+            height: 72px;
+            position: relative;
+            z-index: 1100;
         }
 
-        .language-selector label {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+        .custom-language-selector {
+            position: relative;
+            user-select: none;
+            min-width: 140px;
+            font-family: 'Open Sans', sans-serif;
+            z-index: 1000;
+        }
+
+        .selector-box {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .language-selector label i {
-            color: var(--accent-color);
-        }
-
-        .language-select {
-            padding: 0.5rem 1rem;
-            border: 1px solid #E2E8F0;
-            border-radius: 10px;
-            background: white;
-            color: var(--text-primary);
-            font-weight: 600;
+            justify-content: space-between;
+            padding: 0 16px;
+            background: #fff;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            height: 48px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
+        .selector-box:hover {
+            border-color: #cbd5e1;
+            background: #fcfcfc;
+        }
+
+        .selector-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .selector-arrow {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 7px solid #64748b;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .custom-language-selector:not(.open) .selector-arrow {
+            transform: rotate(180deg);
+        }
+
+        .custom-language-selector.open .selector-arrow {
+            transform: rotate(0deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 220px;
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 10000;
+            overflow: hidden;
+            padding: 6px 0;
+            animation: dropdownFadeIn 0.2s ease-out;
+        }
+
+        @keyframes dropdownFadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .custom-language-selector.open .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            color: #334155;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .dropdown-item:hover {
+            background: #f1f5f9;
+        }
+
+        .dropdown-item.active {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 600;
         }
 
         .language-select:focus {
@@ -1411,38 +1481,18 @@
             </div>
 
             <div class="language-selector">
-                <label><i class="fas fa-language"></i> Language:</label>
-                <input id="languageSelect" type="hidden" value="java">
-                <div id="customLangSelect" class="card"
-                    style="display:flex; align-items:center; gap:.5rem; padding:.5rem 1rem; position:relative;">
-                    <div id="langCurrent" style="display:flex; align-items:center; gap:.5rem; cursor:pointer;"
-                        onclick="uiManager.toggleLangDropdown()">
-                        <span id="langIcon">☕</span><span id="langLabel">Java</span><i class="fas fa-chevron-down"
-                            style="color:#6b7280; margin-left:.4rem"></i>
+                <div class="custom-language-selector" id="customLanguageSelector">
+                    <div class="selector-box" onclick="uiManager.toggleLangDropdown()">
+                        <span class="selector-text" id="langLabel">Java</span>
+                        <div class="selector-arrow"></div>
                     </div>
-                    <div id="langDropdown" class="card"
-                        style="position:absolute; top:48px; left:0; width:320px; display:none; padding:.5rem; z-index: 10000; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
-                        <input id="langSearch" type="text" class="language-select" placeholder="Search language..."
-                            oninput="uiManager.filterLang()"
-                            style="width:100%; margin-bottom:.5rem; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem;">
-                        <div style="max-height:260px; overflow:auto;">
-                            <div
-                                style="font-weight:700; color:var(--text-secondary); padding:.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Compiled Languages</div>
-                            <div id="groupCompiled"></div>
-                            <div
-                                style="font-weight:700; color:var(--text-secondary); padding:.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Scripting Languages</div>
-                            <div id="groupScripting"></div>
-                            <div
-                                style="font-weight:700; color:var(--text-secondary); padding:.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Database & Others</div>
-                            <div id="groupDatabase"></div>
-                        </div>
+                    <div id="langDropdown" class="dropdown-menu">
+                        <!-- Dynamic items -->
                     </div>
                 </div>
+                <input id="languageSelect" type="hidden" value="java">
                 <button class="run-btn" onclick="runCode()"
-                    style="margin-left: auto; padding: 0.5rem 1.5rem; height: 42px;">
+                    style="margin-left: auto; padding: 0.5rem 1.5rem; height: 48px; border-radius: 8px; font-weight: 600;">
                     <i class="fas fa-play"></i> Run Solution
                 </button>
             </div>
@@ -1712,26 +1762,54 @@
                 const compiled = [{ id: 'java', label: 'Java', icon: '☕' }, { id: 'c', label: 'C', icon: 'C' }, { id: 'c99', label: 'C99', icon: 'C' }, { id: 'cpp', label: 'C++', icon: 'C++' }];
                 const scripting = [{ id: 'python3', label: 'Python 3', icon: '🐍' }, { id: 'python2', label: 'Python 2', icon: '🐍' }, { id: 'javascript', label: 'JS', icon: '🟨' }, { id: 'bash', label: 'Bash', icon: '$' }];
                 const database = [{ id: 'sql', label: 'SQL', icon: 'DB' }, { id: 'mysql', label: 'MySQL', icon: 'DB' }];
-                function renderGroup(list, containerId) {
-                    const c = document.getElementById(containerId);
-                    if (!c) return;
-                    c.innerHTML = list.map(x => `<div class="lang-option-card" tabindex="0" data-id="${x.id}" data-label="${x.label}" data-icon="${x.icon}" style="padding:.6rem .8rem; margin:.25rem; display:flex; align-items:center; gap:.75rem; cursor:pointer; border-radius:8px; transition: all 0.2s ease;" onclick="uiManager.selectLang('${x.id}','${x.label}','${x.icon}')" onkeydown="uiManager.keySelectLang(event,this)">
-                        <span style="font-size: 1.2rem;">${x.icon}</span>
-                        <span style="font-weight: 500; color: var(--text-primary);">${x.label}</span>
-                    </div>`).join('');
+                
+                const d = document.getElementById('langDropdown');
+                if (d) {
+                    let html = '';
+                    const renderGroup = (title, list) => {
+                        html += `<div style="font-weight:700; color:#64748b; padding:8px 20px 4px 20px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">${title}</div>`;
+                        html += list.map(x => `<div class="dropdown-item ${currentLanguage === x.id ? 'active' : ''}" onclick="uiManager.selectLang('${x.id}','${x.label}','${x.icon}')">${x.label}</div>`).join('');
+                    };
+                    renderGroup('Compiled Languages', compiled);
+                    renderGroup('Scripting Languages', scripting);
+                    renderGroup('Database & Others', database);
+                    d.innerHTML = html;
                 }
-                renderGroup(compiled, 'groupCompiled'); renderGroup(scripting, 'groupScripting'); renderGroup(database, 'groupDatabase');
+
                 document.addEventListener('keydown', e => {
                     if (e.key === 'Escape') this.closeLangDropdown();
-                    if (e.ctrlKey && e.key === 'Enter') {
-                        e.preventDefault();
-                        runCode();
-                    }
                 });
+
+                window.onclick = (event) => {
+                    if (!event.target.closest('.custom-language-selector')) {
+                        this.closeLangDropdown();
+                    }
+                };
             },
-            toggleLangDropdown: function () { const d = document.getElementById('langDropdown'); if (d) d.style.display = d.style.display === 'none' ? 'block' : 'none' },
-            closeLangDropdown: function () { const d = document.getElementById('langDropdown'); if (d) d.style.display = 'none' },
-            selectLang: function (id, label, icon) { const input = document.getElementById('languageSelect'); if (input) input.value = id; const ll = document.getElementById('langLabel'); if (ll) ll.textContent = label; const li = document.getElementById('langIcon'); if (li) li.textContent = icon; this.closeLangDropdown(); changeLanguage(id) },
+            toggleLangDropdown: function () { 
+                const s = document.getElementById('customLanguageSelector'); 
+                if (s) s.classList.toggle('open');
+            },
+            closeLangDropdown: function () { 
+                const s = document.getElementById('customLanguageSelector'); 
+                if (s) s.classList.remove('open');
+            },
+            selectLang: function (id, label, icon) { 
+                const input = document.getElementById('languageSelect'); 
+                if (input) input.value = id; 
+                const ll = document.getElementById('langLabel'); 
+                if (ll) ll.textContent = label; 
+                this.closeLangDropdown(); 
+                
+                // Update active state in UI
+                const items = document.querySelectorAll('.dropdown-item');
+                items.forEach(item => {
+                    if (item.textContent === label) item.classList.add('active');
+                    else item.classList.remove('active');
+                });
+                
+                changeLanguage(id); 
+            },
             keySelectLang: function (ev, el) { if (ev.key === 'Enter') el.click() },
             filterLang: function () { const v = document.getElementById('langSearch').value.toLowerCase();['groupCompiled', 'groupScripting', 'groupDatabase'].forEach(id => { const c = document.getElementById(id); if (c) [...c.children].forEach(child => { const l = child.dataset.label.toLowerCase(); child.style.display = l.includes(v) ? 'flex' : 'none' }) }) },
             setupAutosave: function () { setInterval(() => { if (editor) { const draft = { code: editor.getValue(), language: currentLanguage, time: Date.now() }; localStorage.setItem('autosaveDraft', JSON.stringify(draft)) } }, 10000) },
@@ -2726,7 +2804,8 @@ echo "Hello, World!"`
         }
 
         function updateFontSize(size) {
-            const fontSize = parseInt(size);
+            // Cap the editor font size at 24px as requested
+            const fontSize = Math.min(24, parseInt(size));
             document.getElementById('fontSizeValue').textContent = fontSize;
             if (document.getElementById('fontSizeSlider')) document.getElementById('fontSizeSlider').value = fontSize;
             if (document.getElementById('fontSizeInput')) document.getElementById('fontSizeInput').value = fontSize;

@@ -4,35 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad | Learning Experience</title>
+    <title>Learning Center | EXAMPAD</title>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Monaco Editor Resources -->
+    <!-- Monaco Editor -->
     <link rel="stylesheet" data-name="vs/editor/editor.main"
         href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/editor/editor.main.min.css">
+    
     <style>
         :root {
-            --primary: #F26B3A;
+            --primary: #D96C33;
+            --primary-soft: #FFF1EC;
             --bg: #FFFFFF;
-            --sidebar: #FAFBFC;
-            --border: #EAECF0;
-            --text-main: #101828;
-            --text-muted: #475467;
+            --sidebar-bg: #FFFFFF;
+            --border: #EEEEEE;
+            --text-main: #202124;
+            --text-secondary: #5F6368;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: var(--bg);
+            background-color: var(--bg);
             color: var(--text-main);
             height: 100vh;
             display: flex;
@@ -40,7 +43,7 @@
             overflow: hidden;
         }
 
-        /* Header */
+        /* Header (SCR 3) */
         header {
             height: 64px;
             border-bottom: 1px solid var(--border);
@@ -50,294 +53,397 @@
             padding: 0 24px;
             background: #fff;
             flex-shrink: 0;
+            z-index: 100;
         }
 
-        .nav-left {
+        .header-left {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 20px;
         }
 
-        .logo-sm {
+        .logo-sq {
             width: 32px;
             height: 32px;
             background: #d32f2f;
-            color: #fff;
-            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 0.8rem;
             cursor: pointer;
         }
 
-        /* Main Layout */
-        .player-container {
+        .nav-icons {
+            display: flex;
+            gap: 24px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Layout */
+        .player-shell {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
 
-        /* Sidebar - Screen 4 style */
-        .module-sidebar {
-            width: 340px;
-            border-right: 1px solid var(--border);
-            background: var(--sidebar);
-            overflow-y: auto;
+        /* Sidebar (SCR 4) */
+        .player-sidebar {
+            width: 360px;
+            border-right: 2px solid #f5f5f5;
+            background: var(--sidebar-bg);
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
 
         .sidebar-header {
             padding: 24px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #f9f9f9;
         }
 
-        .sidebar-header h2 {
+        .course-crumb {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 24px;
+        }
+
+        .module-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--primary);
+            font-weight: 700;
             font-size: 1rem;
-            color: var(--text-muted);
-            font-weight: 600;
+            cursor: pointer;
             margin-bottom: 8px;
         }
 
-        .progress-mini {
+        .sidebar-item {
+            padding: 16px 24px;
+            border-bottom: 1px solid #fdfdfd;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .mini-bar {
-            flex: 1;
-            height: 6px;
-            background: #eee;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .mini-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-        }
-
-        .module-nav {
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 20px;
             cursor: pointer;
+            transition: var(--transition);
         }
 
-        .module-nav span {
-            font-weight: 800;
-            color: var(--primary);
+        .sidebar-item:hover {
+            background: #fafafa;
         }
 
-        .items-list {
-            list-style: none;
-        }
-
-        .item-row {
-            padding: 20px 24px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-            position: relative;
-        }
-
-        .item-row:hover {
-            background: #fff;
-        }
-
-        .item-row.active {
-            background: #fff5f0;
-            border-left: 4px solid var(--primary);
+        .sidebar-item.active {
+            background: #fdf5f2;
         }
 
         .item-index {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            width: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #999;
+            width: 24px;
         }
 
-        .item-info {
+        .sidebar-item.active .item-index {
+            color: var(--primary);
+        }
+
+        .item-main {
             flex: 1;
         }
 
-        .item-type {
+        .tool-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #666;
+            transition: var(--transition);
+        }
+
+        .tool-btn:hover { background: #e0e0e0; }
+        .tool-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+        .item-type-label {
             font-size: 0.75rem;
-            color: #999;
+            font-weight: 600;
+            color: #bbb;
+            text-transform: uppercase;
             margin-bottom: 2px;
         }
 
-        .item-title {
-            font-size: 0.95rem;
-            font-weight: 600;
+        .item-title-label {
+            font-size: 1rem;
+            font-weight: 500;
             color: #444;
         }
 
-        .item-status {
+        .sidebar-item.active .item-title-label {
+            color: var(--primary);
+        }
+
+        .item-done-ic {
             color: #ccc;
+            font-size: 1.2rem;
+        }
+
+        .item-done-ic.done {
+            color: #666;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 24px;
+            border-top: 1px solid #f5f5f5;
+        }
+
+        .percent-covered {
+            text-align: center;
             font-size: 1.1rem;
+            font-weight: 700;
+            color: #D96C33;
+            margin-bottom: 12px;
         }
 
-        .item-status.done {
-            color: #22c55e;
+        .progress-rail {
+            height: 10px;
+            background: #ffe6db;
+            border-radius: 5px;
+            overflow: hidden;
         }
 
-        /* Content Area */
-        .content-view {
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 44%; /* SCR 4 says 44% */
+            transition: width 1s ease;
+        }
+
+        /* Content Area (SCR 3) */
+        .player-content {
             flex: 1;
-            overflow-y: auto;
-            padding: 40px 60px;
             display: flex;
             flex-direction: column;
-        }
-
-        .video-container {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 12px;
-            margin-bottom: 40px;
-            overflow: hidden;
+            background: #fff;
+            overflow-y: auto;
             position: relative;
         }
 
-        .article-view {
-            max-width: 800px;
+        .content-header {
+            padding: 40px;
+            max-width: 1000px;
             margin: 0 auto;
-            line-height: 1.8;
-            font-size: 1.1rem;
+            width: 100%;
         }
 
-        .article-view h1 {
+        .content-crumb {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #333;
             margin-bottom: 24px;
-            font-size: 2rem;
+            font-family: 'Outfit';
         }
 
-        /* Notification (Beautiful Toast) */
-        .alert-box {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            background: rgba(16, 24, 40, 0.95);
-            backdrop-filter: blur(10px);
-            color: #fff;
-            padding: 16px 32px;
-            border-radius: 12px;
+        .tri-dash {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .dash { height: 4px; background: #eee; border-radius: 2px; }
+        .dash.active { background: #D96C33; width: 40px; }
+        .dash.pending { width: 20px; }
+
+        .bookmark-container {
+            font-size: 1.2rem;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* MCQ Style (SCR 3) */
+        .question-box {
+            background: #fff;
+            padding: 0 40px 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .code-snippet {
+            background: #f1f3f4;
+            padding: 24px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.95rem;
-            font-weight: 600;
-            display: none;
-            z-index: 2000;
-            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
-            animation: slideUpToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            border-left: 5px solid var(--primary);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 32px;
+            overflow-x: auto;
         }
 
-        @keyframes slideUpToast {
-            from {
-                transform: translateY(100px) scale(0.9);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* Coding Player Styles */
-        .coding-player {
+        .mcq-layout {
             display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 24px;
-            height: calc(100vh - 120px);
-            margin: -40px -60px;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
         }
 
-        .problem-statement {
-            background: #fcfcfc;
-            border-right: 1px solid var(--border);
-            padding: 32px;
-            overflow-y: auto;
-        }
-
-        .editor-workspace {
+        .mcq-options {
             display: flex;
             flex-direction: column;
-            background: #f5f5f5;
+            gap: 20px;
         }
 
-        .editor-tools {
-            height: 48px;
-            background: #ededed;
+        .opt-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            cursor: pointer;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .opt-row:hover {
+            background: #fdf5f2;
+        }
+
+        .radio-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            flex-shrink: 0;
+            position: relative;
+            background: #fff;
+            margin-top: 2px;
+        }
+
+        .opt-row.selected .radio-dot {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .opt-label {
+            font-size: 1.1rem;
+            color: #444;
+        }
+
+        .feedback-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .opt-row.correct-reveal .feedback-label.c {
+            display: flex;
+            color: #22c55e;
+        }
+
+        .opt-row.incorrect-reveal.selected .feedback-label.w {
+            display: flex;
+            color: #d32f2f;
+        }
+
+        /* Footer (SCR 3) */
+        .player-footer {
+            height: 64px;
+            border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        /* Video Transcript */
-        .video-meta {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        .transcript-box {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            color: #555;
-            line-height: 1.6;
-            margin-top: 16px;
-        }
-
-        /* Quiz Player */
-        .quiz-container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 40px;
-        }
-
-        .q-card {
+            padding: 0 40px;
             background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px;
-            margin-bottom: 24px;
+            flex-shrink: 0;
         }
 
-        .opt-btn {
-            width: 100%;
-            text-align: left;
-            padding: 16px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-top: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-
-        .opt-btn:hover {
-            border-color: var(--primary);
-            background: var(--sidebar);
-        }
-
-        .opt-btn.active {
-            border-color: var(--primary);
-            background: #fff5f0;
+        .footer-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
             color: var(--primary);
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: lowercase;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            background: #c25b2a;
+        }
+
+        /* Video / Article Sections */
+        .video-wrap { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; margin-bottom: 40px; }
+        .article-wrap { line-height: 1.8; font-size: 1.1rem; color: #444; }
+
+        /* Split Screen Styling */
+        .split-shell {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            height: 100%;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+
+        .split-col {
+            background: #fff;
+            border-right: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .split-header {
+            padding: 12px 20px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .split-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .console-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            height: 100%;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -345,308 +451,519 @@
 <body>
 
     <header>
-        <div class="nav-left">
-            <div class="logo-sm" onclick="location.href='./student-dashboard.html'"><i class="fas fa-home"
-                    style="font-size: 0.8rem;"></i></div>
-            <div id="courseNameHead" style="font-weight: 600; font-size: 0.95rem; color: #444;">Loading Course...</div>
+        <div class="header-left">
+            <div class="logo-sq" onclick="location.href='./course-dashboard.html'">
+                <img src="https://course.testpad.chitkara.edu.in/icons/menu-active.svg" style="width:24px; height:24px;">
+            </div>
+            <div class="nav-icons" style="display:flex; gap:16px; align-items:center;">
+                <img src="https://course.testpad.chitkara.edu.in/icons/statistics-active.svg" style="width:20px; height:20px; cursor:pointer;" title="Analytics">
+                <img src="https://course.testpad.chitkara.edu.in/icons/folder-2.svg" style="width:20px; height:20px; cursor:pointer;" title="Curriculum">
+            </div>
         </div>
-        <div>
-            <button onclick="markCurrentDone()" class="btn"
-                style="background:var(--primary); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:700;">Complete
-                Item</button>
+        <div style="display: flex; align-items: center; gap: 24px;">
+            <div style="width: 40px; height: 40px; background: var(--primary-soft); color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer;">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="location.href='../login.html'">
+                <div style="width: 40px; height: 40px; background: #f5f5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #888; font-size: 1.1rem;">O</div>
+                <img src="https://course.testpad.chitkara.edu.in/icons/logout.svg" style="width:18px; height:18px;" title="Logout">
+            </div>
         </div>
     </header>
 
-    <div class="player-container">
-        <aside class="module-sidebar">
+    <div class="player-shell">
+        <aside class="player-sidebar">
             <div class="sidebar-header">
-                <h2 id="courseNameTitle">Course Name</h2>
+                <div class="course-crumb" id="sCourseTitle">Course Title</div>
+                <div class="module-selector">
+                    <i class="fas fa-chevron-left" onclick="prevMod()"></i>
+                    <span id="sModuleTitle">Module Name</span>
+                    <i class="fas fa-chevron-right" onclick="nextMod()"></i>
+                </div>
             </div>
 
-            <div class="module-nav" onclick="toggleModules()">
-                <i class="fas fa-chevron-left"></i>
-                <span id="currentModuleTitle">Module 1: Getting Started</span>
-                <i class="fas fa-chevron-right"></i>
-            </div>
-
-            <ul class="items-list" id="itemList">
+            <div id="sidebarList">
                 <!-- Items injected here -->
-            </ul>
+            </div>
 
-            <div style="margin-top:auto; padding: 20px; text-align:center;">
-                <div style="font-size: 0.9rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;"
-                    id="overallPercentage">0% covered</div>
-                <div class="mini-bar">
-                    <div class="mini-fill" id="overallFill"></div>
+            <div class="sidebar-footer">
+                <div class="percent-covered" id="sOverallPerc">44% covered</div>
+                <div class="progress-rail">
+                    <div class="progress-fill" id="sOverallFill"></div>
                 </div>
             </div>
         </aside>
 
-        <main class="content-view" id="playerBody">
-            <div id="videoSection" style="display: none;">
-                <div class="video-container">
-                    <video id="mainVideo" style="width: 100%; height: 100%;" controls>
-                        <source src="" type="video/mp4">
-                    </video>
+        <main class="player-content">
+            <div class="content-header">
+                <div class="content-crumb">
+                    <span id="cLessonTitle">Lesson Title</span>
+                    <div class="bookmark-container"><i class="far fa-bookmark"></i></div>
                 </div>
-                <div class="video-meta">
-                    <h3 style="font-weight: 700; margin-bottom: 8px;">About this lesson</h3>
-                    <div id="videoTranscript" class="transcript-box">No transcript available for this lesson.</div>
-                </div>
-            </div>
-
-            <div id="articleSection" class="article-view" style="display: none;">
-                <h1 id="articleTitle">Article Title</h1>
-                <div id="pdfViewer" style="display: none; height: 600px; margin-bottom: 32px;">
-                    <iframe id="pdfFrame" src=""
-                        style="width: 100%; height: 100%; border-radius: 12px; border: 1px solid var(--border);"></iframe>
-                </div>
-                <div id="articleContent"></div>
-            </div>
-
-            <div id="codingSection" style="display: none;">
-                <div class="coding-player">
-                    <div class="problem-statement">
-                        <h2 id="cQuestionTitle" style="margin-bottom: 16px;">Title</h2>
-                        <div id="cStatement">Statement</div>
-                    </div>
-                    <div class="editor-workspace">
-                        <div class="editor-tools">
-                            <span style="color: #999; font-size: 0.8rem; font-weight: 700;">PYTHON 3.10</span>
-                            <button class="btn"
-                                style="background:#22c55e; color:#fff; border:none; padding:4px 12px; font-size: 0.8rem;"
-                                onclick="runCode()">RUN CODE</button>
-                        </div>
-                        <div id="monaco-container" style="flex:1;"></div>
-                    </div>
+                <div class="tri-dash">
+                    <div class="dash active"></div>
+                    <div class="dash pending"></div>
+                    <div class="dash pending"></div>
                 </div>
             </div>
 
-            <div id="quizSection" style="display: none;">
-                <div class="quiz-container">
-                    <div class="q-card">
-                        <h3 id="quizTitle" style="margin-bottom: 24px;">Quiz Title</h3>
-                        <div id="quizContent">
-                            <!-- Quiz engine will inject questions here -->
-                        </div>
-                        <div style="margin-top: 32px;">
-                            <button class="btn btn-primary" style="width: 100%;" onclick="submitQuiz()">Submit
-                                Answers</button>
-                        </div>
-                    </div>
-                </div>
+            <div id="playerBody" class="question-box">
+                <!-- Content injected here -->
             </div>
         </main>
     </div>
 
-    <div id="alert-box" class="alert-box">You must watch the full video without skipping to count progress!</div>
+    <footer class="player-footer">
+        <div id="prevBtn" class="footer-nav" onclick="goPrev()"><i class="fas fa-chevron-left"></i> previous</div>
+        <div id="reportBtn" style="color: var(--primary); font-weight: 700; cursor: pointer; text-transform: lowercase;">Report a problem</div>
+        <div id="nextBtn" class="footer-nav" onclick="goNext()">next <i class="fas fa-chevron-right"></i></div>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
     <script src="../js/db.js"></script>
     <script src="../js/auth.js"></script>
     <script>
-        // Init Monaco
-        let editor;
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' } });
-        require(['vs/editor/editor.main'], function () {
-            // Define Grey Theme
-            monaco.editor.defineTheme('grey-theme', {
-                base: 'vs',
-                inherit: true,
-                rules: [],
-                colors: {
-                    'editor.background': '#f5f5f5',
-                    'editor.lineHighlightBackground': '#eeeeee',
-                    'editor.selectionBackground': '#d0d0d0'
-                }
-            });
-
-            editor = monaco.editor.create(document.getElementById('monaco-container'), {
-                value: "# Write your solution here",
-                language: 'python',
-                theme: 'grey-theme',
-                fontSize: 14,
-                automaticLayout: true,
-                minimap: { enabled: false }
-            });
-        });
-
         const params = new URLSearchParams(window.location.search);
         const courseId = params.get('courseId');
-        let moduleIndex = parseInt(params.get('moduleIndex')) || 0;
-        let activeItemIndex = 0;
+        let mIdx = parseInt(params.get('moduleIndex')) || 0;
+        let lIdx = parseInt(params.get('lessonIndex')) || 0;
         const user = auth.getCurrentUser();
-        let course = null;
-        let progress = null;
-
-        let startTime = 0;
-        let videoSkips = 0;
+        let courseData = null;
 
         function init() {
-            course = db.getCourseById(courseId);
-            if (!course) return window.location.href = './student-dashboard.html';
+            courseData = db.getCourseById(courseId);
+            if (!courseData) return location.href='./student-dashboard.html';
 
-            progress = db.getCourseProgress(courseId, user.id) || { completedItems: [] };
-
-            document.getElementById('courseNameHead').textContent = course.title;
-            document.getElementById('courseNameTitle').textContent = course.title;
-
-            renderModuleItems();
-            loadItem(0);
-            updateProgressUI();
+            document.getElementById('sCourseTitle').textContent = courseData.title;
+            renderSidebar();
+            loadLesson(mIdx, lIdx);
+            updateGlobalProgress();
         }
 
-        function renderModuleItems() {
-            const mod = course.modules[moduleIndex];
-            document.getElementById('currentModuleTitle').textContent = `${mod.title}`;
+        function renderSidebar() {
+            const mod = courseData.modules[mIdx];
+            document.getElementById('sModuleTitle').textContent = mod.title;
+            const progress = db.getCourseProgress(courseId, user.id);
 
-            const list = document.getElementById('itemList');
-            list.innerHTML = mod.items.map((it, i) => `
-                <li class="item-row ${i === activeItemIndex ? 'active' : ''}" onclick="loadItem(${i})">
-                    <div class="item-index">${i + 1}</div>
-                    <div class="item-info">
-                        <div class="item-type">${it.type.toUpperCase()}</div>
-                        <div class="item-title">${it.title}</div>
+            const container = document.getElementById('sidebarList');
+            container.innerHTML = mod.lessons.map((less, i) => {
+                const isDone = progress?.completedItems.includes(less.id);
+                const isActive = (lIdx === i);
+                return `
+                    <div class="sidebar-item ${isActive ? 'active' : ''}" onclick="loadLesson(${mIdx}, ${i})">
+                        <div class="item-done-ic" style="color:${isDone ? 'var(--primary)' : '#eee'};">
+                            <i class="${isDone ? 'fas fa-check-square' : 'far fa-square'}"></i>
+                        </div>
+                        <div class="item-main">
+                            <div class="item-type-label">${getSidebarIcon(less.type)} ${less.type}</div>
+                            <div class="item-title-label" style="font-weight:${isActive ? '700' : '500'}">${less.title}</div>
+                        </div>
                     </div>
-                    <div class="item-status ${progress.completedItems.includes(it.id) ? 'done' : ''}">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                </li>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        function loadItem(index) {
-            activeItemIndex = index;
-            const item = course.modules[moduleIndex].items[index];
-            renderModuleItems();
+        function loadLesson(mi, li) {
+            mIdx = mi; lIdx = li;
+            const less = courseData.modules[mi].lessons[li];
+            const container = document.querySelector('.player-content');
+            
+            if (less.type === 'coding') {
+                renderCoding(less);
+            } else {
+                container.innerHTML = `
+                    <div class="content-header">
+                        <div class="content-crumb">
+                            <span id="cLessonTitle">${less.title}</span>
+                            <div class="bookmark-container"><i class="far fa-bookmark"></i></div>
+                        </div>
+                        <div class="tri-dash">
+                            <div class="dash active"></div>
+                            <div class="dash pending"></div>
+                            <div class="dash pending"></div>
+                        </div>
+                    </div>
+                    <div id="playerBody" class="question-box"></div>
+                `;
 
-            document.getElementById('videoSection').style.display = 'none';
-            document.getElementById('articleSection').style.display = 'none';
-            document.getElementById('codingSection').style.display = 'none';
-
-            startTime = Date.now();
-            videoSkips = 0;
-
-            if (item.type === 'video') {
-                document.getElementById('videoSection').style.display = 'block';
-                const video = document.getElementById('mainVideo');
-                video.src = item.data?.url || "https://www.w3schools.com/html/mov_bbb.mp4";
-                document.getElementById('videoTranscript').textContent = item.data?.transcript || "No transcript available for this lesson.";
-                video.onseeking = () => { videoSkips++; };
-            } else if (item.type === 'article') {
-                document.getElementById('articleSection').style.display = 'block';
-                document.getElementById('articleTitle').textContent = item.title;
-                document.getElementById('articleContent').innerHTML = item.data?.body || '';
-
-                if (item.data?.pdfUrl) {
-                    document.getElementById('pdfViewer').style.display = 'block';
-                    document.getElementById('pdfFrame').src = item.data.pdfUrl;
-                } else {
-                    document.getElementById('pdfViewer').style.display = 'none';
+                const body = document.getElementById('playerBody');
+                if (less.type === 'video') {
+                    let videoHtml = '';
+                    if(less.data.url?.includes('youtube.com') || less.data.url?.includes('youtu.be')) {
+                        const vid = less.data.url.split('v=')[1] || less.data.url.split('/').pop();
+                        videoHtml = `<iframe src="https://www.youtube.com/embed/${vid}" frameborder="0" allowfullscreen style="width:100%; height:100%;"></iframe>`;
+                    } else {
+                        videoHtml = `<video src="${less.data.url}" controls style="width:100%; height:100%;"></video>`;
+                    }
+                    body.innerHTML = `
+                        <div class="video-wrap">${videoHtml}</div>
+                        <div class="article-wrap" style="margin-top:24px; border-top:1px solid #eee; padding-top:24px;">
+                            ${less.data.notes || ''}
+                        </div>
+                    `;
+                } else if (less.type === 'reading') {
+                    body.innerHTML = `<div class="article-wrap">${less.data.content}</div>`;
+                } else if (less.type === 'quiz' || less.type === 'assertion' || less.type === 'diagram' || less.type === 'mcq') {
+                    renderMCQ(less);
+                } else if (less.type === 'drawing') {
+                    renderDrawing(less);
                 }
-            } else if (item.type === 'coding') {
-                document.getElementById('codingSection').style.display = 'block';
-                document.getElementById('cQuestionTitle').textContent = item.title;
-                document.getElementById('cStatement').innerHTML = item.data?.problemStatement || 'No statement provided.';
-                if (editor) {
-                    editor.setValue(item.data?.boilerplate || "# Initializing editor...");
-                }
-            } else if (item.type === 'quiz') {
-                document.getElementById('quizSection').style.display = 'block';
-                document.getElementById('quizTitle').textContent = item.title;
-                renderQuiz(item);
             }
+            renderSidebar();
         }
 
-        function renderQuiz(item) {
-            const container = document.getElementById('quizContent');
-            // Mocking quiz questions if none exist in item data
-            const questions = item.data?.questions || [
-                { q: "What is the primary benefit of this module?", opts: ["Speed", "Scalability", "Security", "All of above"], a: 3 }
-            ];
-            container.innerHTML = questions.map((q, i) => `
-                <div style="margin-bottom:24px;">
-                    <p style="font-weight:600; margin-bottom:12px;">${i + 1}. ${q.q}</p>
-                    ${q.opts.map((opt, oi) => `
-                        <button class="opt-btn" onclick="selectOpt(this, ${i}, ${oi})">${opt}</button>
-                    `).join('')}
+        let playerMonaco = null;
+        function renderCoding(less) {
+            const container = document.querySelector('.player-content');
+            container.innerHTML = `
+                <div class="split-shell">
+                    <div class="split-col">
+                        <div class="split-header"><span>Problem Description</span></div>
+                        <div class="split-body">
+                            <h2 style="font-family:'Outfit'; margin-bottom:16px;">${less.title}</h2>
+                            <div class="article-wrap">${less.data.description || 'Develop your solution in the workspace.'}</div>
+                        </div>
+                    </div>
+                    <div class="split-col">
+                        <div class="split-header">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <span>Main Workspace</span>
+                                <select id="playerLang" style="border:none; background:#f0f0f0; border-radius:4px; font-weight:700; color:var(--primary); padding:2px 8px;" onchange="changePlayerLang()">
+                                    ${(less.data.languages || ['python']).map(l => `<option value="${l}">${l.toUpperCase()}</option>`).join('')}
+                                </select>
+                            </div>
+                            <button class="submit-btn" style="height:28px; padding:0 12px; font-size:0.75rem;" onclick="runCode()">Run Code</button>
+                        </div>
+                        <div id="playerMonaco" style="flex:1;"></div>
+                        <div style="height:48px; display:flex; gap:12px; padding:8px 20px; border-top:1px solid #eee; background:#fff; align-items:center; justify-content:flex-end;">
+                             <button class="submit-btn" style="height:32px; padding:0 24px; font-size:0.8rem;" onclick="submitCode()">SUBMIT SOLUTION</button>
+                        </div>
+                    </div>
+                    <div class="split-col" style="border-right:none;">
+                        <div class="split-header"><span>Console Output</span><i class="fas fa-terminal" style="opacity:0.5;"></i></div>
+                        <div class="console-output" id="codeResult">
+                            <span style="color:#666;">Ready for execution...</span>
+                        </div>
+                    </div>
                 </div>
-            `).join('');
+            `;
+
+            setTimeout(() => {
+                const langs = less.data.languages || ['python'];
+                const defaultLang = langs[0];
+                const codeData = less.data.code[defaultLang];
+                initPlayerMonaco(defaultLang, codeData.middle);
+            }, 100);
         }
 
-        function selectOpt(btn, qIdx, oIdx) {
-            btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function initPlayerMonaco(lang, val) {
+            if(playerMonaco) playerMonaco.dispose();
+            require(['vs/editor/editor.main'], () => {
+                playerMonaco = monaco.editor.create(document.getElementById('playerMonaco'), {
+                    value: val,
+                    language: lang === 'cpp' ? 'cpp' : (lang === 'python' ? 'python' : 'javascript'),
+                    theme: 'vs-light',
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    fontSize: 14
+                });
+            });
         }
 
-        function submitQuiz() {
-            showAlert("Quiz submitted successfully! Marking as complete.");
-            markCurrentDone();
+        function changePlayerLang() {
+            const lang = document.getElementById('playerLang').value;
+            const less = courseData.modules[mIdx].lessons[lIdx];
+            playerMonaco.setValue(less.data.code[lang].middle);
+            monaco.editor.setModelLanguage(playerMonaco.getModel(), lang === 'cpp' ? 'cpp' : (lang === 'python' ? 'python' : 'javascript'));
         }
 
         function runCode() {
-            showAlert("Running code... Output: Hello World!", 2000);
+            const res = document.getElementById('codeResult');
+            res.style.display = 'block';
+            res.innerHTML = '<span style="color:#aaa;">> Executing...</span><br><span style="color:#2ecc71;">Process finished with exit code 0</span>';
         }
 
-        function markCurrentDone() {
-            const item = course.modules[moduleIndex].items[activeItemIndex];
+        function submitCode() {
+            const less = courseData.modules[mIdx].lessons[lIdx];
+            db.updateCourseProgress(courseId, user.id, less.id);
+            updateGlobalProgress();
+            renderSidebar();
+            showToast("Challenge Submitted Successfully!");
+        }
 
-            // Progress Logic
-            if (item.type === 'article') {
-                const elapsedMins = (Date.now() - startTime) / 60000;
-                const minRequired = parseFloat(item.data?.minTime) || 0.1;
-                if (elapsedMins < minRequired) {
-                    showAlert(`You finished too fast! Please read for at least ${minRequired} mins to earn progress.`);
-                    return;
-                }
-            } else if (item.type === 'video') {
-                if (videoSkips > 2) {
-                    showAlert("Too many skips detected! Please watch the tutorial properly.");
-                    return;
+        function showToast(m) {
+            const t = document.createElement('div');
+            t.style = "position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#323232; color:#fff; padding:12px 24px; border-radius:30px; z-index:10000; font-weight:600; font-size:0.9rem; box-shadow:0 8px 20px rgba(0,0,0,0.2);";
+            t.innerHTML = `<i class="fas fa-check-circle" style="color:#2ecc71; margin-right:8px;"></i> ${m}`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
+        function getSidebarIcon(t) {
+            const map = {
+                coding: `<img src="https://course.testpad.chitkara.edu.in/icons/playground.svg" style="width:12px; height:12px; margin-right:4px;">`,
+                quiz: `<img src="https://course.testpad.chitkara.edu.in/icons/quiz.svg" style="width:12px; height:12px; margin-right:4px;">`,
+                mcq: `<img src="https://course.testpad.chitkara.edu.in/icons/quiz.svg" style="width:12px; height:12px; margin-right:4px;">`
+            };
+            return map[t] || '';
+        }
+
+        function renderDrawing(less) {
+            const body = document.getElementById('playerBody');
+            body.innerHTML = `
+                <div class="article-wrap" style="margin-bottom:24px;">${less.data.instruction || 'Please draw your response on the canvas below:'}</div>
+                <div style="background:#f8f9fa; border:1px solid #eee; border-radius:12px; overflow:hidden;">
+                    <div style="padding:12px 24px; background:#fff; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; gap:16px; align-items:center;">
+                            <div style="display:flex; background:#f0f0f0; padding:4px; border-radius:8px; gap:4px;">
+                                <button class="tool-btn active" onclick="setTool('brush')" id="tool-brush" title="Brush"><i class="fas fa-pencil-alt"></i></button>
+                                <button class="tool-btn" onclick="setTool('line')" id="tool-line" title="Line"><i class="fas fa-slash"></i></button>
+                                <button class="tool-btn" onclick="setTool('square')" id="tool-square" title="Square"><i class="far fa-square"></i></button>
+                                <button class="tool-btn" onclick="setTool('circle')" id="tool-circle" title="Circle"><i class="far fa-circle"></i></button>
+                                <button class="tool-btn" onclick="setTool('eraser')" id="tool-eraser" title="Eraser"><i class="fas fa-eraser"></i></button>
+                            </div>
+                            <input type="color" id="drawColor" value="#202124" style="width:30px; height:30px; border:none; background:none; cursor:pointer;" onchange="updateStrokeStyle()">
+                            <select id="lineWidth" class="standard-input" style="width:60px; height:30px; padding:0 4px; font-size:0.8rem;" onchange="updateStrokeStyle()">
+                                <option value="2">2px</option>
+                                <option value="5" selected>5px</option>
+                                <option value="10">10px</option>
+                                <option value="20">20px</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; gap:12px;">
+                            <button class="submit-btn" style="height:32px; padding:0 16px; font-size:0.8rem; background:#fff; color:#666; border:1px solid #ddd;" onclick="clearCanvas()">Clear All</button>
+                            <button class="submit-btn" style="height:32px; padding:0 16px; font-size:0.8rem;" onclick="submitDrawing()">Submit</button>
+                        </div>
+                    </div>
+                    <div style="background:#fff; cursor:crosshair; display:flex; justify-content:center; padding:20px; position:relative;">
+                        <canvas id="drawCanvas" width="800" height="500" style="border:1px solid #eee; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.05); border-radius:4px;"></canvas>
+                        <canvas id="overlayCanvas" width="800" height="500" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); pointer-events:none;"></canvas>
+                    </div>
+                </div>
+            `;
+            initDrawing();
+        }
+
+        let isDrawing = false;
+        let ctx = null;
+        let overlayCtx = null;
+        let currentTool = 'brush';
+        let startPoint = { x: 0, y: 0 };
+
+        function initDrawing() {
+            const canvas = document.getElementById('drawCanvas');
+            const overlay = document.getElementById('overlayCanvas');
+            ctx = canvas.getContext('2d');
+            overlayCtx = overlay.getContext('2d');
+            
+            [ctx, overlayCtx].forEach(c => {
+                c.lineJoin = 'round';
+                c.lineCap = 'round';
+            });
+            updateStrokeStyle();
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch support
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e.touches[0]); });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function setTool(t) {
+            currentTool = t;
+            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tool-' + t).classList.add('active');
+            updateStrokeStyle();
+        }
+
+        function updateStrokeStyle() {
+            if(!ctx) return;
+            const color = currentTool === 'eraser' ? '#ffffff' : document.getElementById('drawColor').value;
+            const width = document.getElementById('lineWidth').value;
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            overlayCtx.strokeStyle = color;
+            overlayCtx.lineWidth = width;
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const canvas = document.getElementById('drawCanvas');
+            const rect = canvas.getBoundingClientRect();
+            startPoint = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            
+            if (currentTool === 'brush' || currentTool === 'eraser') {
+                ctx.beginPath();
+                ctx.moveTo(startPoint.x, startPoint.y);
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const canvas = document.getElementById('drawCanvas');
+            const rect = canvas.getBoundingClientRect();
+            const curX = e.clientX - rect.left;
+            const curY = e.clientY - rect.top;
+
+            if (currentTool === 'brush' || currentTool === 'eraser') {
+                ctx.lineTo(curX, curY);
+                ctx.stroke();
+            } else {
+                // Shape preview on overlay
+                overlayCtx.clearRect(0, 0, 800, 500);
+                if (currentTool === 'line') {
+                    overlayCtx.beginPath();
+                    overlayCtx.moveTo(startPoint.x, startPoint.y);
+                    overlayCtx.lineTo(curX, curY);
+                    overlayCtx.stroke();
+                } else if (currentTool === 'square') {
+                    overlayCtx.strokeRect(startPoint.x, startPoint.y, curX - startPoint.x, curY - startPoint.y);
+                } else if (currentTool === 'circle') {
+                    const radius = Math.sqrt(Math.pow(curX - startPoint.x, 2) + Math.pow(curY - startPoint.y, 2));
+                    overlayCtx.beginPath();
+                    overlayCtx.arc(startPoint.x, startPoint.y, radius, 0, Math.PI * 2);
+                    overlayCtx.stroke();
                 }
             }
+        }
 
-            db.updateCourseProgress(courseId, user.id, item.id);
-            progress = db.getCourseProgress(courseId, user.id);
-
-            showAlert("Progress Recorded!", 2000);
-            renderModuleItems();
-            updateProgressUI();
-
-            // Auto next if available
-            if (activeItemIndex < course.modules[moduleIndex].items.length - 1) {
-                setTimeout(() => loadItem(activeItemIndex + 1), 1000);
+        function stopDrawing(e) {
+            if (!isDrawing) return;
+            isDrawing = false;
+            
+            if (currentTool !== 'brush' && currentTool !== 'eraser') {
+                // Commit shape to main canvas
+                const canvas = document.getElementById('drawCanvas');
+                const rect = canvas.getBoundingClientRect();
+                const curX = e.clientX - rect.left;
+                const curY = e.clientY - rect.top;
+                
+                overlayCtx.clearRect(0, 0, 800, 500);
+                if (currentTool === 'line') {
+                    ctx.beginPath();
+                    ctx.moveTo(startPoint.x, startPoint.y);
+                    ctx.lineTo(curX, curY);
+                    ctx.stroke();
+                } else if (currentTool === 'square') {
+                    ctx.strokeRect(startPoint.x, startPoint.y, curX - startPoint.x, curY - startPoint.y);
+                } else if (currentTool === 'circle') {
+                    const radius = Math.sqrt(Math.pow(curX - startPoint.x, 2) + Math.pow(curY - startPoint.y, 2));
+                    ctx.beginPath();
+                    ctx.arc(startPoint.x, startPoint.y, radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            } else {
+                ctx.closePath();
             }
         }
 
-        function updateProgressUI() {
-            const totalItems = course.modules.reduce((acc, m) => acc + m.items.length, 0);
-            const completedCount = progress.completedItems.length;
-            const percentage = totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
-
-            document.getElementById('overallFill').style.width = percentage + '%';
-            document.getElementById('overallPercentage').textContent = percentage + '% covered';
+        function clearCanvas() {
+            if(confirm("Clear entire whiteboard?")) {
+                ctx.clearRect(0, 0, 800, 500);
+            }
         }
 
-        function showAlert(msg, time = 4000) {
-            const Box = document.getElementById('alert-box');
-            Box.textContent = msg;
-            Box.style.display = 'block';
-            setTimeout(() => Box.style.display = 'none', time);
+        function submitDrawing() {
+            const less = courseData.modules[mIdx].lessons[lIdx];
+            db.updateCourseProgress(courseId, user.id, less.id);
+            updateGlobalProgress();
+            renderSidebar();
+            showToast("Drawing Submitted Successfully!");
         }
 
-        function goToCoding() {
-            // Redirect to a practice version of the editor
-            const item = course.modules[moduleIndex].items[activeItemIndex];
-            window.location.href = `./exam-attempt.html?practice=true&itemId=${item.id}&courseId=${courseId}`;
+        function renderMCQ(less) {
+            const body = document.getElementById('playerBody');
+            
+            let topContent = '';
+            if (less.type === 'diagram' && less.data.url) {
+                topContent = `<div style="text-align:center; margin-bottom: 24px;"><img src="${less.data.url}" style="max-height: 300px; border-radius: 12px; border: 1px solid #eee;"></div>`;
+            } else if (less.type === 'assertion') {
+                topContent = `
+                    <div style="background: #fdf5f2; border-left: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 24px;">
+                        <p style="margin-bottom: 12px;"><strong>Assertion (A):</strong> ${less.data.assertion || '...'}</p>
+                        <p><strong>Reason (R):</strong> ${less.data.reason || '...'}</p>
+                    </div>
+                `;
+            }
+
+            body.innerHTML = `
+                ${topContent}
+                <div class="q-text">${less.data.desc || less.data.question || 'Choose the correct option based on the information provided:'}</div>
+                <div class="mcq-layout">
+                    <div class="mcq-options" id="optList">
+                        ${(less.data.options || ['Option A', 'Option B', 'Option C', 'Option D']).map(v => `
+                            <div class="opt-row" onclick="selectOpt(this, '${encodeURIComponent(v)}')">
+                                <div class="radio-dot"></div>
+                                <div class="opt-label">${v}</div>
+                                <div class="feedback-label c"><i class="fas fa-check"></i> correct answer</div>
+                                <div class="feedback-label w"><i class="fas fa-times"></i> your answer</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end;">
+                        <span style="color:var(--primary); font-weight:600; cursor:pointer;" onclick="clearSelection()">Clear selection</span>
+                        <button class="submit-btn" onclick="checkAnswer()">submit</button>
+                    </div>
+                </div>
+            `;
         }
 
-        function toggleModules() {
-            // Simplified: wrap around modules
-            moduleIndex = (moduleIndex + 1) % course.modules.length;
-            activeItemIndex = 0;
-            renderModuleItems();
-            loadItem(0);
+        function clearSelection() {
+            if (document.querySelector('.correct-reveal')) return;
+            document.querySelectorAll('.opt-row').forEach(r => r.classList.remove('selected'));
+        }
+
+        let currentSelectedVal = '';
+        function selectOpt(el, val) {
+            if (document.querySelector('.correct-reveal')) return;
+            document.querySelectorAll('.opt-row').forEach(r => r.classList.remove('selected'));
+            el.classList.add('selected');
+            currentSelectedVal = decodeURIComponent(val);
+        }
+
+        function checkAnswer() {
+            const selected = document.querySelector('.opt-row.selected');
+            if (!selected) return alert("Select an option");
+
+            const less = courseData.modules[mIdx].lessons[lIdx];
+            const correctVal = less.data.correct;
+
+            const options = document.querySelectorAll('.opt-row');
+            options.forEach(opt => {
+                const val = opt.querySelector('.opt-label').innerHTML;
+                if (val === correctVal) opt.classList.add('correct-reveal');
+                else if (opt === selected && val !== correctVal) opt.classList.add('incorrect-reveal');
+            });
+
+            // Mark lesson done in DB
+            db.updateCourseProgress(courseId, user.id, less.id);
+            updateGlobalProgress();
+        }
+
+        function updateGlobalProgress() {
+            const progress = db.getCourseProgress(courseId, user.id);
+            const total = courseData.modules.reduce((acc, m) => acc + m.lessons.length, 0);
+            const count = progress ? progress.completedItems.length : 0;
+            const perc = total > 0 ? Math.round((count/total)*100) : 0;
+
+            document.getElementById('sOverallPerc').textContent = `${perc}% covered`;
+            document.getElementById('sOverallFill').style.width = `${perc}%`;
+        }
+
+        function goNext() {
+            const mod = courseData.modules[mIdx];
+            if (lIdx < mod.lessons.length - 1) loadLesson(mIdx, lIdx + 1);
+            else if (mIdx < courseData.modules.length - 1) loadLesson(mIdx + 1, 0);
+        }
+
+        function goPrev() {
+            if (lIdx > 0) loadLesson(mIdx, lIdx - 1);
+            else if (mIdx > 0) loadLesson(mIdx - 1, courseData.modules[mIdx-1].lessons.length - 1);
         }
 
         init();

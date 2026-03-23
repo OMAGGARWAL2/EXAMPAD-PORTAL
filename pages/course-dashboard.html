@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad | Course Dashboard</title>
+    <title>Course Overview | EXAMPAD</title>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #F26B3A;
+            --primary: #D96C33;
             --primary-soft: #FFF1EC;
             --bg: #FFFFFF;
             --subtle: #F9FAFB;
@@ -21,56 +21,57 @@
             --text-main: #101828;
             --text-muted: #475467;
             --radius: 12px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
             background: var(--bg);
             color: var(--text-main);
+            overflow-x: hidden;
         }
 
         /* Navigation Header */
         header {
             height: 64px;
-            border-bottom: 1px solid var(--border);
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
-            background: #fff;
-            z-index: 100;
+            z-index: 1000;
         }
 
-        .nav-left {
+        .header-left {
             display: flex;
             align-items: center;
             gap: 40px;
         }
 
-        .logo {
-            font-weight: 800;
-            font-size: 1.25rem;
-            color: #d32f2f;
+        .logo-box {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 16px;
             cursor: pointer;
         }
 
-        .logo i {
-            background: #d32f2f;
-            color: #fff;
-            padding: 6px;
+        .logo-sq {
+            width: 36px;
+            height: 36px;
+            background: #f04438;
             border-radius: 4px;
-            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .nav-tabs {
@@ -84,11 +85,12 @@
             display: flex;
             align-items: center;
             font-weight: 600;
+            font-size: 0.95rem;
             color: var(--text-muted);
             cursor: pointer;
             position: relative;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
         }
 
         .nav-tab.active {
@@ -96,89 +98,193 @@
             border-bottom-color: var(--primary);
         }
 
-        /* Hero */
+        .nav-tab:hover {
+            color: var(--primary);
+        }
+
+        /* Course Hero (SCR 1) */
         .course-hero {
             padding: 40px;
-            border-bottom: 1px solid var(--border);
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-top {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
         }
 
-        .course-hero h1 {
+        .course-title {
+            font-family: 'Outfit', sans-serif;
             font-size: 1.5rem;
+            line-height: 1.4;
             font-weight: 700;
-            color: #333;
+            color: var(--primary);
+            max-width: 70%;
         }
 
-        .progress-box {
+        .hero-actions {
             display: flex;
             align-items: center;
-            gap: 20px;
-            min-width: 300px;
+            gap: 24px;
         }
 
-        .progress-bar-bg {
-            flex: 1;
-            height: 10px;
-            background: #eee;
-            border-radius: 5px;
+        .pdf-btn {
+            color: #555;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pdf-btn:hover {
+            color: #d32f2f;
+        }
+
+        .hero-progress-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            min-width: 250px;
+        }
+
+        .resume-btn {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 4px;
+        }
+
+        .big-progress-bg {
+            width: 100%;
+            height: 8px;
+            background: #ffe6db;
+            border-radius: 4px;
             overflow: hidden;
         }
 
-        .progress-bar-fill {
+        .big-progress-fill {
             height: 100%;
             background: var(--primary);
-            border-radius: 5px;
-            width: 0%;
-            transition: width 1s;
+            width: 7%; /* Example */
+            transition: width 1s ease;
         }
 
-        .progress-label {
-            font-weight: 700;
-            font-size: 0.9rem;
-            white-space: nowrap;
+        .progress-stat {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #444;
         }
 
-        /* Modules Grid (Screen 3 style) */
-        .learning-content {
-            padding: 60px 40px;
+        /* Content List (SCR 1) */
+        .content-section {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .lesson-row {
             display: flex;
-            overflow-x: auto;
-            gap: 24px;
-            padding-bottom: 20px;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .module-card {
-            min-width: 280px;
-            width: 280px;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s;
-            position: relative;
+        .lesson-row:hover {
+            background: #fdf5f2;
         }
 
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border-color: var(--primary);
+        .lesson-index {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ccc;
+            width: 20px;
         }
 
-        .module-badge {
-            position: absolute;
-            top: 24px;
-            right: 24px;
+        .type-badge {
+            font-size: 0.65rem;
             font-weight: 800;
-            font-size: 0.75rem;
-            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #f0f0f0;
+            color: #666;
             text-transform: uppercase;
         }
 
-        .module-index {
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .lesson-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #666;
+        }
+
+        .status-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: #ECFDF3;
+            color: #12B76A;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .status-dot.active {
+            display: flex;
+        }
+
+        /* Horizontal Carousel (Optional style mentioned in SCR 1) */
+        .card-carousel {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding: 20px 0 40px;
+            scrollbar-width: none;
+        }
+
+        .topic-card {
+            min-width: 280px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .topic-card.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .topic-index {
             width: 32px;
             height: 32px;
             background: #f0f0f0;
@@ -188,58 +294,47 @@
             justify-content: center;
             font-weight: 700;
             font-size: 0.8rem;
-            margin-bottom: 32px;
+            color: #666;
+            margin-bottom: 24px;
         }
 
-        .module-title {
-            font-size: 1.2rem;
+        .topic-card.active .topic-index {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .topic-title {
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 16px;
-            min-height: 3rem;
+            margin-bottom: 24px;
+            min-height: 2.8rem;
         }
 
-        .module-stats {
+        .topic-stats {
             display: flex;
             gap: 16px;
             font-size: 0.85rem;
-            color: var(--text-muted);
+            opacity: 0.8;
         }
 
-        .module-stats span {
+        .topic-status-label {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        .site-footer {
+            height: 100px;
+            border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 4px;
-        }
-
-        /* Generic Toast */
-        #toast-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-        }
-
-        .toast {
-            background: #333;
-            color: #fff;
-            padding: 16px 24px;
-            border-radius: 8px;
-            margin-top: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            animation: slideIn 0.3s forwards;
-            font-weight: 600;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            justify-content: center;
+            color: #999;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -247,222 +342,152 @@
 <body>
 
     <header>
-        <div class="nav-left">
-            <div class="logo" onclick="location.href='./student-dashboard.html'">
-                <i class="fas fa-chart-line"></i> EXAMPAD
+        <div class="header-left">
+            <div class="logo-box" onclick="location.href='./student-dashboard.html'">
+                <div class="logo-sq">
+                    <img src="https://course.testpad.chitkara.edu.in/icons/menu-active.svg" style="width:20px; filter:brightness(0) invert(1);">
+                </div>
+                <div style="font-family:'Outfit'; font-weight:800; font-size:1.3rem; color:#111;">EXAMPAD</div>
             </div>
-            <div class="nav-tabs">
+            <div class="nav-tabs" style="margin-left:40px;">
                 <div class="nav-tab active">Learning Content</div>
-                <div class="nav-tab" onclick="location.href='./course-attempts.html' + window.location.search">
-                    Assignments</div>
-                <div class="nav-tab">Achievements</div>
-                <div class="nav-tab">Discussion</div>
+                <div class="nav-tab">Assignments</div>
+                <div class="nav-tab">Attempts</div>
+                <div class="nav-tab">Digital Library</div>
             </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 20px;">
-            <i class="far fa-bell" style="font-size: 1.2rem; color: var(--text-muted);"></i>
-            <div
-                style="width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                O</div>
+        <div style="display: flex; align-items: center; gap: 24px;">
+            <div style="cursor:pointer; color:#666;"><img src="https://course.testpad.chitkara.edu.in/icons/menu-active.svg" style="width:18px; opacity:0.6;"></div>
+            <div style="text-align:right;">
+                <span style="display:block; font-family:'Outfit'; font-size:0.85rem; font-weight:700; color:#111;">OM AGGARWAL</span>
+                <span style="display:block; font-size:0.65rem; font-weight:800; color:var(--primary); opacity:0.6;">STUDENT</span>
+            </div>
+            <div style="width:36px; height:36px; background:#E0E4EC; color:#555; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700;">O</div>
         </div>
     </header>
 
     <div class="course-hero">
-        <h1 id="courseTitle">Loading Course...</h1>
-        <div class="progress-box">
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="overallFill"></div>
+        <div class="hero-top">
+            <h1 class="course-title" id="courseTitle">Loading Course...</h1>
+            <div class="hero-actions">
+                <i class="far fa-file-pdf pdf-btn" onclick="generateReport()" title="Download Progress Report"></i>
+                <div class="hero-progress-box">
+                    <a href="#" id="resumeLink" class="resume-btn">Resume</a>
+                    <div class="big-progress-bg">
+                        <div class="big-progress-fill" id="overallFill"></div>
+                    </div>
+                    <span class="progress-stat" id="overallText">0% done</span>
+                </div>
             </div>
-            <span class="progress-label" id="overallLabel">0% done</span>
-            <button class="btn" style="border:none; background:transparent; padding:10px; cursor:pointer;"
-                onclick="downloadCourseReport()" title="Download Course Progress PDF">
-                <i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #d32f2f;"></i>
-            </button>
         </div>
     </div>
 
-    <div class="learning-content" id="moduleGrid">
-        <!-- Module cards injected here -->
+    <div class="content-section">
+        <!-- Horizontal Carousel of Modules -->
+        <div class="card-carousel" id="moduleCards">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- Vertical List of Lessons for the active module -->
+        <div id="lessonList">
+            <!-- Injected by JS -->
+        </div>
     </div>
 
-    <div id="toast-container"></div>
+    <footer class="site-footer">
+        © 2026 Chiktara University | Powered by Exampad Learning Engine
+    </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="../js/db.js"></script>
     <script src="../js/auth.js"></script>
     <script>
         const params = new URLSearchParams(window.location.search);
         const courseId = params.get('courseId');
         const user = auth.getCurrentUser();
+        let currentCourse = null;
+        let activeModuleIndex = 0;
 
         function init() {
-            const course = db.getCourseById(courseId);
-            if (!course) {
-                showToast("Course Not Found! Redirecting...", "error");
-                setTimeout(() => window.location.href = './student-dashboard.html', 2000);
+            currentCourse = db.getCourseById(courseId);
+            if (!currentCourse) {
+                location.href = './student-dashboard.html';
                 return;
             }
 
-            document.getElementById('courseTitle').textContent = course.title;
+            document.getElementById('courseTitle').textContent = currentCourse.title;
+            updateOverview();
+            renderModules();
+            renderLessons(0);
+        }
+
+        function updateOverview() {
             const progress = db.getCourseProgress(courseId, user.id);
-            const totalItems = course.modules.reduce((acc, m) => acc + m.items.length, 0);
+            const totalItems = currentCourse.modules.reduce((acc, m) => acc + m.lessons.length, 0);
             const completedCount = progress ? progress.completedItems.length : 0;
             const percentage = totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
 
             document.getElementById('overallFill').style.width = percentage + '%';
-            document.getElementById('overallLabel').textContent = percentage + '% done';
-
-            renderModules(course, progress);
+            document.getElementById('overallText').textContent = percentage + '% done';
+            
+            document.getElementById('resumeLink').href = `./course-player.html?courseId=${courseId}`;
         }
 
-        function renderModules(course, progress) {
-            const grid = document.getElementById('moduleGrid');
-            grid.innerHTML = course.modules.map((m, i) => {
-                const totalInModule = m.items.length;
-                const completedInModule = m.items.filter(item => progress?.completedItems.includes(item.id)).length;
-                const isDone = completedInModule === totalInModule && totalInModule > 0;
-
+        function renderModules() {
+            const container = document.getElementById('moduleCards');
+            container.innerHTML = currentCourse.modules.map((m, i) => {
+                const isCompleted = isModuleDone(m);
                 return `
-                    <a href="./course-player.html?courseId=${course.id}&moduleIndex=${i}" class="module-card">
-                        <div class="module-badge" style="color: ${isDone ? '#22c55e' : ''}">${isDone ? 'DONE' : ''}</div>
-                        <div class="module-index">${i + 1}</div>
-                        <div class="module-title">${m.title}</div>
-                        <div class="module-stats">
-                            <span><i class="far fa-file-video"></i> ${m.items.filter(it => it.type === 'video').length}</span>
-                            <span><i class="far fa-question-circle"></i> ${m.items.filter(it => it.type === 'quiz' || it.type === 'coding').length}</span>
+                    <div class="topic-card ${activeModuleIndex === i ? 'active' : ''}" onclick="selectModule(${i})">
+                        ${isCompleted ? '<span class="topic-status-label">DONE</span>' : ''}
+                        <div class="topic-index">${i + 1}</div>
+                        <div class="topic-title">${m.title}</div>
+                        <div class="topic-stats">
+                            <span><i class="far fa-file-alt"></i> ${m.lessons.length}</span>
+                            <span><i class="far fa-question-circle"></i> ${m.lessons.length > 5 ? 'Quiz' : 'Lesson'}</span>
                         </div>
-                    </a>
+                    </div>
                 `;
             }).join('');
         }
 
-        function showToast(msg, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            if (type === 'error') toast.style.borderLeft = '4px solid #D92D20';
-            toast.textContent = msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+        function isModuleDone(mod) {
+            const progress = db.getCourseProgress(courseId, user.id);
+            if (!progress) return false;
+            return mod.lessons.every(l => progress.completedItems.includes(l.id));
         }
 
-        async function downloadCourseReport() {
-            showToast("Generating PDF report...");
+        function selectModule(index) {
+            activeModuleIndex = index;
+            renderModules();
+            renderLessons(index);
+        }
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const course = db.getCourseById(courseId);
-            if (!course) return;
-
+        function renderLessons(mIdx) {
+            const container = document.getElementById('lessonList');
+            const mod = currentCourse.modules[mIdx];
             const progress = db.getCourseProgress(courseId, user.id);
-            const attempts = db.getStudentAttempts(user.id);
 
-            // Premium Header
-            doc.setFillColor(242, 107, 58); // Primary
-            doc.rect(0, 0, 210, 40, 'F');
+            container.innerHTML = mod.lessons.map((less, i) => {
+                const isDone = progress?.completedItems.includes(less.id);
+                const shortType = less.type === 'mcq' ? 'MQ' : (less.type === 'coding' ? 'CO' : (less.type === 'video' ? 'VI' : 'RD'));
+                return `
+                    <div class="lesson-row" onclick="location.href='./course-player.html?courseId=${courseId}&moduleIndex=${mIdx}&lessonIndex=${i}'">
+                        <div class="lesson-index">${i + 1}</div>
+                        <div class="type-badge" style="background:${less.type === 'coding' ? '#FEF3F2' : '#F2F4F7'}; color:${less.type === 'coding' ? '#B42318' : '#667085'};">${shortType}</div>
+                        <div class="lesson-info">
+                            <div class="lesson-name">${less.title}</div>
+                        </div>
+                        <div class="lesson-status">
+                            <div class="status-dot ${isDone ? 'active' : ''}"><i class="fas fa-check"></i></div>
+                            <i class="fas fa-chevron-down" style="font-size:0.8rem; opacity:0.3;"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
-            doc.setFont("Outfit", "bold");
-            doc.setFontSize(24);
-            doc.setTextColor(255, 255, 255);
-            doc.text(course.title, 20, 25);
-
-            doc.setFontSize(12);
-            doc.setFont("Outfit", "normal");
-            doc.text("Personal Learning Progress Report", 20, 33);
-
-            let y = 60;
-
-            // Student Meta
-            doc.setTextColor(80, 80, 80);
-            doc.setFontSize(10);
-            doc.text(`Student: ${user.name || user.email}`, 20, y);
-            doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, y);
-            y += 15;
-
-            // Course Overview
-            doc.setFontSize(16);
-            doc.setTextColor(33, 33, 33);
-            doc.text("Course Curriculum & Content", 20, y);
-            y += 10;
-
-            const splitDesc = doc.splitTextToSize(course.description || "Comprehensive learning journey on Exampad.", 170);
-            doc.setFontSize(10);
-            doc.setTextColor(100, 100, 100);
-            doc.text(splitDesc, 20, y);
-            y += (splitDesc.length * 5) + 15;
-
-            // Content Breakdown
-            course.modules.forEach((mod, mIdx) => {
-                if (y > 260) { doc.addPage(); y = 20; }
-
-                doc.setFontSize(13);
-                doc.setTextColor(242, 107, 58);
-                doc.text(`Module ${mIdx + 1}: ${mod.title}`, 20, y);
-                y += 8;
-
-                mod.items.forEach((item, iIdx) => {
-                    if (y > 270) { doc.addPage(); y = 20; }
-
-                    doc.setFontSize(11);
-                    doc.setTextColor(50, 50, 50);
-                    doc.text(`${mIdx + 1}.${iIdx + 1} ${item.title} (${item.type.toUpperCase()})`, 25, y);
-
-                    // Status Check
-                    const isDone = progress?.completedItems.includes(item.id);
-                    doc.setFontSize(9);
-                    if (isDone) {
-                        doc.setTextColor(34, 197, 94);
-                        doc.text("COMPLETED", 170, y);
-                    } else {
-                        doc.setTextColor(150, 150, 150);
-                        doc.text("PENDING", 170, y);
-                    }
-
-                    y += 6;
-
-                    if (item.type === 'article' && item.data.body) {
-                        const temp = document.createElement('div');
-                        temp.innerHTML = item.data.body;
-                        const text = temp.innerText || temp.textContent;
-                        const splitBody = doc.splitTextToSize(text, 165);
-                        doc.setFontSize(9);
-                        doc.setTextColor(100, 100, 100);
-                        doc.text(splitBody, 30, y);
-                        y += (splitBody.length * 4.5) + 10;
-                    } else if (item.type === 'quiz' || item.type === 'coding') {
-                        const attempt = attempts.find(a => a.examId === item.data.examId);
-                        if (attempt) {
-                            const scoreText = attempt.score ? `Score: ${attempt.score.score}/${attempt.score.totalMarks} (${attempt.score.percentage}%)` : "Pending grade";
-                            doc.setFontSize(9);
-                            doc.setTextColor(34, 197, 94);
-                            doc.text(`Result: ${scoreText}`, 30, y);
-                            y += 6;
-
-                            if (item.type === 'coding' && attempt.responses) {
-                                // Show snippet of code
-                                const firstKey = Object.keys(attempt.responses)[0];
-                                const code = attempt.responses[firstKey]?.value || "";
-                                if (code) {
-                                    const snippet = "USER CODE SNIPPET:\n" + code.substring(0, 150) + (code.length > 150 ? '...' : '');
-                                    const splitSnippet = doc.splitTextToSize(snippet, 150);
-                                    doc.setFontSize(8);
-                                    doc.setTextColor(150, 150, 150);
-                                    doc.text(splitSnippet, 35, y);
-                                    y += (splitSnippet.length * 3.5) + 6;
-                                }
-                            }
-                        } else {
-                            y += 4;
-                        }
-                    } else {
-                        y += 4;
-                    }
-                });
-                y += 10;
-            });
-
-            doc.save(`${course.title.replace(/\s+/g, '_')}_Report.pdf`);
-            showToast("Report Downloaded Successfully!");
+        function generateReport() {
+            alert("This feature generates a professional PDF progress report. Implementation coming in the next module!");
         }
 
         init();

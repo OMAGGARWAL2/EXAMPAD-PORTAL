@@ -974,17 +974,18 @@
 
             container.innerHTML = courses.map(c => {
                 const status = c.status || 'published';
+                const isDraft = status === 'draft';
                 return `
-                    <div class="assessment-card" onclick="location.href='./course-creator.html?id=${c.id}'">
-                        <div class="card-icon-area" style="background: ${status === 'draft' ? '#F2F4F7' : '#ECFDF3'}; color: ${status === 'draft' ? '#475467' : '#027A48'};">
-                            <i class="fas fa-book-reader"></i>
+                    <div class="assessment-card ${isDraft ? 'draft-card' : ''}" onclick="location.href='./course-creator.html?id=${c.id}'">
+                        <div class="card-icon-area" style="background: ${isDraft ? '#FEF3F2' : '#ECFDF3'}; color: ${isDraft ? '#B42318' : '#027A48'};">
+                            <i class="fas ${isDraft ? 'fa-pencil-ruler' : 'fa-book-reader'}"></i>
                         </div>
                         <div class="card-body">
-                            <div class="card-title">${c.title || 'Untitled Course'}</div>
+                            <div class="card-title" style="font-family:'Outfit'; font-weight:700;">${c.title || 'Untitled Course'}</div>
                             <div class="card-meta">
                                 <span><i class="far fa-folder"></i> ${c.modules?.length || 0} Modules</span>
                                 <span><i class="far fa-users"></i> ${c.studentCount || 0} Students</span>
-                                <div class="status-pill ${status}">${status}</div>
+                                <div class="status-pill" style="display:inline-block; background:${isDraft ? '#FEF3F2' : '#ECFDF3'}; color:${isDraft ? '#B42318' : '#12B76A'}; border:1px solid ${isDraft ? '#FCA5A1' : '#ABEFC6'}; font-size:0.6rem; padding:1px 8px; border-radius:12px; font-weight:800; text-transform:uppercase; margin-left:8px;">${status}</div>
                             </div>
                         </div>
                         <div class="stats-group">
@@ -995,8 +996,8 @@
                         </div>
                         <div class="card-actions">
                             <button class="btn-action" title="View Students" onclick="event.stopPropagation();"><i class="fas fa-user-friends"></i></button>
-                            <button class="btn-action primary" onclick="event.stopPropagation(); location.href='./course-creator.html?id=${c.id}'">
-                                EDIT CURRICULUM
+                            <button class="btn-action primary" style="background:${isDraft ? '#D96C33' : '#12B76A'};" onclick="event.stopPropagation(); location.href='./course-creator.html?id=${c.id}'">
+                                ${isDraft ? 'CONTINUE DESIGN' : 'EDIT CURRICULUM'}
                             </button>
                         </div>
                     </div>
