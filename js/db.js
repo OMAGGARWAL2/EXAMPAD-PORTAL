@@ -70,7 +70,27 @@ class ExampadDB {
     }
 
     getQuestionPool() {
-        return JSON.parse(localStorage.getItem('exampad_question_pool'));
+        return JSON.parse(localStorage.getItem('exampad_question_pool')) || [];
+    }
+
+    getQuestionFromPool(id) {
+        const pool = this.getQuestionPool();
+        return pool.find(q => q.id === id || q.poolId === id);
+    }
+    
+    getQuestionById(questionId, examId) {
+        // Try pool first
+        let q = this.getQuestionFromPool(questionId);
+        if (q) return q;
+        
+        // Try exam context
+        if (examId) {
+            const exam = this.getExamById(examId);
+            if (exam) {
+                return exam.questions.find(q => q.id === questionId);
+            }
+        }
+        return null;
     }
 
     // ===== USER MANAGEMENT =====
@@ -110,6 +130,11 @@ class ExampadDB {
     getUserById(userId) {
         const users = JSON.parse(localStorage.getItem('exampad_users'));
         return users.find(u => u.id === userId);
+    }
+
+    getUserByRollNo(roll) {
+        const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+        return users.find(u => u.rollNo === roll);
     }
 
     authenticateUser(email, password) {
@@ -170,7 +195,7 @@ class ExampadDB {
     }
 
     getExamById(examId) {
-        const exams = JSON.parse(localStorage.getItem('exampad_exams'));
+        const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
         return exams.find(e => e.id === examId);
     }
 
@@ -247,7 +272,11 @@ class ExampadDB {
             endTime: null,
             responses: {}, // questionId -> response
             sectionStatus: {}, // track which sections are locked/completed
+            submittedSections: [],
             tabSwitchCount: 0,
+            tabInCount: 0,
+            fsExitCount: 0,
+            fsInCount: 0,
             copyPasteAttempts: 0,
             status: 'in-progress', // in-progress, submitted, reviewed
             score: null,

@@ -5,18 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - Test</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Include DB for dynamic exam fetching -->
+    <!-- Include DB and Auth for real functionality -->
     <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', sans-serif;
-            background: #e9ecef;
-            background-image: radial-gradient(circle at top left, #d8e0e3, transparent 40%),
-                radial-gradient(circle at bottom right, #f2ead8, transparent 40%);
+            font-family: 'Outfit', 'Roboto', sans-serif;
+            background: #f1ede8;
+            background-color: #f1ede8;
             height: 100vh;
             display: flex;
             align-items: center;
@@ -25,26 +25,26 @@
             position: relative;
         }
 
-        .bg-shape {
+        .bg-shape-organic {
             position: absolute;
-            background: radial-gradient(circle, #e6ded3 0%, transparent 60%);
-            border-radius: 50%;
+            background: rgba(230, 222, 211, 0.5);
+            border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
             z-index: -1;
-            opacity: 0.8;
+            filter: blur(40px);
         }
 
-        .shape1 {
-            width: 1000px;
-            height: 1000px;
-            bottom: -400px;
+        .org-shape1 {
+            width: 800px;
+            height: 800px;
+            top: -100px;
             left: -200px;
         }
 
-        .shape2 {
-            width: 800px;
-            height: 800px;
-            top: -200px;
-            right: -200px;
+        .org-shape2 {
+            width: 600px;
+            height: 600px;
+            bottom: -50px;
+            right: -50px;
         }
 
         .top-left-logo {
@@ -113,15 +113,17 @@
         }
 
         .stat-line {
-            font-size: 1rem;
-            color: #333;
+            font-size: 1.15rem;
+            color: #2D3436;
             font-weight: 700;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
         }
 
         .stat-value {
-            color: #b05740;
-            font-weight: 500;
-            margin-left: 8px;
+            color: #de6834;
+            font-weight: 700;
         }
 
         .login-card {
@@ -233,23 +235,28 @@
 </head>
 
 <body>
-    <div class="bg-shape shape1"></div>
-    <div class="bg-shape shape2"></div>
+    <div class="bg-shape-organic org-shape1"></div>
+    <div class="bg-shape-organic org-shape2"></div>
 
     <div class="top-left-logo">
-        <img src="../logo.jpg" alt="Logo">
+        <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara Logo">
     </div>
 
     <div class="container">
         <div class="test-info">
-            <div class="test-title" id="testTitle">Reading Exam Context...</div>
-            <div class="progress-bar-container">
-                <div class="progress-left"></div>
-                <div class="progress-right"></div>
+            <h1 class="test-title" style="font-size: 2.8rem; font-weight: 400; color: #2d3436; margin-bottom: 2rem;">Assessment Session</h1>
+            
+            <div class="progress-bar-container" style="max-width: 400px; height: 10px; margin-bottom: 3rem;">
+                <!-- Split progress bar matching screenshot -->
+                <div style="width: 60px; height: 100%; background: #ccc; opacity: 0.5;"></div>
+                <div style="width: 100px; height: 100%; background: #bd8e6b;"></div>
+                <div style="flex: 1; height: 100%; background: #de6834;"></div>
             </div>
+
             <div class="stats">
-                <div class="stat-line">Total Questions <span class="stat-value" id="totQuestions">-</span></div>
-                <div class="stat-line">Total Time <span class="stat-value" id="totTime">-</span></div>
+                <div class="stat-line">Total Questions <span class="stat-value" id="totQuestions">10</span></div>
+                <div class="stat-line">Total Time <span class="stat-value" id="totTime">60 mins</span></div>
+                <div class="stat-line">Max Marks <span class="stat-value" id="totMarks">20</span></div>
             </div>
         </div>
 
@@ -287,17 +294,11 @@
             if (examId) {
                 const exam = db.getExamById(examId);
                 if (exam) {
-                    document.getElementById('testTitle').textContent = exam.title || exam.testId || 'M-17th Feb-26 - DSOOPs FA 1 - CSE 2024 Batch';
-                    document.getElementById('totQuestions').textContent = exam.questions ? exam.questions.length : '0';
-                    document.getElementById('totTime').textContent = (exam.duration || 90) + ' mins';
-                } else {
-                    document.getElementById('testTitle').textContent = 'Test Template';
+                    document.getElementById('totQuestions').textContent = exam.questions ? exam.questions.length : '10';
+                    document.getElementById('totTime').textContent = (exam.duration || 60) + ' mins';
+                    document.getElementById('totMarks').textContent = exam.totalMarks || 20;
+                    document.getElementById('testcode').value = exam.testId || '';
                 }
-            } else {
-                // Fallback text if just loaded directly from file explorer without params
-                document.getElementById('testTitle').textContent = 'M-17th Feb-26 - DSOOPs FA 1 - CSE 2024 Batch';
-                document.getElementById('totQuestions').textContent = '3';
-                document.getElementById('totTime').textContent = '90 mins';
             }
         });
 
@@ -315,21 +316,46 @@
             }
         }
 
-        function handleSignIn(e) {
+        async function handleSignIn(e) {
             e.preventDefault();
-            const pass = document.getElementById('password').value;
-            const code = document.getElementById('testcode').value;
+            const roll = document.getElementById('rollnumber').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const code = document.getElementById('testcode').value.trim().toUpperCase();
 
-            if (pass === '123456' && code === '70707') {
-                // To keep state consistent, set current exam ID if we arrived from a link
-                const urlParams = new URLSearchParams(window.location.search);
-                const examId = urlParams.get('testId');
-                if (examId) {
-                    // For mock system. In real system, startAttempt happens here or in attempt page.
-                }
-                window.location.href = 'exam-attempt.html';
+            // 1. Validate Test Code
+            const exam = db.getExamByTestId(code);
+            if (!exam) {
+                alert('Invalid Test Code! Please check your invite link.');
+                return;
+            }
+
+            // 2. Perform Mock Login / Session Creation
+            // In a real APP, auth.login() would verify against a database.
+            // For now, we simulate a successful login for the provided roll number.
+            let user = db.getUserByRollNo ? db.getUserByRollNo(roll) : null;
+            if (!user) {
+                // Auto-create a demo student user if they don't exist
+                user = db.addUser({
+                    id: 'std_' + roll,
+                    name: 'CHITKARA STUDENT',
+                    rollNo: roll,
+                    email: roll + '@chitkara.edu.in',
+                    role: 'student'
+                });
+            }
+            
+            // Log in the user
+            const loginRes = auth.login(user.email, pass || '123456');
+            
+            // 3. Start Exam Attempt
+            const attemptRes = db.startAttempt(exam.id, user.id);
+            if (attemptRes.success) {
+                window.location.href = 'exam-attempt.html?attemptId=' + attemptRes.attempt.id;
+            } else if (attemptRes.existingAttempt) {
+                // Resume existing attempt
+                window.location.href = 'exam-attempt.html?attemptId=' + attemptRes.existingAttempt.id;
             } else {
-                alert('Invalid credentials! Test code should be 70707 and password 123456');
+                alert(attemptRes.message || 'Failed to start exam. Check if you already submitted.');
             }
         }
     </script>
