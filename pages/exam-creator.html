@@ -1877,6 +1877,31 @@
 
                 <!-- Main Worksite -->
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                    <!-- BULK UPLOAD CTA BANNER -->
+                    <div class="bulk-upload-banner" style="background: #f6ffed; border: 1px solid #b7eb8f; padding: 20px 24px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(82, 196, 26, 0.05); margin-bottom: 30px;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 48px; height: 48px; background: #52c41a; color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 800; color: #1b5e20; font-size: 1.1rem; font-family: 'Outfit';">Bulk MCQ Spreadsheet Architect</div>
+                                <div style="font-size: 0.85rem; color: #388e3c; font-weight: 500; margin-top:2px;">
+                                    Fill your assessment instantly using Excel. 
+                                    <span style="color: #2e7d32; text-decoration: underline; cursor: pointer; margin-left:8px;" onclick="showExcelFormat()">[ View Required Format ]</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                             <button class="btn btn-ghost" onclick="downloadExcelTemplate()" style="border-color: #52c41a; color: #52c41a; background: #fff; font-weight: 700; border-radius: 10px;">
+                                <i class="fas fa-download" style="margin-right:8px;"></i> TEMPLATE
+                            </button>
+                            <button class="btn btn-run" onclick="document.getElementById('excelUploadBanner').click()" style="background: #52c41a; color: #fff; border: none; font-weight: 700; height: 44px; padding: 0 24px; border-radius: 10px; box-shadow: 0 6px 15px rgba(82, 196, 26, 0.25);">
+                                UPLOAD FILE
+                            </button>
+                        </div>
+                        <input type="file" id="excelUploadBanner" style="display:none" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
+                    </div>
+
                     <div class="split-builder" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
                         <!-- Center: Problem -->
                         <div class="builder-left"
@@ -1888,13 +1913,15 @@
                                         <label class="label"
                                             style="letter-spacing:1px; color:#999; font-size:0.7rem; font-weight:700;">QUESTION
                                             IDENTIFIER</label>
-                                        <div style="display: flex; gap: 8px;">
+                                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                             <button class="mini-tool-btn" onclick="openPoolModal()"
-                                                style="color: #6366f1;"><i class="fas fa-database"></i> Import from
-                                                Pool</button>
+                                                style="color: #6366f1;"><i class="fas fa-database"></i> Import from Pool</button>
+                                            <button class="mini-tool-btn" onclick="document.getElementById('excelUploadBtn').click()" style="color: #2ecc71; font-weight: 700; border: 1.5px solid #2ecc71; background: #f6ffed;">
+                                                <i class="fas fa-file-excel"></i> Bulk Import (Excel)
+                                            </button>
+                                            <input type="file" id="excelUploadBtn" style="display:none" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
                                             <button class="mini-tool-btn" onclick="generateAIQuestion()"
-                                                style="color: var(--primary);"><i class="fas fa-robot"></i> AI
-                                                Generate</button>
+                                                style="color: var(--primary);"><i class="fas fa-robot"></i> AI Generate</button>
                                             <button class="mini-tool-btn" onclick="applyTemplate('coding')"><i
                                                     class="fas fa-code"></i> Coding Template</button>
                                         </div>
@@ -2291,12 +2318,18 @@
 
     <aside class="sidebar">
         <div style="position: sticky; top: 32px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
                 <h3 style="font-weight: 700; font-size: 1.1rem;">Exam Timeline</h3>
                 <div id="totalQuestionsCount"
                     style="background:var(--primary); color:white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight:700;">
                     0</div>
             </div>
+
+            <!-- GLOBAL BULK UPLOAD -->
+            <button class="btn btn-ghost" onclick="document.getElementById('excelUploadGlobal').click()" style="width:100%; margin-bottom: 20px; border:1px solid #2ecc71; color:#2ecc71; background:rgba(46,204,113,0.05);">
+                <i class="fas fa-file-excel" style="margin-right:8px;"></i> Bulk Import (Excel)
+            </button>
+            <input type="file" id="excelUploadGlobal" style="display:none" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
 
             <div class="input-group" style="margin-bottom: 20px;">
                 <input type="text" id="sidebarSearch" class="clean-input" placeholder="Search Questions..."
@@ -2346,6 +2379,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
 <!-- SortableJS for Drag & Drop -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<!-- SheetJS for Excel Upload -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <script>
     // Custom Font & Size registration for Quill
@@ -3792,6 +3827,146 @@
 
         selectQuestionType('mcq');
         updateQuestionsList();
+    }
+
+    function handleExcelUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet);
+
+                if (json.length === 0) {
+                    showToast('The excel file appears to be empty');
+                    return;
+                }
+
+                let addedCount = 0;
+                json.forEach(row => {
+                    // Normalize keys to handle minor formatting differences (trim and lowercase)
+                    const getVal = (patterns) => {
+                        const key = Object.keys(row).find(k => patterns.some(p => k.toLowerCase().trim().includes(p)));
+                        return key ? row[key] : null;
+                    };
+
+                    const heading = getVal(['question title']) || getVal(['title']);
+                    const qText = getVal(['question text']) || getVal(['text']) || getVal(['question']);
+                    const choice1 = getVal(['ans choice 1']) || getVal(['choice 1']) || getVal(['option 1']);
+                    const choice2 = getVal(['ans choice 2']) || getVal(['choice 2']) || getVal(['option 2']);
+                    const choice3 = getVal(['ans choice 3']) || getVal(['choice 3']) || getVal(['option 3']);
+                    const choice4 = getVal(['ans choice 4']) || getVal(['choice 4']) || getVal(['option 4']);
+                    const correctChoice = getVal(['correct option']) || getVal(['answer']) || getVal(['correct ans']);
+                    const section = getVal(['section to add in']) || getVal(['section']) || 'General';
+                    const marks = parseInt(getVal(['marks'])) || 1;
+
+                    if (heading && qText && choice1 && choice2) {
+                        const options = [choice1, choice2, choice3, choice4].filter(o => o !== null && o !== undefined && o !== '');
+                        
+                        // Handle correct option mapping (text, letter A-D, or number 1-4)
+                        let correctAnswer = correctChoice;
+                        if (correctChoice !== null) {
+                            const ccStr = String(correctChoice).trim().toUpperCase();
+                            if (ccStr === 'A' || ccStr === '1') correctAnswer = choice1;
+                            else if (ccStr === 'B' || ccStr === '2') correctAnswer = choice2;
+                            else if (ccStr === 'C' || ccStr === '3') correctAnswer = choice3;
+                            else if (ccStr === 'D' || ccStr === '4') correctAnswer = choice4;
+                        }
+
+                        const q = {
+                            id: 'q_' + Date.now() + Math.random().toString(36).substr(2, 5),
+                            type: 'mcq',
+                            heading: String(heading).trim(),
+                            title: `<p>${String(qText).trim()}</p>`,
+                            marks: marks,
+                            section: String(section).trim(),
+                            options: options.map(o => String(o).trim()),
+                            correctAnswer: String(correctAnswer).trim(),
+                            timer: 0,
+                            teacherNotes: 'Imported via Excel Bulk Upload'
+                        };
+
+                        // Add section if it doesn't exist
+                        if (!exams.sections.includes(q.section)) {
+                            exams.sections.push(q.section);
+                        }
+
+                        exams.questions.push(q);
+                        db.addToQuestionPool(q);
+                        addedCount++;
+                    }
+                });
+
+                if (addedCount > 0) {
+                    updateQuestionsList();
+                    updateSectionsList();
+                    autoSave();
+                    showToast(`Successfully imported ${addedCount} MCQs!`);
+                } else {
+                    showToast('No valid MCQs found. Check format: question title, question text, choices 1-4, correct option, marks, section.');
+                }
+            } catch (err) {
+                console.error('Excel Parsing Error:', err);
+                showToast('Error parsing Excel file. Please ensure it is a valid .xlsx or .xls file.');
+            }
+            // Clear input for next upload
+            event.target.value = '';
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function showExcelFormat() {
+        const columns = [
+            'Question Title',
+            'Question Text',
+            'Ans Choice 1',
+            'Ans Choice 2',
+            'Ans Choice 3',
+            'Ans Choice 4',
+            'Correct Option (Text or 1-4)',
+            'Section',
+            'Marks'
+        ];
+        
+        const html = `
+            <div style="padding: 10px;">
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Your spreadsheet should have these exact column headers in the first row:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                    ${columns.map(c => `<div style="font-family:'JetBrains Mono'; font-size: 0.75rem; background:#fff; padding:6px 12px; border-radius:6px; border:1px solid #eee;">${c}</div>`).join('')}
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #fff8e1; border-radius: 8px; border: 1px solid #ffe082; font-size: 0.8rem; color: #795548;">
+                    <strong>Tip:</strong> The 'Correct Option' can be the text of the answer or just the number (1-4).
+                </div>
+            </div>
+        `;
+
+        showModal({
+            title: 'Excel MCQ Format Guide',
+            desc: 'Follow this structure to ensure successful auto-population.',
+            content: html,
+            confirmText: 'I Understand',
+            onConfirm: () => {}
+        });
+    }
+
+    function downloadExcelTemplate() {
+        const data = [
+            ["Question Title", "Question Text", "Ans Choice 1", "Ans Choice 2", "Ans Choice 3", "Ans Choice 4", "Correct Option", "Section", "Marks"],
+            ["OOP Basics", "What is encapsulation?", "Data Hiding", "Inheritance", "Polymorphism", "Abstraction", "Data Hiding", "Technical", 2],
+            ["Logic Check", "Is Java an OOP language?", "Yes", "No", "Maybe", "Partially", "1", "General", 1]
+        ];
+
+        const worksheet = XLSX.utils.aoa_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "MCQ Template");
+        
+        XLSX.writeFile(workbook, "Exampad_MCQ_Template.xlsx");
+        showToast('Template downloaded!');
     }
 
     function showToast(msg) {

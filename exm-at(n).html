@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../logo.jpg">
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800;900&family=Changa:wght@200;300;400;500;600;700;800&family=Changa+One&family=Mulish:wght@200;300;400;500;600;700;800;900&family=Hind:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Nunito:wght@200;300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Varela+Round&family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800;900&family=Changa:wght@200;300;400;500;600;700;800&family=Changa+One&family=Mulish:wght@200;300;400;500;600;700;800;900&family=Hind:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <script src="../js/theme-engine.js"></script>
     <!-- Lucide Icons -->
@@ -77,14 +77,17 @@
         }
 
         h1,
+        h2,
+        h3,
+        .q-title,
+        h1,
         .q-title {
-            font-family: 'Hind', sans-serif !important;
             font-size: 2rem !important;
-            font-weight: 700 !important;
-            color: #111111;
-            letter-spacing: 0px !important;
-            line-height: 1.3;
-            margin-bottom: 2px;
+            font-weight: 600 !important;
+            color: #000000;
+            letter-spacing: 0.01em;
+            line-height: 1.4;
+            margin-bottom: 8px;
         }
 
         /* Buttons & Labels */
@@ -133,20 +136,18 @@
 
         .q-body {
             font-family: 'Hind', sans-serif !important;
-            font-size: 1.125rem !important;
-            /* Scaled 18px */
+            font-size: 0.9375rem;
+            /* 15px */
             font-weight: 400;
-            line-height: 1.6 !important;
+            line-height: 1.42 !important;
+            /* 21.3px */
             color: #333333;
+            text-align: left;
             margin: 0;
             padding: 0;
             display: block;
             word-wrap: break-word;
-            word-break: normal;
             cursor: text;
-            letter-spacing: 0px !important;
-            tab-size: 4;
-            white-space: inherit;
         }
 
         .q-body p {
@@ -168,21 +169,20 @@
         .q-body pre,
         .ql-syntax,
         .code-inline-box {
-            background-color: rgb(235, 235, 235);
-            border-radius: 4px;
-            padding: 9.5px;
-            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 13px;
+            background: #F2F4F7;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9375rem;
+            /* Matches body size for consistency */
             line-height: 1.42;
-            color: #212529;
-            margin: 0;
-            overflow: auto;
-            border: none;
-            white-space: pre;
+            color: #333333;
+            margin: 12px 0;
+            overflow-x: auto;
+            border: 1px solid #EAECF0;
+            white-space: pre-wrap;
             word-wrap: break-word;
             cursor: text;
-            display: block;
-            box-sizing: border-box;
         }
 
         .app-layout {
@@ -584,93 +584,8 @@
             font-family: 'Hind', sans-serif;
         }
 
-
-        /* Custom Prompt Modal (Testpad Style) */
-        .reset-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(4px);
+        .nav-rail.collapsed+.resizer-h {
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000000;
-        }
-
-        .reset-modal {
-            background: #fff;
-            padding: 48px;
-            border-radius: 16px;
-            max-width: 520px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes modalPop {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .reset-modal p {
-            color: #101828;
-            font-size: 1.25rem;
-            line-height: 1.5;
-            margin-bottom: 32px;
-            font-family: 'Hind', sans-serif;
-            font-weight: 500;
-        }
-
-        .reset-modal-btns {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .reset-btn {
-            padding: 12px 48px;
-            border-radius: 30px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.2s;
-            font-family: 'Hind', sans-serif;
-        }
-
-        .reset-btn-yes {
-            background: #DE5B2B;
-            color: #fff;
-        }
-
-        .reset-btn-yes:hover {
-            background: #c54e22;
-            transform: translateY(-1px);
-        }
-
-        .reset-btn-no {
-            background: #F2F4F7;
-            color: #475467;
-        }
-
-        .reset-btn-no:hover {
-            background: #eaecf0;
-            transform: translateY(-1px);
-        }
-
-        .reset-btn:active {
-            transform: scale(0.96);
         }
 
         .rail-toggle-btn-abs {
@@ -696,16 +611,15 @@
         }
 
         .section-label {
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-size: calc(var(--rail-font-size, 16px) * 0.889);
+            font-weight: 600;
             color: #CF5927;
-            text-transform: uppercase;
+            text-transform: none;
             writing-mode: horizontal-tb;
             margin-bottom: 24px;
-            padding: 10px 10px;
+            padding: 10px 0;
             text-align: center;
             width: 100%;
-            line-height: 1.4;
             font-family: 'Hind', sans-serif;
         }
 
@@ -955,7 +869,23 @@
             overflow-y: auto;
         }
 
-        /* Consolidated into main blocks above */
+        .q-title {
+            font-family: inherit;
+            font-size: calc(24px * var(--text-scale));
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .q-body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: calc(18px * var(--text-scale));
+            font-weight: 400;
+            line-height: 1.7;
+            color: #101828;
+            letter-spacing: 0.01em;
+        }
 
         .q-body p {
             margin-bottom: 1.25em;
@@ -1071,7 +1001,7 @@
 
         .mcq-option span {
             font-family: 'Hind', sans-serif;
-            font-size: 1.1rem;
+            font-size: 13px;
             font-weight: 400;
             color: #333;
         }
@@ -1081,8 +1011,8 @@
         }
 
         .mcq-circle {
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 24px;
+            height: 24px;
             background: #FFF2ED;
             border-radius: 50%;
             display: flex;
@@ -1094,8 +1024,8 @@
 
         .mcq-option.selected .mcq-circle::after {
             content: '';
-            width: 1rem;
-            height: 1rem;
+            width: 16px;
+            height: 16px;
             background: var(--primary);
             /* Solid orange dot */
             border-radius: 50%;
@@ -1197,23 +1127,24 @@
 
         /* Interaction Submit Button */
         .btn-q-submit {
-            background: #DE5B2B;
+            background: var(--primary);
             color: #fff;
-            padding: 10px 32px;
-            border-radius: 6px;
-            font-weight: 500;
+            padding: 16px 48px;
+            border-radius: 8px;
+            font-weight: 700;
             border: none;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1.35rem;
             text-transform: lowercase;
             transition: all 0.2s;
-            box-shadow: none;
+            box-shadow: 0 4px 12px rgba(230, 106, 53, 0.2);
             margin-top: 0;
         }
 
         .btn-q-submit:hover {
-            background: #c54e22;
-            transform: translateY(-1px);
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(230, 106, 53, 0.4);
         }
 
 
@@ -1901,7 +1832,23 @@
             color: var(--text-secondary);
         }
 
-        /* Cleaned up redundant .btn-q-submit */
+        .btn-q-submit {
+            background: #E66A35;
+            color: #fff;
+            padding: 12px 64px;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 1.35rem;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .btn-q-submit:hover {
+            background: #d55a2a;
+            transform: translateY(-1px);
+        }
 
         /* SECURITY OVERLAY (PROFESSIONAL REDESIGN) */
         #securityCheckOverlay {
@@ -2222,6 +2169,7 @@
             transform: scale(1.1);
         }
 
+        /* INTEGRATED FEEDBACK VIEW */
         #feedbackView {
             background: #fff;
             height: 100%;
@@ -2255,10 +2203,10 @@
         }
 
         .feedback-header-content h1 {
-            font-family: 'Inter', sans-serif !important;
+            font-family: 'Outfit', sans-serif;
             color: #D35400;
-            font-size: 2.3rem !important;
-            font-weight: 600 !important; /* Semi-Bold Inter as requested */
+            font-size: 2.4rem;
+            font-weight: 500;
             margin-top: 0;
             margin-bottom: 12px;
             letter-spacing: -0.5px;
@@ -2305,7 +2253,6 @@
 
         .feedback-section label {
             display: block;
-            font-family: 'Inter', sans-serif !important;
             font-weight: 500;
             color: #4B5563;
             margin-bottom: 24px;
@@ -2337,8 +2284,7 @@
         }
 
         .pill-opt.active {
-            background: #DE6834;
-            font-weight: 700;
+            background: #D35400;
             color: #fff;
         }
 
@@ -2372,15 +2318,6 @@
             font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.2s;
-            text-transform: none;
-        }
-
-        .btn-feedback-done.active {
-            background: #C46210;
-            color: #fff;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(196, 98, 16, 0.2);
-            text-transform: none;
         }
 
         .btn-feedback-done:hover {
@@ -2428,25 +2365,25 @@
             display: none;
         }
 
-        /* CONFIRMATION POPOVER STYLES (Clean Light Theme) */
+        /* CONFIRMATION POPOVER STYLES */
         .confirm-popover {
             position: absolute;
             bottom: 100%;
             left: 50%;
             transform: translateX(-50%) translateY(-15px);
-            background: #fff; /* White Bubble */
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 22px 26px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             z-index: 10002;
-            width: 260px;
+            width: 240px;
             text-align: center;
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
-            font-family: 'Hind', sans-serif;
+            gap: 15px;
+            font-family: 'Open Sans', sans-serif;
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -2472,39 +2409,31 @@
             top: 100%;
             left: 50%;
             transform: translateX(-50%);
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-top: 10px solid #fff; /* White Triangle */
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #fff;
         }
 
         .popover-btn-yes {
-            background: #DE6834; /* Brand Orange */
+            background: #a24b17;
             color: #fff;
             border: none;
-            padding: 8px 24px;
+            padding: 8px 25px;
             border-radius: 20px;
-            font-weight: 600;
-            font-family: 'Hind', sans-serif;
+            font-weight: 700;
             cursor: pointer;
-            font-size: 0.95rem;
-            transition: all 0.2s;
+            font-size: 0.9rem;
         }
 
         .popover-btn-no {
-            background: #f1f5f9; /* Light Grey Pill */
-            color: #64748b;
-            border: none;
-            padding: 8px 28px;
+            background: #fff;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            padding: 8px 25px;
             border-radius: 20px;
-            font-weight: 500;
+            font-weight: 700;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-
-        .popover-btn-no:hover {
-            background: #e2e8f0;
-            color: #1e293b;
+            font-size: 0.9rem;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
@@ -2703,8 +2632,8 @@
                 <!-- HEADER LEFT -->
                 <div class="header-left" style="display:flex; align-items:center;">
                     <button class="logo-btn" onclick="location.reload()"
-                        style="background: transparent; border:none; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center; border-radius: 2px;">
-                        <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" alt="Logo" height="54">
+                        style="background: #E62E2D; border:none; padding:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; border-radius: 2px;">
+                        <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" alt="Logo" height="28">
                     </button>
                     <!-- Quiz Title (Dynamic from Exam) -->
                     <div class="quiz-title" style="margin-left: 1.5rem; position: relative;">
@@ -2762,21 +2691,21 @@
                 <div id="wifiGroup" onmouseenter="showWifiTooltip()" onmouseleave="hideWifiTooltip()"
                     style="display: flex; align-items: center; gap: 10px; cursor: help; padding: 0 8px; position: relative;">
                     <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-                        <svg id="wifiIcon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        <svg id="wifiIcon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#12B76A"
                             stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"
-                            style="transition: stroke 0.3s; color: #12B76A;">
+                            style="transition: stroke 0.3s;">
                             <path d="M5 12.553C7.039 10.957 9.444 10 12 10C14.556 10 16.961 10.957 19 12.553" />
                             <path d="M1.422 9C4.332 6.55 8.016 5 12 5C15.984 5 19.668 6.55 22.578 9" />
                             <path d="M8.535 16.035C9.52 15.378 10.718 15 12 15C13.282 15 14.48 15.378 15.465 16.035" />
                             <path d="M12 19L12.01 18.99" />
                         </svg>
                         <div id="wifiErrorIcon"
-                            style="display: none; position: absolute; right: -24px; top: 1px; width: 22px; height: 22px; background: #D92D20; border-radius: 50%; border: 2px solid #fff; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.25); z-index: 10;">
-                            <i class="fas fa-exclamation" style="color: #fff; font-size: 11px; font-weight: 900;"></i>
+                            style="display: none; position: absolute; right: -14px; top: -6px; width: 16px; height: 16px; background: #D92D20; border-radius: 50%; border: 1.5px solid #fff; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;">
+                            <i class="fas fa-exclamation" style="color: #fff; font-size: 9px; font-weight: 900;"></i>
                         </div>
                     </div>
                     <div id="wifiWarning"
-                        style="display: none; color: #333; font-size: 1.125rem; font-weight: 500; line-height: 1.6; font-family: 'Hind', sans-serif; text-align: left;">
+                        style="display: none; color: #333; font-size: 14px; font-weight: 400; line-height: 1.1; font-family: 'Hind', sans-serif; text-align: left;">
                         Your<br>internet<br>connection<br>is poor.
                     </div>
                 </div>
@@ -2813,12 +2742,12 @@
                         <div class="user-info"
                             style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; line-height: 1.2;">
                             <span class="user-display-name" id="userName"
-                                style="color: #909090; font-weight: 400; font-size: 1.25rem; font-family: 'Hind', sans-serif; text-transform: uppercase; letter-spacing: 0.8px;">STUDENT</span>
+                                style="color: #8d8d8d; font-weight: 500; font-size: 1.15rem; font-family: 'Hind', sans-serif; text-transform: uppercase;">STUDENT</span>
                             <span id="userId"
-                                style="color: #909090; font-size: 1.25rem; font-weight: 400; font-family: 'Hind', sans-serif; letter-spacing: 0.8px;">---</span>
+                                style="color: #8d8d8d; font-size: 1.05rem; font-weight: 400; font-family: 'Hind', sans-serif;">---</span>
                         </div>
                         <div class="user-avatar-container"
-                            style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: #eee; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center;">
+                            style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: #eee; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center;">
                             <img src="https://course.testpad.chitkara.edu.in/icons/portrait_placeholder_circle.png"
                                 alt="User Profile" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
                         </div>
@@ -2901,12 +2830,12 @@
                         <div class="pane-footer"
                             style="height: 72px; padding: 0 40px; border-top: 1px solid #EAECF0; display: flex; align-items: center; justify-content: space-between;">
                             <div class="pane-nav-link" onclick="prevQuestion()"
-                                style="font-weight: 500; font-size: 1.05rem; text-transform: lowercase; color: #333; display: flex; align-items: center; gap: 8px;">
-                                <i class="fas fa-caret-left" style="font-size: 1rem; color: #CF5927;"></i> previous
+                                style="font-weight: 600; font-size: 18px; text-transform: lowercase; color: #101828; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-caret-left" style="font-size: 2rem; color: #CF5927;"></i> previous
                             </div>
                             <div class="pane-nav-link" onclick="nextQuestion()"
-                                style="font-weight: 500; font-size: 1.05rem; text-transform: lowercase; color: #333; display: flex; align-items: center; gap: 8px;">
-                                next <i class="fas fa-caret-right" style="font-size: 1rem; color: #CF5927;"></i>
+                                style="font-weight: 600; font-size: 18px; text-transform: lowercase; color: #101828; display: flex; align-items: center; gap: 8px;">
+                                next <i class="fas fa-caret-right" style="font-size: 2rem; color: #CF5927;"></i>
                             </div>
                         </div>
                     </section>
@@ -2956,7 +2885,8 @@
                             </div>
 
                             <div style="display: flex; align-items: center; gap: 20px;">
-                            <button class="btn-feedback-done" id="feedbackSubmitBtn" onclick="submitFeedback()" style="font-family: 'Roboto', sans-serif; text-transform: none;">Submit</button>
+                                <button class="btn-feedback-done" id="feedbackSubmitBtn"
+                                    onclick="finalizeFeedback()">submit</button>
                                 <div id="immediateResultContainer"></div>
                             </div>
                         </div>
@@ -2972,22 +2902,22 @@
 
     <!-- MODAL (Submission OTP) -->
     <div id="confirmModal"
-        style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 20000; align-items: center; justify-content: center; font-family: 'Hind', sans-serif;">
+        style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 20000; align-items: center; justify-content: center; font-family: 'Hind', Arial, sans-serif;">
         <div
-            style="background: #ffffff; width: 520px; padding: 50px 60px; border-radius: 12px; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center;">
+            style="background: #ffffff; width: 480px; padding: 40px 50px; border-radius: 8px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center;">
             <button onclick="closeModal('confirmModal')"
-                style="position: absolute; top: 18px; right: 24px; background: none; border: none; font-size: 28px; cursor: pointer; color: #555; display: flex; align-items: center; justify-content: center; outline: none; transition: 0.2s;">
-                <i style="font-style: normal; font-family: inherit;">✕</i>
+                style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center; outline: none;">
+                <i style="font-style: normal; font-weight: 300; font-family: inherit;">✕</i>
             </button>
             <p id="confirmModalMsg"
-                style="font-size: 22px; color: #333; margin-top: 15px; margin-bottom: 45px; font-weight: 400; text-align: center; width: 100%;">
-                Please use <strong id="submissionOtpCode" style="font-weight: 700; color: #333;">0000</strong> to submit test.
+                style="font-size: 20px; color: #333; margin-top: 15px; margin-bottom: 40px; font-weight: 500; text-align: center; width: 100%;">
+                Please use <strong id="submissionOtpCode" style="font-weight: 700;">0000</strong> to submit test.
             </p>
-            <div style="display: flex; flex-direction: column; align-items: center; width: 70%; gap: 30px;">
+            <div style="display: flex; flex-direction: column; align-items: center; width: 80%; gap: 20px;">
                 <input type="text" id="submissionOtpInput" placeholder="Enter Otp" autocomplete="off"
-                    style="width: 100%; border: none; border-bottom: 1.5px solid #eee; background: transparent; padding: 12px 0; font-size: 1.15rem; text-align: center; outline: none; color: #333; font-family: inherit;">
+                    style="width: 100%; border: none; border-bottom: 1px solid #ccc; background: transparent; padding: 10px 0; font-size: 16px; text-align: center; outline: none; color: #333; font-family: inherit;">
                 <button onclick="verifySubmissionOtp()"
-                    style="background: #ed8a5c; color: #fff; border: none; border-radius: 28px; padding: 14px 45px; font-size: 1.1rem; cursor: pointer; font-weight: 500; font-family: inherit; transition: 0.2s; box-shadow: 0 4px 12px rgba(237, 138, 92, 0.3);">
+                    style="background: #ed8a5c; color: #fff; border: none; border-radius: 24px; padding: 12px 40px; font-size: 16px; cursor: pointer; font-weight: 500; font-family: inherit; margin-top: 10px;">
                     Submit
                 </button>
             </div>
@@ -3084,18 +3014,14 @@
             const q = questions[currentQuestionIndex];
             if (q.type !== 'coding') return;
 
-            confirmResetModal(() => {
-                // Clear response for this question in the current session
-                if (currentAttempt.responses[q.id]) {
-                    delete currentAttempt.responses[q.id];
-                }
+            // Clear response for this question in the current session
+            if (currentAttempt.responses[q.id]) {
+                delete currentAttempt.responses[q.id];
+            }
 
-                // Re-render the question to restore default code
-                renderInteraction(q);
-                showToast("Template reset to default.");
-            }, () => {
-                // On Cancel: dismiss modal and keep current code
-            });
+            // Re-render the question to restore default code
+            renderInteraction(q);
+            showToast("Template reset to default.");
         }
 
         function updateLibStatusTag(lang) {
@@ -4111,14 +4037,19 @@
 
                 // --- SECTION HEADER ---
                 const header = document.createElement('div');
-                let headerColor = '#ce866a'; // Standard Terracotta Orange from Screenshot
+                let headerColor = '#CF5927'; // Orange
                 let textColor = '#fff';
 
                 if (isSubmitted) {
-                    headerColor = '#12B76A'; // Keep Green for Submitted if they exist, or just use Orange
+                    headerColor = '#12B76A'; // Green
+                } else if (isLocked) {
+                    headerColor = '#F9FAFB'; // Off White
+                    textColor = '#A04A26';   // Darker Terracotta for contrast
+                } else if (isCollapsed) {
+                    headerColor = '#ce866a'; // Minimized color from design
                 }
 
-                header.style = `background: ${headerColor}; color: ${textColor}; padding: 34px 40px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 1.4rem; font-family: 'Hind', sans-serif; cursor: ${isLocked ? 'not-allowed' : 'pointer'}; border-radius: 8px; border: none; transition: all 0.2s;`;
+                header.style = `background: ${headerColor}; color: ${textColor}; padding: 24px 30px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 1.25rem; font-family: 'Open Sans', sans-serif; cursor: ${isLocked ? 'not-allowed' : 'pointer'}; border-top-left-radius: 8px; border-top-right-radius: 8px; border: none;`;
 
                 if (!isLocked) {
                     header.onclick = () => {
@@ -4127,13 +4058,13 @@
                     };
                 }
 
-                const indicatorIcon = isLocked ? '<i class="fas fa-lock" style="font-size: 16px; opacity: 0.8;"></i>' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}" style="font-size: 16px; margin-left: 12px; opacity: 0.8;"></i>`;
-                const sectionTypeText = qs[0]?.q?.section_type || `Section ${sections.indexOf(sName) + 1}`;
+                const indicatorIcon = isLocked ? '<i class="fas fa-lock" style="font-size: 18px;"></i>' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}" style="font-size: 18px; margin-left: 12px;"></i>`;
+                const sectionType = qs[0]?.q?.type === 'coding' ? ' - Coding' : '';
 
                 header.innerHTML = `
-                    <span style="letter-spacing: 0.2px;">${sName} - ${sectionTypeText}</span>
-                    <div style="display: flex; align-items: center; gap: 12px; font-size: 0.95rem; font-weight: 400;">
-                        <span style="opacity: 0.9;">${subCount}/${qs.length} Questions</span>
+                    <span>${sName}${sectionType}</span>
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 1rem; opacity: 1;">
+                        <span>${subCount}/${qs.length} Questions</span>
                         ${indicatorIcon}
                     </div>
                 `;
@@ -4142,32 +4073,28 @@
                 sectionContainer.appendChild(header);
 
                 if (!isCollapsed) {
-                    // When expanded, remove the bottom radius from the header for a flat seam
-                    header.style.borderBottomLeftRadius = '0';
-                    header.style.borderBottomRightRadius = '0';
-
                     const tableWrap = document.createElement('div');
-                    tableWrap.style = "padding: 10px 0 0 0;"; // Closer to header
+                    tableWrap.style = "padding: 30px 40px;";
 
                     const table = document.createElement('table');
-                    table.style = "width: 100%; border-collapse: collapse; text-align: left; font-family: 'Hind', sans-serif; font-size: 1.15rem;";
+                    table.style = "width: 100%; border-collapse: collapse; text-align: left; font-family: 'Open Sans', sans-serif; font-size: 0.833rem;";
                     table.innerHTML = `
                         <thead>
                             <tr style="border-bottom: none;">
-                                <th style="padding: 24px 30px; color: #101828; font-weight: 700; width: 80px; text-align: left;">
-                                    <div style="border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 65px;">Sr. no.</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; width: 80px; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 45px;">Sr. no.</div>
                                 </th>
-                                <th style="padding: 24px 10px; color: #101828; font-weight: 700; text-align: left;">
-                                    <div style="border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 340px;">Question</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 220px;">Question</div>
                                 </th>
-                                <th style="padding: 24px 10px; color: #101828; font-weight: 700; width: 140px; text-align: left;">
-                                    <div style="border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 70px;">Type</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; width: 200px; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 60px;">Type</div>
                                 </th>
-                                <th style="padding: 24px 10px; color: #101828; font-weight: 700; width: 140px; text-align: left;">
-                                    <div style="border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 80px;">Status</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; width: 200px; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 70px;">Status</div>
                                 </th>
-                                <th style="padding: 24px 10px; color: #101828; font-weight: 700; width: 140px; text-align: left;">
-                                    <div style="border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 85px;">Action</div>
+                                <th style="padding: 10px; color: #101828; font-weight: 800; width: 150px; text-align: left; vertical-align: bottom;">
+                                    <div style="display:inline-block; border-bottom: 2px solid #EAECF0; padding-bottom: 12px; width: 80px;">Action</div>
                                 </th>
                             </tr>
                         </thead>
@@ -4195,15 +4122,15 @@
                         const tr = document.createElement('tr');
                         tr.style = "border-bottom: none; background: #fff; transition: all 0.2s;";
                         tr.innerHTML = `
-                            <td style="padding: 24px 30px; color: #101828; text-align: left; font-weight: 400; font-size: 1.15rem;">${i + 1}.</td>
-                            <td style="padding: 24px 10px; color: #101828; text-align: left; font-weight: 400; font-size: 1.25rem;">
+                            <td style="padding: 20px 10px; color: #101828; text-align: left; font-weight: 500;">${i + 1}.</td>
+                            <td style="padding: 20px 10px; color: #101828; text-align: left; font-weight: 500;">
                                 <span class="q-title-link" onclick="loadQuestion(${i})" style="cursor: pointer; transition: all 0.2s;">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
                             </td>
-                            <td style="padding: 24px 10px; color: #101828; text-align: left; font-weight: 400; font-size: 1.1rem;">${(qInfo.type || 'MCQ').charAt(0).toUpperCase() + (qInfo.type || 'MCQ').slice(1).replace('_', ' ')}</td>
-                            <td style="padding: 24px 10px; color: ${statusColor}; text-align: left; font-weight: 400; font-size: 1.1rem;">${status}</td>
-                            <td style="padding: 24px 10px; text-align: left;">
+                            <td style="padding: 20px 10px; color: #101828; text-align: left; font-weight: 500;">${(qInfo.type || 'MCQ').toUpperCase()}</td>
+                            <td style="padding: 20px 10px; color: ${statusColor}; text-align: left; font-weight: 500;">${status}</td>
+                            <td style="padding: 20px 10px; text-align: left;">
                                 <a href="javascript:void(0)" class="solve-link" onclick="loadQuestion(${i})" 
-                                   style="color: #ce866a; text-decoration: none; font-weight: 500; font-size: 1.1rem; line-height: 1.3; display: block;">${actionText}</a>
+                                   style="color: #CF5927; text-decoration: none; font-weight: 500; line-height: 1.3; display: block;">${actionText}</a>
                             </td>
                         `;
                         const titleSpan = tr.querySelector('.q-title-link');
@@ -4236,8 +4163,8 @@
                             const popover = document.createElement('div');
                             popover.className = 'confirm-popover';
                             popover.innerHTML = `
-                                <div style="font-weight:500; color:#101828; margin-bottom:12px; font-size:1.25rem; line-height:1.4;">Do you really want to submit<br>this section?</div>
-                                <div style="display:flex; gap:16px; width:100%; justify-content:center;">
+                                <div style="font-weight:700; color:#333; margin-bottom:10px; font-size:0.95rem;">Do you really want to submit<br>this section?</div>
+                                <div style="display:flex; gap:12px; width:100%; justify-content:center;">
                                     <button class="popover-btn-yes">Yes</button>
                                     <button class="popover-btn-no">No</button>
                                 </div>
@@ -4275,8 +4202,8 @@
                 const popover = document.createElement('div');
                 popover.className = 'confirm-popover';
                 popover.innerHTML = `
-                    <div style="font-weight:500; color:#101828; margin-bottom:12px; font-size:1.25rem; line-height:1.4;">Do you really want to submit<br>the test?</div>
-                    <div style="display:flex; gap:16px; width:100%; justify-content:center;">
+                    <div style="font-weight:700; color:#333; margin-bottom:10px; font-size:0.95rem;">Do you really want to submit<br>the test?</div>
+                    <div style="display:flex; gap:12px; width:100%; justify-content:center;">
                         <button class="popover-btn-yes">Yes</button>
                         <button class="popover-btn-no">No</button>
                     </div>
@@ -4402,7 +4329,7 @@
                 actionsWrap.style = "display:flex; flex-direction:column; align-items:flex-start; margin-top:10px;";
                 const clearBtn = document.createElement('button');
                 // Removed potential focus/active orange styles by explicitly setting outline and background
-                clearBtn.style = "background:none; border:none; color:#A01E17; font-weight:500; font-size:1rem; cursor:pointer; margin-top: 32px; padding: 0; outline: none; transition: opacity 0.2s;";
+                clearBtn.style = "background:none; border:none; color:#A01E17; font-weight:500; font-size:16px; cursor:pointer; margin-top: 32px; padding: 0; outline: none;";
                 clearBtn.textContent = "Clear selection";
                 clearBtn.onclick = () => {
                     saveResponse(q.id, '');
@@ -4582,14 +4509,11 @@
                     };
 
                     document.getElementById('clearBoardBtn').onclick = () => {
-                        confirmResetModal(() => {
+                        if (confirm("Are you sure you want to clear the canvas?")) {
                             fCanvas.clear();
                             fCanvas.backgroundColor = '#ffffff';
                             fCanvas.renderAll();
-                            showToast("Drawing canvas cleared.");
-                        }, () => {
-                            // Do nothing on cancel
-                        });
+                        }
                     };
 
                     function saveCanvas() {
@@ -4665,10 +4589,10 @@
                         
                         <!-- Unified Monaco Editor Split into 3 Logical Sections with Sticky Prefill -->
                         <div id="editorContainer" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: #fff; position: relative;">
-                             <div id="prefixEditor" style="flex-shrink: 0; background: #FFFFFF; border-bottom: 1px solid #F2F4F7; position: sticky; top: 0; z-index: 100;"></div>
-                             <div id="editableEditor" style="flex: 1; min-height: 350px; background: #fff;"></div>
-                             <div id="suffixGap" style="height: 16px; background: #fff;"></div>
-                             <div id="suffixEditor" style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #F2F4F7; position: sticky; bottom: 0; z-index: 100;"></div>
+                             <div id="prefixEditor" style="flex-shrink: 0; background: #F8F9FA; border-bottom: 1px solid #F2F4F7; position: sticky; top: 0; z-index: 100;"></div>
+                             <div id="editableEditor" style="flex: 1; min-height: 300px; background: #fff;"></div>
+                             <div id="suffixGap" style="height: 40px; background: #fff;"></div>
+                             <div id="suffixEditor" style="flex-shrink: 0; background: #F8F9FA; border-top: 1px solid #F2F4F7; position: sticky; bottom: 0; z-index: 100;"></div>
                         </div>
 
                         <div class="console-drawer" id="consoleDrawer">
@@ -4878,13 +4802,13 @@
                         language: lang.toLowerCase() === 'cpp' ? 'cpp' : (lang.toLowerCase() === 'java' ? 'java' : lang.toLowerCase()),
                         fontSize: 18,
                         lineHeight: 28,
-                        fontFamily: "Consolas, 'Courier New', monospace",
+                        fontFamily: 'Consolas, monospace',
                         fontWeight: '400',
                         letterSpacing: 0,
                         minimap: { enabled: false },
-                        renderLineHighlight: "all",
-                        lineNumbers: "on",
-                        lineNumbersMinChars: 4,
+                        renderLineHighlight: "none",
+                        cursorBlinking: "smooth",
+                        cursorStyle: "line",
                         quickSuggestions: true,
                         wordBasedSuggestions: true,
                         suggestOnTriggerCharacters: true,
@@ -4927,7 +4851,7 @@
                         value: middle,
                         theme: 'ExampadLight',
                         lineNumbers: 'on',
-                        lineNumbersMinChars: 4,
+                        lineNumbersMinChars: 3,
                         scrollbar: { vertical: 'visible', horizontal: 'visible', verticalScrollbarSize: 8 }
                     });
                     editorInstance = mEditor;
@@ -4995,30 +4919,20 @@
 
             // Call existing change logic
             // We need to temporarily set the value so changeLanguage can read it
-            // Check for code reset - Using Custom Modal instead of Browser Confirm
+            const oldLang = hiddenInput.value;
+            hiddenInput.value = lang;
+
+            // Check for code reset
             const q = currentExam.questions[currentQuestionIndex];
             const hasCode = currentAttempt.responses[q.id]?.value && currentAttempt.responses[q.id].value.trim() !== '';
 
             if (hasCode) {
-                confirmResetModal(() => {
-                    // Finalize language change after Yes
-                    finalizeLanguageChange(lang, label);
-                }, () => {
-                    // Revert back on No
+                if (!confirm("Switching languages will reset your code and load the new template. Continue?")) {
                     hiddenInput.value = oldLang;
                     selector.classList.remove('open');
-                });
-                return;
+                    return;
+                }
             }
-
-            finalizeLanguageChange(lang, label);
-        }
-
-        function finalizeLanguageChange(lang, label) {
-            const hiddenInput = document.getElementById('langSelector');
-            const currentText = document.getElementById('currentLangText');
-            const selector = document.getElementById('customLanguageSelector');
-            const q = currentExam.questions[currentQuestionIndex];
 
             if (!currentAttempt.responses[q.id]) currentAttempt.responses[q.id] = {};
             currentAttempt.responses[q.id].value = '';
@@ -5058,19 +4972,10 @@
         window.resetTemplate = function () {
             const q = currentExam.questions[currentQuestionIndex];
             if (!q) return;
-
-            confirmResetModal(() => {
-                // Clear response for this question in the current session
-                if (currentAttempt.responses[q.id]) {
-                    currentAttempt.responses[q.id].value = '';
-                }
-
-                // Re-render the question to restore default code
+            if (confirm("Resetting the template will completely clear your current code. Continue?")) {
+                if (currentAttempt.responses[q.id]) currentAttempt.responses[q.id].value = '';
                 renderInteraction(q);
-                showToast("Template reset to default.");
-            }, () => {
-                // Do nothing on cancel
-            });
+            }
         };
 
         function showFontSizeTooltip(e) {
@@ -5120,8 +5025,11 @@
                 document.documentElement.style.setProperty('--rail-font-size', '16px');
 
                 if (editorInstance) {
-                    // Regulated Editor Scaling: Starts at 18px
-                    const editorSize = 18 * scale;
+                    // Regulated Editor Scaling: Starts at 15px, grows in a controlled range
+                    // 100% -> 15px
+                    // 150% -> 15 + (50 * 0.1) = 20px
+                    // PRO SCALE: Linear multiplier for Monaco (matches REM scale)
+                    const editorSize = 15 * scale;
 
                     window.allEditors = window.allEditors || [];
                     window.allEditors.forEach(ed => {
@@ -5138,34 +5046,6 @@
                 }
 
             }, 200);
-        }
-
-        function confirmResetModal(onYes, onNo) {
-            let overlay = document.getElementById('resetModalOverlay');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.id = 'resetModalOverlay';
-                overlay.className = 'reset-modal-overlay';
-                overlay.innerHTML = `
-                    <div class="reset-modal">
-                        <p>Are you sure you want to reset back to the default code template? If you click yes, you will lose your current code!</p>
-                        <div class="reset-modal-btns">
-                            <button class="reset-btn reset-btn-yes" id="resetYes">Yes</button>
-                            <button class="reset-btn reset-btn-no" id="resetNo">No</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(overlay);
-            }
-            overlay.style.display = 'flex';
-            document.getElementById('resetYes').onclick = () => {
-                overlay.style.display = 'none';
-                onYes();
-            };
-            document.getElementById('resetNo').onclick = () => {
-                overlay.style.display = 'none';
-                onNo();
-            };
         }
 
         // --- SPLIT PANE RESIZER LOGIC ---
