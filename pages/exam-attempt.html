@@ -1860,8 +1860,8 @@
 
         .mcq-option span {
             font-family: 'Hind', sans-serif;
-            font-size: 1.1rem;
-            /* Match question content */
+            font-size: calc(1.1rem * var(--mcq-scale, 1));
+            /* Damped growth for right pane */
             font-weight: 400;
             line-height: 1.6;
             /* Match question line height */
@@ -1934,7 +1934,7 @@
             width: 100%;
             height: 320px;
             text-align: left;
-            font-size: 1rem;
+            font-size: calc(1rem * var(--mcq-scale, 1));
             line-height: 1.6;
             padding: 24px;
             border: 1px solid var(--border);
@@ -1952,7 +1952,7 @@
             margin-top: 32px;
             text-align: left;
             padding: 12px 20px;
-            font-size: 1.5rem;
+            font-size: calc(1.5rem * var(--mcq-scale, 1));
             border-bottom: 2px solid #A01E17;
             border-radius: 0;
             background: transparent;
@@ -4445,11 +4445,11 @@
                 timeRemaining = currentAttempt.timeLeft || (currentExam.duration * 60) || 3600;
             }
 
-            // Hide Proctoring Stats in practice mode, but KEEP timer
-            if (isPractice) {
-                const stats = document.querySelector('.stats-center');
-                if (stats) stats.style.display = 'none';
-            }
+            // Always show Proctoring Stats in header as requested (even in practice)
+            // if (isPractice) {
+            //     const stats = document.querySelector('.stats-center');
+            //     if (stats) stats.style.display = 'none';
+            // }
 
             // --- STATUS HANDLING ---
             if (!isPractice && currentAttempt.status === 'submitted') {
@@ -4478,7 +4478,7 @@
                 showDashboard();
                 startTimer();
                 if (!document.fullscreenElement) {
-                    enterFS(); 
+                    enterFS();
                 }
             } else {
                 // New Session - Run verification steps (including roll number step)
@@ -4506,9 +4506,9 @@
             // IMMEDIATELY dismiss the global loader once we enter the security logic
             if (loader) loader.style.display = 'none';
 
-            // Hide proctoring stats in header for practice mode
+            // Keep proctoring stats in header for practice mode as requested
             const proctorStats = document.getElementById('proctoringStatsHeader');
-            if (isPractice && proctorStats) proctorStats.style.display = 'none';
+            if (isPractice && proctorStats) proctorStats.style.display = 'flex'; // Ensure it's visible
 
             // Hide or show media check items in the UI dynamically
             if (document.getElementById('check-camera')) document.getElementById('check-camera').style.display = needsVideo ? 'flex' : 'none';
@@ -4672,7 +4672,7 @@
             if (isPractice) {
                 const signInTitle = step2.querySelector('h2');
                 if (signInTitle) signInTitle.textContent = "verify identity";
-                
+
                 // For standalone practice, maybe hide password/code if not needed
                 const passParent = document.getElementById('verifyInputPass')?.parentElement;
                 const codeParent = document.getElementById('verifyInputTestCode')?.parentElement;
@@ -5980,19 +5980,20 @@
             }
 
             clearTimeout(fontResizeTimer);
-
             fontResizeTimer = setTimeout(() => {
-                // FULL RANGE SCALE SYSTEM: 0.5 to 1.5 range (50% to 150%)
                 const scale = Math.max(0.5, Math.min(1.5, (val / 100)));
-                // qScale (for code blocks) provides an extremely damped readability boost (sensitivity 0.03)
-                const qScale = Math.max(0.98, Math.min(1.05, 1 + (scale - 1) * 0.03));
-                // hScale for header elements stays very slow (sensitivity 0.01)
-                const hScale = Math.max(0.99, Math.min(1.02, 1 + (scale - 1) * 0.01));
-                // qBodyScale for main question text - increases 'a lil fast' but still modest (sensitivity 0.05)
-                const qBodyScale = Math.max(0.95, Math.min(1.15, 1 + (scale - 1) * 0.05));
+                // qScale (left pane question) increases 'a lil more fast' (sensitivity 0.28)
+                const qScale = Math.max(0.75, Math.min(1.65, 1 + (scale - 1) * 0.28));
+                // mcqScale (right pane options) increases very slowly (sensitivity 0.06)
+                const mcqScale = Math.max(0.95, Math.min(1.15, 1 + (scale - 1) * 0.06));
+                // hScale for header elements remains slow (sensitivity 0.02)
+                const hScale = Math.max(0.98, Math.min(1.05, 1 + (scale - 1) * 0.02));
+                // qBodyScale for main question body - fastest response (sensitivity 0.35)
+                const qBodyScale = Math.max(0.70, Math.min(1.80, 1 + (scale - 1) * 0.35));
 
                 document.documentElement.style.setProperty('--scale', scale);
                 document.documentElement.style.setProperty('--q-scale', qScale);
+                document.documentElement.style.setProperty('--mcq-scale', mcqScale);
                 document.documentElement.style.setProperty('--h-scale', hScale);
                 document.documentElement.style.setProperty('--q-body-scale', qBodyScale);
 
@@ -7226,7 +7227,6 @@
         function handleInfraction(type) {
             if (isPreview || isPractice) return;
             const alertCount = document.getElementById('switchCountHeader');
-            const integrityDisplay = document.getElementById('integrityScore');
 
             currentAttempt.tabSwitchCount = (currentAttempt.tabSwitchCount || 0) + 1;
             db.updateAttempt(attemptId, { tabSwitchCount: currentAttempt.tabSwitchCount });
