@@ -1798,6 +1798,11 @@
                             <input type="checkbox" id="blockScreenshot" style="width:18px; height:18px;">
                             <span style="font-size:0.9rem; font-weight:500;">Block PrintScreen & Snipping</span>
                         </label>
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-top:12px; padding:10px; background:rgba(217, 108, 51, 0.05); border-radius:8px; border:1px dashed rgba(217, 108, 51, 0.3);">
+                            <input type="checkbox" id="isPracticeTest" style="width:18px; height:18px;">
+                            <span style="font-size:0.9rem; font-weight:700; color:#D96C33;">PRACTICE TEST MODE</span>
+                        </label>
                     </div>
                     <div class="security-card"
                         style="background:#fcfcfc; border:1px solid #f0f0f0; padding:20px; border-radius:12px;">
@@ -2955,6 +2960,7 @@
                 if (document.getElementById('shuffleQuestions')) document.getElementById('shuffleQuestions').checked = exams.security.shuffleQuestions;
                 if (document.getElementById('fullScreenRequired')) document.getElementById('fullScreenRequired').checked = exams.security.fullScreenRequired;
                 if (document.getElementById('desktopOnly')) document.getElementById('desktopOnly').checked = exams.security.desktopOnly || false;
+                if (document.getElementById('isPracticeTest')) document.getElementById('isPracticeTest').checked = exams.security.isPracticeTest || false;
 
                 // Step 4 fields
                 if (document.getElementById('webcamEnabled')) document.getElementById('webcamEnabled').checked = exams.security.webcamEnabled;
@@ -3584,6 +3590,7 @@
             micEnabled: mc ? mc.checked : false,
             vpnBlocked: vpn ? vpn.checked : false,
             lockSections: lks ? lks.checked : false,
+            isPracticeTest: document.getElementById('isPracticeTest') ? document.getElementById('isPracticeTest').checked : false,
             passcode: psc ? psc.value : '',
             entryDeadline: dln ? dln.value : null,
             maxTabSwitches: mts ? parseInt(mts.value) : 3,

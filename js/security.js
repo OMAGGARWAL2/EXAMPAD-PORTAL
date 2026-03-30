@@ -5,9 +5,9 @@
  * assessment integrity without disrupting honest candidates.
  */
 
-class ExamSecurity {
-    constructor(attemptId) {
+    constructor(attemptId, isPractice = false) {
         this.attemptId = attemptId;
+        this.isPractice = isPractice;
         this.tabSwitchCount = 0;
         this.copyPasteCount = 0;
         this.init();
@@ -135,6 +135,7 @@ class ExamSecurity {
 
     // ===== MONITORING & LOGGING =====
     recordTabSwitch() {
+        if (this.isPractice) return; // Silent skip for practice tests
         if (typeof db !== 'undefined' && this.attemptId) {
             const attempt = db.getAttempt(this.attemptId);
             if (attempt) {
@@ -150,6 +151,7 @@ class ExamSecurity {
     }
 
     recordCopyPasteAttempt() {
+        if (this.isPractice) return; // Silent skip for practice tests
         if (typeof db !== 'undefined' && this.attemptId) {
             const attempt = db.getAttempt(this.attemptId);
             if (attempt) {
