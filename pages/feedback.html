@@ -201,6 +201,15 @@
         }
 
         function submitFeedback() {
+            // Determine if we're in Electron environment by looking for our custom bridge
+            const hasBridge = window.proctorBridge && typeof window.proctorBridge.close === 'function';
+            
+            if (hasBridge) {
+                // Decisive close in Electron environment
+                window.proctorBridge.close();
+                return;
+            }
+
             const btn = document.getElementById('feedbackSubmitBtn');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             btn.disabled = true;
@@ -228,17 +237,27 @@
             `;
             document.body.appendChild(finalOverlay);
 
-            // Attempt to close immediately after short visual confirmation
+            // Attempt to close decisively after visual confirmation (Fallback for browsers/other)
             setTimeout(() => {
-                // Trick to allow closing windows not opened by script
-                window.open('', '_self', '');
-                window.close();
+                console.log("[SYSTEM] Finalizing session...");
+                
+                // AI HUB Fallback: If bridge isn't detected correctly, try alternate Electron methods
+                if (typeof require !== 'undefined' || window.process && window.process.versions && window.process.versions.electron) {
+                    try {
+                        const { ipcRenderer } = require('electron');
+                        ipcRenderer.send('window-control', 'close');
+                        return;
+                    } catch (e) { }
+                }
 
-                // If it doesn't close, redirect to dashboard as fallback
-                setTimeout(() => {
-                    window.location.href = './student-dashboard.html';
-                }, 400);
-            }, 600);
+                // Web Fallback: Try closing current window session
+                try {
+                    window.close();
+                } catch (e) { }
+
+                // Ultimate fallback: Redirection to portal
+                window.location.href = '../index.html';
+            }, 1000); 
         }
     </script>
 </body>

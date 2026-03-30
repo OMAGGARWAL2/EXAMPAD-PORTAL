@@ -12,6 +12,7 @@ const fs = require('fs');
 require('dotenv').config();
 
 let mainWindow;
+let appInKiosk = false;
 
 // --- DEEP LINKING SUPPORT ---
 if (process.defaultApp) {
@@ -78,6 +79,7 @@ function createWindow() {
         backgroundColor: '#f4f5f7',
         title: "EXAMPAD COMMAND CENTER",
         icon: path.join(__dirname, 'logo.jpg'), // Use Chitkara logo as app icon
+        frame: false, // Ensure no title bar or taskbar for premium "Command Center" feel
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -95,6 +97,17 @@ function createWindow() {
         mainWindow.show();
     });
 
+    mainWindow.webContents.on('did-finish-load', () => {
+        if (appInKiosk && mainWindow) {
+            if (!mainWindow.isKiosk()) mainWindow.setKiosk(true);
+            if (!mainWindow.isFullScreen()) mainWindow.setFullScreen(true);
+            mainWindow.setAlwaysOnTop(true, 'screen-saver');
+        } else if (mainWindow) {
+            // Ensure framing logic is consistent
+            mainWindow.setMenuBarVisibility(false);
+        }
+    });
+
     // SILENTLY close devtools if they try to open (secondary guard)
     mainWindow.webContents.on('devtools-opened', () => {
         mainWindow.webContents.closeDevTools();
@@ -109,8 +122,10 @@ function createWindow() {
 
     // Prevent minimizing
     mainWindow.on('minimize', (e) => {
-        e.preventDefault();
-        mainWindow.restore();
+        if (mainWindow.isKiosk() || appInKiosk) {
+            e.preventDefault();
+            mainWindow.restore();
+        }
     });
 
     // --- TAB SWITCHING CONTROL ---
@@ -121,7 +136,7 @@ function createWindow() {
             message: 'User navigated away from the application workspace.'
         });
 
-        if (mainWindow.isKiosk()) {
+        if (mainWindow.isKiosk() || appInKiosk) {
             mainWindow.focus();
             mainWindow.setAlwaysOnTop(true, 'screen-saver');
         }
@@ -143,43 +158,47 @@ function createWindow() {
     });
 
     mainWindow.on('leave-full-screen', () => {
-        if (mainWindow.isKiosk()) {
+        if (mainWindow.isKiosk() || appInKiosk) {
             mainWindow.setFullScreen(true);
         }
     });
 }
 
-function registerSecurityShortcuts() {
+function registerSecurityShortcuts(isPractice = false) {
+    globalShortcut.unregisterAll(); // Clear previous before re-registering
+
     const blockedKeys = [
         'Escape',
         'PrintScreen',
         'CommandOrControl+Shift+4',
         'CommandOrControl+Shift+3',
-        'Alt+Tab',
-        'Alt+Shift+Tab',
         'Alt+F4',
-        'Alt+Esc',
         'Alt+Space',
-        'Control+Esc',
-        'Super',         // Windows Key
-        'Meta',          // Windows Key
-        'CommandOrControl+Tab',
         'CommandOrControl+H',
         'CommandOrControl+Q',
         'CommandOrControl+W',
         'CommandOrControl+R',
         'CommandOrControl+Shift+I',
         'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-        'Meta+D',
-        'Meta+Tab',
-        'Meta+L',
-        'Meta+I',
-        'Meta+A',
-        'Meta+S',
-        'Meta+Control+D',
-        'Meta+Control+Left',
-        'Meta+Control+Right'
     ];
+
+    // Shortcuts that allow switching apps - only block if NOT practice
+    if (!isPractice) {
+        blockedKeys.push('Alt+Tab');
+        blockedKeys.push('Alt+Shift+Tab');
+        blockedKeys.push('Alt+Esc');
+        blockedKeys.push('Control+Esc');
+        blockedKeys.push('CommandOrControl+Tab');
+        blockedKeys.push('Super+D');
+        blockedKeys.push('Super+Tab');
+        blockedKeys.push('Super+L');
+        blockedKeys.push('Super+I');
+        blockedKeys.push('Super+A');
+        blockedKeys.push('Super+S');
+        blockedKeys.push('Super+Control+D');
+        blockedKeys.push('Super+Control+Left');
+        blockedKeys.push('Super+Control+Right');
+    }
 
     blockedKeys.forEach(key => {
         try {
@@ -197,7 +216,7 @@ function registerSecurityShortcuts() {
                 }
             });
         } catch (e) {
-            console.error(`Error registering ${key}:`, e);
+            console.error(`Error registering ${key}:`, e.message);
         }
     });
 }
@@ -212,25 +231,74 @@ ipcMain.on('window-control', (event, action) => {
                 mainWindow.maximize();
             }
             break;
+        case 'minimize':
+            if (mainWindow && !mainWindow.isKiosk()) {
+                mainWindow.minimize();
+            }
+            break;
         case 'close':
-            mainWindow.close();
+            console.log("[SYSTEM] Hard close requested. Terminating all processes.");
+            if (mainWindow) {
+                try {
+                    // Set closable true first to ensure destroy works without conflict
+                    mainWindow.setClosable(true);
+                    mainWindow.destroy();
+                } catch (e) {
+                    console.error("Error during window destruction:", e);
+                }
+                mainWindow = null;
+            }
+            // Aggressive process kill to ensure exit to desktop
+            setTimeout(() => {
+                app.exit(0);
+            }, 100);
             break;
     }
 });
 
-ipcMain.on('kiosk-mode', (event, enable) => {
+ipcMain.on('kiosk-mode', (event, data) => {
+    let enable = false;
+    let isPractice = false;
+
+    // Handle both old (direct boolean) and new (object) IPC calls for backward compatibility
+    if (typeof data === 'object') {
+        enable = data.enable;
+        isPractice = data.isPractice;
+    } else {
+        enable = data;
+    }
+
     if (mainWindow) {
         if (enable) {
-            mainWindow.setKiosk(true);
-            mainWindow.setAlwaysOnTop(true, 'screen-saver');
-            mainWindow.setFullScreen(true);
-            mainWindow.setSkipTaskbar(true); // Hide from taskbar to block swipe-up/Win+Tab
-            mainWindow.setResizable(false);
-            mainWindow.setClosable(false);
-            // STICKY WINDOW: The window follows the user to any virtual desktop
-            // This effectively "blocks" switching because they see the same exam everywhere.
-            mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+            appInKiosk = !isPractice; // Set persistence flag only for real exams
+            
+            if (isPractice) {
+                // Practice Mode: Fullscreen but NOT kiosk, allow switching
+                mainWindow.setKiosk(false);
+                mainWindow.setAlwaysOnTop(false);
+                mainWindow.setFullScreen(true);
+                mainWindow.setSkipTaskbar(false);
+                mainWindow.setResizable(true);
+                mainWindow.setClosable(true);
+                mainWindow.setVisibleOnAllWorkspaces(false);
+                console.log("[SYSTEM] Practice Mode: Kiosk disabled, switching allowed.");
+            } else {
+                // Real Exam: Total Lockdown
+                mainWindow.setKiosk(true);
+                mainWindow.setAlwaysOnTop(true, 'screen-saver');
+                mainWindow.setFullScreen(true);
+                mainWindow.setSkipTaskbar(true); // Hide from taskbar to block swipe-up/Win+Tab
+                mainWindow.setResizable(false);
+                mainWindow.setClosable(false);
+                // STICKY WINDOW: The window follows the user to any virtual desktop
+                mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+                console.log("[SYSTEM] Secure Exam Mode: Kiosk enabled, total lockdown.");
+            }
+
+            // Re-register shortcuts based on mode
+            registerSecurityShortcuts(isPractice);
         } else {
+            appInKiosk = false;
             mainWindow.setKiosk(false);
             mainWindow.setAlwaysOnTop(false);
             mainWindow.setFullScreen(false);
@@ -238,6 +306,9 @@ ipcMain.on('kiosk-mode', (event, enable) => {
             mainWindow.setResizable(true);
             mainWindow.setClosable(true);
             mainWindow.setVisibleOnAllWorkspaces(false);
+
+            globalShortcut.unregisterAll();
+            console.log("[SYSTEM] Security features disabled.");
         }
     }
 });

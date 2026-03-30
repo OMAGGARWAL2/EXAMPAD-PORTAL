@@ -3661,7 +3661,7 @@
                         <span id="timerDisplay" style="font-weight: 400;">00:00:00</span>
                     </div>
                 </div>
-                <div class="header-center header-item" style="gap: 28px; margin: 0 20px;">
+                <div class="header-center header-item" id="proctoringStatsHeader" style="gap: 28px; margin: 0 20px;">
                     <!-- Tab OUT (Circular Arrow Out) -->
                     <div class="stat-indicator" style="display: flex; align-items: center; gap: 4px;" title="Tab Out">
                         <img src="../SVG/extracted/icon-tab-out.png" alt="Tab Out" width="34"
@@ -4091,6 +4091,12 @@
         }
 
         function enterFS() {
+            // If running in Electron, use the secure Kiosk bridge
+            if (window.proctorBridge && window.proctorBridge.setKioskMode) {
+                window.proctorBridge.setKioskMode({ enable: true, isPractice: isPractice });
+                return;
+            }
+
             const container = document.querySelector('.coding-ui');
             if (!container) return;
 
@@ -4390,7 +4396,7 @@
                 }
             }
 
-            // 2. UI POPULATION PHASE
+            // --- UI POPULATION PHASE ---
             const userNameText = user ? user.name.toUpperCase() : 'STUDENT';
             const rollId = currentAttempt?.studentRollNo || (user ? user.rollNo : 'UNKNOWN');
 
@@ -4399,17 +4405,20 @@
             if (document.getElementById('verifyUserName')) document.getElementById('verifyUserName').textContent = user ? user.name : 'STUDENT';
             if (document.getElementById('verifyRollNo')) document.getElementById('verifyRollNo').textContent = rollId;
 
-            if (isPractice) {
-                document.getElementById('testTag').textContent = 'Skill Practice';
-                document.getElementById('timerDisplay').textContent = 'No Time Limit';
-                if (document.querySelector('.time-left-text')) document.querySelector('.time-left-text').style.display = 'none';
-                if (document.querySelector('.stats-center')) document.querySelector('.stats-center').style.display = 'none';
+            // Sync Header Title (Always show the exam/challenge title)
+            if (document.getElementById('testTag')) {
+                document.getElementById('testTag').textContent = currentExam.title || 'Practice Challenge';
+            }
 
-                // Initialize questions array for practice mode
-                questions = currentExam.questions;
-                questions.forEach((q, idx) => { q.index = idx; });
+            // AGGRESSIVE QUESTION HYDRATION
+            if (isPractice && !attemptId) {
+                // Standalone Course Practice
+                if (!questions || questions.length === 0) {
+                    questions = currentExam.questions || [];
+                    questions.forEach((q, idx) => { q.index = idx; });
+                }
             } else {
-                // AGGRESSIVE QUESTION HYDRATION
+                // Main Assessment or Teacher-led Practice
                 const pool = db.getQuestionPool() || [];
                 const qIds = currentAttempt.selectedQuestionIds || (currentExam.questions ? currentExam.questions.map(q => q.id) : []);
 
@@ -4423,106 +4432,69 @@
                 currentExam.questions = questions;
                 questions.forEach((q, idx) => { q.index = idx; });
 
-                // Sync Telemetry to UI
+                // Sync Telemetry UI
                 if (document.getElementById('fsCount')) document.getElementById('fsCount').textContent = currentAttempt.fsExitCount || 0;
-                if (document.getElementById('fsInCount')) document.getElementById('fsInCount').textContent = currentAttempt.fsInCount || 0;
                 if (document.getElementById('switchCountHeader')) document.getElementById('switchCountHeader').textContent = currentAttempt.tabSwitchCount || 0;
-                if (document.getElementById('tabInCount')) document.getElementById('tabInCount').textContent = currentAttempt.tabInCount || 0;
-
-                // Sync Header
-                if (document.getElementById('testTag')) document.getElementById('testTag').textContent = currentExam.title;
-
-                // Initialize timeRemaining based on absolute target for resilience (if exists)
-                if (currentAttempt.endTime && !isPractice) {
-                    timeRemaining = Math.max(0, Math.floor((currentAttempt.endTime - Date.now()) / 1000));
-                } else {
-                    timeRemaining = currentAttempt.timeLeft || (currentExam.duration * 60) || 3600;
-                }
-
-                // If session was already active (e.g. refresh), restart timer immediately
-                const wasStarted = sessionStorage.getItem(`exam_started_${attemptId}`) === 'true';
-                if (wasStarted || isPractice) {
-                    startTimer();
-                }
-
-                renderDashboardTable();
-
-                // 3. STATUS HANDLING: Submitted vs Active
-                if (currentAttempt.status === 'submitted') {
-                    // Attempt is already finished, stay on feedback page
-                    const overlay = document.getElementById('securityCheckOverlay');
-                    const loader = document.getElementById('page-loader');
-                    if (overlay) overlay.style.display = 'none';
-                    if (loader) loader.style.display = 'none';
-
-                    // Show Feedback View directly
-                    document.querySelector('.top-bar-wrapper').style.display = 'none';
-                    document.querySelector('.nav-rail').style.display = 'none';
-                    document.getElementById('questionView').style.display = 'none';
-                    document.getElementById('testDashboardView').style.display = 'none';
-                    document.getElementById('feedbackView').style.display = 'flex';
-
-                    // Reset font size to default for feedback page
-                    document.documentElement.style.fontSize = "18px";
-                    if (document.getElementById('fontSizeSlider')) document.getElementById('fontSizeSlider').value = 100;
-                    if (document.getElementById('fontSizeTooltip')) document.getElementById('fontSizeTooltip').textContent = "100%";
-
-                    // Release Kiosk mode and Anti-cheat for Feedback page
-                    if (window.proctorBridge) window.proctorBridge.setKioskMode(false);
-                    sessionStorage.setItem(`exam_started_${attemptId}`, 'false');
-
-                    // Calculate time taken
-                    const start = new Date(currentAttempt.startTime).getTime();
-                    const end = new Date(currentAttempt.endTime || new Date()).getTime();
-                    const mins = Math.max(1, Math.round((end - start) / 60000));
-                    document.getElementById('finalTimeTook').textContent = `${mins} mins`;
-
-                    // Remove View Your Result button entirely
-                    if (currentExam.security && currentExam.security.showResults) {
-                        const resContainer = document.getElementById('immediateResultContainer');
-                        if (resContainer) resContainer.innerHTML = '';
-                    }
-                    return; // Stop initialization
-                }
-
-                // 4. FLOW CONTROL: Show Verification Overlay if not started
-                const hasStartedValue = sessionStorage.getItem(`exam_started_${attemptId}`);
-                if (hasStartedValue === 'true') {
-                    const overlay = document.getElementById('securityCheckOverlay');
-                    const loader = document.getElementById('page-loader');
-                    if (overlay) overlay.style.display = 'none';
-                    if (loader) loader.style.display = 'none';
-                    showDashboard();
-                } else if (!isPractice) {
-                    const overlay = document.getElementById('securityCheckOverlay');
-                    if (overlay) overlay.style.display = 'flex';
-                    runSecurityChecks();
-                }
-
-                // 5. RESTORE PROGRESS & RENDER
-                const savedQ = sessionStorage.getItem(`exam_q_${attemptId}`);
-                if (savedQ !== null && !isPractice) currentQuestionIndex = parseInt(savedQ);
-
-                if (currentQuestionIndex >= (questions.length || 1)) currentQuestionIndex = 0;
-
-                const hasStarted = sessionStorage.getItem(`exam_started_${attemptId}`);
-                if (hasStarted === 'true' || isPractice) {
-                    document.getElementById('securityCheckOverlay').style.display = 'none';
-                    document.getElementById('page-loader').style.display = 'none';
-                    showDashboard();
-                    if (!document.fullscreenElement && !isPractice) {
-                        showFullscreenBarrier(true);
-                    }
-                }
-
-                renderQuestionRail();
-                loadQuestion(currentQuestionIndex);
-
-                if (isPractice) {
-                    document.getElementById('securityCheckOverlay').style.display = 'none';
-                    document.getElementById('page-loader').style.display = 'none';
-                }
             }
+
+            // --- TIMER LOGIC ---
+            // Practice tests now use the session timer as well
+            if (currentAttempt.endTime && !isPractice) {
+                timeRemaining = Math.max(0, Math.floor((currentAttempt.endTime - Date.now()) / 1000));
+            } else {
+                timeRemaining = currentAttempt.timeLeft || (currentExam.duration * 60) || 3600;
+            }
+
+            // Hide Proctoring Stats in practice mode, but KEEP timer
+            if (isPractice) {
+                const stats = document.querySelector('.stats-center');
+                if (stats) stats.style.display = 'none';
+            }
+
+            // --- STATUS HANDLING ---
+            if (!isPractice && currentAttempt.status === 'submitted') {
+                const overlay = document.getElementById('securityCheckOverlay');
+                if (overlay) overlay.style.display = 'none';
+                const loader = document.getElementById('page-loader');
+                if (loader) loader.style.display = 'none';
+
+                document.getElementById('questionView').style.display = 'none';
+                document.getElementById('feedbackView').style.display = 'flex';
+                if (window.proctorBridge) window.proctorBridge.setKioskMode({ enable: false, isPractice: isPractice });
+                return;
+            }
+
+            // --- SESSION FLOW CONTROL ---
+            const sessionKey = isPractice ? (attemptId || 'practice') : attemptId;
+            const hasStartedValue = sessionStorage.getItem(`exam_started_${sessionKey}`);
+
+            if (hasStartedValue === 'true') {
+                // Resume session immediately
+                const overlay = document.getElementById('securityCheckOverlay');
+                if (overlay) overlay.style.display = 'none';
+                const loader = document.getElementById('page-loader');
+                if (loader) loader.style.display = 'none';
+
+                showDashboard();
+                startTimer();
+                if (!document.fullscreenElement) {
+                    enterFS(); 
+                }
+            } else {
+                // New Session - Run verification steps (including roll number step)
+                const overlay = document.getElementById('securityCheckOverlay');
+                if (overlay) overlay.style.display = 'flex';
+                runSecurityChecks();
+            }
+
+            // --- RENDER ---
+            const savedQ = sessionStorage.getItem(`exam_q_${sessionKey}`);
+            if (savedQ !== null && !isPractice) currentQuestionIndex = parseInt(savedQ);
+            if (currentQuestionIndex >= (questions.length || 1)) currentQuestionIndex = 0;
+
+            renderQuestionRail();
+            loadQuestion(currentQuestionIndex);
+            renderDashboardTable();
         }
 
         async function runSecurityChecks() {
@@ -4534,15 +4506,19 @@
             // IMMEDIATELY dismiss the global loader once we enter the security logic
             if (loader) loader.style.display = 'none';
 
+            // Hide proctoring stats in header for practice mode
+            const proctorStats = document.getElementById('proctoringStatsHeader');
+            if (isPractice && proctorStats) proctorStats.style.display = 'none';
+
             // Hide or show media check items in the UI dynamically
             if (document.getElementById('check-camera')) document.getElementById('check-camera').style.display = needsVideo ? 'flex' : 'none';
             if (document.getElementById('check-mic')) document.getElementById('check-mic').style.display = needsAudio ? 'flex' : 'none';
 
             // Transition Logic
             if (isPractice) {
-                console.log("[PRACTICE] No Proctoring required for practice mode.");
-                if (overlay) overlay.style.display = 'none';
-                startExamSession();
+                console.log("[PRACTICE] Moving to Verification for Practice Mode...");
+                if (overlay) overlay.style.display = 'flex';
+                goToSecurityStep(2); // Mandatory roll number / sign in check
                 return;
             }
 
@@ -4692,18 +4668,23 @@
             const step2 = document.getElementById('securityStep2');
             if (step2) step2.style.display = 'flex';
 
+            // If it's a practice test, we can simplify/pre-fill the sign-in
+            if (isPractice) {
+                const signInTitle = step2.querySelector('h2');
+                if (signInTitle) signInTitle.textContent = "verify identity";
+                
+                // For standalone practice, maybe hide password/code if not needed
+                const passParent = document.getElementById('verifyInputPass')?.parentElement;
+                const codeParent = document.getElementById('verifyInputTestCode')?.parentElement;
+                if (!currentAttempt.passwordRequired && passParent) passParent.style.display = 'none';
+                if (!currentAttempt.codeRequired && codeParent) codeParent.style.display = 'none';
+            }
+
             if (currentExam) {
-                const rollDiv = document.getElementById('verifyRollNo');
-                const rollInp = document.getElementById('studentRollNo');
-                const val = (rollDiv?.textContent || '').trim();
-                if (!val || val === 'LOADING...' || val === 'UNKNOWN') {
-                    if (rollDiv) rollDiv.style.display = 'none';
-                    if (rollInp) {
-                        rollInp.style.display = 'block';
-                        rollInp.value = (currentAttempt.studentRollNo || '');
-                    }
-                } else {
-                    if (rollInp) rollInp.value = val;
+                const rollInp = document.getElementById('verifyInputRoll');
+                if (rollInp) {
+                    rollInp.value = currentAttempt.studentRollNo || (user ? user.rollNo : '');
+                    rollInp.focus();
                 }
                 document.getElementById('verifyTestTitle').textContent = currentExam.title || "Assessment Session";
                 document.getElementById('verifyTotalQuestions').textContent = currentExam.questions ? currentExam.questions.length : "0";
@@ -4733,17 +4714,20 @@
 
 
         function startExamSession() {
-            sessionStorage.setItem(`exam_started_${attemptId}`, 'true');
+            const sessionKey = isPractice ? (attemptId || 'practice') : attemptId;
+            sessionStorage.setItem(`exam_started_${sessionKey}`, 'true');
 
             // Calculate and persist the official absolute endTime the moment the test is confirmed
             if (!currentAttempt.endTime && !isPractice) {
                 const durationSeconds = (currentAttempt.timeLeft || (currentExam.duration * 60) || 3600);
                 currentAttempt.endTime = Date.now() + (durationSeconds * 1000);
-                db.updateAttempt(attemptId, { endTime: currentAttempt.endTime });
+                if (attemptId) db.updateAttempt(attemptId, { endTime: currentAttempt.endTime });
             }
 
-            document.getElementById('securityCheckOverlay').style.display = 'none';
-            document.getElementById('page-loader').style.display = 'none';
+            const overlay = document.getElementById('securityCheckOverlay');
+            if (overlay) overlay.style.display = 'none';
+            const loader = document.getElementById('page-loader');
+            if (loader) loader.style.display = 'none';
 
             // Start the clock!
             startTimer();
@@ -5245,7 +5229,7 @@
             });
 
             // --- FINAL SUBMIT BUTTON AT BOTTOM CENTER ---
-            if (!isPractice) {
+            if (true) {
                 const finalSubmitContainer = document.createElement('div');
                 finalSubmitContainer.style = "display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 40px 0 60px 0; font-family: 'Open Sans', sans-serif; position: relative;";
 
@@ -7161,19 +7145,18 @@
             btn.classList.add('active');
         }
 
-        function finalizeFeedback() {
+        function submitFeedback() {
             if (window.proctorBridge) {
-                // In Desktop version, close immediately as requested
-                window.proctorBridge.setKioskMode(false);
-                setTimeout(() => {
-                    window.proctorBridge.close();
-                }, 100);
+                // Decisive close in Electron environment
+                window.proctorBridge.close();
                 return;
             }
 
             const btn = document.getElementById('feedbackSubmitBtn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ARCHIVING DATA...';
-            btn.disabled = true;
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ARCHIVING DATA...';
+                btn.disabled = true;
+            }
 
             // Browser version fallback (rare)
             window.location.replace('./student-dashboard.html');
@@ -7230,16 +7213,18 @@
 
         function enterFS() {
             document.documentElement.requestFullscreen().then(() => {
-                if (window.proctorBridge) window.proctorBridge.setKioskMode(true);
+                if (window.proctorBridge) window.proctorBridge.setKioskMode({ enable: true, isPractice: isPractice });
                 const b = document.getElementById('fsBarrier');
                 if (b) b.remove();
             }).catch(e => {
                 console.error("FS Error:", e);
+                // In Electron we can force it even without gesture if setKioskMode is used
+                if (window.proctorBridge) window.proctorBridge.setKioskMode({ enable: true, isPractice: isPractice });
             });
         }
 
         function handleInfraction(type) {
-            if (isPreview) return;
+            if (isPreview || isPractice) return;
             const alertCount = document.getElementById('switchCountHeader');
             const integrityDisplay = document.getElementById('integrityScore');
 
