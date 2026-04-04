@@ -1,6 +1,6 @@
 // ===== EXAMPAD UI AUTHENTICATION LOGIC =====
 
-const ADMIN_AUTHORIZATION_CODE = 'ADMIN2026';
+// ADMIN_AUTHORIZATION_CODE removed as per request. Any user can now register as 'teacher'.
 
 function showMessage(msg) {
     const t = document.getElementById('toast');
@@ -32,9 +32,7 @@ function checkCaps(e) {
 }
 
 function toggleAdminCode() {
-    const role = document.getElementById('signupRole').value;
-    const group = document.getElementById('adminCodeGroup');
-    if (group) group.style.display = role === 'teacher' ? 'block' : 'none';
+    // Hidden as per request. Teachers no longer need an authorization code.
 }
 
 function handleForgot(e) {
@@ -89,6 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`[SECURE LINK] Detected Test: ${urlTestId}`);
     }
 
+    // --- TAB PRE-SWITCH (New User Request) ---
+    const urlTab = urlParams.get('tab');
+    const urlRole = urlParams.get('role');
+    if (urlTab === 'signup') {
+        switchTab('signup');
+    }
+    if (urlRole && document.getElementById('signupRole')) {
+        document.getElementById('signupRole').value = urlRole;
+    }
+
     // --- AUTO-FILL SAVED IDENTITY ---
     const saved = auth.getSavedCredentials();
     if (saved && loginForm) {
@@ -98,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!urlTestId) {
             switchTab('login');
         }
+        showMessage(`Identity restored for: ${saved.email}`);
         console.log(`[SYSTEM] Identity restored for: ${saved.email}`);
 
         const btn = document.getElementById('loginSubmitBtn');
@@ -149,15 +158,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const role = document.getElementById('signupRole').value;
             const pass = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('confirmPassword').value;
-            const adminCode = document.getElementById('adminCode').value;
+            // --- ADMIN CODE RETRIEVED ONLY IF EXIST (Legacy Support) ---
+            const adminCodeEl = document.getElementById('adminCode');
+            const adminCode = adminCodeEl ? adminCodeEl.value : '';
 
             // --- VALIDATION ---
             if (!name || name.length < 2) return showMessage('Enter your full assigned name');
             if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return showMessage('Invalid email format');
 
-            if (role === 'teacher' && adminCode !== ADMIN_AUTHORIZATION_CODE) {
-                return showMessage('Unauthorized Administrator Code');
-            }
+            // --- ADMIN AUTHORIZATION CHECK REMOVED ---
 
             if (pass.length < 6) return showMessage('Security Key must be 6+ characters');
             if (pass !== confirm) return showMessage('Security Keys do not match');

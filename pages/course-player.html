@@ -649,20 +649,26 @@
             `;
 
             setTimeout(() => {
+                const saved = db.getPracticeSession(less.id);
                 const langs = less.data.languages || ['python'];
                 const defaultLang = langs[0];
-                const codeData = less.data.code[defaultLang];
-                initPlayerMonaco(defaultLang, codeData.middle);
+                const initialCode = (saved && saved.value) ? saved.value : (less.data.code[defaultLang].middle || '');
+                initPlayerMonaco(defaultLang, initialCode);
             }, 100);
         }
 
         function initPlayerMonaco(lang, val) {
             if(playerMonaco) playerMonaco.dispose();
             require(['vs/editor/editor.main'], () => {
+                monaco.editor.defineTheme('ExampadLight', {
+                    base: 'vs', inherit: true,
+                    rules: [],
+                    colors: { 'editor.selectionBackground': '#9DC9FF' }
+                });
                 playerMonaco = monaco.editor.create(document.getElementById('playerMonaco'), {
                     value: val,
                     language: lang === 'cpp' ? 'cpp' : (lang === 'python' ? 'python' : 'javascript'),
-                    theme: 'vs-light',
+                    theme: 'ExampadLight',
                     automaticLayout: true,
                     minimap: { enabled: false },
                     fontSize: 14
@@ -686,6 +692,7 @@
         function submitCode() {
             const less = courseData.modules[mIdx].lessons[lIdx];
             db.updateCourseProgress(courseId, user.id, less.id);
+            db.savePracticeSession(less.id, { value: playerMonaco.getValue(), submitted: true, studentId: user.id });
             updateGlobalProgress();
             renderSidebar();
             showToast("Challenge Submitted Successfully!");
@@ -911,6 +918,21 @@
                     </div>
                 </div>
             `;
+
+            // Restore previous answer if already done
+            const saved = db.getPracticeSession(less.id);
+            if (saved && saved.value) {
+                const options = document.querySelectorAll('.opt-row');
+                options.forEach(opt => {
+                    const val = opt.querySelector('.opt-label').innerHTML;
+                    if (val === saved.value) {
+                        opt.classList.add('selected');
+                        currentSelectedVal = val;
+                        // If it was already submitted, show correctness
+                        if (saved.submitted) checkAnswer();
+                    }
+                });
+            }
         }
 
         function clearSelection() {
@@ -942,6 +964,7 @@
 
             // Mark lesson done in DB
             db.updateCourseProgress(courseId, user.id, less.id);
+            db.savePracticeSession(less.id, { value: currentSelectedVal, submitted: true, studentId: user.id });
             updateGlobalProgress();
         }
 

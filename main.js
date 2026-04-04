@@ -13,6 +13,7 @@ require('dotenv').config();
 
 let mainWindow;
 let appInKiosk = false;
+let appInFullscreen = false;
 
 // --- DEEP LINKING SUPPORT ---
 if (process.defaultApp) {
@@ -98,10 +99,14 @@ function createWindow() {
     });
 
     mainWindow.webContents.on('did-finish-load', () => {
-        if (appInKiosk && mainWindow) {
-            if (!mainWindow.isKiosk()) mainWindow.setKiosk(true);
+        if (appInFullscreen && mainWindow) {
             if (!mainWindow.isFullScreen()) mainWindow.setFullScreen(true);
-            mainWindow.setAlwaysOnTop(true, 'screen-saver');
+
+            // If it's a real exam (appInKiosk), apply additional lockdown
+            if (appInKiosk) {
+                if (!mainWindow.isKiosk()) mainWindow.setKiosk(true);
+                mainWindow.setAlwaysOnTop(true, 'screen-saver');
+            }
         } else if (mainWindow) {
             // Ensure framing logic is consistent
             mainWindow.setMenuBarVisibility(false);
@@ -120,11 +125,12 @@ function createWindow() {
         }
     });
 
-    // Prevent minimizing
+    // Prevent minimizing during exams
     mainWindow.on('minimize', (e) => {
-        if (mainWindow.isKiosk() || appInKiosk) {
+        if (appInFullscreen || appInKiosk) {
             e.preventDefault();
             mainWindow.restore();
+            if (appInFullscreen) mainWindow.setFullScreen(true);
         }
     });
 
@@ -136,7 +142,7 @@ function createWindow() {
             message: 'User navigated away from the application workspace.'
         });
 
-        if (mainWindow.isKiosk() || appInKiosk) {
+        if (appInKiosk) {
             mainWindow.focus();
             mainWindow.setAlwaysOnTop(true, 'screen-saver');
         }
@@ -158,7 +164,7 @@ function createWindow() {
     });
 
     mainWindow.on('leave-full-screen', () => {
-        if (mainWindow.isKiosk() || appInKiosk) {
+        if (appInFullscreen && mainWindow) {
             mainWindow.setFullScreen(true);
         }
     });
@@ -225,14 +231,18 @@ function registerSecurityShortcuts(isPractice = false) {
 ipcMain.on('window-control', (event, action) => {
     switch (action) {
         case 'maximize':
-            if (mainWindow.isMaximized()) {
-                mainWindow.unmaximize();
-            } else {
-                mainWindow.maximize();
+            // Only allow if not in an active exam session
+            if (!appInFullscreen) {
+                if (mainWindow.isMaximized()) {
+                    mainWindow.unmaximize();
+                } else {
+                    mainWindow.maximize();
+                }
             }
             break;
         case 'minimize':
-            if (mainWindow && !mainWindow.isKiosk()) {
+            // Only allow if not in an active exam session
+            if (mainWindow && !appInFullscreen && !appInKiosk) {
                 mainWindow.minimize();
             }
             break;
@@ -270,10 +280,11 @@ ipcMain.on('kiosk-mode', (event, data) => {
 
     if (mainWindow) {
         if (enable) {
+            appInFullscreen = true;
             appInKiosk = !isPractice; // Set persistence flag only for real exams
-            
+
             if (isPractice) {
-                // Practice Mode: Fullscreen but NOT kiosk, allow switching
+                // Practice Mode: Mandatory Fullscreen but NOT kiosk, allow switching
                 mainWindow.setKiosk(false);
                 mainWindow.setAlwaysOnTop(false);
                 mainWindow.setFullScreen(true);
@@ -281,7 +292,7 @@ ipcMain.on('kiosk-mode', (event, data) => {
                 mainWindow.setResizable(true);
                 mainWindow.setClosable(true);
                 mainWindow.setVisibleOnAllWorkspaces(false);
-                console.log("[SYSTEM] Practice Mode: Kiosk disabled, switching allowed.");
+                console.log("[SYSTEM] Practice Mode: Mandatory Fullscreen, switching allowed.");
             } else {
                 // Real Exam: Total Lockdown
                 mainWindow.setKiosk(true);
@@ -298,6 +309,7 @@ ipcMain.on('kiosk-mode', (event, data) => {
             // Re-register shortcuts based on mode
             registerSecurityShortcuts(isPractice);
         } else {
+            appInFullscreen = false;
             appInKiosk = false;
             mainWindow.setKiosk(false);
             mainWindow.setAlwaysOnTop(false);

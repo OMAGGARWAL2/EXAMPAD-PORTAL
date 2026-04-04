@@ -4,7 +4,7 @@
  * This module manages low-level security violations silently to ensure 
  * assessment integrity without disrupting honest candidates.
  */
-
+class ExamSecurity {
     constructor(attemptId, isPractice = false) {
         this.attemptId = attemptId;
         this.isPractice = isPractice;
@@ -47,27 +47,34 @@
     disableCopyPaste() {
         // Silent blocking of all clipboard operations
         document.addEventListener('copy', (e) => {
+            if (this.isPractice) return;
             e.preventDefault();
             this.recordCopyPasteAttempt();
         });
 
         document.addEventListener('cut', (e) => {
+            if (this.isPractice) return;
             e.preventDefault();
             this.recordCopyPasteAttempt();
         });
 
         document.addEventListener('paste', (e) => {
+            if (this.isPractice) return;
             e.preventDefault();
             this.recordCopyPasteAttempt();
         });
 
         // GLOBAL: Disable right-click context menu (SILENT)
         document.addEventListener('contextmenu', (e) => {
+            if (this.isPractice) return;
             e.preventDefault();
             return false;
         });
 
-        document.addEventListener('dragstart', (e) => e.preventDefault());
+        document.addEventListener('dragstart', (e) => {
+            if (this.isPractice) return;
+            e.preventDefault();
+        });
     }
 
     // ===== TAB SWITCH DETECTION =====

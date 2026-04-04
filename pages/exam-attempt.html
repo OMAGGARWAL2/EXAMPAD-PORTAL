@@ -368,7 +368,7 @@
         }
         */
         .ace_selection {
-            background: rgba(0, 120, 215, 0.2) !important;
+            background: rgba(0, 120, 215, 0.4) !important;
         }
 
         /* CUSTOM SYNTAX COLORS: BLUE, BLACK, GREEN */
@@ -4010,6 +4010,7 @@
         let testStartTime = null;
         let durationSeconds = 0;
         let timeRemaining = 0;
+        let user = null;
 
         let editorInstance = null;
         let pyodide = null;
@@ -4356,7 +4357,7 @@
         window.startSystemBrain = startSystemBrain;
 
         async function init() {
-            const user = auth.getCurrentUser();
+            user = auth.getCurrentUser();
             if (!user && !isPractice) {
                 console.error("[AUTH] No active user session found.");
                 showToast("Session Error: Please Login Again", "error");
@@ -4366,14 +4367,22 @@
 
             // 1. HYDRATION PHASE
             if (isPractice) {
-                currentAttempt = { id: 'practice', responses: {}, studentId: user?.id || 'guest', submittedSections: [], studentRollNo: 'PRACTICE' };
-                const course = db.getCourseById(courseId);
-                const item = course?.modules?.flatMap(m => m.items).find(it => it.id === itemId);
-                currentExam = {
-                    id: itemId,
-                    title: item?.title || 'Practice Challenge',
-                    questions: [{ id: 'q1', type: 'coding', heading: item?.title || 'Practice', title: 'Solve this challenge to earn course progress.', code: { python: { prefix: '# Write your code here', middle: '', suffix: '' } }, languages: ['python'], marks: 10 }]
-                };
+                const savedPractice = db.getPracticeSession(itemId || 'standing_practice');
+                if (savedPractice && savedPractice.id === 'practice') {
+                    currentAttempt = savedPractice;
+                } else {
+                    currentAttempt = { id: 'practice', responses: {}, studentId: user?.id || 'guest', submittedSections: [], studentRollNo: 'PRACTICE' };
+                }
+
+                if (!currentExam) {
+                    const course = db.getCourseById(courseId);
+                    const item = course?.modules?.flatMap(m => m.items).find(it => it.id === itemId);
+                    currentExam = {
+                        id: itemId,
+                        title: item?.title || 'Practice Challenge',
+                        questions: [{ id: 'q1', type: 'coding', heading: item?.title || 'Practice', title: 'Solve this challenge to earn course progress.', code: { python: { prefix: '# Write your code here', middle: '', suffix: '' } }, languages: ['python'], marks: 10 }]
+                    };
+                }
             } else {
                 if (!attemptId) {
                     showToast("Security Violation: Invalid Session");
@@ -4495,6 +4504,14 @@
             renderQuestionRail();
             loadQuestion(currentQuestionIndex);
             renderDashboardTable();
+
+            // Relax user-select restriction if in practice mode
+            if (isPractice) {
+                document.documentElement.style.userSelect = 'text';
+                document.documentElement.style.webkitUserSelect = 'text';
+                document.body.style.userSelect = 'text';
+                document.body.style.webkitUserSelect = 'text';
+            }
         }
 
         async function runSecurityChecks() {
@@ -4683,7 +4700,8 @@
             if (currentExam) {
                 const rollInp = document.getElementById('verifyInputRoll');
                 if (rollInp) {
-                    rollInp.value = currentAttempt.studentRollNo || (user ? user.rollNo : '');
+                    const defaultRoll = (user && user.rollNo && !user.rollNo.startsWith('USER_')) ? user.rollNo : '';
+                    rollInp.value = currentAttempt.studentRollNo || defaultRoll;
                     rollInp.focus();
                 }
                 document.getElementById('verifyTestTitle').textContent = currentExam.title || "Assessment Session";
@@ -4701,11 +4719,32 @@
 
             const rollNo = rollInput ? rollInput.value.trim() : '';
 
+            // 10-digit Numeric Validation
+            if (!/^\d{10}$/.test(rollNo)) {
+                showToast("Please enter a valid 10-digit numeric Roll Number to proceed.", 'error');
+                if (rollInput) {
+                    rollInput.style.borderColor = '#F04438';
+                    rollInput.focus();
+                }
+                return;
+            }
+
             if (rollNo) {
                 currentAttempt.studentRollNo = rollNo;
                 const userIdEl = document.getElementById('userId');
                 if (userIdEl) userIdEl.textContent = rollNo;
-                if (!isPractice) db.updateAttempt(attemptId, { studentRollNo: rollNo });
+
+                if (!isPractice) {
+                    db.updateAttempt(attemptId, { studentRollNo: rollNo });
+                } else {
+                    db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+                }
+
+                // If user has no roll number (auto-generated ID), update it permanently
+                if (user && (!user.rollNo || user.rollNo.startsWith('USER_') || user.rollNo === 'UNKNOWN')) {
+                    db.updateUser(user.id, { rollNo: rollNo });
+                    user.rollNo = rollNo;
+                }
             }
 
             startExamSession();
@@ -4904,7 +4943,7 @@
                         node.innerHTML += `<svg viewBox="0 0 16 14" class="tick-icon"><path d="M2.5 7 L6 10.5 L13.5 3" /></svg>`;
                     }
 
-                    if (isLocked && !isPractice) {
+                    if (isLocked) {
                         node.style.cursor = 'not-allowed';
                         node.style.opacity = '0.35';
                     } else {
@@ -4915,7 +4954,7 @@
                     secContainer.appendChild(node);
                 });
 
-                if (isLocked && !isPractice) {
+                if (isLocked) {
                     const overlay = document.createElement('div');
                     overlay.style.position = 'absolute';
                     overlay.style.top = '0';
@@ -5010,7 +5049,11 @@
                 const input = document.getElementById('sectionOtpInput').value;
                 if (input === String(code)) {
                     currentAttempt.submittedSections.push(sName);
-                    if (!isPractice) db.updateAttempt(attemptId, { submittedSections: currentAttempt.submittedSections });
+                    if (!isPractice) {
+                        db.updateAttempt(attemptId, { submittedSections: currentAttempt.submittedSections });
+                    } else {
+                        db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+                    }
                     closeModal('sectionModal');
 
                     showToast(`Section Submitted Successfully`, 'success');
@@ -5054,7 +5097,7 @@
                 const qs = secMap[sName];
                 const isSubmitted = currentAttempt.submittedSections.includes(sName);
                 const isActive = (sName === activeSection);
-                const isLocked = !isPractice && !isSubmitted && !isActive;
+                const isLocked = !isSubmitted && !isActive;
                 const isCollapsed = isLocked ? true : (collapsedSections[sName] || false);
 
                 const subCount = qs.filter(item => currentAttempt.responses[item.q.id]?.submitted).length;
@@ -5184,14 +5227,14 @@
                     sectionContainer.appendChild(tableWrap);
 
                     // --- SECTION SUBMIT BUTTON ---
-                    if (!isSubmitted && !isPractice) {
+                    if (!isSubmitted) {
                         const isLastSection = (sName === sections[sections.length - 1]);
                         if (!isLastSection) {
                             const subBtnContainer = document.createElement('div');
-                            subBtnContainer.style = "padding: 20px 40px 40px 40px; display: flex; justify-content: center; position: relative;";
+                            subBtnContainer.style = "padding: 24px 40px 40px 40px; display: flex; justify-content: center; position: relative;";
 
                             const sBtn = document.createElement('button');
-                            sBtn.style = "background: #e68a5c; color: #fff; border: none; padding: 12px 60px; border-radius: 4px; font-weight: 700; font-size: 0.889rem; cursor: pointer; transition: background 0.2s;";
+                            sBtn.style = "background: #e68a5c; color: #fff; border: none; padding: 12px 64px; border-radius: 4px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);";
                             sBtn.innerText = "submit section";
 
                             const popover = document.createElement('div');
@@ -5290,12 +5333,12 @@
             const sName = q.section || "Section A";
             const active = getActiveSection();
 
-            if (currentAttempt.submittedSections.includes(sName) && !isPractice) {
+            if (currentAttempt.submittedSections.includes(sName)) {
                 showHighFidelityBanner("Section Locked: You have already submitted this section.", "lock");
                 showDashboard();
                 return;
             }
-            if (sName !== active && !isPractice) {
+            if (sName !== active) {
                 showHighFidelityBanner("Section Locked: Please submit previous section first to attempt further.", "lock");
                 showDashboard();
                 return;
@@ -5761,7 +5804,11 @@
                         monaco.editor.defineTheme('ExampadLight', {
                             base: 'vs', inherit: true,
                             rules: [{ token: 'keyword', foreground: '0000ff' }, { token: 'comment', foreground: '008000' }],
-                            colors: { 'editor.background': '#FFFFFF', 'editor.foreground': '#000000' }
+                            colors: { 
+                                'editor.background': '#FFFFFF', 
+                                'editor.foreground': '#000000',
+                                'editor.selectionBackground': '#9DC9FF'
+                            }
                         });
 
                         const baseOptions = { fontSize: 18, fontFamily: "Consolas, 'Courier New', monospace", lineNumbers: "on", automaticLayout: true };
@@ -6905,7 +6952,11 @@
         function saveResponse(qid, val) {
             if (!currentAttempt.responses[qid]) currentAttempt.responses[qid] = {};
             currentAttempt.responses[qid].value = val;
-            if (!isPractice) db.updateAttemptResponse(attemptId, qid, currentAttempt.responses[qid]);
+            if (!isPractice) {
+                db.updateAttemptResponse(attemptId, qid, currentAttempt.responses[qid]);
+            } else {
+                db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+            }
             renderQuestionRail();
         }
 
@@ -7006,7 +7057,11 @@
 
             if (!currentAttempt.responses[qid]) currentAttempt.responses[qid] = { value: '' };
             currentAttempt.responses[qid].submitted = true;
-            if (!isPractice) db.updateAttemptResponse(attemptId, qid, currentAttempt.responses[qid]);
+            if (!isPractice) {
+                db.updateAttemptResponse(attemptId, qid, currentAttempt.responses[qid]);
+            } else {
+                db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+            }
 
             renderQuestionRail();
             if (q.type !== 'coding') {
@@ -7073,7 +7128,11 @@
             currentAttempt.responses[q.id].lang = lang;
             currentAttempt.responses[q.id].value = ''; // Force loading the new language's template
 
-            if (!isPractice) db.updateAttemptResponse(attemptId, q.id, currentAttempt.responses[q.id]);
+            if (!isPractice) {
+                db.updateAttemptResponse(attemptId, q.id, currentAttempt.responses[q.id]);
+            } else {
+                db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+            }
 
             // Re-render interaction to update editor template and trigger label
             if (q.type === 'coding') {
@@ -7590,6 +7649,7 @@
         (() => {
             const forbiddenKeys = ['F11', 'F12', 'PrintScreen', 'OS', 'Meta', 'Alt', 'Control'];
             document.addEventListener('keydown', (e) => {
+                if (isPractice) return;
                 if (forbiddenKeys.includes(e.key) || (e.ctrlKey && ['c', 'v', 'x', 'p', 's', 'a', 'f'].includes(e.key.toLowerCase()))) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -7598,18 +7658,22 @@
             }, true);
 
             document.addEventListener('contextmenu', e => {
+                if (isPractice) return;
                 e.preventDefault();
                 showHighFidelityBanner();
             });
             document.addEventListener('copy', e => {
+                if (isPractice) return;
                 e.preventDefault();
                 showHighFidelityBanner();
             });
             document.addEventListener('cut', e => {
+                if (isPractice) return;
                 e.preventDefault();
                 showHighFidelityBanner();
             });
             document.addEventListener('paste', e => {
+                if (isPractice) return;
                 e.preventDefault();
                 showHighFidelityBanner();
             });

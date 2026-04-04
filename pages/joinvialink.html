@@ -4,249 +4,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join via Link</title>
-
-    <script src="../js/db.js"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <title>Join via Link - Chitkara University</title>
+    <!-- Google Fonts: Hind -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body {
+        :root {
+            --primary-orange: #FF6600;
+            /* True Orange - not yellowish */
+            --primary-red: #e30613;
+            --bg-grey: #d6d9da;
+            --bg-cream: #efeee5;
+            --banner-bg: #e9d9b6;
+            --text-dark: #111111;
+            --transition: all 0.3s ease;
+        }
+
+        * {
             margin: 0;
-            font-family: 'Roboto', Arial, sans-serif;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hind', sans-serif;
+            background-color: var(--bg-grey);
+            color: var(--text-dark);
             height: 100vh;
-
-            background: linear-gradient(90deg, #cfd5db, #e7d9c8);
-
+            width: 100vw;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-
+            justify-content: center;
+            overflow: hidden;
             position: relative;
+        }
+
+        /* Orange Tidal Wave Background */
+        .bg-wave-system {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: var(--bg-grey);
             overflow: hidden;
         }
 
-        /* main background blob */
-        body::before {
-            content: "";
+        .bg-wave-system svg {
             position: absolute;
-
-            width: 950px;
-            height: 750px;
-
-            background: rgba(255, 255, 255, 0.32);
-
-            border-radius: 55% 45% 60% 40%;
-
-            top: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-
-            z-index: 0;
+            width: 100vw;
+            bottom: 0;
+            left: 0;
+            fill: var(--primary-orange);
+            filter: blur(8px);
         }
 
-        .container {
+        .bg-wave-system svg:nth-child(1) {
+            height: 100vh;
+            /* Exactly page height as requested */
+            fill: #E65100;
+            /* Rich Dark Orange - Deep Tone */
+            opacity: 0.95;
+            /* Solid backdrop - covers grey area */
+            animation: tide 25s infinite ease-in-out reverse;
+        }
+
+        .bg-wave-system svg:nth-child(2) {
+            height: 350px;
+            fill: #FF9100;
+            /* Lighter, vibrant foreground orange for contrast */
+            opacity: 0.25;
+            animation: tide 12s infinite ease-in-out;
+        }
+
+        @keyframes tide {
+
+            0%,
+            100% {
+                transform: translateY(0) scaleX(1);
+            }
+
+            50% {
+                transform: translateY(30px) scaleX(1.05);
+            }
+        }
+
+        /* Ambient Glow */
+        .bg-glow {
+            position: absolute;
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.08) 0%, transparent 70%);
+            top: -10vw;
+            right: -10vw;
+            filter: blur(100px);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 900px;
             text-align: center;
-            position: relative;
+            padding: 20px;
             z-index: 1;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin-top: -180px;
+            /* Shifted upwards aggressively */
         }
 
-        /* logo */
-        .logo {
+        .logo-section {
+            margin-bottom: 60px;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 35px;
+            gap: 25px;
         }
 
         .logo-text {
-            display: flex;
-            flex-direction: column;
             text-align: left;
+            line-height: 0.8;
+            margin-right: 5px;
         }
 
-        .main-text {
-            font-size: 32px;
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: -1px;
+        .logo-text .brand {
+            display: block;
+            font-size: 47px;
+            /* Matches the bold text in image */
+            font-weight: 700;
             color: #111;
         }
 
-        .sub-text {
-            font-size: 15px;
-            letter-spacing: 2px;
-            color: #333;
-        }
-
-        .logo img {
-            height: 55px;
-            object-fit: contain;
-        }
-
-        /* input */
-        .input-group {
-            text-align: left;
-            width: 520px;
-            margin-bottom: 8px;
-        }
-
-        label {
-            font-size: 14px;
-            color: #444;
+        .logo-text .subtext {
             display: block;
-            margin-bottom: 6px;
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 2.8px;
+            color: #111;
+            margin-top: 8px;
         }
 
-        input {
-            width: 520px;
-            height: 38px;
+        .logo-box-img {
+            width: 78px;
+            height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-            border: 1px solid #d6d6d6;
+        .input-group {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            text-align: left;
+        }
 
-            border-radius: 6px;
+        .input-label {
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 12px;
+            display: block;
+            font-weight: 400;
+        }
 
-            padding: 0 12px;
-
-            background: #f3f3f3;
-
-            font-size: 14px;
-
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f1f1f1;
+            font-size: 24px;
+            font-family: inherit;
             outline: none;
+            transition: var(--transition);
         }
 
-        /* button */
-        button {
-            margin-top: 18px;
-
-            background: #9c3d24;
-
-            border: none;
-
-            padding: 8px 42px;
-
-            border-radius: 6px;
-
+        .btn-go {
+            margin-top: 40px;
+            background-color: #9b4124;
+            /* Terracotta style from image */
             color: white;
-
-            font-size: 15px;
-
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #8a341c;
-        }
-
-        /* warning box */
-        .warning {
-            margin-top: 22px;
-
-            background: #e6d1ab;
-
-            padding: 12px 25px;
-
+            border: none;
+            padding: 12px 65px;
+            font-size: 24px;
+            font-weight: 400;
             border-radius: 10px;
-
-            width: 520px;
-
-            color: #6b4a21;
-
-            font-size: 14px;
-
-            text-align: center;
+            cursor: pointer;
+            font-family: inherit;
+            transition: var(--transition);
         }
 
-        /* footer */
-        .footer-left {
-            position: absolute;
-
-            bottom: 25px;
-            left: 35px;
-
-            color: #a74b2c;
-
-            font-size: 14px;
-
-            font-weight: 500;
+        .btn-go:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
 
-        .footer-right {
+        .alert-banner {
+            margin-top: 50px;
+            background-color: #e9d9b6;
+            color: #8c7344;
+            padding: 22px 50px;
+            border-radius: 12px;
+            font-size: 24px;
+            width: 100%;
+            max-width: 720px;
+        }
+
+        .footer {
             position: absolute;
-
-            bottom: 25px;
-            right: 35px;
-
-            color: #a74b2c;
-
-            font-size: 14px;
-
+            bottom: 40px;
+            width: 100%;
+            padding: 0 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 26px;
             font-weight: 500;
+            color: var(--primary-orange);
+            /* True Orange */
+        }
+
+        .footer span {
+            font-family: 'Hind', sans-serif;
         }
     </style>
 </head>
 
 <body>
+    <!-- Background Waves & Glows -->
+    <div class="bg-wave-system">
+        <!-- Layer 1: High Tide (Backdrop) - Covers Grey fully -->
+        <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
+            <path d="M 0,300 C 150,-100 350,700 500,300 C 650,-100 850,700 1000,300 L 1000,600 L 0,600 Z" />
+        </svg>
+        <!-- Layer 2: Graph Tide (Foreground) -->
+        <svg viewBox="0 0 1000 300" preserveAspectRatio="none" style="height: 350px; opacity: 0.2;">
+            <path d="M 0,150 C 120,50 250,250 500,150 C 750,50 880,250 1000,150 L 1000,300 L 0,300 Z" />
+        </svg>
+        <div class="bg-glow"></div>
+    </div>
 
-    <div class="container">
-
-        <div class="logo">
-
+    <div class="main-container">
+        <!-- Logo Section -->
+        <div class="logo-section">
             <div class="logo-text">
-                <span class="main-text">CHITKARA</span>
-                <span class="sub-text">UNIVERSITY</span>
+                <span class="brand">CHITKARA</span>
+                <span class="subtext">UNIVERSITY</span>
             </div>
-
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-hapuUdABDDt3Q0bPc6KTE1ZvFVuQigmv6Q&s">
-
+            <div class="logo-box-img">
+                <img src="../logo.jpg" alt="Logo"
+                    style="height: 100%; width: 100%; object-fit: contain; border-radius: 4px;">
+            </div>
         </div>
 
         <div class="input-group">
-            <label>Enter test/invite link</label>
-            <input type="text" id="inviteLink">
+            <label class="input-label">Enter test/invite link</label>
+            <input type="text" class="input-field" spellcheck="false" id="test-link">
         </div>
 
-        <button onclick="validateLink()">Go</button>
+        <button class="btn-go" id="go-btn">Go</button>
 
-        <div class="warning">
-            To exit please press Alt+F4, only when test has not been started.
+        <br>
+
+        <div class="alert-banner">
+            To exit please press <span style="font-weight: 600;">Alt+F4</span>, only when test has not been started.
         </div>
-
     </div>
 
-    <div class="footer-left">Powered by Chitkara</div>
-    <div class="footer-right">Version: 0.4.34</div>
+    <!-- Footer -->
+    <div class="footer">
+        <div class="powered">Powered by Chitkara</div>
+        <div class="version">Version: 0.4.34</div>
+    </div>
 
     <script>
+        // focus input on load
+        window.onload = () => {
+            document.getElementById('test-link').focus();
+        };
 
-        function validateLink() {
-
-            const link = document.getElementById("inviteLink").value.trim();
-
-            if (link !== "") {
-
-                const exam = db.getExamByTestId(link) || db.getExamById(link);
-
-                if (exam) {
-                    window.location.href = "step2vialink.html?testId=" + exam.id;
-                }
-                else {
-                    alert("Validating Link Failed: No test is associated with this link, or the test is not available currently.");
-                }
-
+        // Handle Go button
+        document.getElementById('go-btn').onclick = () => {
+            const val = document.getElementById('test-link').value;
+            if (val.trim()) {
+                window.location.href = val;
             }
-            else {
-                alert("Please enter a valid link/test code");
-            }
+        };
 
-        }
-
+        // Enter key support
+        document.getElementById('test-link').onkeypress = (e) => {
+            if (e.key === 'Enter') document.getElementById('go-btn').click();
+        };
     </script>
-
 </body>
 
 </html>

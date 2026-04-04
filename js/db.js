@@ -33,6 +33,9 @@ class ExampadDB {
         if (!localStorage.getItem('exampad_circulars')) {
             localStorage.setItem('exampad_circulars', JSON.stringify([]));
         }
+        if (!localStorage.getItem('exampad_practice_sessions')) {
+            localStorage.setItem('exampad_practice_sessions', JSON.stringify({}));
+        }
     }
 
     // ===== CIRCULAR MANAGEMENT =====
@@ -541,6 +544,18 @@ class ExampadDB {
     getStudentTransactions(studentId) {
         const txs = JSON.parse(localStorage.getItem('exampad_transactions'));
         return txs.filter(t => t.studentId === studentId);
+    }
+
+    // ===== PRACTICE SESSION PERSISTENCE =====
+    savePracticeSession(itemId, attemptData) {
+        const sessions = JSON.parse(localStorage.getItem('exampad_practice_sessions')) || {};
+        sessions[itemId] = attemptData;
+        localStorage.setItem('exampad_practice_sessions', JSON.stringify(sessions));
+    }
+
+    getPracticeSession(itemId) {
+        const sessions = JSON.parse(localStorage.getItem('exampad_practice_sessions')) || {};
+        return sessions[itemId] || null;
     }
 }
 

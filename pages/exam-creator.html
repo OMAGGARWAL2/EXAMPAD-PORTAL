@@ -1900,6 +1900,12 @@
                              <button class="btn btn-ghost" onclick="downloadExcelTemplate()" style="border-color: #52c41a; color: #52c41a; background: #fff; font-weight: 700; border-radius: 10px;">
                                 <i class="fas fa-download" style="margin-right:8px;"></i> TEMPLATE
                             </button>
+                            <button class="btn btn-ghost" onclick="window.location.href='excelupload.html'" style="border-color: #52c41a; color: #52c41a; background: #f6ffed; font-weight: 700; border-radius: 10px;">
+                                <i class="fas fa-table" style="margin-right:8px;"></i> WEB ARCHITECT
+                            </button>
+                            <button class="btn btn-ghost" onclick="window.location.href='exceluploadcode.html'" style="border-color: #1890ff; color: #1890ff; background: #e6f7ff; font-weight: 700; border-radius: 10px;">
+                                <i class="fas fa-code" style="margin-right:8px;"></i> CODING ARCHITECT
+                            </button>
                             <button class="btn btn-run" onclick="document.getElementById('excelUploadBanner').click()" style="background: #52c41a; color: #fff; border: none; font-weight: 700; height: 44px; padding: 0 24px; border-radius: 10px; box-shadow: 0 6px 15px rgba(82, 196, 26, 0.25);">
                                 UPLOAD FILE
                             </button>
@@ -1922,7 +1928,13 @@
                                             <button class="mini-tool-btn" onclick="openPoolModal()"
                                                 style="color: #6366f1;"><i class="fas fa-database"></i> Import from Pool</button>
                                             <button class="mini-tool-btn" onclick="document.getElementById('excelUploadBtn').click()" style="color: #2ecc71; font-weight: 700; border: 1.5px solid #2ecc71; background: #f6ffed;">
-                                                <i class="fas fa-file-excel"></i> Bulk Import (Excel)
+                                                <i class="fas fa-file-excel"></i> Bulk Import (File)
+                                            </button>
+                                            <button class="mini-tool-btn" onclick="window.location.href='excelupload.html'" style="color: #2ecc71; font-weight: 700; border: 1.5px solid #2ecc71; background: #fff;">
+                                                <i class="fas fa-table"></i> Web Excel
+                                            </button>
+                                            <button class="mini-tool-btn" onclick="window.location.href='exceluploadcode.html'" style="color: #3498db; font-weight: 700; border: 1.5px solid #3498db; background: #fff;">
+                                                <i class="fas fa-laptop-code"></i> Coding Matrix
                                             </button>
                                             <input type="file" id="excelUploadBtn" style="display:none" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
                                             <button class="mini-tool-btn" onclick="generateAIQuestion()"
@@ -2343,8 +2355,11 @@
             </div>
 
             <!-- GLOBAL BULK UPLOAD -->
-            <button class="btn btn-ghost" onclick="document.getElementById('excelUploadGlobal').click()" style="width:100%; margin-bottom: 20px; border:1px solid #2ecc71; color:#2ecc71; background:rgba(46,204,113,0.05);">
-                <i class="fas fa-file-excel" style="margin-right:8px;"></i> Bulk Import (Excel)
+            <button class="btn btn-ghost" onclick="document.getElementById('excelUploadGlobal').click()" style="width:100%; margin-bottom: 10px; border:1px solid #2ecc71; color:#2ecc71; background:rgba(46,204,113,0.05);">
+                <i class="fas fa-file-excel" style="margin-right:8px;"></i> Bulk Import (File)
+            </button>
+            <button class="btn btn-ghost" onclick="window.location.href='excelupload.html'" style="width:100%; margin-bottom: 20px; border:1px solid #2ecc71; color:#2ecc71; background:white;">
+                <i class="fas fa-table" style="margin-right:8px;"></i> Web Excel Architect
             </button>
             <input type="file" id="excelUploadGlobal" style="display:none" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
 
