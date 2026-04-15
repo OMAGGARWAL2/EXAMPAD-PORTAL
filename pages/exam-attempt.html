@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXAMPAD</title>
+    <title>TESTPAD</title>
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="../Tests _ Chitkara_files/fonts.css">
     <!-- Font Awesome -->
@@ -578,7 +578,7 @@
         .question-description,
         .q-body {
             font-family: 'Hind', sans-serif !important;
-            font-size: calc(1.125rem * var(--q-scale, 1));
+            font-size: calc(1.125rem * var(--q-body-scale, 1));
             font-weight: 400 !important;
             line-height: 1.6 !important;
             color: #343a40 !important;
@@ -3568,39 +3568,9 @@
                         style="font-size: 2rem; font-weight: 400; color: #101828; margin-bottom: 32px; font-family: 'Open Sans', sans-serif;">
                         sign in</h2>
 
-                    <div style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px;">
-                        <!-- email or rollnumber -->
-                        <div style="position: relative;">
-                            <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">email
-                                or rollnumber *</label>
-                            <input type="text" id="verifyInputRoll" placeholder="Enter your rollnumber"
-                                style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
-                                onfocus="this.style.borderBottomColor='#e16c38'"
-                                onblur="this.style.borderBottomColor='#D0D5DD'">
-                        </div>
-
-                        <!-- password -->
-                        <div style="position: relative;">
-                            <label
-                                style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">password
-                                *</label>
-                            <input type="password" id="verifyInputPass" placeholder="Enter password"
-                                style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; padding-right: 32px; transition: border-color 0.2s;"
-                                onfocus="this.style.borderBottomColor='#e16c38'"
-                                onblur="this.style.borderBottomColor='#D0D5DD'">
-                            <i class="far fa-eye-slash"
-                                style="position: absolute; right: 0; bottom: 12px; color: #98a2b3; cursor: pointer; font-size: 1rem;"></i>
-                        </div>
-
-                        <!-- test code -->
-                        <div style="position: relative;">
-                            <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">test
-                                code *</label>
-                            <input type="text" id="verifyInputTestCode" placeholder="Enter test code"
-                                style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
-                                onfocus="this.style.borderBottomColor='#e16c38'"
-                                onblur="this.style.borderBottomColor='#D0D5DD'">
-                        </div>
+                    <div id="verificationFieldsContainer"
+                        style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px;">
+                        <!-- Dynamic Fields -->
                     </div>
 
                     <button onclick="finalizeSecurity()"
@@ -4685,66 +4655,104 @@
             const step2 = document.getElementById('securityStep2');
             if (step2) step2.style.display = 'flex';
 
-            // If it's a practice test, we can simplify/pre-fill the sign-in
-            if (isPractice) {
-                const signInTitle = step2.querySelector('h2');
-                if (signInTitle) signInTitle.textContent = "verify identity";
-
-                // For standalone practice, maybe hide password/code if not needed
-                const passParent = document.getElementById('verifyInputPass')?.parentElement;
-                const codeParent = document.getElementById('verifyInputTestCode')?.parentElement;
-                if (!currentAttempt.passwordRequired && passParent) passParent.style.display = 'none';
-                if (!currentAttempt.codeRequired && codeParent) codeParent.style.display = 'none';
-            }
-
             if (currentExam) {
-                const rollInp = document.getElementById('verifyInputRoll');
-                if (rollInp) {
-                    const defaultRoll = (user && user.rollNo && !user.rollNo.startsWith('USER_')) ? user.rollNo : '';
-                    rollInp.value = currentAttempt.studentRollNo || defaultRoll;
-                    rollInp.focus();
-                }
                 document.getElementById('verifyTestTitle').textContent = currentExam.title || "Assessment Session";
                 document.getElementById('verifyTotalQuestions').textContent = currentExam.questions ? currentExam.questions.length : "0";
                 document.getElementById('verifyTotalTime').textContent = (currentExam.duration || 60) + " mins";
-                const maxMarks = currentExam.questions ? currentExam.questions.reduce((s, q) => s + (q.marks || 1), 0) : 100;
-                document.getElementById('verifyMaxMarks').textContent = maxMarks;
+
+                // Populate Identity Fields
+                const container = document.getElementById('verificationFieldsContainer');
+                if (container) {
+                    let fields = currentExam.identityFields || [];
+
+                    // Fallback to defaults if no identity fields defined
+                    if (fields.length === 0) {
+                        fields = [
+                            { label: 'email or rollnumber', type: 'text', value: '' },
+                            { label: 'test code', type: 'testcode', value: currentExam.security?.passcode || '' }
+                        ];
+                    }
+
+                    container.innerHTML = fields.map((f, i) => {
+                        if (f.type === 'dropdown') {
+                            const opts = (f.value || '').split(',').map(s => s.trim());
+                            return `
+                                <div style="position: relative;">
+                                    <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">${f.label.toLowerCase()} *</label>
+                                    <select id="ident_field_${i}" style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; cursor:pointer;">
+                                        <option value="">Select ${f.label}...</option>
+                                        ${opts.map(o => `<option value="${o}">${o}</option>`).join('')}
+                                    </select>
+                                </div>
+                            `;
+                        }
+
+                        return `
+                            <div style="position: relative;">
+                                <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">${f.label.toLowerCase()} *</label>
+                                <input type="${f.label.toLowerCase().includes('password') ? 'password' : 'text'}" 
+                                       id="ident_field_${i}" 
+                                       placeholder="Enter ${f.label.toLowerCase()}"
+                                       style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
+                                       onfocus="this.style.borderBottomColor='#e16c38'"
+                                       onblur="this.style.borderBottomColor='#D0D5DD'">
+                            </div>
+                        `;
+                    }).join('');
+                }
             }
         }
 
         function finalizeSecurity() {
-            const rollInput = document.getElementById('verifyInputRoll');
-            const passInput = document.getElementById('verifyInputPass');
-            const codeInput = document.getElementById('verifyInputTestCode');
-
-            const rollNo = rollInput ? rollInput.value.trim() : '';
-
-            // 10-digit Numeric Validation
-            if (!/^\d{10}$/.test(rollNo)) {
-                showToast("Please enter a valid 10-digit numeric Roll Number to proceed.", 'error');
-                if (rollInput) {
-                    rollInput.style.borderColor = '#F04438';
-                    rollInput.focus();
-                }
-                return;
+            let fields = currentExam.identityFields || [];
+            if (fields.length === 0) {
+                fields = [
+                    { label: 'email or rollnumber', type: 'text', value: '' },
+                    { label: 'test code', type: 'testcode', value: currentExam.security?.passcode || '' }
+                ];
             }
 
-            if (rollNo) {
-                currentAttempt.studentRollNo = rollNo;
+            const responses = {};
+            for (let i = 0; i < fields.length; i++) {
+                const f = fields[i];
+                const inp = document.getElementById(`ident_field_${i}`);
+                const val = inp ? inp.value.trim() : '';
+
+                if (!val) {
+                    showToast(`Please provide ${f.label}`, 'error');
+                    if (inp) inp.focus();
+                    return;
+                }
+
+                if (f.type === 'testcode' && val !== f.value && !isPreview && !isPractice) {
+                    showToast(`${f.label} is incorrect`, 'error');
+                    if (inp) inp.focus();
+                    return;
+                }
+
+                responses[f.label] = val;
+
+                // Extract Roll Number if label matches
+                const lLower = f.label.toLowerCase();
+                if (lLower.includes('roll') || lLower.includes('id')) {
+                    currentAttempt.studentRollNo = val;
+                }
+            }
+
+            currentAttempt.identityResponses = responses;
+
+            // Sync to UI
+            if (currentAttempt.studentRollNo) {
                 const userIdEl = document.getElementById('userId');
-                if (userIdEl) userIdEl.textContent = rollNo;
+                if (userIdEl) userIdEl.textContent = currentAttempt.studentRollNo;
+            }
 
-                if (!isPractice) {
-                    db.updateAttempt(attemptId, { studentRollNo: rollNo });
-                } else {
-                    db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
-                }
-
-                // If user has no roll number (auto-generated ID), update it permanently
-                if (user && (!user.rollNo || user.rollNo.startsWith('USER_') || user.rollNo === 'UNKNOWN')) {
-                    db.updateUser(user.id, { rollNo: rollNo });
-                    user.rollNo = rollNo;
-                }
+            // Persistence
+            if (!isPractice) {
+                db.updateAttempt(attemptId, {
+                    studentRollNo: currentAttempt.studentRollNo || (user ? user.rollNo : 'ANON'),
+                    identityResponses: responses
+                });
             }
 
             startExamSession();
@@ -6029,14 +6037,14 @@
             clearTimeout(fontResizeTimer);
             fontResizeTimer = setTimeout(() => {
                 const scale = Math.max(0.5, Math.min(1.5, (val / 100)));
-                // qScale (left pane question) increases 'a lil more fast' (sensitivity 0.28)
-                const qScale = Math.max(0.75, Math.min(1.65, 1 + (scale - 1) * 0.28));
+                // qScale (left pane question) increases faster (sensitivity 0.45)
+                const qScale = Math.max(0.75, Math.min(1.75, 1 + (scale - 1) * 0.45));
                 // mcqScale (right pane options) increases very slowly (sensitivity 0.06)
                 const mcqScale = Math.max(0.95, Math.min(1.15, 1 + (scale - 1) * 0.06));
                 // hScale for header elements remains slow (sensitivity 0.02)
                 const hScale = Math.max(0.98, Math.min(1.05, 1 + (scale - 1) * 0.02));
-                // qBodyScale for main question body - fastest response (sensitivity 0.35)
-                const qBodyScale = Math.max(0.70, Math.min(1.80, 1 + (scale - 1) * 0.35));
+                // qBodyScale for main question body - fastest response (sensitivity 0.60)
+                const qBodyScale = Math.max(0.70, Math.min(2.00, 1 + (scale - 1) * 0.60));
 
                 document.documentElement.style.setProperty('--scale', scale);
                 document.documentElement.style.setProperty('--q-scale', qScale);
@@ -6741,6 +6749,18 @@
                     runBtn.style.opacity = '1';
                     runBtn.style.cursor = 'pointer';
                 }
+
+                // Track run metrics for custom run
+                if (!currentAttempt.responses[q.id]) currentAttempt.responses[q.id] = { value: '', mode: 'run_custom' };
+                currentAttempt.responses[q.id].runCount = (currentAttempt.responses[q.id].runCount || 0) + 1;
+                const customOutput = result.success ? result.stdout : (result.error || 'Custom execution failed');
+                currentAttempt.responses[q.id].lastConsoleOutput = customOutput;
+
+                if (!isPractice) {
+                    db.updateAttemptResponse(attemptId, q.id, currentAttempt.responses[q.id]);
+                } else {
+                    db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+                }
             } else {
                 // Pre-run cleanup
                 const sidebar = document.getElementById('tcSidebar');
@@ -6882,6 +6902,18 @@
                     runBtn.disabled = false;
                     runBtn.style.opacity = '1';
                     runBtn.style.cursor = 'pointer';
+                }
+
+                // Track run metrics
+                if (!currentAttempt.responses[q.id]) currentAttempt.responses[q.id] = { value: mEd.getValue(), mode: 'run' };
+                currentAttempt.responses[q.id].runCount = (currentAttempt.responses[q.id].runCount || 0) + 1;
+                currentAttempt.responses[q.id].lastConsoleOutput = finalStatusHtml;
+                currentAttempt.responses[q.id].results = results; // SAVE ALL RESULTS HERE TOO
+                
+                if (!isPractice) {
+                    db.updateAttemptResponse(attemptId, q.id, currentAttempt.responses[q.id]);
+                } else {
+                    db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
                 }
             }
         }
@@ -7057,6 +7089,9 @@
 
             if (!currentAttempt.responses[qid]) currentAttempt.responses[qid] = { value: '' };
             currentAttempt.responses[qid].submitted = true;
+            if (q.type === 'coding') {
+                currentAttempt.responses[qid].results = results;
+            }
             if (!isPractice) {
                 db.updateAttemptResponse(attemptId, qid, currentAttempt.responses[qid]);
             } else {

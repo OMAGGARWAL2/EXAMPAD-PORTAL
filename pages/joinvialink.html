@@ -4,297 +4,405 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join via Link - Chitkara University</title>
-    <!-- Google Fonts: Hind -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>TESTPAD</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Hind:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --primary-orange: #FF6600;
-            /* True Orange - not yellowish */
-            --primary-red: #e30613;
-            --bg-grey: #d6d9da;
-            --bg-cream: #efeee5;
-            --banner-bg: #e9d9b6;
-            --text-dark: #111111;
-            --transition: all 0.3s ease;
+            --primary: #c05126;
+            --primary-hover: #a0411d;
+            --bg-color: #f1ede8;
+            --text-color: #333;
+            --accent-soft: rgba(230, 222, 211, 0.4);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Hind', sans-serif;
-            background-color: var(--bg-grey);
-            color: var(--text-dark);
-            height: 100vh;
-            width: 100vw;
+            background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            padding-top: 2vh;
+            /* Top edge */
             overflow: hidden;
             position: relative;
         }
 
-        /* Orange Tidal Wave Background */
-        .bg-wave-system {
-            position: fixed;
+        /* Organic Background Wave */
+        .bg-wave {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            background-color: var(--bg-grey);
+            z-index: 1;
             overflow: hidden;
+            pointer-events: none;
         }
 
-        .bg-wave-system svg {
-            position: absolute;
-            width: 100vw;
-            bottom: 0;
-            left: 0;
-            fill: var(--primary-orange);
-            filter: blur(8px);
-        }
-
-        .bg-wave-system svg:nth-child(1) {
-            height: 100vh;
-            /* Exactly page height as requested */
-            fill: #E65100;
-            /* Rich Dark Orange - Deep Tone */
-            opacity: 0.95;
-            /* Solid backdrop - covers grey area */
-            animation: tide 25s infinite ease-in-out reverse;
-        }
-
-        .bg-wave-system svg:nth-child(2) {
-            height: 350px;
-            fill: #FF9100;
-            /* Lighter, vibrant foreground orange for contrast */
-            opacity: 0.25;
-            animation: tide 12s infinite ease-in-out;
-        }
-
-        @keyframes tide {
-
-            0%,
-            100% {
-                transform: translateY(0) scaleX(1);
-            }
-
-            50% {
-                transform: translateY(30px) scaleX(1.05);
-            }
-        }
-
-        /* Ambient Glow */
-        .bg-glow {
-            position: absolute;
-            width: 80vw;
-            height: 80vw;
-            background: radial-gradient(circle, rgba(255, 102, 0, 0.08) 0%, transparent 70%);
-            top: -10vw;
-            right: -10vw;
-            filter: blur(100px);
+        .bg-wave svg {
+            width: 100%;
+            height: 100%;
+            fill: #fff5ed;
+            /* Light Orange Tint */
+            opacity: 0.8;
         }
 
         .main-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             text-align: center;
-            padding: 20px;
-            z-index: 1;
-            margin-top: -180px;
-            /* Shifted upwards aggressively */
+            padding: 5px 20px;
+            /* Reduced vertical padding */
+            font-family: 'Roboto', sans-serif;
         }
 
         .logo-section {
-            margin-bottom: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .logo-text {
-            text-align: left;
-            line-height: 0.8;
-            margin-right: 5px;
-        }
-
-        .logo-text .brand {
-            display: block;
-            font-size: 47px;
-            /* Matches the bold text in image */
-            font-weight: 700;
-            color: #111;
-        }
-
-        .logo-text .subtext {
-            display: block;
-            font-size: 24px;
-            font-weight: 400;
-            letter-spacing: 2.8px;
-            color: #111;
-            margin-top: 8px;
-        }
-
-        .logo-box-img {
-            width: 78px;
-            height: 78px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .input-group {
+            margin-bottom: 40px;
+            /* Increased gap to shift content down */
             width: 100%;
-            max-width: 650px;
-            margin: 0 auto;
-            text-align: left;
+        }
+
+        .official-logo {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .input-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 10px;
         }
 
         .input-label {
-            font-size: 20px;
-            color: #555;
-            margin-bottom: 12px;
             display: block;
-            font-weight: 400;
+            text-align: left;
+            /* Starts where the box starts */
+            font-size: 1.05rem;
+            color: #666;
+            margin-bottom: 10px;
+            padding-left: 2px;
+            font-family: 'Roboto', sans-serif;
         }
 
-        .input-field {
+        .test-input {
             width: 100%;
-            padding: 16px 20px;
-            border: 1px solid #ccc;
+            padding: 6px 20px;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
-            background-color: #f1f1f1;
-            font-size: 24px;
-            font-family: inherit;
+            font-size: 1.4rem;
+            background: #fff;
+            color: #333;
             outline: none;
-            transition: var(--transition);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+            /* Changed back to left */
         }
 
-        .btn-go {
-            margin-top: 40px;
-            background-color: #9b4124;
-            /* Terracotta style from image */
+        .test-input:focus {
+            border-color: #de6834;
+        }
+
+        .go-btn {
+            background-color: #ff9466;
+            /* Light Orange */
             color: white;
             border: none;
-            padding: 12px 65px;
-            font-size: 24px;
-            font-weight: 400;
+            padding: 8px 40px;
             border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 500;
             cursor: pointer;
-            font-family: inherit;
-            transition: var(--transition);
+            transition: all 0.2s;
+            margin-bottom: 30px;
         }
 
-        .btn-go:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+        .go-btn:hover {
+            background-color: #de6834;
+            box-shadow: 0 4px 12px rgba(255, 148, 102, 0.2);
         }
 
-        .alert-banner {
-            margin-top: 50px;
-            background-color: #e9d9b6;
-            color: #8c7344;
-            padding: 22px 50px;
-            border-radius: 12px;
-            font-size: 24px;
+        .notice-box {
+            background-color: #fff9f0;
+            border-radius: 8px;
+            padding: 6px 30px;
+            font-size: 1.4rem;
+            color: #f28c28;
+            /* Baby Orange Tint */
             width: 100%;
-            max-width: 720px;
+            max-width: 800px;
+            text-align: center;
+            line-height: 1.4;
+            margin-top: 30px;
+            font-weight: 500;
+            font-family: 'Roboto', sans-serif;
+            border: 1px solid #ffecd2;
         }
 
         .footer {
-            position: absolute;
-            bottom: 40px;
+            position: fixed;
+            bottom: 45px;
+            /* Shifted up further */
+            left: 0;
             width: 100%;
-            padding: 0 60px;
+            padding: 0 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 26px;
-            font-weight: 500;
-            color: var(--primary-orange);
-            /* True Orange */
+            color: #de6834;
+            font-size: 1.6rem;
+            font-family: 'Hind', sans-serif;
+            z-index: 100;
         }
 
-        .footer span {
-            font-family: 'Hind', sans-serif;
+        .footer-left,
+        .footer-right {
+            font-weight: 700;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-container {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .error-banner {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fee2e2;
+            color: #ef4444;
+            padding: 10px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #fecaca;
+        }
+
+        .error-banner.show {
+            top: 30px;
         }
     </style>
 </head>
 
 <body>
-    <!-- Background Waves & Glows -->
-    <div class="bg-wave-system">
-        <!-- Layer 1: High Tide (Backdrop) - Covers Grey fully -->
-        <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
-            <path d="M 0,300 C 150,-100 350,700 500,300 C 650,-100 850,700 1000,300 L 1000,600 L 0,600 Z" />
+    <div id="errorBanner" class="error-banner">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
-        <!-- Layer 2: Graph Tide (Foreground) -->
-        <svg viewBox="0 0 1000 300" preserveAspectRatio="none" style="height: 350px; opacity: 0.2;">
-            <path d="M 0,150 C 120,50 250,250 500,150 C 750,50 880,250 1000,150 L 1000,300 L 0,300 Z" />
+        <span>Invalid test/invite link. Please check and try again.</span>
+    </div>
+    <div class="bg-wave">
+        <svg viewBox="0 0 1440 800" preserveAspectRatio="none">
+            <!-- White Ray - Based on Teal Sketch Geometry -->
+            <path d="M0,800 C100,300 400,800 650,550 C850,250 1200,0 1440,0 L1440,800 L0,800 Z" fill="#ffffff"
+                opacity="0.25"></path>
+
+            <!-- Main Peach-Orange Tide - Based on Magenta Sketch Geometry -->
+            <path d="M0,500 C150,550 450,850 650,220 C850,80 1150,100 1440,110 L1440,800 L0,800 Z" fill="#ffcca1"
+                opacity="0.8"></path>
+
         </svg>
-        <div class="bg-glow"></div>
     </div>
 
     <div class="main-container">
-        <!-- Logo Section -->
-        <div class="logo-section">
-            <div class="logo-text">
-                <span class="brand">CHITKARA</span>
-                <span class="subtext">UNIVERSITY</span>
-            </div>
-            <div class="logo-box-img">
-                <img src="../logo.jpg" alt="Logo"
-                    style="height: 100%; width: 100%; object-fit: contain; border-radius: 4px;">
-            </div>
+        <div class="logo-section" style="justify-content: center;">
+            <img src="https://www.chitkara.edu.in/chitkara-university-logo.png" alt="Chitkara University"
+                class="official-logo">
         </div>
 
-        <div class="input-group">
+        <div class="input-wrapper">
             <label class="input-label">Enter test/invite link</label>
-            <input type="text" class="input-field" spellcheck="false" id="test-link">
+            <input type="text" id="testLink" class="test-input" autocomplete="off">
         </div>
 
-        <button class="btn-go" id="go-btn">Go</button>
+        <button class="go-btn" id="goBtn">Go</button>
 
-        <br>
-
-        <div class="alert-banner">
-            To exit please press <span style="font-weight: 600;">Alt+F4</span>, only when test has not been started.
+        <div class="notice-box">
+            To exit please press Alt+F4, only when test has not been started.
         </div>
     </div>
 
-    <!-- Footer -->
     <div class="footer">
-        <div class="powered">Powered by Chitkara</div>
-        <div class="version">Version: 0.4.34</div>
+        <div class="footer-left">Powered by Chitkara</div>
+        <div class="footer-right" style="cursor: pointer;" onclick="window.location.href='../index.html'">Version: 0.5.0
+        </div>
     </div>
 
     <script>
-        // focus input on load
-        window.onload = () => {
-            document.getElementById('test-link').focus();
-        };
+        const testInput = document.getElementById('testLink');
+        const goBtn = document.getElementById('goBtn');
+        const errorBanner = document.getElementById('errorBanner');
+        let errorTimeout;
 
-        // Handle Go button
-        document.getElementById('go-btn').onclick = () => {
-            const val = document.getElementById('test-link').value;
-            if (val.trim()) {
-                window.location.href = val;
+        function showError(message) {
+            errorBanner.querySelector('span').textContent = message;
+            errorBanner.classList.add('show');
+
+            clearTimeout(errorTimeout);
+            errorTimeout = setTimeout(() => {
+                errorBanner.classList.remove('show');
+            }, 3000);
+        }
+
+        function tryDirectRedirect(testId, passcode) {
+            try {
+                if (typeof auth === 'undefined' || typeof db === 'undefined') return false;
+                if (auth.isLoggedIn() && auth.isStudent()) {
+                    const user = auth.getCurrentUser();
+                    const exam = db.getExamByTestId(testId);
+                    if (exam) {
+                        const examsWithPass = exam.security || {};
+                        const passRequired = examsWithPass.passcode || exam.passcode;
+
+                        if (!passRequired || (passcode && passcode === passRequired)) {
+                            const res = db.startAttempt(exam.id, user.id);
+                            if (res.success) {
+                                window.location.href = `./exam-attempt.html?attemptId=${res.attempt.id}`;
+                                return true;
+                            } else {
+                                const attempts = db.getStudentAttempts(user.id) || [];
+                                const existing = attempts.find(a => a.examId === exam.id && (a.status === 'in-progress' || a.status === 'started' || a.status === 'ongoing'));
+                                if (existing) {
+                                    window.location.href = `./exam-attempt.html?attemptId=${existing.id}`;
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Direct redirect check failed:", e);
             }
-        };
+            return false;
+        }
 
-        // Enter key support
-        document.getElementById('test-link').onkeypress = (e) => {
-            if (e.key === 'Enter') document.getElementById('go-btn').click();
+        function handleGo() {
+            let link = testInput.value.trim();
+            if (!link) {
+                showError('Please enter a valid test/invite link.');
+                return;
+            }
+
+            // Normalization for recognition
+            const lowerLink = link.toLowerCase();
+            let testId = "";
+            let passcode = "";
+
+            // 1. Identify Test Links (Any Chitkara/Testpad domain)
+            if (lowerLink.includes("chitpara.edu.in") || lowerLink.includes("testpad.chitpara")) {
+                try {
+                    // Look for TST pattern anywhere in the link/URL
+                    const tstMatch = link.match(/TST[A-Z0-9]{3,}/i);
+                    if (tstMatch) {
+                        testId = tstMatch[0].toUpperCase();
+                        
+                        // Try to extract passcode from query params if present
+                        if (link.includes('?')) {
+                            const sp = new URLSearchParams(link.split('?')[1]);
+                            passcode = sp.get('passcode') || "";
+                        }
+                    }
+                } catch (e) {
+                    console.error("Link pattern extraction failed:", e);
+                }
+            }
+            // 2. Identify pure Test IDs (e.g., TST123)
+            else if (/^TST[A-Z0-9]+$/i.test(link)) {
+                testId = link.toUpperCase();
+            }
+
+            // If we found a Test ID, we MUST stay internal (file://)
+            if (testId) {
+                // Try to launch directly from the current local environment
+                if (tryDirectRedirect(testId, passcode)) return;
+
+                // Fallback to local dashboard (will resolve to file:// automatically)
+                sessionStorage.setItem('pending_test_id', testId);
+                if (passcode) sessionStorage.setItem('pending_passcode', passcode);
+                window.location.href = `./student-dashboard.html?testId=${testId}${passcode ? '&passcode=' + passcode : ''}`;
+                return;
+            }
+
+            // 3. General URL/File Support
+            const isWebLink = /^https?:\/\//i.test(link);
+            const isLocalLink = link.startsWith('file://') || /^[a-zA-Z]:[/\\]/.test(link);
+
+            if (isLocalLink) {
+                // Ensure correct file:/// prefix for Windows drive paths
+                if (/^[a-zA-Z]:[/\\]/.test(link)) {
+                    window.location.href = 'file:///' + link.replace(/\\/g, '/');
+                } else {
+                    window.location.href = link;
+                }
+            } else if (isWebLink) {
+                window.location.href = link;
+            } else if (link.includes('.') && !link.includes(' ')) {
+                // If it looks like a domain, default to https
+                window.location.href = 'https://' + link;
+            } else {
+                showError('Link format not recognized.');
+            }
+        }
+
+        goBtn.addEventListener('click', handleGo);
+
+        testInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleGo();
+            }
+        });
+
+        // Focus the input on load
+        window.onload = () => {
+            testInput.focus();
         };
     </script>
 </body>

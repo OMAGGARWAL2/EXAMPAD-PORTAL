@@ -1820,6 +1820,24 @@
                 </div>
             </div>
 
+            <div class="form-card" style="margin-top: 24px; border-left: 4px solid #f39c12;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
+                    <div style="width:40px; height:40px; background:rgba(243, 156, 18, 0.1); color:#f39c12; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-user-check" style="font-size:1.2rem;"></i>
+                    </div>
+                    <h2 class="section-title" style="margin:0;">Identity Verification Architect</h2>
+                </div>
+                <p style="color:#666; font-size: 0.85rem; margin-bottom: 20px;">Define mandatory information students must provide before starting the assessment (e.g. Blind Roll No, Section, Name).</p>
+                
+                <div id="identityFieldsList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <!-- Dynamic Identity Fields -->
+                </div>
+
+                <button class="btn btn-ghost" onclick="addIdentityField()" style="width:100%; border: 1.5px dashed #f39c12; color:#f39c12; background:rgba(243, 156, 18, 0.05); font-weight:700;">
+                    <i class="fas fa-plus" style="margin-right:8px;"></i> Add Mandatory Identity Question
+                </button>
+            </div>
+
             <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center;">
                 <button class="btn btn-ghost" onclick="goBack()">&larr; Exit to Dashboard</button>
                 <div style="display: flex; gap: 16px;">
@@ -2165,8 +2183,12 @@
                         <label class="sec-toggle"
                             style="display:flex; align-items:center; gap:12px; cursor:pointer; background:#fdf8f5; padding:12px; border-radius:8px; border:1px solid #ffe8dd; margin-top:10px;">
                             <input type="checkbox" id="showResults" checked style="width:18px; height:18px;">
-                            <span style="font-size:0.85rem; font-weight:600; color:#333;">Show Results/Answers to
-                                Student after Submission</span>
+                            <span style="font-size:0.85rem; font-weight:600; color:#333;">Show Results/Answers to Student after Submission</span>
+                        </label>
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(46, 204, 113, 0.05); padding:12px; border-radius:8px; border:1px solid #2ecc7133; margin-top:10px;">
+                            <input type="checkbox" id="autoPublishResults" checked style="width:18px; height:18px;">
+                            <span style="font-size:0.85rem; font-weight:700; color:#27ae60;">Upload and Publish Marks after Test</span>
                         </label>
                     </div>
 
@@ -2895,6 +2917,7 @@
         questions: [],
         languages: [],
         pools: {},
+        identityFields: [],
         theme: { primaryColor: '#D96C33', font: 'Outfit', darkMode: false },
         sectionLockEnabled: false,
         security: {
@@ -3014,10 +3037,65 @@
             }
             updateSectionsList();
             updateQuestionsList();
+            updateIdentityFieldsList();
             // Force Step 4 preview refresh on load if we are already on step 4
             updatePreviewList();
         }
         updateSectionsList();
+        updateIdentityFieldsList();
+    }
+
+    function updateIdentityFieldsList() {
+        const container = document.getElementById('identityFieldsList');
+        if (!container) return;
+        
+        if (!exams.identityFields || exams.identityFields.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:#999; font-size:0.8rem; background:#fcfcfc; border:1px dashed #eee; border-radius:12px;">No identity verification questions defined.</div>';
+            return;
+        }
+
+        container.innerHTML = exams.identityFields.map((f, i) => `
+            <div style="display:grid; grid-template-columns: 1.5fr 1fr 1.5fr 40px; gap:16px; align-items:end; background:#fff; border:1px solid #eee; padding:16px; border-radius:12px;">
+                <div class="input-group" style="margin:0;">
+                    <label class="label" style="font-size:0.65rem;">FIELD LABEL / QUESTION</label>
+                    <input type="text" value="${f.label}" onchange="updateIdentityField(${i}, 'label', this.value)" class="clean-input" style="font-size:0.85rem;" placeholder="e.g. Blind Roll Number">
+                </div>
+                <div class="input-group" style="margin:0;">
+                    <label class="label" style="font-size:0.65rem;">INPUT TYPE</label>
+                    <select onchange="updateIdentityField(${i}, 'type', this.value)" class="clean-input" style="font-size:0.85rem;">
+                        <option value="text" ${f.type === 'text' ? 'selected' : ''}>Subjective Text</option>
+                        <option value="dropdown" ${f.type === 'dropdown' ? 'selected' : ''}>Dropdown Selection</option>
+                        <option value="testcode" ${f.type === 'testcode' ? 'selected' : ''}>Test Code (Match Exactly)</option>
+                    </select>
+                </div>
+                <div class="input-group" style="margin:0;">
+                    <label class="label" style="font-size:0.65rem;">${f.type === 'dropdown' ? 'OPTIONS (COMMA SEPARATED)' : (f.type === 'testcode' ? 'REQUIRED CODE' : 'PLACEHOLDER')}</label>
+                    <input type="text" value="${f.value || ''}" onchange="updateIdentityField(${i}, 'value', this.value)" class="clean-input" style="font-size:0.85rem;" placeholder="${f.type === 'dropdown' ? 'A, B, C' : ''}">
+                </div>
+                <button onclick="removeIdentityField(${i})" style="width:40px; height:40px; background:#FEF3F2; color:#F04438; border:1px solid #FEE4E2; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function addIdentityField() {
+        if (!exams.identityFields) exams.identityFields = [];
+        exams.identityFields.push({ label: '', type: 'text', value: '' });
+        updateIdentityFieldsList();
+        autoSave();
+    }
+
+    function updateIdentityField(index, key, val) {
+        exams.identityFields[index][key] = val;
+        updateIdentityFieldsList(); // Refresh to update labels if type changed
+        autoSave();
+    }
+
+    function removeIdentityField(index) {
+        exams.identityFields.splice(index, 1);
+        updateIdentityFieldsList();
+        autoSave();
     }
 
     function selectQuestionType(type) {
@@ -3220,6 +3298,9 @@
                 marks: parseInt(card.querySelector('.t-marks').value) || 0,
                 isSample: card.querySelector('.t-sample').checked
             }));
+
+            // Sum up marks of test cases for coding questions
+            q.marks = q.testCases.reduce((sum, tc) => sum + tc.marks, 0);
         }
 
         if (editingQIndex !== -1) {
@@ -3622,6 +3703,7 @@
             entryDeadline: dln ? dln.value : null,
             maxTabSwitches: mts ? parseInt(mts.value) : 3,
             showResults: shr ? shr.checked : true,
+            autoPublishResults: document.getElementById('autoPublishResults') ? document.getElementById('autoPublishResults').checked : true,
             manualGrading: mgr ? mgr.checked : false,
             finalValidation: {
                 points: document.getElementById('val_points') ? document.getElementById('val_points').checked : false,
@@ -3771,7 +3853,7 @@
                         <div style="margin-top:8px; padding:12px; background:var(--primary-soft); border-radius:10px; border:1px solid #ffe8dd;">
                              <label style="font-size:0.6rem; font-weight:800; color:var(--primary); display:block; margin-bottom:4px; text-transform:uppercase;">Direct Assessment URL</label>
                              <div style="display:flex; gap:8px; align-items:center;">
-                                <input type="text" readonly value="${window.location.origin}/pages/login.html?invite=${testId}" style="flex:1; background:transparent; border:none; font-size:0.75rem; color:#d96c33; font-weight:600; text-overflow:ellipsis;" id="finalLink">
+                                <input type="text" readonly value="https://exam.testpad.chitpara.edu.in/test/${testId}" style="flex:1; background:transparent; border:none; font-size:0.75rem; color:#d96c33; font-weight:600; text-overflow:ellipsis;" id="finalLink">
                                 <button onclick="navigator.clipboard.writeText(document.getElementById('finalLink').value); showToast('Link Copied!')" style="background:var(--primary); color:#fff; border:none; padding:4px 10px; border-radius:6px; font-size:0.7rem; cursor:pointer;"><i class="fas fa-copy"></i></button>
                              </div>
                         </div>

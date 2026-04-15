@@ -36,8 +36,8 @@ class Auth {
         }
     }
 
-    signup(email, name, password, confirmPassword, role) {
-        if (!email || !name || !password || !role) {
+    signup(email, name, password, confirmPassword, role, rollNo) {
+        if (!name || !password || !role) {
             return { success: false, message: 'Identity parameters incomplete' };
         }
 
@@ -49,12 +49,17 @@ class Auth {
             return { success: false, message: 'Security key too short (min 6 charts)' };
         }
 
-        if (db.getUser(email)) {
+        // Check availability
+        if (email && db.getUser(email)) {
             return { success: false, message: 'Email address already integrated' };
+        }
+        if (rollNo && db.getUserByRollNo(rollNo)) {
+            return { success: false, message: 'Enrollment Id already integrated' };
         }
 
         const user = db.addUser({
             email,
+            rollNo,
             name,
             password,
             role,
@@ -67,21 +72,21 @@ class Auth {
         this.currentSession = session;
 
         // Auto-remember credentials for ease
-        this.saveLastCredentials(email, password, role);
+        this.saveLastCredentials(email || rollNo, password, role);
 
         return { success: true, message: 'Signup successful', user, session };
     }
 
-    login(email, password, remember = false) {
+    login(identifier, password, remember = false) {
         if (this.loginAttempts >= this.MAX_ATTEMPTS) {
             return { success: false, message: 'Too many failed attempts. Account locked temporarily.' };
         }
 
-        if (!email || !password) {
+        if (!identifier || !password) {
             return { success: false, message: 'Credentials required' };
         }
 
-        const user = db.authenticateUser(email, password);
+        const user = db.authenticateUser(identifier, password);
         if (!user) {
             this.loginAttempts++;
             const remaining = this.MAX_ATTEMPTS - this.loginAttempts;
@@ -100,7 +105,7 @@ class Auth {
 
         // Always save last credentials for "easy" login as requested, 
         // regardless of 'remember' session flag
-        this.saveLastCredentials(email, password, user.role);
+        this.saveLastCredentials(identifier, password, user.role);
 
         if (remember) {
             localStorage.setItem('exampad_remembered_user', JSON.stringify(user));
@@ -111,15 +116,40 @@ class Auth {
 
     saveLastCredentials(email, password, role) {
         try {
-            const data = {
+            let history = [];
+            const raw = localStorage.getItem('exampad_login_history');
+            if (raw) {
+                history = JSON.parse(raw);
+            }
+
+            // Remove if already exists to move to top
+            history = history.filter(item => atob(item.e) !== email);
+
+            // Add new entry at start
+            history.unshift({
+                e: btoa(email),
+                p: btoa(password),
+                r: role,
+                t: Date.now()
+            });
+
+            // Limit to 10
+            if (history.length > 10) {
+                history = history.slice(0, 10);
+            }
+
+            localStorage.setItem('exampad_login_history', JSON.stringify(history));
+            
+            // Keep legacy single entry for backward compatibility if needed
+            const legacyData = {
                 e: btoa(email),
                 p: btoa(password),
                 r: role,
                 t: Date.now()
             };
-            localStorage.setItem('exampad_last_access', JSON.stringify(data));
+            localStorage.setItem('exampad_last_access', JSON.stringify(legacyData));
         } catch (e) {
-            console.error("Storage of last access failed");
+            console.error("Storage of login history failed", e);
         }
     }
 
@@ -135,6 +165,23 @@ class Auth {
             };
         } catch (e) {
             return null;
+        }
+    }
+
+    getAllSavedCredentials() {
+        try {
+            const raw = localStorage.getItem('exampad_login_history');
+            if (!raw) return [];
+            const history = JSON.parse(raw);
+            return history.map(data => ({
+                email: atob(data.e),
+                password: atob(data.p),
+                role: data.r,
+                timestamp: data.t
+            }));
+        } catch (e) {
+            console.error("Failed to retrieve login history", e);
+            return [];
         }
     }
 

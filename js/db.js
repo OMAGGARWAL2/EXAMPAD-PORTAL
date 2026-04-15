@@ -102,8 +102,8 @@ class ExampadDB {
         const id = 'user_' + Date.now();
         const user = {
             id,
-            email: userData.email,
-            rollNo: userData.rollNo || id.toUpperCase(),
+            email: userData.email || '',
+            rollNo: userData.rollNo || (userData.email ? userData.email.split('@')[0] : id.toUpperCase()),
             name: userData.name,
             password: this.hashPassword(userData.password),
             role: userData.role, // 'teacher' or 'student'
@@ -125,9 +125,14 @@ class ExampadDB {
         return null;
     }
 
-    getUser(email) {
-        const users = JSON.parse(localStorage.getItem('exampad_users'));
-        return users.find(u => u.email === email);
+    getUser(identifier) {
+        if (!identifier) return null;
+        const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+        const target = identifier.toLowerCase();
+        return users.find(u => 
+            (u.email && u.email.toLowerCase() === target) || 
+            (u.rollNo && u.rollNo.toString().toLowerCase() === target)
+        );
     }
 
     getUserById(userId) {
@@ -140,8 +145,8 @@ class ExampadDB {
         return users.find(u => u.rollNo === roll);
     }
 
-    authenticateUser(email, password) {
-        const user = this.getUser(email);
+    authenticateUser(identifier, password) {
+        const user = this.getUser(identifier);
         if (user && user.password === this.hashPassword(password)) {
             return user;
         }
@@ -293,17 +298,65 @@ class ExampadDB {
     }
 
     getAttempt(attemptId) {
-        const attempts = JSON.parse(localStorage.getItem('exampad_attempts'));
-        return attempts.find(a => a.id === attemptId);
+        if (!attemptId) return null;
+        const attempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+        const attempt = attempts.find(a => a.id === attemptId);
+        if (attempt) return attempt;
+        
+        // Fallback: Check Practice Sessions
+        const sessions = JSON.parse(localStorage.getItem('exampad_practice_sessions')) || {};
+        // Practice sessions usually indexed by itemId, so we search all values
+        const sessionAttempt = Object.values(sessions).find(s => s.id === attemptId);
+        if (sessionAttempt) return sessionAttempt;
+
+        // If attemptId is actually the itemId
+        if (sessions[attemptId]) return sessions[attemptId];
+
+        return null;
+    }
+
+    getAttemptHistory(studentId, examId) {
+        const attempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+        const filtered = attempts.filter(a => a.studentId === studentId && a.examId === examId);
+        
+        const sessions = JSON.parse(localStorage.getItem('exampad_practice_sessions')) || {};
+        const sessionMatches = Object.values(sessions).filter(s => s && s.studentId === studentId && s.examId === examId);
+        
+        const combined = [...filtered, ...sessionMatches];
+        const unique = {};
+        combined.forEach(a => {
+            if (a && a.id) {
+                if (!unique[a.id] || (a.responses && Object.keys(a.responses).length > Object.keys(unique[a.id].responses || {}).length)) {
+                    unique[a.id] = a;
+                }
+            }
+        });
+        
+        return Object.values(unique).sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
     }
 
     updateAttempt(attemptId, updateData) {
-        const attempts = JSON.parse(localStorage.getItem('exampad_attempts'));
+        // 1. Try regular attempts
+        const attempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
         const index = attempts.findIndex(a => a.id === attemptId);
         if (index !== -1) {
             attempts[index] = { ...attempts[index], ...updateData };
             localStorage.setItem('exampad_attempts', JSON.stringify(attempts));
             return attempts[index];
+        }
+
+        // 2. Try practice sessions
+        const sessions = JSON.parse(localStorage.getItem('exampad_practice_sessions')) || {};
+        let targetKey = null;
+        if (sessions[attemptId]) targetKey = attemptId;
+        else {
+            targetKey = Object.keys(sessions).find(k => sessions[k].id === attemptId);
+        }
+
+        if (targetKey) {
+            sessions[targetKey] = { ...sessions[targetKey], ...updateData };
+            localStorage.setItem('exampad_practice_sessions', JSON.stringify(sessions));
+            return sessions[targetKey];
         }
         return null;
     }
@@ -318,14 +371,14 @@ class ExampadDB {
     }
 
     submitAttempt(attemptId) {
-        const attempts = JSON.parse(localStorage.getItem('exampad_attempts'));
-        const attempt = attempts.find(a => a.id === attemptId);
+        const attempt = this.getAttempt(attemptId);
         if (attempt) {
-            attempt.endTime = new Date().toISOString();
-            attempt.status = 'submitted';
-            attempt.score = this.calculateScore(attempt);
-            localStorage.setItem('exampad_attempts', JSON.stringify(attempts));
-            return attempt;
+            const update = {
+                endTime: new Date().toISOString(),
+                status: 'submitted',
+                score: this.calculateScore(attempt)
+            };
+            return this.updateAttempt(attemptId, update);
         }
         return null;
     }
@@ -467,31 +520,36 @@ class ExampadDB {
         let score = 0;
         let totalMarks = 0;
         let isPendingManualReview = false;
-        const isManual = exam.security?.manualGrading;
+        const assignedIds = attempt.questionIds || exam.questions.map(q => q.id);
+        const questionsToScore = exam.questions.filter(q => assignedIds.includes(q.id));
 
-        exam.questions.forEach(question => {
+        questionsToScore.forEach(question => {
             const response = attempt.responses[question.id];
-
-            // 1. Check if teacher has already assigned a manual mark
+            const isManualMarking = exam.security?.manualGrading;
+            const needsManual = isManualMarking && (question.type === 'subjective' || question.type === 'file_upload');
+            
+            // 1. Check for manual mark first
             if (response && response.manualMark !== undefined) {
                 score += parseFloat(response.manualMark);
-            } else {
-                // 2. Otherwise, check if manual grading is enabled for this type
-                const needsManual = isManual && (question.type === 'subjective' || question.type === 'file_upload');
-
-                if (needsManual) {
-                    isPendingManualReview = true;
-                } else {
-                    const isCorrect = this.checkAnswer(question, response);
-                    if (isCorrect) {
-                        score += question.marks;
-                    } else if (exam.negativeMarking && !['subjective', 'coding', 'file_upload'].includes(question.type)) {
-                        score -= (exam.negativeMarking / 100) * question.marks;
+            } else if (response) {
+                // 2. Automated scoring
+                if (question.type === 'coding' && response.results) {
+                    const passedMarks = response.results
+                        .filter(r => r.status === 'pass')
+                        .reduce((sum, r) => sum + (r.marks || 0), 0);
+                    score += passedMarks;
+                } else if (!needsManual) {
+                    if (this.checkAnswer(question, response)) {
+                        score += (question.marks || 0);
+                    } else if (exam.negativeMarking && !['subjective', 'coding', 'file_upload', 'drawing'].includes(question.type)) {
+                        score -= (exam.negativeMarking / 100) * (question.marks || 0);
                     }
+                } else {
+                    isPendingManualReview = true;
                 }
             }
 
-            totalMarks += question.marks;
+            totalMarks += (question.marks || 0);
         });
 
         return {
@@ -504,13 +562,25 @@ class ExampadDB {
 
     checkAnswer(question, rawResponse) {
         if (!rawResponse) return false;
-        const response = (typeof rawResponse === 'object') ? rawResponse.value : rawResponse;
+        
+        let response = rawResponse;
+        // Drill down into nested value objects if they exist
+        while (response !== null && typeof response === 'object' && response.hasOwnProperty('value')) {
+            response = response.value;
+        }
+        
+        // Final fallback to raw logic if no 'value' key is present but it's still an object
+        if (typeof response === 'object' && response !== null && !Array.isArray(response)) {
+             // If we are here, something is wrong with the structure, but we'll try to use the first key if relevant
+             // For now, let's keep it safe.
+        }
 
         switch (question.type) {
             case 'mcq':
             case 'true_false':
             case 'assertion_reason':
-                return response === question.correctAnswer;
+                if (response === null || response === undefined || question.correctAnswer === null || question.correctAnswer === undefined) return false;
+                return String(response).trim().toLowerCase() === String(question.correctAnswer).trim().toLowerCase();
             case 'subjective':
                 if (!question.keywords || question.keywords.length === 0) return true; // Minimal grade if no keywords defined
                 return question.keywords.some(kw => response.toLowerCase().includes(kw.toLowerCase()));

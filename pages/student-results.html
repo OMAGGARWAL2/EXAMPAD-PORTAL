@@ -1,427 +1,1171 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad | Your Results</title>
+    <title>Exampad | Test Attempts</title>
     <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Hind:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="../js/theme-engine.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
+    <script src="../js/db.js"></script>
     <style>
         :root {
-            --primary: #D35400;
-            /* Deep EXAMPAD Orange */
-            --accent: #E67E22;
-            --success: #12B76A;
-            --bg: #F9FAFB;
+            --primary: #DE5B2B;
+            --primary-light: #FFF4ED;
+            --text-main: #101828;
+            --text-secondary: #475467;
             --border: #EAECF0;
-            --radius: 24px;
+            --bg: #F9FAFB;
+            --white: #FFFFFF;
+            --success: #12B76A;
+            --error: #F04438;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Hind', sans-serif;
         }
 
         body {
             background: var(--bg);
-            color: #101828;
-            padding: 0;
+            color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .result-page {
-            width: 100%;
-            max-width: 1000px;
-            background: #fff;
-            min-height: 100vh;
-            box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
         }
 
-        .result-header {
-            background: #fff;
-            padding: 60px 80px 40px;
+        /* Top Header */
+        header {
+            height: 72px;
+            background: var(--white);
             border-bottom: 1px solid var(--border);
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: flex-end;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .brand-box h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.8rem;
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo-box {
+            background: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* CUSTOM ACE SYNTAX: BLUE, BLACK, GREEN */
+        .ace_keyword, .ace_meta, .ace_storage, .ace_storage.ace_type, .ace_support.ace_function, .ace_support.ace_class, .ace_support.ace_type {
+            color: #0000FF !important;
+        }
+        .ace_comment {
+            color: #008000 !important;
+            font-style: normal !important;
+        }
+        .ace_identifier, .ace_punctuation, .ace_operator, .ace_constant.ace_numeric, .ace_string {
+            color: #000000 !important;
+        }
+        .ace_selection {
+            background: rgba(0, 120, 215, 0.2) !important;
+        }
+        .ace_gutter-cell {
+            color: #666 !important;
+            font-weight: 500 !important;
+        }
+
+        .nav-links {
+            display: flex;
+            height: 72px;
+        }
+
+        .nav-link {
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            color: #DE5B2B;
+            font-weight: 500;
+            font-size: 1rem;
+            border-bottom: 3px solid var(--primary);
+            text-decoration: none;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-meta {
+            text-align: right;
+        }
+
+        .user-meta .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .user-meta .role {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            background: #D0D5DD;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Layout Main */
+        .dashboard-container {
+            display: flex;
+            flex: 1;
+            padding: 32px;
+            gap: 32px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Sidebar */
+        aside {
+            width: 340px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .profile-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 40px 32px;
+            text-align: center;
+            border: 1px solid var(--border);
+            position: sticky;
+            top: 104px;
+        }
+
+        .large-avatar {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
             font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -2px;
+            font-family: 'Outfit';
+            border: 8px solid #FEE4D2;
+        }
+
+        .profile-name {
+            font-family: 'Outfit';
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
             margin-bottom: 4px;
         }
 
-        .brand-box p {
-            color: #475467;
+        .sidebar-section {
+            margin-top: 24px;
+            text-align: left;
+        }
+
+        .sidebar-section h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-item label {
+            font-size: 0.85rem;
+            color: #98A2B3;
+            font-weight: 500;
+        }
+
+        .sidebar-item span {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
             font-weight: 600;
+        }
+
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .stats-item span:first-child {
+            color: #98A2B3;
+            font-weight: 500;
+        }
+
+        .stats-item span:last-child {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-card {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .section-header {
+            padding: 16px 24px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .section-header:hover {
+            background: #fcfcfc;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-score {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #F9FAFB;
+            padding: 12px 24px;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 16px 24px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .q-name {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: lowercase;
+            border: 1px solid transparent;
+        }
+
+        .badge-success {
+            background: #ECFDF3;
+            color: #027A48;
+            border-color: #ABEFC6;
+        }
+
+        .badge-error {
+            background: #FEF3F2;
+            color: #B42318;
+            border-color: #FECDCA;
+        }
+
+        .badge-warning {
+            background: #FFF9F2;
+            color: #B45118;
+            border-color: #FEDFCA;
+        }
+
+        /* Inner Attempt Table */
+        .attempts-sub-row {
+            background: #fff;
+        }
+
+        .inner-table-container {
+            padding: 24px 80px;
+        }
+
+        .inner-table {
+            background: #F9FAFB;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .inner-th {
+            background: transparent;
+            padding: 20px;
+            text-align: center;
+            font-weight: 700;
+            color: #475467;
             font-size: 1.1rem;
         }
 
-        .score-circle-area {
+        .inner-td {
+            padding: 16px 20px;
             text-align: center;
+            background: #fff;
+            border: none;
+            border-top: 1px solid #eee;
         }
 
-        .score-ring {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 8px solid var(--primary);
-            display: flex;
-            flex-direction: column;
+        /* Modal Preview */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
             align-items: center;
             justify-content: center;
-            background: #FFF5ED;
         }
 
-        .score-val {
-            font-family: 'Outfit';
-            font-size: 3.5rem;
-            font-weight: 900;
-            line-height: 1;
-            color: var(--primary);
+        .modal-content {
+            background: var(--white);
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .score-label {
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .result-body {
-            padding: 60px 80px;
-            flex: 1;
-        }
-
-        .stats-strip {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-bottom: 60px;
-        }
-
-        .stat-card {
-            background: #F9FAFB;
-            padding: 24px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: #667085;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .stat-val {
-            font-family: 'Outfit';
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #101828;
-        }
-
-        .breakdown-section h3 {
-            font-family: 'Outfit';
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 32px;
-            color: #101828;
-        }
-
-        .q-row {
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            margin-bottom: 12px;
-            transition: all 0.2s;
         }
 
-        .q-row:hover {
-            border-color: var(--primary);
-            background: #FFF5ED;
+        .modal-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
         }
 
-        .q-meta {
+        .preview-left {
+            flex: 1;
+            padding: 40px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .preview-right {
+            flex: 1;
+            padding: 40px;
+            background: #fff;
+            overflow-y: auto;
+        }
+
+        .q-type-label {
+            background: #f2f4f7;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #667085;
+            text-transform: uppercase;
+        }
+
+        .mcq-option-preview {
             display: flex;
             align-items: center;
             gap: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid transparent;
         }
 
-        .q-id {
-            width: 40px;
-            height: 40px;
-            background: #F2F4F7;
-            border-radius: 10px;
+        .radio-btn {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #D0D5DD;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            color: #475467;
         }
 
-        .q-title {
-            font-weight: 700;
-            font-size: 1rem;
-            color: #101828;
+        .radio-btn.checked {
+            border-color: #DE5B2B;
         }
 
-        .q-status {
-            font-size: 0.85rem;
+        .radio-btn.checked::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #DE5B2B;
+            border-radius: 50%;
+        }
+
+        .correct-tag {
+            color: var(--success);
             font-weight: 600;
-            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 20px;
         }
 
-        .q-points {
-            font-family: 'JetBrains Mono';
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--primary);
+        pre {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
         }
 
-        .footer-bar {
-            background: #F9FAFB;
-            padding: 40px 80px;
-            border-top: 1px solid var(--border);
+        .code-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 16px;
         }
 
-        .btn-return {
-            background: #101828;
+        .btn-solution {
+            background: #DE5B2B;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .console-tab {
+            margin-top: 24px;
+            background: #000;
             color: #fff;
-            padding: 16px 36px;
-            border-radius: 12px;
-            font-weight: 800;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100px;
         }
 
-        .btn-return:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .btn-view-attempt {
+            background: #fff;
+            border: 1px dashed #D0D5DD;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #475467;
         }
     </style>
 </head>
-
 <body>
-    <div class="result-page">
-        <header class="result-header">
-            <div class="brand-box">
-                <h1 id="examName">Assessment.</h1>
-                <p id="studentName">Candidate: Loading...</p>
+    <header>
+        <div class="header-left">
+            <div class="logo-box" style="background:transparent; width:auto; height:auto;">
+                <img src="../logo.jpg" alt="Logo" style="height:50px; object-fit:contain;">
             </div>
-            <div class="score-circle-area">
-                <div class="score-ring">
-                    <div class="score-val" id="finalScore">--</div>
-                    <div class="score-label">Points</div>
-                </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Test Attempts</a>
             </div>
-        </header>
+        </div>
+        <div class="header-right">
+            <div id="headerScoreBox" style="background:#FFF4ED; border:1px solid #FFE4D6; padding:8px 16px; border-radius:6px; margin-right:16px; display:flex; flex-direction:column; align-items:flex-end;">
+                <label style="font-size:0.75rem; color:#DE5B2B; font-weight:700; text-transform:uppercase; margin-bottom:2px;">Total Marks</label>
+                <span id="finalScoreVal" style="font-size:1.1rem; color:#DE5B2B; font-weight:800; font-family:'Outfit';">0 / 0</span>
+            </div>
+            <button onclick="window.location.href='./student-dashboard.html'" style="background:var(--primary); color:white; border:none; padding:10px 24px; border-radius:6px; font-weight:600; cursor:pointer; margin-right:20px; font-size:0.95rem; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                Exit to Dashboard
+            </button>
+            <div class="user-meta">
+                <div class="name" id="topUserName">OM AGGARWAL</div>
+                <div class="role">Student</div>
+            </div>
+            <div class="user-avatar" id="topAvatar">O</div>
+        </div>
+    </header>
 
-        <main class="result-body">
-            <div class="stats-strip">
-                <div class="stat-card">
-                    <span class="stat-label">Percentage Curve</span>
-                    <span class="stat-val" id="percVal">--%</span>
+    <div class="dashboard-container">
+        <aside>
+            <div class="profile-card">
+                <div class="large-avatar" id="sideAvatar">O</div>
+                <div class="profile-name" id="sideName">OM AGGARWAL</div>
+                
+                <div class="sidebar-section">
+                    <h3>About</h3>
+                    <div class="sidebar-item">
+                        <label>Email:</label>
+                        <span id="sideEmail">om0653.becse24@chitkara.edu.in</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <label>Roll Number:</label>
+                        <span id="sideRoll">2410990653</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <label>ID:</label>
+                        <span id="sideId">2410990653</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <label>Select Group:</label>
+                        <span id="sideGroup">G9</span>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">Total Module items</span>
-                    <span class="stat-val" id="totalQ">--</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-label">Validation Status</span>
-                    <span class="stat-val" style="color:var(--success)">VERIFIED</span>
-                </div>
-            </div>
 
-            <div class="breakdown-section">
-                <h3>Detailed Performance Matrix</h3>
-                <div id="breakdownList">
-                    <!-- Breakdown items -->
-                </div>
             </div>
+        </aside>
+
+        <main class="main-content" id="sectionsContainer">
+            <!-- Sections and Questions will be injected here -->
         </main>
-
-        <footer class="footer-bar">
-            <div style="color:#667085; font-size:0.9rem; font-weight:600;">
-                <i class="fas fa-check-double" style="color:var(--success); margin-right:8px;"></i> Official Academic
-                Transcript
-            </div>
-            <a href="./student-dashboard.html" class="btn-return">Exit to Dashboard</a>
-        </footer>
     </div>
 
-    <!-- Question Details Modal -->
-    <div id="qModal"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); z-index:1000; align-items:center; justify-content:center; padding:20px;">
-        <div
-            style="background:#fff; border-radius:24px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto; padding:40px; box-shadow:0 25px 50px rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease-out;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h2 style="font-family:'Outfit'; font-weight:800; color:#101828;">Question Analysis</h2>
-                <button onclick="closeModal()"
-                    style="border:none; background:#F2F4F7; width:40px; height:40px; border-radius:12px; cursor:pointer; color:#475467;"><i
-                        class="fas fa-times"></i></button>
+    <!-- Modal for Preview -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Question Attempt Preview</h2>
+                <button onclick="closePreview()" style="background:none; border:none; cursor:pointer; font-size:1.5rem; color:#667085;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div id="modalContent">
-                <!-- Data injected here -->
+            <div class="modal-body" id="modalBody">
+                <!-- Preview content injected here -->
             </div>
         </div>
     </div>
 
-    <script src="../js/db.js"></script>
-    <script src="../js/auth.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const attemptId = urlParams.get('attemptId');
-        const attempt = db.getAttempt(attemptId);
+        let currentAttempt = db.getAttempt(attemptId);
+        let exam = currentAttempt ? db.getExamById(currentAttempt.examId) : null;
+        let currentUser = db.getActiveSession() ? db.getUserById(db.getActiveSession().userId) : null;
+        let allExamAttempts = [];
 
-        if (!attempt) {
-            alert("Result data not found.");
-            window.location.href = './student-dashboard.html';
+        function extractResponse(resp) {
+            if (resp === null || resp === undefined) return null;
+            let val = resp;
+            // Drill down into nested value objects
+            while (val !== null && typeof val === 'object' && val.hasOwnProperty('value')) {
+                val = val.value;
+            }
+            return val;
         }
 
-        const exam = db.getExamById(attempt.examId);
-        const user = auth.getCurrentUser();
-
         function init() {
-            if (!exam.resultsPublished) {
-                alert("This result has not been published yet.");
+            if (!currentAttempt || !exam) {
+                alert("Attempt or Exam not found.");
                 window.location.href = './student-dashboard.html';
                 return;
             }
 
-            const scoreObj = db.calculateScore(attempt);
-
-            document.getElementById('examName').textContent = exam.title;
-            document.getElementById('studentName').textContent = `Candidate: ${user.name.toUpperCase()}`;
-            document.getElementById('finalScore').textContent = scoreObj.score;
-            document.getElementById('percVal').textContent = scoreObj.percentage + '%';
-            document.getElementById('totalQ').textContent = exam.questions.length;
-
-            renderBreakdown(scoreObj);
-        }
-
-        function renderBreakdown(scoreObj) {
-            const list = document.getElementById('breakdownList');
-            list.innerHTML = exam.questions.map((q, i) => {
-                const response = attempt.responses[q.id];
-                const isAuto = !['subjective', 'file_upload'].includes(q.type);
-                const mark = response?.manualMark !== undefined ? response.manualMark : (isAuto ? (db.checkAnswer(q, response) ? q.marks : 0) : 'Pending');
-                const isCorrect = mark > 0 || mark === q.marks;
-
-                return `
-                    <div class="q-row" onclick="viewQuestionDetails('${q.id}')" style="cursor:pointer;">
-                        <div class="q-meta">
-                            <div class="q-id">${i + 1}</div>
-                            <div>
-                                <div class="q-title">${q.heading || 'Assessment Question'}</div>
-                                <div class="q-status" style="color:${isCorrect ? 'var(--success)' : '#D92D20'}">
-                                    ${mark === 'Pending' ? 'MANUAL REVIEW' : (isCorrect ? 'CORRECT / AWARDED' : 'INCORRECT')}
-                                </div>
+            // Check if results are published or auto-publish is enabled
+            const isAutoPublish = exam.security?.autoPublishResults !== false; // Default true if not set
+            const isManualReleased = exam.resultsPublished === true;
+            
+            // If results are held by teacher and current user is student
+            if (!isAutoPublish && !isManualReleased && currentUser.role === 'student') {
+                document.body.innerHTML = `
+                    <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#F9FAFB; font-family:'Outfit', sans-serif;">
+                        <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" style="height:60px; margin-bottom:40px;">
+                        <div style="background:white; padding:48px; border-radius:24px; border:1px solid #EAECF0; box-shadow:0 12px 32px rgba(0,0,0,0.05); text-align:center; max-width:500px;">
+                            <div style="width:64px; height:64px; background:#FFF4ED; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px;">
+                                <i class="fas fa-clock" style="color:#DE5B2B; font-size:1.5rem;"></i>
                             </div>
+                            <h1 style="font-size:1.8rem; font-weight:700; color:#101828; margin-bottom:12px;">Results Pending</h1>
+                            <p style="color:#667085; line-height:1.6; font-size:1.1rem; margin-bottom:32px;">
+                                The results for <strong>${exam.title}</strong> have not been published yet. Please check back later once the evaluation is complete.
+                            </p>
+                            <button onclick="window.location.href='./student-dashboard.html'" style="width:100%; height:48px; background:#DE5B2B; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">
+                                Return to Dashboard
+                            </button>
                         </div>
-                        <div class="q-points">${mark} <span style="font-size:0.8rem; opacity:0.5;">/ ${q.marks}</span></div>
                     </div>
                 `;
-            }).join('');
-        }
-
-        function viewQuestionDetails(qId) {
-            const q = exam.questions.find(item => item.id === qId);
-            const response = attempt.responses[qId];
-            const isAuto = !['subjective', 'file_upload'].includes(q.type);
-            const mark = response?.manualMark !== undefined ? response.manualMark : (isAuto ? (db.checkAnswer(q, response) ? q.marks : 0) : 'Pending');
-            const isCorrect = mark > 0 || mark === q.marks;
-
-            const modal = document.getElementById('qModal');
-            const content = document.getElementById('modalContent');
-
-            let studentAnsText = response ? (typeof response === 'object' ? (response.value || response.code || 'No response') : response) : 'No response';
-            let correctAnsText = q.correctAnswer || q.correctNumeric || q.correctCode || 'Manual review required';
-
-            // Special handling for MCQ labels
-            if (q.type === 'mcq' && q.options) {
-                const sOpt = q.options.find(o => o.id === studentAnsText);
-                const cOpt = q.options.find(o => o.id === correctAnsText);
-                if (sOpt) studentAnsText = sOpt.text;
-                if (cOpt) correctAnsText = cOpt.text;
+                return;
             }
 
-            content.innerHTML = `
-                <div style="margin-bottom:32px;">
-                    <label style="font-size:0.75rem; font-weight:800; color:#667085; text-transform:uppercase; letter-spacing:1px;">Question</label>
-                    <div style="font-size:1.1rem; color:#101828; font-weight:600; margin-top:8px; line-height:1.6;">${q.text || q.heading}</div>
-                </div>
+            allExamAttempts = db.getAttemptHistory(currentUser.id, exam.id);
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:32px;">
-                    <div style="padding:20px; border-radius:16px; background:#F9FAFB; border:1px solid #EAECF0;">
-                        <label style="font-size:0.7rem; font-weight:800; color:#667085; text-transform:uppercase; letter-spacing:1px;">Your Response</label>
-                        <div style="font-weight:700; color:${isCorrect ? 'var(--success)' : '#D92D20'}; margin-top:8px;">${studentAnsText}</div>
-                    </div>
-                    <div style="padding:20px; border-radius:16px; background:#F6FEF9; border:1px solid #D1FADF;">
-                        <label style="font-size:0.7rem; font-weight:800; color:#067647; text-transform:uppercase; letter-spacing:1px;">Correct Reference</label>
-                        <div style="font-weight:700; color:#067647; margin-top:8px;">${correctAnsText}</div>
-                    </div>
-                </div>
+            // Sync Header & Sidebar
+            const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            document.getElementById('topUserName').textContent = currentUser.name;
+            document.getElementById('topAvatar').textContent = initials;
+            document.getElementById('sideName').textContent = currentUser.name.toUpperCase();
+            document.getElementById('sideAvatar').textContent = initials;
+            const identity = currentAttempt.identityResponses || {};
+            
+            // Strictly use attempt-based data, no autofilling from profile if missing
+            const rollNo = identity['Roll Number'] || identity['roll_number'] || identity['RollNo'] || currentAttempt.studentRollNo || 'N/A';
+            const group = identity['Select Group'] || identity['Section'] || identity['section'] || identity['Group'] || 'N/A';
+            const email = identity['Email'] || identity['email'] || currentUser.email || 'N/A';
 
-                <div style="padding:20px; border-radius:16px; border:1px solid #EAECF0; background:#F9FAFB;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:700; color:#475467;">Points Awarded</span>
-                        <span style="font-family:'JetBrains Mono'; font-weight:800; font-size:1.2rem; color:var(--primary);">${mark} / ${q.marks}</span>
-                    </div>
-                    \${q.explanation ? \`
-                        <div style="margin-top:16px; padding-top:16px; border-top:1px solid #EAECF0;">
-                            <label style="font-size:0.7rem; font-weight:800; color:#667085; text-transform:uppercase;">Explanation</label>
-                            <div style="margin-top:8px; font-size:0.9rem; line-height:1.5; color:#475467;">\${q.explanation}</div>
+            document.getElementById('sideEmail').textContent = email;
+            document.getElementById('sideRoll').textContent = rollNo;
+            document.getElementById('sideId').textContent = rollNo;
+            document.getElementById('sideGroup').textContent = group;
+
+            const scoreObj = db.calculateScore(currentAttempt);
+            document.getElementById('finalScoreVal').textContent = `${scoreObj.score} / ${scoreObj.totalMarks}`;
+
+            renderSections();
+        }
+
+        function renderSections() {
+            const container = document.getElementById('sectionsContainer');
+            container.innerHTML = '';
+
+            // Group questions by section
+            const sections = exam.sections?.length > 0 ? exam.sections : ['General'];
+            sections.forEach((s, sIdx) => {
+                const sQuestions = exam.questions.filter(q => (q.section || 'General') === s);
+                if (sQuestions.length === 0) return;
+
+                const sectionScore = sQuestions.reduce((sum, q) => {
+                    const resp = currentAttempt.responses[q.id];
+                    if (!resp) return sum;
+                    let mark = 0;
+                    const extractedVal = extractResponse(resp);
+                    if (resp.manualMark !== undefined) mark = parseFloat(resp.manualMark);
+                    else if (q.type === 'coding' && resp.results) {
+                        const passed = resp.results.filter(r => r.status === 'pass').length;
+                        const total = resp.results.length;
+                        if (total > 0) mark = parseFloat(((passed / total) * q.marks).toFixed(1));
+                    } else if (q.type !== 'coding' && q.type !== 'subjective' && q.type !== 'file_upload') {
+                        if (db.checkAnswer(q, extractedVal)) mark = q.marks;
+                    }
+                    return sum + mark;
+                }, 0);
+                
+                const sectionTotal = sQuestions.reduce((sum, q) => sum + (q.marks || 0), 0);
+
+                const card = document.createElement('div');
+                card.className = 'section-card';
+                card.innerHTML = `
+                    <div class="section-header" onclick="toggleSection(${sIdx})">
+                        <div class="section-title">
+                            <i class="fas fa-chevron-down" id="chevron-${sIdx}"></i>
+                            ${sIdx + 1}. ${s}
                         </div>
-                    \` : ''}
+                        <div class="section-score">Score: ${sectionScore} / ${sectionTotal}</div>
+                    </div>
+                    <div class="section-body" id="body-${sIdx}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width:50px;"></th>
+                                    <th>Question</th>
+                                    <th>Type</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sQuestions.map((q, qIdx) => renderQuestionRow(q, qIdx)).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderQuestionRow(q, idx) {
+            const qStrId = String(q.id).toLowerCase();
+            
+            // DEEP RECOVERY: Find the best response across all known attempts for this exam
+            let resp = null;
+            let bestAttempt = currentAttempt;
+            
+            const findInAttempt = (att) => {
+                if (!att || !att.responses) return null;
+                const keys = Object.keys(att.responses);
+                const matchKey = keys.find(k => String(k).toLowerCase() === qStrId || String(k) === String(q.id));
+                if (matchKey) return att.responses[matchKey];
+                const fuzzyMatch = keys.find(k => String(k).toLowerCase().includes(qStrId) || qStrId.includes(String(k).toLowerCase()));
+                return fuzzyMatch ? att.responses[fuzzyMatch] : null;
+            };
+
+            // Start with the specific attempt from URL
+            resp = findInAttempt(currentAttempt);
+
+            // If empty or missing, search ALL historical attempts (including practice)
+            if (!resp || Object.keys(resp).length === 0) {
+                for (const att of allExamAttempts) {
+                    const r = findInAttempt(att);
+                    if (r && (Object.keys(r).length > (resp ? Object.keys(resp).length : 0))) {
+                        resp = r;
+                        bestAttempt = att;
+                    }
+                }
+            }
+
+            let mark = 0;
+            if (resp) {
+                if (resp.manualMark !== undefined) mark = parseFloat(resp.manualMark);
+                else if (q.type === 'coding' && resp.results) {
+                    mark = (Array.isArray(resp.results)) ? resp.results.filter(r => r.status === 'pass').reduce((s, r) => s + (r.marks || 0), 0) : 0;
+                } else {
+                    mark = db.checkAnswer(q, resp) ? (q.marks || 0) : 0;
+                }
+            }
+            
+            const isManual = (q.type === 'subjective' || q.type === 'file_upload') && resp?.manualMark === undefined;
+            const extractedVal = extractResponse(resp);
+            
+            // Extreme broad definition of "attempted"
+            const isAttempted = !!resp && (
+                (extractedVal !== null && extractedVal !== undefined && extractedVal !== '') || 
+                !!resp.code || 
+                !!resp.submitted || 
+                !!resp.runCount ||
+                (Array.isArray(resp.results) && resp.results.length > 0) ||
+                (Object.keys(resp).length > 0 && resp.hasOwnProperty('value'))
+            );
+            
+            const statusLabel = isManual ? 'pending' : (isAttempted ? 'submitted' : 'not attempted');
+            const statusClass = isManual ? 'badge-warning' : (isAttempted ? 'badge-success' : 'badge-error');
+
+            return `
+                <tr>
+                    <td>${idx + 1}.</td>
+                    <td class="q-name">${q.heading || q.text?.substring(0, 30) || 'Question'}</td>
+                    <td>${q.type.toUpperCase()}</td>
+                    <td>${mark} / ${q.marks || 0}</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="badge ${statusClass}">${statusLabel}</span>
+                                <div class="btn-view-attempt" style="width:28px; height:28px; font-size:0.8rem;" onclick="previewQuestion('${q.id}')" title="View Question"><i class="far fa-file-alt"></i></div>
+                            </div>
+                            <div class="btn-action" onclick="toggleAttempts('${q.id}', event)">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr id="attempts-${q.id}" class="attempts-sub-row" style="display:none;">
+                    <td colspan="5">
+                        <div class="inner-table-container">
+                            <table class="inner-table">
+                                <thead>
+                                    <tr>
+                                        <th class="inner-th">Attempt Time</th>
+                                        <th class="inner-th">Attempt Status</th>
+                                        ${q.type === 'coding' ? '<th class="inner-th">TestCases</th>' : ''}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${allExamAttempts.map(a => {
+                                        const r = a.responses[q.id];
+                                        if(!r) return '';
+                                        const results = r.results || [];
+                                        return `
+                                            <tr>
+                                                <td class="inner-td">${new Date(a.endTime || a.startTime).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).replace(',', '')}</td>
+                                                <td class="inner-td">
+                                                    <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+                                                        <span class="badge ${r.submitted ? 'badge-success' : 'badge-error'}">${r.submitted ? 'Submitted' : 'Error'}</span>
+                                                        <div class="btn-view-attempt" onclick="previewQuestion('${q.id}', '${a.id}')">
+                                                            <i class="far fa-file-alt"></i>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                ${q.type === 'coding' ? `
+                                                    <td class="inner-td">
+                                                        ${results.filter(tc => tc.status === 'pass').length} / ${results.length}
+                                                    </td>
+                                                ` : ''}
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function toggleSection(idx) {
+            const body = document.getElementById(`body-${idx}`);
+            const chevron = document.getElementById(`chevron-${idx}`);
+            if (body.style.display === 'none') {
+                body.style.display = 'block';
+                chevron.className = 'fas fa-chevron-down';
+            } else {
+                body.style.display = 'none';
+                chevron.className = 'fas fa-chevron-right';
+            }
+        }
+
+        function toggleAttempts(qid, event) {
+            event.stopPropagation();
+            const row = document.getElementById(`attempts-${qid}`);
+            const icon = event.currentTarget.querySelector('i');
+            if (row.style.display === 'none') {
+                row.style.display = 'table-row';
+                icon.className = 'fas fa-minus';
+            } else {
+                row.style.display = 'none';
+                icon.className = 'fas fa-plus';
+            }
+        }
+
+        function previewQuestion(qid, specificAttemptId) {
+            const aid = specificAttemptId || attemptId;
+            let a = db.getAttempt(aid);
+            const q = exam.questions.find(x => x.id === qid);
+            if (!q) return;
+
+            window.currentPreviewQuestionMarks = q.marks;
+            
+            // Search logic...
+            const qStrId = String(qid).toLowerCase();
+            const findInAttempt = (att) => {
+                if (!att || !att.responses) return null;
+                const keys = Object.keys(att.responses);
+                const matchKey = keys.find(k => String(k).toLowerCase() === qStrId || String(k) === String(qid));
+                if (matchKey) return att.responses[matchKey];
+                const fuzzyMatch = keys.find(k => String(k).toLowerCase().includes(qStrId) || qStrId.includes(String(k).toLowerCase()));
+                return fuzzyMatch ? att.responses[fuzzyMatch] : null;
+            };
+
+            let resp = findInAttempt(a);
+            
+            if (!specificAttemptId && (!resp || Object.keys(resp).length === 0)) {
+                for (const att of allExamAttempts) {
+                    const r = findInAttempt(att);
+                    if (r && (Object.keys(r).length > (resp ? Object.keys(resp).length : 0))) {
+                        resp = r; a = att;
+                    }
+                }
+            }
+
+            // Build a unified results array from the question's master test cases
+            const masterTests = q.testCases || [];
+            const results = masterTests.map((mt, mi) => {
+                // Try to find a recorded result for this master test
+                const recorded = (resp?.results && resp.results[mi]) ? resp.results[mi] : null;
+                return {
+                    ...mt,
+                    status: recorded ? recorded.status : 'not_run',
+                    actual: recorded ? recorded.actual : null,
+                    error: recorded ? recorded.error : null
+                };
+            });
+            window.currentPreviewResults = results;
+            
+            document.getElementById('modalTitle').textContent = "Question Attempt Preview";
+            const body = document.getElementById('modalBody');
+            body.innerHTML = '';
+
+            const left = document.createElement('div');
+            left.className = 'preview-left';
+            left.innerHTML = `
+                <div style="margin-bottom:20px;"><span class="q-type-label">${q.type}</span></div>
+                <h1 style="font-size:1.8rem; margin-bottom:12px;">${q.heading || q.text?.substring(0, 30) || 'Question'}</h1>
+                <div style="width:100%; height:8px; background:#F2F4F7; border-radius:4px; margin-bottom:32px; overflow:hidden;">
+                    <div style="width:70%; height:100%; background:linear-gradient(90deg, #FFF4ED 0%, #DE5B2B 100%);"></div>
+                </div>
+                <div style="font-size:1.1rem; line-height:1.6; color:var(--text-secondary);">
+                    ${q.title || q.text || q.problem || 'No description available.'}
                 </div>
             `;
 
-            modal.style.display = 'flex';
+            const right = document.createElement('div');
+            right.className = 'preview-right';
+
+            if (q.type === 'mcq' || q.type === 'true_false' || q.type === 'assertion_reason') {
+                let options = q.options || [];
+                if (q.type === 'true_false') options = ['True', 'False'];
+                if (q.type === 'assertion_reason') options = ["A & R are true; R is correct explanation of A", "A & R are true; R is NOT correct explanation of A", "A is true; R is false", "A is false; R is true", "Both A & R are false"];
+
+                const studentAnswer = extractResponse(resp);
+                const correctAnswer = q.correctAnswer;
+
+                right.innerHTML = `
+                    <h3 style="margin-bottom:32px; font-size:1.4rem;">Choose any one</h3>
+                    ${options.map(opt => `
+                        <div class="mcq-option-preview">
+                            <div class="radio-btn ${studentAnswer === opt ? 'checked' : ''}"></div>
+                            <span style="font-size:1.1rem; color:${studentAnswer === opt ? 'var(--text-main)' : '#667085'};"> ${opt} </span>
+                            ${opt === correctAnswer ? '<span class="correct-tag"><i class="fas fa-check"></i> Correct</span>' : ''}
+                        </div>
+                    `).join('')}
+                `;
+            } else if (q.type === 'coding') {
+                const results = resp?.results || [];
+                const lang = resp?.lang || (q.languages ? q.languages[0] : 'java');
+                
+                // Construct Full Source Code (Prefix + Student Code + Suffix)
+                const qCode = (q.code && q.code[lang]) ? q.code[lang] : { prefix: '', middle: '', suffix: '' };
+                const studentImplementation = resp?.code || extractResponse(resp) || qCode.middle || '// No implementation found';
+                
+                let fullSource = '';
+                if (qCode.prefix) fullSource += `// --- HEADER (PRE-WRITTEN) ---\n${qCode.prefix}\n\n`;
+                fullSource += `// --- YOUR IMPLEMENTATION ---\n${studentImplementation}\n\n`;
+                if (qCode.suffix) fullSource += `// --- FOOTER (READ-ONLY) ---\n${qCode.suffix}`;
+
+                // Separate containers for Head, Middle, Tail to match exam experience
+                right.innerHTML = `
+                    <div class="code-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="background:#F9FAFB; padding:8px 16px; border-radius:8px; border:1px solid #EAECF0;">
+                                <span style="color:#667085; font-weight:700; text-transform:uppercase; font-size:0.8rem; letter-spacing:0.5px;">${lang}</span>
+                            </div>
+                            <div style="background:#ECFDF3; padding:8px 16px; border-radius:8px; border:1px solid #ABEFC6; color:#067647; font-size:0.8rem; font-weight:700;">
+                                <i class="fas fa-play" style="margin-right:6px; font-size:0.7rem;"></i> Run Count: ${resp?.runCount || 0}
+                            </div>
+                        </div>
+                        <button class="btn-solution" style="background:var(--primary); color:white; border:none; padding:8px 24px; border-radius:8px; font-weight:700; box-shadow:0 2px 4px rgba(222,91,43,0.2);">Solution</button>
+                    </div>
+
+                    <div class="proper-editor-container" style="border:1.5px solid #EAECF0; border-radius:12px; overflow:hidden; background:#fff;">
+                        ${qCode.prefix ? `<div id="ace-head" style="height:80px; border-bottom:1px solid #f0f0f0; background:rgba(0,0,0,0.02);"></div>` : ''}
+                        <div id="ace-main" style="height:320px; border-bottom:1px solid #f0f0f0;"></div>
+                        ${qCode.suffix ? `<div id="ace-tail" style="height:120px; background:rgba(0,0,0,0.02);"></div>` : ''}
+                    </div>
+                    
+                    <div style="display:flex; gap:24px; border-bottom:1px solid var(--border); margin-top:24px;">
+                        <div id="tab-testcases" style="padding:10px 0; border-bottom:2.5px solid var(--primary); font-weight:800; color:var(--text-main); cursor:pointer; font-size:0.9rem;" onclick="switchPreviewTab('testcases')">Test Cases</div>
+                        <div id="tab-console" style="padding:10px 0; color:#667085; cursor:pointer; font-weight:600; font-size:0.9rem;" onclick="switchPreviewTab('console')">Console Output</div>
+                    </div>
+
+                    <div id="preview-testcases" style="margin-top:20px; display:flex; gap:0; height:350px; background:#fff; border:1px solid #EAECF0; border-radius:12px; overflow:hidden;">
+                        <!-- Sidebar: Test Case List -->
+                        <div style="width:240px; border-right:1px solid #EAECF0; background:#F9FAFB; overflow-y:auto; padding:12px;">
+                            ${results.length === 0 ? `
+                                <div style="padding:20px; text-align:center; color:#667085; font-size:0.85rem;">No results</div>
+                            ` : results.map((r, ri) => {
+                                const isPass = r.status === 'pass';
+                                const isNotRun = r.status === 'not_run';
+                                return `
+                                    <div onclick="showTestCaseDetailsInPreview(${ri})" style="display:flex; align-items:center; gap:12px; padding:12px 16px; margin-bottom:8px; border-radius:8px; cursor:pointer; transition:all 0.2s; background:${ri === 0 ? '#fff' : 'transparent'}; box-shadow:${ri === 0 ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'}; border:1px solid ${ri === 0 ? '#DE5B2B' : 'transparent'}; opacity:${isNotRun ? 0.7 : 1};">
+                                        <i class="fas fa-${isPass ? 'check' : (isNotRun ? 'clock' : 'times')}" style="color:${isPass ? '#12B76A' : (isNotRun ? '#98A2B3' : '#F04438')}; font-size:1.1rem;"></i>
+                                        <span style="font-weight:700; color:${ri === 0 ? '#DE5B2B' : '#475467'}; font-size:1.05rem;">Test Case ${ri + 1}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <!-- Content: Score and Details -->
+                        <div id="preview-tc-details" style="flex:1; padding:24px; overflow-y:auto;">
+                            ${results.length > 0 ? `
+                                <div style="margin-bottom:24px;">
+                                    <label style="color:#98A2B3; font-weight:700; font-size:0.85rem; display:block; margin-bottom:8px; letter-spacing:0.5px;">SCORE</label>
+                                    <div style="background:#F9FAFB; padding:20px 24px; border-radius:4px; font-size:1.8rem; font-weight:500; color:#101828; border:1px solid #EAECF0; width:fit-content; min-width:100px; text-align:center;">
+                                        ${results[0].status === 'pass' ? (q.marks / results.length).toFixed(1) : (results[0].status === 'not_run' ? 'PENDING' : '0')}
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:20px;">
+                                    <label style="color:#101828; font-weight:700; font-size:0.95rem; display:block; margin-bottom:12px;">Input Parameters:</label>
+                                    <pre style="background:#F9FAFB; padding:16px; border-radius:8px; border:1px solid #EAECF0; font-family:'Consolas', monospace; font-size:0.9rem; color:#475467;">${results[0].input || 'No input'}</pre>
+                                </div>
+                            ` : '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#98A2B3;">Select a test case to view details</div>'}
+                        </div>
+                    </div>
+
+                    <div id="preview-console" style="margin-top:20px; display:none; background:#101828; color:#f8f9fa; padding:20px; border-radius:12px; font-family:'JetBrains Mono'; font-size:0.9rem; line-height:1.6; max-height:300px; overflow-y:auto;">
+                        <div style="color:#667085; font-size:0.75rem; margin-bottom:12px; border-bottom:1px solid #1e293b; padding-bottom:8px; font-weight:700;">LAST CONSOLE OUTPUT</div>
+                        ${(resp?.lastConsoleOutput || 'No console history available').replace(/\n/g, '<br>')}
+                    </div>
+                `;
+
+                // Initialize Proper Multi-Editor Setup
+                setTimeout(() => {
+                    const aceMode = "ace/mode/" + (lang.toLowerCase().includes('python') ? 'python' : (lang.toLowerCase().includes('c') ? 'c_cpp' : 'java'));
+                    const commonOpts = { fontSize: "14px", fontFamily: "Consolas, 'JetBrains Mono', monospace", showPrintMargin: false, highlightActiveLine: false, showLineNumbers: true, useSoftTabs: true, tabSize: 4 };
+
+                    if (qCode.prefix) {
+                        const hEd = ace.edit("ace-head");
+                        hEd.setTheme("ace/theme/chrome");
+                        hEd.session.setMode(aceMode);
+                        hEd.setValue(qCode.prefix, -1);
+                        hEd.setReadOnly(true);
+                        hEd.setOptions(commonOpts);
+                    }
+
+                    const mEd = ace.edit("ace-main");
+                    mEd.setTheme("ace/theme/chrome");
+                    mEd.session.setMode(aceMode);
+                    mEd.setValue(studentImplementation, -1);
+                    mEd.setReadOnly(true);
+                    mEd.setOptions(commonOpts);
+
+                    if (qCode.suffix) {
+                        const tEd = ace.edit("ace-tail");
+                        tEd.setTheme("ace/theme/chrome");
+                        tEd.session.setMode(aceMode);
+                        tEd.setValue(qCode.suffix, -1);
+                        tEd.setReadOnly(true);
+                        tEd.setOptions(commonOpts);
+                    }
+                }, 100);
+            } else {
+                const responseText = extractResponse(resp);
+                const displayResponse = (responseText !== null && responseText !== undefined && responseText !== '') ? responseText : 'No response';
+                right.innerHTML = `
+                    <h3 style="margin-bottom:24px;">Your Response</h3>
+                    <pre>${displayResponse}</pre>
+                    ${resp?.manualMark !== undefined ? `
+                        <div style="margin:20px 0; padding:12px; background:#FFF4ED; border:1px solid #FFE4D6; color:#DE5B2B; border-radius:8px; font-weight:700;">
+                            TEACHER EVALUATION: ${resp.manualMark} MARKS
+                        </div>
+                    ` : ''}
+                    <h3 style="margin-top:32px; margin-bottom:16px;">Correct Reference</h3>
+                    <div style="background:#ECFDF3; padding:16px; border-radius:8px; border:1px solid #ABEFC6; color:#027A48; font-weight:600;">
+                        ${q.correctAnswer || 'Manual grading required.'}
+                    </div>
+                `;
+            }
+
+            body.appendChild(left);
+            body.appendChild(right);
+            document.getElementById('previewModal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('qModal').style.display = 'none';
+        function showTestCaseDetailsInPreview(idx) {
+            const results = window.currentPreviewResults || [];
+            if (!results[idx]) return;
+            const res = results[idx];
+            const qMarks = window.currentPreviewQuestionMarks || 0;
+            const singleMark = (qMarks / results.length).toFixed(1);
+
+            const detailPane = document.getElementById('preview-tc-details');
+            detailPane.innerHTML = `
+                <div style="margin-bottom:24px;">
+                    <label style="color:#98A2B3; font-weight:700; font-size:0.85rem; display:block; margin-bottom:8px; letter-spacing:0.5px;">SCORE</label>
+                    <div style="background:#F9FAFB; padding:20px 24px; border-radius:4px; font-size:1.8rem; font-weight:500; color:#101828; border:1px solid #EAECF0; width:fit-content; min-width:80px; text-align:center;">
+                        ${res.status === 'pass' ? singleMark : '0'}
+                    </div>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="color:#101828; font-weight:700; font-size:0.95rem; display:block; margin-bottom:12px;">Input Parameters:</label>
+                    <pre style="background:#F9FAFB; padding:16px; border-radius:8px; border:1px solid #EAECF0; font-family:'Consolas', monospace; font-size:0.9rem; color:#475467;">${res.input || 'No input'}</pre>
+                </div>
+                <div>
+                     <label style="color:#101828; font-weight:700; font-size:0.9rem; display:block; margin-bottom:12px;">Actual Output:</label>
+                     <pre style="background:#101828; padding:16px; border-radius:8px; border:1px solid #EAECF0; font-family:'Consolas', monospace; font-size:0.9rem; color:#fff;">${res.actual || 'No output recorded'}</pre>
+                </div>
+            `;
         }
 
-        // Close on outside click
-        window.onclick = function (event) {
-            const modal = document.getElementById('qModal');
-            if (event.target == modal) {
-                closeModal();
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        function switchPreviewTab(tab) {
+            const tc = document.getElementById('preview-testcases');
+            const con = document.getElementById('preview-console');
+            const tabTc = document.getElementById('tab-testcases');
+            const tabCon = document.getElementById('tab-console');
+
+            if (tab === 'testcases') {
+                tc.style.display = 'flex';
+                con.style.display = 'none';
+                tabTc.style.borderBottom = '2px solid var(--primary)';
+                tabTc.style.color = 'var(--text-main)';
+                tabTc.style.fontWeight = '700';
+                tabCon.style.borderBottom = 'none';
+                tabCon.style.color = '#667085';
+                tabCon.style.fontWeight = '400';
+            } else {
+                tc.style.display = 'none';
+                con.style.display = 'block';
+                tabCon.style.borderBottom = '2px solid var(--primary)';
+                tabCon.style.color = 'var(--text-main)';
+                tabCon.style.fontWeight = '700';
+                tabTc.style.borderBottom = 'none';
+                tabTc.style.color = '#667085';
+                tabTc.style.fontWeight = '400';
             }
         }
 
         init();
     </script>
 </body>
-
 </html>

@@ -719,6 +719,41 @@
             opacity: 0.9;
             transform: translateY(-1px);
         }
+
+        .copy-widget {
+            margin-left: 12px;
+            padding: 4px 10px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            vertical-align: middle;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .copy-widget:hover {
+            background: #fff5f0;
+            color: var(--primary);
+            border-color: #ffd8c7;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(242, 107, 58, 0.1);
+        }
+
+        .copy-widget:active {
+            transform: translateY(0);
+        }
+
+        .copy-widget i {
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 
@@ -1108,16 +1143,22 @@
 
             grid.innerHTML = examsToRender.map(e => {
                 let statusText = e.status === 'completed' ? 'Submitted' : (e.status === 'in-progress' ? 'Ongoing' : 'Available');
-                let actionBtn = e.status === 'completed' ? (e.resultsPublished ? 'VIEW SCORE' : 'RESULT PENDING') : (e.status === 'in-progress' ? 'Resume' : 'Start Exam');
-                let actionColor = e.resultsPublished ? '#12B76A' : (e.status === 'completed' ? '#94a3b8' : '');
+                let isResultPublished = e.resultsPublished || e.security?.showResults;
+                let actionBtn = e.status === 'completed' ? (isResultPublished ? 'VIEW SCORE' : 'RESULT PENDING') : (e.status === 'in-progress' ? 'Resume' : 'Start Exam');
+                let actionColor = isResultPublished ? '#12B76A' : (e.status === 'completed' ? '#94a3b8' : '');
 
                 return `
-                <div class="exam-card" onclick="handleCardClick('${e.id}', '${e.attemptId}', '${e.status}', ${e.resultsPublished})">
+                <div class="exam-card" onclick="handleCardClick('${e.id}', '${e.attemptId}', '${e.status}', ${isResultPublished})">
                     <div class="card-icon-area">
                         <i class="fas ${e.status === 'completed' ? 'fa-check-double' : 'fa-laptop-code'}"></i>
                     </div>
                     <div class="card-left">
-                        <h4 class="card-code-title">${e.title}</h4>
+                        <h4 class="card-code-title">
+                            ${e.title}
+                            <span class="copy-widget" onclick="copyInviteLink(event, '${e.testId || e.id}')" title="Copy Invite Link">
+                                <i class="far fa-copy"></i> Copy Link
+                            </span>
+                        </h4>
                         <div class="card-subtitle">
                             <span><i class="far fa-clock"></i> ${e.duration} Mins</span>
                             <span><i class="far fa-layer-group"></i> ${e.sections?.length || 0} Domains</span>
@@ -1140,6 +1181,25 @@
                     </div>
                 </div>
             `}).join('');
+        }
+
+        function copyInviteLink(event, testId) {
+            event.stopPropagation();
+            if (!testId) return;
+
+            const link = `https://exam.testpad.chitpara.edu.in/test/${testId}`;
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('Invite link copied to clipboard!', 'success');
+            }).catch(err => {
+                // Fallback for older browsers or non-secure contexts
+                const el = document.createElement('textarea');
+                el.value = link;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showToast('Invite link copied to clipboard!', 'success');
+            });
         }
 
         function filterExams() {

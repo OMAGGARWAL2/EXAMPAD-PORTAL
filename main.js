@@ -9,7 +9,11 @@ const path = require('path');
 const fs = require('fs');
 
 // AI Integration imports
-require('dotenv').config();
+if (app.isPackaged) {
+    require('dotenv').config({ path: path.join(process.resourcesPath, '.env') });
+} else {
+    require('dotenv').config();
+}
 
 let mainWindow;
 let appInKiosk = false;
@@ -79,7 +83,7 @@ function createWindow() {
         height: 900,
         backgroundColor: '#f4f5f7',
         title: "EXAMPAD COMMAND CENTER",
-        icon: path.join(__dirname, 'logo.jpg'), // Use Chitkara logo as app icon
+        icon: path.join(__dirname, 'icon.png'), // Official Chitkara Logo (Resized)
         frame: false, // Ensure no title bar or taskbar for premium "Command Center" feel
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -92,9 +96,10 @@ function createWindow() {
         show: false
     });
 
-    mainWindow.loadFile('index.html'); // Load root index.html to fix relative paths
+    mainWindow.loadFile('pages/joinvialink.html'); // Start on the Join via Link portal as default
 
     mainWindow.once('ready-to-show', () => {
+        mainWindow.maximize();
         mainWindow.show();
     });
 

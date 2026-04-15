@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Center | EXAMPAD</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
@@ -14,7 +14,7 @@
     <!-- Monaco Editor -->
     <link rel="stylesheet" data-name="vs/editor/editor.main"
         href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/editor/editor.main.min.css">
-    
+
     <style>
         :root {
             --primary: #D96C33;
@@ -59,7 +59,7 @@
         .header-left {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 32px;
         }
 
         .logo-sq {
@@ -77,7 +77,7 @@
 
         .nav-icons {
             display: flex;
-            gap: 24px;
+            gap: 32px;
             color: #666;
             font-size: 1.1rem;
         }
@@ -167,8 +167,15 @@
             transition: var(--transition);
         }
 
-        .tool-btn:hover { background: #e0e0e0; }
-        .tool-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .tool-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .tool-btn.active {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
         .item-type-label {
             font-size: 0.75rem;
@@ -221,7 +228,8 @@
         .progress-fill {
             height: 100%;
             background: var(--primary);
-            width: 44%; /* SCR 4 says 44% */
+            width: 44%;
+            /* SCR 4 says 44% */
             transition: width 1s ease;
         }
 
@@ -258,9 +266,21 @@
             gap: 4px;
             margin-top: 8px;
         }
-        .dash { height: 4px; background: #eee; border-radius: 2px; }
-        .dash.active { background: #D96C33; width: 40px; }
-        .dash.pending { width: 20px; }
+
+        .dash {
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+        }
+
+        .dash.active {
+            background: #D96C33;
+            width: 40px;
+        }
+
+        .dash.pending {
+            width: 20px;
+        }
 
         .bookmark-container {
             font-size: 1.2rem;
@@ -397,8 +417,19 @@
         }
 
         /* Video / Article Sections */
-        .video-wrap { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; margin-bottom: 40px; }
-        .article-wrap { line-height: 1.8; font-size: 1.1rem; color: #444; }
+        .video-wrap {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .article-wrap {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #444;
+        }
 
         /* Split Screen Styling */
         .split-shell {
@@ -453,20 +484,28 @@
     <header>
         <div class="header-left">
             <div class="logo-sq" onclick="location.href='./course-dashboard.html'">
-                <img src="https://course.testpad.chitkara.edu.in/icons/menu-active.svg" style="width:24px; height:24px;">
+                <img src="https://course.testpad.chitkara.edu.in/icons/menu-active.svg"
+                    style="width:24px; height:24px;">
             </div>
-            <div class="nav-icons" style="display:flex; gap:16px; align-items:center;">
-                <img src="https://course.testpad.chitkara.edu.in/icons/statistics-active.svg" style="width:20px; height:20px; cursor:pointer;" title="Analytics">
-                <img src="https://course.testpad.chitkara.edu.in/icons/folder-2.svg" style="width:20px; height:20px; cursor:pointer;" title="Curriculum">
+            <div class="nav-icons" style="display:flex; gap:28px; align-items:center;">
+                <img src="https://course.testpad.chitkara.edu.in/icons/statistics-active.svg"
+                    style="width:20px; height:20px; cursor:pointer;" title="Analytics">
+                <img src="https://course.testpad.chitkara.edu.in/icons/folder-2.svg"
+                    style="width:20px; height:20px; cursor:pointer;" title="Curriculum">
             </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 24px;">
-            <div style="width: 40px; height: 40px; background: var(--primary-soft); color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer;">
+        <div style="display: flex; align-items: center; gap: 36px;">
+            <div
+                style="width: 40px; height: 40px; background: var(--primary-soft); color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer;">
                 <i class="fas fa-plus"></i>
             </div>
-            <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="location.href='../login.html'">
-                <div style="width: 40px; height: 40px; background: #f5f5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #888; font-size: 1.1rem;">O</div>
-                <img src="https://course.testpad.chitkara.edu.in/icons/logout.svg" style="width:18px; height:18px;" title="Logout">
+            <div style="display:flex; align-items:center; gap:16px; cursor:pointer;"
+                onclick="location.href='../login.html'">
+                <div
+                    style="width: 40px; height: 40px; background: #f5f5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #888; font-size: 1.1rem;">
+                    O</div>
+                <img src="https://course.testpad.chitkara.edu.in/icons/logout.svg" style="width:18px; height:18px;"
+                    title="Logout">
             </div>
         </div>
     </header>
@@ -515,7 +554,9 @@
 
     <footer class="player-footer">
         <div id="prevBtn" class="footer-nav" onclick="goPrev()"><i class="fas fa-chevron-left"></i> previous</div>
-        <div id="reportBtn" style="color: var(--primary); font-weight: 700; cursor: pointer; text-transform: lowercase;">Report a problem</div>
+        <div id="reportBtn"
+            style="color: var(--primary); font-weight: 700; cursor: pointer; text-transform: lowercase;">Report a
+            problem</div>
         <div id="nextBtn" class="footer-nav" onclick="goNext()">next <i class="fas fa-chevron-right"></i></div>
     </footer>
 
@@ -532,7 +573,7 @@
 
         function init() {
             courseData = db.getCourseById(courseId);
-            if (!courseData) return location.href='./student-dashboard.html';
+            if (!courseData) return location.href = './student-dashboard.html';
 
             document.getElementById('sCourseTitle').textContent = courseData.title;
             renderSidebar();
@@ -567,7 +608,7 @@
             mIdx = mi; lIdx = li;
             const less = courseData.modules[mi].lessons[li];
             const container = document.querySelector('.player-content');
-            
+
             if (less.type === 'coding') {
                 renderCoding(less);
             } else {
@@ -589,7 +630,7 @@
                 const body = document.getElementById('playerBody');
                 if (less.type === 'video') {
                     let videoHtml = '';
-                    if(less.data.url?.includes('youtube.com') || less.data.url?.includes('youtu.be')) {
+                    if (less.data.url?.includes('youtube.com') || less.data.url?.includes('youtu.be')) {
                         const vid = less.data.url.split('v=')[1] || less.data.url.split('/').pop();
                         videoHtml = `<iframe src="https://www.youtube.com/embed/${vid}" frameborder="0" allowfullscreen style="width:100%; height:100%;"></iframe>`;
                     } else {
@@ -658,7 +699,7 @@
         }
 
         function initPlayerMonaco(lang, val) {
-            if(playerMonaco) playerMonaco.dispose();
+            if (playerMonaco) playerMonaco.dispose();
             require(['vs/editor/editor.main'], () => {
                 monaco.editor.defineTheme('ExampadLight', {
                     base: 'vs', inherit: true,
@@ -762,7 +803,7 @@
             const overlay = document.getElementById('overlayCanvas');
             ctx = canvas.getContext('2d');
             overlayCtx = overlay.getContext('2d');
-            
+
             [ctx, overlayCtx].forEach(c => {
                 c.lineJoin = 'round';
                 c.lineCap = 'round';
@@ -773,7 +814,7 @@
             canvas.addEventListener('mousemove', draw);
             canvas.addEventListener('mouseup', stopDrawing);
             canvas.addEventListener('mouseout', stopDrawing);
-            
+
             // Touch support
             canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e.touches[0]); });
             canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
@@ -788,10 +829,10 @@
         }
 
         function updateStrokeStyle() {
-            if(!ctx) return;
+            if (!ctx) return;
             const color = currentTool === 'eraser' ? '#ffffff' : document.getElementById('drawColor').value;
             const width = document.getElementById('lineWidth').value;
-            
+
             ctx.strokeStyle = color;
             ctx.lineWidth = width;
             overlayCtx.strokeStyle = color;
@@ -803,7 +844,7 @@
             const canvas = document.getElementById('drawCanvas');
             const rect = canvas.getBoundingClientRect();
             startPoint = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-            
+
             if (currentTool === 'brush' || currentTool === 'eraser') {
                 ctx.beginPath();
                 ctx.moveTo(startPoint.x, startPoint.y);
@@ -842,14 +883,14 @@
         function stopDrawing(e) {
             if (!isDrawing) return;
             isDrawing = false;
-            
+
             if (currentTool !== 'brush' && currentTool !== 'eraser') {
                 // Commit shape to main canvas
                 const canvas = document.getElementById('drawCanvas');
                 const rect = canvas.getBoundingClientRect();
                 const curX = e.clientX - rect.left;
                 const curY = e.clientY - rect.top;
-                
+
                 overlayCtx.clearRect(0, 0, 800, 500);
                 if (currentTool === 'line') {
                     ctx.beginPath();
@@ -870,7 +911,7 @@
         }
 
         function clearCanvas() {
-            if(confirm("Clear entire whiteboard?")) {
+            if (confirm("Clear entire whiteboard?")) {
                 ctx.clearRect(0, 0, 800, 500);
             }
         }
@@ -885,7 +926,7 @@
 
         function renderMCQ(less) {
             const body = document.getElementById('playerBody');
-            
+
             let topContent = '';
             if (less.type === 'diagram' && less.data.url) {
                 topContent = `<div style="text-align:center; margin-bottom: 24px;"><img src="${less.data.url}" style="max-height: 300px; border-radius: 12px; border: 1px solid #eee;"></div>`;
@@ -972,7 +1013,7 @@
             const progress = db.getCourseProgress(courseId, user.id);
             const total = courseData.modules.reduce((acc, m) => acc + m.lessons.length, 0);
             const count = progress ? progress.completedItems.length : 0;
-            const perc = total > 0 ? Math.round((count/total)*100) : 0;
+            const perc = total > 0 ? Math.round((count / total) * 100) : 0;
 
             document.getElementById('sOverallPerc').textContent = `${perc}% covered`;
             document.getElementById('sOverallFill').style.width = `${perc}%`;
@@ -986,7 +1027,7 @@
 
         function goPrev() {
             if (lIdx > 0) loadLesson(mIdx, lIdx - 1);
-            else if (mIdx > 0) loadLesson(mIdx - 1, courseData.modules[mIdx-1].lessons.length - 1);
+            else if (mIdx > 0) loadLesson(mIdx - 1, courseData.modules[mIdx - 1].lessons.length - 1);
         }
 
         init();

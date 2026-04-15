@@ -66,6 +66,67 @@ function switchTab(tab) {
     }
 }
 
+// --- RECENT LOGINS DROPDOWN LOGIC ---
+function toggleHistoryMenu(e) {
+    if (e) e.stopPropagation();
+    const dropdown = document.getElementById('historyDropdown');
+    if (!dropdown) return;
+
+    const isVisible = dropdown.style.display === 'flex';
+    
+    if (isVisible) {
+        dropdown.style.display = 'none';
+    } else {
+        renderHistoryDropdown();
+    }
+}
+
+function renderHistoryDropdown() {
+    const history = auth.getAllSavedCredentials();
+    const dropdown = document.getElementById('historyDropdown');
+    if (!dropdown) return;
+
+    if (!history || history.length === 0) {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    dropdown.innerHTML = '';
+    dropdown.style.display = 'flex';
+
+    history.forEach(cred => {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+            <div class="history-item-info">
+                <span class="history-item-email">${cred.email}</span>
+                <span class="history-item-role">${cred.role}</span>
+            </div>
+            <i class="fas fa-history"></i>
+        `;
+        item.onclick = (e) => {
+            e.stopPropagation();
+            selectCredential(cred.email, cred.password);
+            dropdown.style.display = 'none';
+        };
+        dropdown.appendChild(item);
+    });
+}
+
+function selectCredential(email, pass) {
+    document.getElementById('loginEmail').value = email;
+    document.getElementById('loginPassword').value = pass;
+    showMessage('Credentials loaded');
+    
+    // Visual cue
+    const btn = document.getElementById('loginSubmitBtn');
+    if (btn) {
+        btn.classList.add('pulse');
+        setTimeout(() => btn.classList.remove('pulse'), 1000);
+        btn.focus();
+    }
+}
+
 // Event Listeners initialization
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
@@ -97,21 +158,31 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('signupRole').value = urlRole;
     }
 
+    // Close dropdown on outside click
+    document.addEventListener('click', () => {
+        const dropdown = document.getElementById('historyDropdown');
+        if (dropdown) dropdown.style.display = 'none';
+    });
+
     // --- AUTO-FILL SAVED IDENTITY ---
     const saved = auth.getSavedCredentials();
     if (saved && loginForm) {
-        document.getElementById('loginEmail').value = saved.email;
-        document.getElementById('loginPassword').value = saved.password;
-
-        if (!urlTestId) {
-            switchTab('login');
+        // Only auto-fill if nothing is there or if it's the very last one
+        if (!document.getElementById('loginEmail').value) {
+            document.getElementById('loginEmail').value = saved.email;
+            document.getElementById('loginPassword').value = saved.password;
+            
+            if (!urlTestId) {
+                switchTab('login');
+            }
+            showMessage(`Identity restored for: ${saved.email}`);
         }
-        showMessage(`Identity restored for: ${saved.email}`);
-        console.log(`[SYSTEM] Identity restored for: ${saved.email}`);
-
+        
         const btn = document.getElementById('loginSubmitBtn');
         if (btn) btn.focus();
     }
+
+
 
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -164,7 +235,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // --- VALIDATION ---
             if (!name || name.length < 2) return showMessage('Enter your full assigned name');
-            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return showMessage('Invalid email format');
+            
+            const isEmail = email.includes('@');
+            if (isEmail && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return showMessage('Invalid email format');
+            
+            const signupEmail = isEmail ? email : '';
+            const enrollmentId = isEmail ? '' : email;
 
             // --- ADMIN AUTHORIZATION CHECK REMOVED ---
 
@@ -176,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             await new Promise(r => setTimeout(r, 1200));
 
-            const res = auth.signup(email, name, pass, confirm, role);
+            const res = auth.signup(signupEmail, name, pass, confirm, role, enrollmentId);
 
             if (res.success) {
                 showMessage('Neural link established. Welcome.');

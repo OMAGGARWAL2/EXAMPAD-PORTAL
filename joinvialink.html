@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamPad - Portal</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Hind:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #c05126;
+            --primary-hover: #a0411d;
+            --bg-color: #f1ede8;
+            --text-color: #333;
+            --accent-soft: rgba(230, 222, 211, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 2vh;
+            /* Top edge */
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Organic Background Wave */
+        .bg-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-wave svg {
+            width: 100%;
+            height: 100%;
+            fill: #fff5ed;
+            /* Light Orange Tint */
+            opacity: 0.8;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+            padding: 5px 20px;
+            /* Reduced vertical padding */
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            /* Reduced gap */
+            width: 100%;
+        }
+
+        .official-logo {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .input-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            text-align: left;
+            /* Starts where the box starts */
+            font-size: 1.05rem;
+            color: #666;
+            margin-bottom: 10px;
+            padding-left: 2px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .test-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #c8c8c8;
+            border-radius: 4px;
+            font-size: 1.4rem;
+            background: #fff;
+            color: #333;
+            outline: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+            /* Changed back to left */
+        }
+
+        .test-input:focus {
+            border-color: #de6834;
+        }
+
+        .go-btn {
+            background-color: #ff9466;
+            /* Light Orange */
+            color: white;
+            border: none;
+            padding: 10px 40px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 50px;
+        }
+
+        .go-btn:hover {
+            background-color: #de6834;
+            box-shadow: 0 4px 12px rgba(255, 148, 102, 0.2);
+        }
+
+        .notice-box {
+            background-color: #fff0e6;
+            border-radius: 12px;
+            padding: 15px 40px;
+            font-size: 1.4rem;
+            color: #de6834;
+            /* Balanced with footer color */
+            max-width: 800px;
+            text-align: center;
+            line-height: 1.5;
+            font-weight: 400;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 45px;
+            /* Shifted up further */
+            left: 0;
+            width: 100%;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #de6834;
+            font-size: 1.6rem;
+            font-family: 'Hind', sans-serif;
+            z-index: 100;
+        }
+
+        .footer-left,
+        .footer-right {
+            font-weight: 700;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-container {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-wave">
+        <svg viewBox="0 0 1440 800" preserveAspectRatio="none">
+            <!-- White Tide (Smooth and Flowing) -->
+            <path d="M0,750 C200,650 400,620 600,750 C800,880 1100,200 1440,150 L1440,800 L0,800 Z" fill="#fffaf5"
+                opacity="0.8"></path>
+            <!-- Lighter Primary Orange Wave (Smooth and Flowing) -->
+            <path d="M0,700 C250,850 500,850 700,500 C900,150 1200,100 1440,250 L1440,800 L0,800 Z" fill="#ffccaa"
+                opacity="0.3"></path>
+        </svg>
+    </div>
+
+    <div class="main-container">
+        <div class="logo-section" style="justify-content: center;">
+            <img src="https://www.chitkara.edu.in/chitkara-university-logo.png" alt="Chitkara University"
+                class="official-logo">
+        </div>
+
+        <div class="input-wrapper">
+            <label class="input-label">Enter test/invite link</label>
+            <input type="text" id="testLink" class="test-input" autocomplete="off">
+        </div>
+
+        <button class="go-btn" id="goBtn">Go</button>
+
+        <div class="notice-box">
+            To exit please press Alt+F4, only when test has not been started.
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-left">Powered by Chitkara</div>
+        <div class="footer-right">Version: 0.5.0</div>
+    </div>
+
+    <script>
+        const testInput = document.getElementById('testLink');
+        const goBtn = document.getElementById('goBtn');
+
+        function handleGo() {
+            const link = testInput.value.trim();
+            if (!link) {
+                alert('Please enter a valid test/invite link.');
+                return;
+            }
+
+            // Simple logic to redirect
+            // If it's a full URL, go to it. If it's just a test ID, handle it.
+            try {
+                if (link.startsWith('http://') || link.startsWith('https://')) {
+                    window.location.href = link;
+                } else {
+                    // Assume it's a test ID/code
+                    // Check if it's like "TEST123"
+                    // We can redirect to the step2 page
+                    window.location.href = `pages/step2vialink.html?testId=${link}`;
+                }
+            } catch (e) {
+                console.error("Redirection error:", e);
+                alert('Invalid link format.');
+            }
+        }
+
+        goBtn.addEventListener('click', handleGo);
+
+        testInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleGo();
+            }
+        });
+
+        // Focus the input on load
+        window.onload = () => {
+            testInput.focus();
+        };
+    </script>
+</body>
+
+</html>
