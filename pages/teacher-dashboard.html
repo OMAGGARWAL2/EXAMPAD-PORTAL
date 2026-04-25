@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad | Instructor Dashboard</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts: Inter and Outfit -->
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
@@ -680,6 +680,33 @@
                 padding: 30px 20px;
             }
         }
+
+        /* --- CUSTOM SCROLLBARS --- */
+        .main-content::-webkit-scrollbar,
+        .sidebar-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content::-webkit-scrollbar-track,
+        .sidebar-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main-content::-webkit-scrollbar-thumb,
+        .sidebar-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover,
+        .sidebar-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
     </style>
 </head>
 
@@ -689,7 +716,7 @@
         <div class="header-left">
             <div class="logo-container" onclick="location.reload()">
                 <div class="logo-square">
-                    <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="CHITKARA">
+                    <img src="../TESTPAD_WEBSITE__files/chitkara.png" alt="CHITKARA">
                 </div>
                 <div class="logo-text">EXAMPAD</div>
             </div>

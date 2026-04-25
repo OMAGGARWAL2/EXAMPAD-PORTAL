@@ -1729,18 +1729,37 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label class="label">NEGATIVE MARKING</label>
+                        <label class="label"
+                            style="display: flex; align-items: center; justify-content: space-between;">
+                            <span>NEGATIVE MARKING</span>
+                            <label class="sec-toggle" style="margin-left: 10px; transform: scale(0.8);">
+                                <input type="checkbox" id="enableNegativeMarking"
+                                    onchange="document.getElementById('negativeMarking').disabled = !this.checked; if(!this.checked) document.getElementById('negativeMarking').value = 0;">
+                            </label>
+                        </label>
                         <div style="position:relative;">
-                            <input type="number" id="negativeMarking" class="clean-input" value="0"
-                                style="padding-left:36px; background:#fdfdfd;">
+                            <input type="number" id="negativeMarking" class="clean-input" value="0" disabled
+                                style="padding-left:36px; background:#fdfdfd;" step="0.25">
                             <i class="fas fa-minus-circle"
                                 style="position:absolute; left:12px; top:12px; color:var(--primary); opacity:0.6;"></i>
                         </div>
                     </div>
                     <div class="input-group">
-                        <label class="label">SCHEDULED START (MODERN CALENDAR)</label>
+                        <label class="label">SCHEDULED START</label>
                         <input type="datetime-local" id="scheduleDate" class="clean-input"
                             style="background:#fdfeff; border-color:#eef0f2;">
+                    </div>
+                    <div class="input-group">
+                        <label class="label">SCHEDULED END</label>
+                        <input type="datetime-local" id="scheduleEndDate" class="clean-input"
+                            style="background:#fdfeff; border-color:#eef0f2;">
+                    </div>
+                    <div class="input-group">
+                        <label class="label">TIME CONFIGURATION</label>
+                        <label class="sec-toggle" style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(217, 108, 51, 0.05); padding:10px; border-radius:8px; border:1px dashed rgba(217, 108, 51, 0.3);">
+                            <input type="checkbox" id="isUniversalTime" style="width:18px; height:18px;">
+                            <span style="font-size:0.9rem; font-weight:700; color:#D96C33;">UNIVERSAL TIME FRAME</span>
+                        </label>
                     </div>
                 </div>
 
@@ -1800,7 +1819,8 @@
                         </label>
                         <label class="sec-toggle"
                             style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-top:12px; padding:10px; background:rgba(217, 108, 51, 0.05); border-radius:8px; border:1px dashed rgba(217, 108, 51, 0.3);">
-                            <input type="checkbox" id="isPracticeTest" style="width:18px; height:18px;">
+                            <input type="checkbox" id="isPracticeTest" style="width:18px; height:18px;"
+                                onchange="exams.isPracticeTest = this.checked">
                             <span style="font-size:0.9rem; font-weight:700; color:#D96C33;">PRACTICE TEST MODE</span>
                         </label>
                     </div>
@@ -1822,18 +1842,22 @@
 
             <div class="form-card" style="margin-top: 24px; border-left: 4px solid #f39c12;">
                 <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
-                    <div style="width:40px; height:40px; background:rgba(243, 156, 18, 0.1); color:#f39c12; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                    <div
+                        style="width:40px; height:40px; background:rgba(243, 156, 18, 0.1); color:#f39c12; border-radius:10px; display:flex; align-items:center; justify-content:center;">
                         <i class="fas fa-user-check" style="font-size:1.2rem;"></i>
                     </div>
                     <h2 class="section-title" style="margin:0;">Identity Verification Architect</h2>
                 </div>
-                <p style="color:#666; font-size: 0.85rem; margin-bottom: 20px;">Define mandatory information students must provide before starting the assessment (e.g. Blind Roll No, Section, Name).</p>
-                
-                <div id="identityFieldsList" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                <p style="color:#666; font-size: 0.85rem; margin-bottom: 20px;">Define mandatory information students
+                    must provide before starting the assessment (e.g. Blind Roll No, Section, Name).</p>
+
+                <div id="identityFieldsList"
+                    style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
                     <!-- Dynamic Identity Fields -->
                 </div>
 
-                <button class="btn btn-ghost" onclick="addIdentityField()" style="width:100%; border: 1.5px dashed #f39c12; color:#f39c12; background:rgba(243, 156, 18, 0.05); font-weight:700;">
+                <button class="btn btn-ghost" onclick="addIdentityField()"
+                    style="width:100%; border: 1.5px dashed #f39c12; color:#f39c12; background:rgba(243, 156, 18, 0.05); font-weight:700;">
                     <i class="fas fa-plus" style="margin-right:8px;"></i> Add Mandatory Identity Question
                 </button>
             </div>
@@ -1861,6 +1885,30 @@
                 <p style="color:#777; font-size: 0.9rem; margin-bottom: 24px;">Add sections to categorize questions
                     (Objective, Subjective, Lab, etc.)</p>
                 <div id="sectionsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            </div>
+
+            <!-- Sectional Navigation Policy -->
+            <div class="form-card" style="margin-top: 24px; border-left: 4px solid #3498db;" id="sectionLockCard">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
+                    <div
+                        style="width:40px; height:40px; background:rgba(52, 152, 219, 0.1); color:#3498db; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-lock" style="font-size:1.2rem;"></i>
+                    </div>
+                    <h2 class="section-title" style="margin:0;">Sectional Navigation Policy</h2>
+                </div>
+                <div
+                    style="display: flex; align-items: flex-start; gap: 20px; background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                    <label class="sec-toggle" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
+                        <input type="checkbox" id="sectionLockEnabled" style="width:20px; height:20px;"
+                            onchange="exams.sectionLockEnabled = this.checked">
+                        <div>
+                            <span style="font-size:1rem; font-weight:700; color:#2c3e50; display:block;">Enable Section
+                                Locking (Sequential)</span>
+                            <span style="font-size:0.85rem; color:#666;">If enabled, students must complete sections in
+                                order and cannot return to previous sections once submitted.</span>
+                        </div>
+                    </label>
+                </div>
             </div>
 
             <div style="margin-top: 40px; display: flex; justify-content: space-between;">
@@ -1901,34 +1949,45 @@
                 <!-- Main Worksite -->
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
                     <!-- BULK UPLOAD CTA BANNER -->
-                    <div class="bulk-upload-banner" style="background: #f6ffed; border: 1px solid #b7eb8f; padding: 20px 24px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(82, 196, 26, 0.05); margin-bottom: 30px;">
+                    <div class="bulk-upload-banner"
+                        style="background: #f6ffed; border: 1px solid #b7eb8f; padding: 20px 24px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(82, 196, 26, 0.05); margin-bottom: 30px;">
                         <div style="display: flex; align-items: center; gap: 16px;">
-                            <div style="width: 48px; height: 48px; background: #52c41a; color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <div
+                                style="width: 48px; height: 48px; background: #52c41a; color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                                 <i class="fas fa-file-excel"></i>
                             </div>
                             <div>
-                                <div style="font-weight: 800; color: #1b5e20; font-size: 1.1rem; font-family: 'Outfit';">Bulk MCQ Spreadsheet Architect</div>
+                                <div
+                                    style="font-weight: 800; color: #1b5e20; font-size: 1.1rem; font-family: 'Outfit';">
+                                    Bulk MCQ Spreadsheet Architect</div>
                                 <div style="font-size: 0.85rem; color: #388e3c; font-weight: 500; margin-top:2px;">
-                                    Fill your assessment instantly using Excel. 
-                                    <span style="color: #2e7d32; text-decoration: underline; cursor: pointer; margin-left:8px;" onclick="showExcelFormat()">[ View Required Format ]</span>
+                                    Fill your assessment instantly using Excel.
+                                    <span
+                                        style="color: #2e7d32; text-decoration: underline; cursor: pointer; margin-left:8px;"
+                                        onclick="showExcelFormat()">[ View Required Format ]</span>
                                 </div>
                             </div>
                         </div>
                         <div style="display: flex; gap: 12px;">
-                             <button class="btn btn-ghost" onclick="downloadExcelTemplate()" style="border-color: #52c41a; color: #52c41a; background: #fff; font-weight: 700; border-radius: 10px;">
+                            <button class="btn btn-ghost" onclick="downloadExcelTemplate()"
+                                style="border-color: #52c41a; color: #52c41a; background: #fff; font-weight: 700; border-radius: 10px;">
                                 <i class="fas fa-download" style="margin-right:8px;"></i> TEMPLATE
                             </button>
-                            <button class="btn btn-ghost" onclick="window.location.href='excelupload.html'" style="border-color: #52c41a; color: #52c41a; background: #f6ffed; font-weight: 700; border-radius: 10px;">
+                            <button class="btn btn-ghost" onclick="window.location.href='excelupload.html'"
+                                style="border-color: #52c41a; color: #52c41a; background: #f6ffed; font-weight: 700; border-radius: 10px;">
                                 <i class="fas fa-table" style="margin-right:8px;"></i> WEB ARCHITECT
                             </button>
-                            <button class="btn btn-ghost" onclick="window.location.href='exceluploadcode.html'" style="border-color: #1890ff; color: #1890ff; background: #e6f7ff; font-weight: 700; border-radius: 10px;">
+                            <button class="btn btn-ghost" onclick="window.location.href='exceluploadcode.html'"
+                                style="border-color: #1890ff; color: #1890ff; background: #e6f7ff; font-weight: 700; border-radius: 10px;">
                                 <i class="fas fa-code" style="margin-right:8px;"></i> CODING ARCHITECT
                             </button>
-                            <button class="btn btn-run" onclick="document.getElementById('excelUploadBanner').click()" style="background: #52c41a; color: #fff; border: none; font-weight: 700; height: 44px; padding: 0 24px; border-radius: 10px; box-shadow: 0 6px 15px rgba(82, 196, 26, 0.25);">
+                            <button class="btn btn-run" onclick="document.getElementById('excelUploadBanner').click()"
+                                style="background: #52c41a; color: #fff; border: none; font-weight: 700; height: 44px; padding: 0 24px; border-radius: 10px; box-shadow: 0 6px 15px rgba(82, 196, 26, 0.25);">
                                 UPLOAD FILE
                             </button>
                         </div>
-                        <input type="file" id="excelUploadBanner" style="display:none" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
+                        <input type="file" id="excelUploadBanner" style="display:none" accept=".xlsx, .xls"
+                            onchange="handleExcelUpload(event)">
                     </div>
 
                     <div class="split-builder" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
@@ -1944,19 +2003,28 @@
                                             IDENTIFIER</label>
                                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                             <button class="mini-tool-btn" onclick="openPoolModal()"
-                                                style="color: #6366f1;"><i class="fas fa-database"></i> Import from Pool</button>
-                                            <button class="mini-tool-btn" onclick="document.getElementById('excelUploadBtn').click()" style="color: #2ecc71; font-weight: 700; border: 1.5px solid #2ecc71; background: #f6ffed;">
+                                                style="color: #6366f1;"><i class="fas fa-database"></i> Import from
+                                                Pool</button>
+                                            <button class="mini-tool-btn"
+                                                onclick="document.getElementById('excelUploadBtn').click()"
+                                                style="color: #2ecc71; font-weight: 700; border: 1.5px solid #2ecc71; background: #f6ffed;">
                                                 <i class="fas fa-file-excel"></i> Bulk Import (File)
                                             </button>
-                                            <button class="mini-tool-btn" onclick="window.location.href='excelupload.html'" style="color: #2ecc71; font-weight: 700; border: 1.5px solid #2ecc71; background: #fff;">
+                                            <button class="mini-tool-btn"
+                                                onclick="window.location.href='excelupload.html'"
+                                                style="color: #2ecc71; font-weight: 700; border: 1.5px solid #2ecc71; background: #fff;">
                                                 <i class="fas fa-table"></i> Web Excel
                                             </button>
-                                            <button class="mini-tool-btn" onclick="window.location.href='exceluploadcode.html'" style="color: #3498db; font-weight: 700; border: 1.5px solid #3498db; background: #fff;">
+                                            <button class="mini-tool-btn"
+                                                onclick="window.location.href='exceluploadcode.html'"
+                                                style="color: #3498db; font-weight: 700; border: 1.5px solid #3498db; background: #fff;">
                                                 <i class="fas fa-laptop-code"></i> Coding Matrix
                                             </button>
-                                            <input type="file" id="excelUploadBtn" style="display:none" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
+                                            <input type="file" id="excelUploadBtn" style="display:none"
+                                                accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
                                             <button class="mini-tool-btn" onclick="generateAIQuestion()"
-                                                style="color: var(--primary);"><i class="fas fa-robot"></i> AI Generate</button>
+                                                style="color: var(--primary);"><i class="fas fa-robot"></i> AI
+                                                Generate</button>
                                             <button class="mini-tool-btn" onclick="applyTemplate('coding')"><i
                                                     class="fas fa-code"></i> Coding Template</button>
                                         </div>
@@ -2154,8 +2222,10 @@
                                 <div style="display:flex; align-items:center; gap:12px;">
                                     <i class="fas fa-graduation-cap" style="color:#007bff; font-size: 1.2rem;"></i>
                                     <div>
-                                        <div style="font-weight:800; font-size:0.95rem; color: #101828;">Practice Test Mode</div>
-                                        <div style="font-size:0.75rem; color:#666; font-weight: 500;">Disable Kiosk mode and tab-switch alerts for this session</div>
+                                        <div style="font-weight:800; font-size:0.95rem; color: #101828;">Practice Test
+                                            Mode</div>
+                                        <div style="font-size:0.75rem; color:#666; font-weight: 500;">Disable Kiosk mode
+                                            and tab-switch alerts for this session</div>
                                     </div>
                                 </div>
                                 <input type="checkbox" id="isPracticeTest" style="width:22px; height:22px;">
@@ -2167,6 +2237,11 @@
                                 <label class="label">ENTRANCE PASSCODE</label>
                                 <input type="text" id="examPasscode" class="clean-input" placeholder="e.g. EXAM2024"
                                     style="font-family:'JetBrains Mono'; font-weight:700;">
+                                <label
+                                    style="display:flex; align-items:center; gap:8px; margin-top:10px; font-size:0.75rem; cursor:pointer;">
+                                    <input type="checkbox" id="strictPasscode" style="width:16px; height:16px;" checked>
+                                    <span style="color:#555; font-weight:600;">Strict Exact Match Required</span>
+                                </label>
                             </div>
                             <div class="input-group">
                                 <label class="label">MAX TAB SWITCHES</label>
@@ -2183,12 +2258,14 @@
                         <label class="sec-toggle"
                             style="display:flex; align-items:center; gap:12px; cursor:pointer; background:#fdf8f5; padding:12px; border-radius:8px; border:1px solid #ffe8dd; margin-top:10px;">
                             <input type="checkbox" id="showResults" checked style="width:18px; height:18px;">
-                            <span style="font-size:0.85rem; font-weight:600; color:#333;">Show Results/Answers to Student after Submission</span>
+                            <span style="font-size:0.85rem; font-weight:600; color:#333;">Show Results/Answers to
+                                Student after Submission</span>
                         </label>
                         <label class="sec-toggle"
                             style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(46, 204, 113, 0.05); padding:12px; border-radius:8px; border:1px solid #2ecc7133; margin-top:10px;">
                             <input type="checkbox" id="autoPublishResults" checked style="width:18px; height:18px;">
-                            <span style="font-size:0.85rem; font-weight:700; color:#27ae60;">Upload and Publish Marks after Test</span>
+                            <span style="font-size:0.85rem; font-weight:700; color:#27ae60;">Upload and Publish Marks
+                                after Test</span>
                         </label>
                     </div>
 
@@ -2377,13 +2454,16 @@
             </div>
 
             <!-- GLOBAL BULK UPLOAD -->
-            <button class="btn btn-ghost" onclick="document.getElementById('excelUploadGlobal').click()" style="width:100%; margin-bottom: 10px; border:1px solid #2ecc71; color:#2ecc71; background:rgba(46,204,113,0.05);">
+            <button class="btn btn-ghost" onclick="document.getElementById('excelUploadGlobal').click()"
+                style="width:100%; margin-bottom: 10px; border:1px solid #2ecc71; color:#2ecc71; background:rgba(46,204,113,0.05);">
                 <i class="fas fa-file-excel" style="margin-right:8px;"></i> Bulk Import (File)
             </button>
-            <button class="btn btn-ghost" onclick="window.location.href='excelupload.html'" style="width:100%; margin-bottom: 20px; border:1px solid #2ecc71; color:#2ecc71; background:white;">
+            <button class="btn btn-ghost" onclick="window.location.href='excelupload.html'"
+                style="width:100%; margin-bottom: 20px; border:1px solid #2ecc71; color:#2ecc71; background:white;">
                 <i class="fas fa-table" style="margin-right:8px;"></i> Web Excel Architect
             </button>
-            <input type="file" id="excelUploadGlobal" style="display:none" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
+            <input type="file" id="excelUploadGlobal" style="display:none" accept=".xlsx, .xls"
+                onchange="handleExcelUpload(event)">
 
             <div class="input-group" style="margin-bottom: 20px;">
                 <input type="text" id="sidebarSearch" class="clean-input" placeholder="Search Questions..."
@@ -2959,12 +3039,27 @@
                         if (document.getElementById('examTotalMarks')) document.getElementById('examTotalMarks').value = exams.totalMarks || 100;
                         if (document.getElementById('negativeMarking')) document.getElementById('negativeMarking').value = exams.negativeMarking || 0;
                         if (document.getElementById('scheduleDate')) document.getElementById('scheduleDate').value = exams.scheduledDate || '';
+                        if (document.getElementById('scheduleEndDate')) document.getElementById('scheduleEndDate').value = exams.scheduledEndDate || '';
+                        if (document.getElementById('isUniversalTime')) document.getElementById('isUniversalTime').checked = exams.isUniversalTime || false;
 
                         // Theme
                         if (exams.theme) {
                             if (document.getElementById('themePrimaryColor')) document.getElementById('themePrimaryColor').value = exams.theme.primaryColor || '#D96C33';
                             if (document.getElementById('themeFont')) document.getElementById('themeFont').value = exams.theme.font || 'Outfit';
                             if (document.getElementById('themeDarkMode')) document.getElementById('themeDarkMode').checked = exams.theme.darkMode || false;
+                        }
+
+                        if (document.getElementById('sectionLockEnabled')) document.getElementById('sectionLockEnabled').checked = exams.sectionLockEnabled || false;
+                        if (document.getElementById('isPracticeTest')) {
+                            document.getElementById('isPracticeTest').checked = exams.isPracticeTest || false;
+                        }
+
+                        if (exams.negativeMarking > 0) {
+                            if (document.getElementById('enableNegativeMarking')) document.getElementById('enableNegativeMarking').checked = true;
+                            if (document.getElementById('negativeMarking')) {
+                                document.getElementById('negativeMarking').disabled = false;
+                                document.getElementById('negativeMarking').value = exams.negativeMarking;
+                            }
                         }
 
                         updateSectionsList();
@@ -3002,6 +3097,8 @@
             document.getElementById('examTotalMarks').value = exams.totalMarks;
             document.getElementById('negativeMarking').value = exams.negativeMarking || 0;
             if (exams.scheduledDate) document.getElementById('scheduleDate').value = exams.scheduledDate;
+            if (exams.scheduledEndDate) document.getElementById('scheduleEndDate').value = exams.scheduledEndDate;
+            if (document.getElementById('isUniversalTime')) document.getElementById('isUniversalTime').checked = exams.isUniversalTime || false;
 
             // Security & Proctoring Persistence
             if (exams.security) {
@@ -3017,6 +3114,7 @@
                 if (document.getElementById('micEnabled')) document.getElementById('micEnabled').checked = exams.security.micEnabled;
                 if (document.getElementById('vpnBlocked')) document.getElementById('vpnBlocked').checked = exams.security.vpnBlocked;
                 if (document.getElementById('examPasscode')) document.getElementById('examPasscode').value = exams.security.passcode || '';
+                if (document.getElementById('strictPasscode')) document.getElementById('strictPasscode').checked = exams.security.strictPasscode !== false;
                 if (document.getElementById('entryDeadline')) document.getElementById('entryDeadline').value = exams.security.entryDeadline || '';
                 if (document.getElementById('maxTabSwitches')) document.getElementById('maxTabSwitches').value = exams.security.maxTabSwitches || 3;
                 if (document.getElementById('showResults')) document.getElementById('showResults').checked = exams.security.showResults !== false;
@@ -3048,7 +3146,7 @@
     function updateIdentityFieldsList() {
         const container = document.getElementById('identityFieldsList');
         if (!container) return;
-        
+
         if (!exams.identityFields || exams.identityFields.length === 0) {
             container.innerHTML = '<div style="text-align:center; padding:20px; color:#999; font-size:0.8rem; background:#fcfcfc; border:1px dashed #eee; border-radius:12px;">No identity verification questions defined.</div>';
             return;
@@ -3668,10 +3766,14 @@
         if (descEl) exams.description = descEl.value;
         if (durEl) exams.duration = parseInt(durEl.value) || 60;
         if (mkEl) exams.totalMarks = parseInt(mkEl.value) || 100;
-        if (negEl) exams.negativeMarking = parseInt(negEl.value) || 0;
+        if (negEl) exams.negativeMarking = parseFloat(negEl.value) || 0;
         const credEl = document.getElementById('examCredits');
         if (credEl) exams.credits = parseFloat(credEl.value) || 1;
         if (dateEl) exams.scheduledDate = dateEl.value;
+        const endDateEl = document.getElementById('scheduleEndDate');
+        if (endDateEl) exams.scheduledEndDate = endDateEl.value;
+        const universalTimeEl = document.getElementById('isUniversalTime');
+        if (universalTimeEl) exams.isUniversalTime = universalTimeEl.checked;
 
         // Security & Step 4 Fields
         const cp = document.getElementById('blockCopyPaste');
@@ -3686,7 +3788,8 @@
         const mts = document.getElementById('maxTabSwitches');
         const shr = document.getElementById('showResults');
         const mgr = document.getElementById('manualGrading');
-        const lks = document.getElementById('lockSections');
+        const lks = document.getElementById('sectionLockEnabled');
+        const prac = document.getElementById('isPracticeTest');
 
         exams.security = {
             desktopOnly: document.getElementById('desktopOnly') ? document.getElementById('desktopOnly').checked : false,
@@ -3698,8 +3801,9 @@
             micEnabled: mc ? mc.checked : false,
             vpnBlocked: vpn ? vpn.checked : false,
             lockSections: lks ? lks.checked : false,
-            isPracticeTest: document.getElementById('isPracticeTest') ? document.getElementById('isPracticeTest').checked : false,
+            isPracticeTest: prac ? prac.checked : false,
             passcode: psc ? psc.value : '',
+            strictPasscode: document.getElementById('strictPasscode') ? document.getElementById('strictPasscode').checked : true,
             entryDeadline: dln ? dln.value : null,
             maxTabSwitches: mts ? parseInt(mts.value) : 3,
             showResults: shr ? shr.checked : true,
@@ -3720,6 +3824,10 @@
             font: font ? font.value : 'Outfit',
             darkMode: dark ? dark.checked : false
         };
+
+        // Root level sync for easier access in engine
+        exams.sectionLockEnabled = lks ? lks.checked : false;
+        exams.isPracticeTest = prac ? prac.checked : false;
     }
 
     function autoSave() {
@@ -3983,7 +4091,7 @@
 
                     if (heading && qText && choice1 && choice2) {
                         const options = [choice1, choice2, choice3, choice4].filter(o => o !== null && o !== undefined && o !== '');
-                        
+
                         // Handle correct option mapping (text, letter A-D, or number 1-4)
                         let correctAnswer = correctChoice;
                         if (correctChoice !== null) {
@@ -4048,7 +4156,7 @@
             'Section',
             'Marks'
         ];
-        
+
         const html = `
             <div style="padding: 10px;">
                 <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Your spreadsheet should have these exact column headers in the first row:</p>
@@ -4066,7 +4174,7 @@
             desc: 'Follow this structure to ensure successful auto-population.',
             content: html,
             confirmText: 'I Understand',
-            onConfirm: () => {}
+            onConfirm: () => { }
         });
     }
 
@@ -4080,7 +4188,7 @@
         const worksheet = XLSX.utils.aoa_to_sheet(data);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "MCQ Template");
-        
+
         XLSX.writeFile(workbook, "Exampad_MCQ_Template.xlsx");
         showToast('Template downloaded!');
     }

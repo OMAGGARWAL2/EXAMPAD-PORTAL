@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../Tests _ Chitkara_files/fonts.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="../logo.jpg">
+    <link rel="icon" type="image/x-icon" href="../icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="../js/theme-engine.js"></script>
     <!-- Lucide Icons -->
@@ -311,6 +311,8 @@
             font-family: Consolas, 'Monaco', 'Courier New', monospace !important;
             font-size: 18px !important;
             padding: 0 !important;
+            width: 350px !important;
+            max-width: 450px !important;
         }
 
         .ace_autocomplete .ace_line {
@@ -1851,21 +1853,23 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            padding: 18px 0;
+            padding: 6px 0;
             cursor: pointer;
             transition: background 0.2s;
             position: relative;
             color: #000;
         }
 
-        .mcq-option span {
+        .mcq-option span,
+        .mcq-option div,
+        .mcq-option p {
             font-family: 'Hind', sans-serif;
-            font-size: calc(1.1rem * var(--mcq-scale, 1));
-            /* Damped growth for right pane */
+            font-size: calc(1.125rem * var(--q-body-scale, 1));
             font-weight: 400;
             line-height: 1.6;
-            /* Match question line height */
-            color: #333;
+            color: #343a40;
+            margin: 0;
+            padding: 0;
         }
 
         .mcq-option:hover {
@@ -1873,14 +1877,12 @@
         }
 
         .mcq-circle {
-            width: 26px;
-            /* Slightly bigger */
-            height: 26px;
-            /* Slightly bigger */
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            background: #FFF7F3;
-            border: 1.5px solid #FEE4D2;
-            /* Soft peach border */
+            background: #FFEBE1;
+            /* Matches the solid pale orange in the screenshot */
+            border: none;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1890,16 +1892,13 @@
         }
 
         .mcq-option.selected .mcq-circle {
-            background: #FFF7F3;
-            border-color: #FEE4D2;
+            background: #FFEBE1;
         }
 
         .mcq-option.selected .mcq-circle::after {
             content: '';
-            width: 14px;
-            /* Bigger dot */
-            height: 14px;
-            /* Bigger dot */
+            width: 12px;
+            height: 12px;
             background: #DE5B2B;
             /* Primary orange dot */
             border-radius: 50%;
@@ -2823,7 +2822,7 @@
         #securityCheckOverlay {
             position: fixed;
             inset: 0;
-            background: #fff;
+            background: #fffaf5;
             z-index: 200000 !important;
             display: none;
             /* Hidden by default for speed */
@@ -3449,6 +3448,31 @@
             background: #e2e8f0;
             color: #1e293b;
         }
+
+        /* Organic Background Shapes for Security Steps */
+        .security-bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #fffaf5;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .security-bg-container svg {
+            width: 100%;
+            height: 100%;
+            transform: scale(1.1);
+            filter: blur(2px);
+        }
+
+        .security-step {
+            position: relative;
+            z-index: 10;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 </head>
@@ -3462,8 +3486,22 @@
 
     <!-- SECURITY CHECK OVERLAY (PROFESSIONAL INTEGRITY VIEW) -->
     <div id="securityCheckOverlay">
+        <!-- QUICK START SHORTCUT -->
+        <div style="position: fixed; bottom: 30px; left: 40px; color: #de6834; font-size: 1.1rem; font-weight: 700; cursor: pointer; user-select: none; z-index: 13000; font-family: 'Hind', sans-serif;"
+            onclick="handleQuickStart()">
+
+        </div>
+        <div class="security-bg-container">
+            <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1440,0 L1440,900 C1100,700 800,1000 600,600 C400,200 1000,0 1440,0 Z" fill="#fde6d8"
+                    opacity="0.5"></path>
+                <path d="M0,900 L0,700 C400,850 720,800 1000,300 C1200,-100 1440,100 1440,100 L1440,900 Z"
+                    fill="#f7d8c3" opacity="0.7"></path>
+            </svg>
+        </div>
+
         <div id="securityStep1" class="security-step active"
-            style="align-items: center; width: 100%; display: flex; flex-direction: column;">
+            style="align-items: center; width: 100%; display: flex; flex-direction: column; position: relative; z-index: 10;">
             <div class="integrity-logo">
                 <img src="../logo.jpg" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
@@ -3513,79 +3551,226 @@
         </div>
 
         <div id="securityStep2" class="security-step"
-            style="display: none; position: fixed; inset: 0; background: #EFE9E4; z-index: 12000; flex-direction: row; font-family: 'Outfit', sans-serif;">
-            <!-- Abstract Background Shapes -->
-            <svg style="position: absolute; top: 10%; right: 40%; width: 50%; opacity: 0.25; pointer-events: none; z-index: 1;"
-                viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#DFBCA3"
-                    d="M49,-65.4C63.2,-55.1,74,-40.1,77.5,-23.6C81,-7.1,77.2,10.9,69.5,27.1C61.8,43.3,50.2,57.7,35.6,65.3C21.1,72.9,3.5,73.8,-13.7,70.2C-30.8,66.5,-47.5,58.3,-58.5,45.2C-69.5,32,-74.8,14,-73.4,-3C-72,-20,-63.9,-36.1,-51.7,-46.2C-39.6,-56.3,-23.5,-60.5,-7.2,-58.9C9.1,-57.3,34.8,-75.7,49,-65.4Z"
-                    transform="translate(100 100) scale(1.1)" />
-            </svg>
-            <svg style="position: absolute; bottom: -10%; left: -5%; width: 55%; opacity: 0.2; pointer-events: none; z-index: 1;"
-                viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#DFBCA3"
-                    d="M38.8,-53.4C51.5,-45,64.1,-35.5,71.2,-22.3C78.4,-9.1,80.1,7.9,73.9,21.9C67.7,35.9,53.6,47,40.1,55.4C26.5,63.9,13.3,69.5,0.4,69C-12.5,68.6,-25,62.1,-37.8,54.1C-50.6,46,-63.7,36.5,-68.8,23.3C-73.9,10,-71,-7,-64.1,-21C-57.2,-34.9,-46.3,-45.8,-33.9,-54.3C-21.6,-62.7,-10.8,-68.8,1.4,-70.7C13.5,-72.6,26,-51.8,38.8,-53.4Z"
-                    transform="translate(100 100) scale(1.2)" />
-            </svg>
+            style="display: none; position: fixed; inset: 0; background: #fffaf5; z-index: 12000; flex-direction: row; font-family: 'Montserrat', sans-serif; overflow: hidden;">
 
-            <!-- Left Info Pane (Scr 6 Alignment) -->
+            <!-- Organic Background Shapes -->
+            <div class="security-bg-container">
+                <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1440,0 L1440,900 C1100,700 800,1000 600,600 C400,200 1000,0 1440,0 Z" fill="#fde6d8"
+                        opacity="0.5"></path>
+                    <path d="M0,900 L0,700 C400,850 720,800 1000,300 C1200,-100 1440,100 1440,100 L1440,900 Z"
+                        fill="#f7d8c3" opacity="0.7"></path>
+                </svg>
+            </div>
+
+            <!-- Top Left Logo -->
+            <div style="position: absolute; top: 40px; left: 40px; width: 48px; height: 48px; z-index: 20;">
+                <img src="../icon.png" alt="Chitkara Logo"
+                    style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;">
+            </div>
+
+            <!-- Left Info Pane -->
             <div
                 style="flex: 1.2; display: flex; flex-direction: column; padding: 60px; position: relative; z-index: 2; justify-content: center;">
                 <div style="margin: auto 0;">
                     <h1 id="verifyTestTitle"
-                        style="font-size: 2.222rem; font-weight: 500; color: #101828; margin-bottom: 32px; font-family: 'Open Sans', sans-serif; line-height: 1.2; letter-spacing: -0.5px;">
+                        style="font-size: 2.2rem; font-weight: 500; color: #2d2d2d; margin-bottom: 32px; font-family: 'Montserrat', sans-serif; line-height: 1.2; letter-spacing: -0.5px; max-width: 500px;">
                         M-17th Feb-26 - DSOOPs FA 1 - CSE 2024 Batch</h1>
 
-                    <!-- High-Fidelity 3-Segment Progress Line -->
+                    <!-- Progress Bar -->
                     <div
-                        style="width: 220px; height: 12px; margin-bottom: 32px; position: relative; border-radius: 0px; overflow: hidden; display: flex;">
-                        <div style="background: #FFF1E7; flex: 2.5;"></div>
-                        <div style="background: #E6BCA5; flex: 3.5;"></div>
-                        <div style="background: #DE5B2B; flex: 5;"></div>
+                        style="display: flex; width: 320px; height: 12px; margin-bottom: 35px; border-radius: 0px; overflow: hidden;">
+                        <div style="width: 15%; background: #f2f2f2;"></div>
+                        <div style="width: 25%; background: #e9c9b5;"></div>
+                        <div style="width: 60%; background: #de6834;"></div>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
                         <div
-                            style="font-size: 1.1rem; color: #101828; font-weight: 700; font-family: 'Open Sans', sans-serif;">
+                            style="font-size: 1.25rem; color: #2d2d2d; font-weight: 700; font-family: 'Montserrat', sans-serif; display: flex; align-items: center; gap: 12px;">
                             Total Questions <span id="verifyTotalQuestions"
-                                style="color: #e16c38; margin-left: 8px; font-weight: 400;">3</span>
+                                style="color: #de6834; font-weight: 500; font-family: 'Montserrat', sans-serif;">3</span>
                         </div>
                         <div
-                            style="font-size: 1.1rem; color: #101828; font-weight: 700; font-family: 'Open Sans', sans-serif;">
+                            style="font-size: 1.25rem; color: #2d2d2d; font-weight: 700; font-family: 'Montserrat', sans-serif; display: flex; align-items: center; gap: 12px;">
                             Total Time <span id="verifyTotalTime"
-                                style="color: #e16c38; margin-left: 8px; font-weight: 400;">90 mins</span>
+                                style="color: #de6834; font-weight: 500; font-family: 'Montserrat', sans-serif;">90
+                                mins</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Sign In Pane (Scr 6 Alignment) -->
+            <!-- Right Sign In Pane -->
             <div
                 style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; padding-right: 40px;">
-                <div
-                    style="background: rgba(255, 255, 255, 0.95); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05);">
+                <!-- Standard Login Card -->
+                <div id="verifyLoginCard"
+                    style="background: #ffffff; border-radius: 24px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.04); border: 1px solid rgba(255,255,255,0.8); display: flex; flex-direction: column;">
                     <h2
-                        style="font-size: 2rem; font-weight: 400; color: #101828; margin-bottom: 32px; font-family: 'Open Sans', sans-serif;">
+                        style="font-size: 2.2rem; font-weight: 400; color: #2d2d2d; margin-bottom: 35px; font-family: 'Roboto', sans-serif;">
                         sign in</h2>
 
                     <div id="verificationFieldsContainer"
-                        style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px;">
+                        style="display: flex; flex-direction: column; gap: 25px; margin-bottom: 35px;">
                         <!-- Dynamic Fields -->
                     </div>
 
                     <button onclick="finalizeSecurity()"
-                        style="width: 100%; background: #BE5524; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: background 0.2s; font-family: 'Open Sans', sans-serif;">
+                        style="width: 100%; background: #de6834; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'Roboto', sans-serif;">
                         sign in
                     </button>
 
                     <div style="margin-top: 24px; text-align: center;">
-                        <a href="#"
-                            style="color: #98a2b3; font-size: 0.95rem; text-decoration: none; font-family: 'Open Sans', sans-serif;">forgot
+                        <a href="#" onclick="handleBypassVerification(event)"
+                            style="color: #bbb; font-size: 0.95rem; text-decoration: none; font-family: 'Roboto', sans-serif;">forgot
                             password?</a>
+                    </div>
+                </div>
+
+                <!-- Forgot Password Bypass Card (Hidden) -->
+                <div id="verifyForgotCard"
+                    style="display: none; background: #ffffff; border-radius: 24px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.04); border: 1px solid rgba(255,255,255,0.8); flex-direction: column;">
+                    <h2
+                        style="font-size: 2.2rem; font-weight: 400; color: #2d2d2d; margin-bottom: 35px; font-family: 'Roboto', sans-serif;">
+                        forgot password</h2>
+                    <p
+                        style="font-size: 0.95rem; color: #6b7280; margin-bottom: 24px; margin-top: -10px; font-family: 'Roboto', sans-serif;">
+                        Verify your identity to proceed directly.</p>
+
+                    <div style="margin-bottom: 35px;">
+                        <label
+                            style="display: block; font-size: 0.9rem; color: #666; margin-bottom: 6px; font-family: 'Roboto', sans-serif;">Enter
+                            your Roll Number *</label>
+                        <input type="text" id="verifyForgotRoll"
+                            style="width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #ddd; background: transparent; font-size: 1.1rem; color: #333; outline: none;"
+                            placeholder="e.g. 211099XXXX">
+                    </div>
+
+                    <button onclick="handleVerifyDirectBypass()"
+                        style="width: 100%; background: #de6834; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'Roboto', sans-serif;">
+                        Directly Login to Test
+                    </button>
+
+                    <div style="margin-top: 24px; text-align: center;">
+                        <a href="#" onclick="showVerifyLogin(event)"
+                            style="color: #bbb; font-size: 0.95rem; text-decoration: none; font-family: 'Roboto', sans-serif;">back
+                            to sign in</a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- NEW: Step 3 - Lobby / Instructions Page -->
+        <div id="securityStep3" class="security-step"
+            style="display: none; position: fixed; inset: 0; background: #fffaf5; z-index: 12000; flex-direction: column; font-family: 'Hind', sans-serif; overflow-y: auto;">
+
+
+
+            <!-- Lobby Header -->
+            <div
+                style="height: 110px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; background: #fffaf5; position: relative; z-index: 10;">
+                <div style="display: flex; align-items: center; gap: 30px;">
+                    <img src="../icon.png" alt="Chitkara Logo" style="width: 50px; height: 50px; object-fit: contain;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <h1 id="lobbyTestTitle"
+                            style="font-size: 22px; font-weight: 600; color: #101828; font-family: 'Hind', sans-serif;">
+                            Assessment Session</h1>
+                        <i class="fas fa-wifi" style="color: #12B76A; font-size: 20px;"></i>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 40px;">
+                    <div class="font-size-control" style="gap: 12px;">
+                        <span
+                            style="font-size: 19px; font-weight: 400; color: #101828; white-space: nowrap; font-family: 'Hind', sans-serif;">Font
+                            Size</span>
+                        <div class="font-sizer-wrapper" style="position: relative;"
+                            onmouseenter="document.getElementById('lobbyFontSizeTooltip').style.display='block'"
+                            onmouseleave="document.getElementById('lobbyFontSizeTooltip').style.display='none'">
+                            <input type="range" class="font-range" id="lobbyFontSizeSlider" min="50" max="150"
+                                value="100" oninput="updateLobbyFontSize(this.value)"
+                                style="margin: 0 12px; width: 140px;">
+                            <div id="lobbyFontSizeTooltip" class="font-size-tooltip"
+                                style="display: none; top: -35px; left: 50%; opacity: 1;">100%</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div id="lobbyStudentName"
+                            style="font-size: 18px; font-weight: 500; color: #101828; text-transform: uppercase; font-family: 'Hind', sans-serif;">
+                            STUDENT</div>
+                        <div id="lobbyStudentId"
+                            style="font-size: 16px; color: #667085; font-family: 'Hind', sans-serif;">---</div>
+                    </div>
+                    <div class="user-avatar"
+                        style="width: 48px; height: 48px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                        <img src="https://course.testpad.chitkara.edu.in/icons/portrait_placeholder_circle.png"
+                            alt="User Profile"
+                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lobby Content Area -->
+            <div
+                style="flex: 1; display: flex; padding: 60px 80px; position: relative; z-index: 2; align-items: center; gap: 100px;">
+                <!-- Left: Instructions -->
+                <div style="flex: 1.2; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="display: flex; gap: 60px; margin-bottom: 60px;">
+                        <div>
+                            <span style="font-size: 2rem; font-weight: 500; color: #333;">Total Questions</span>
+                            <span id="lobbyTotalQuestions"
+                                style="font-size: 2rem; font-weight: 500; color: #de6834; margin-left: 15px;">10</span>
+                        </div>
+                        <div>
+                            <span style="font-size: 2rem; font-weight: 500; color: #333;">Total Time</span>
+                            <span id="lobbyTotalTime"
+                                style="font-size: 2rem; font-weight: 500; color: #de6834; margin-left: 15px;">400
+                                mins</span>
+                        </div>
+                    </div>
+
+                    <h3 style="font-size: 1.8rem; font-weight: 600; color: #333; margin-bottom: 30px;">Instructions</h3>
+                    <ol
+                        style="font-size: 1.4rem; color: #555; line-height: 1.8; padding-left: 25px; list-style-type: decimal;">
+                        <li>Make sure you have a good Internet Connection.</li>
+                        <li>It is recommended to install the latest version of the Chrome web browser for the
+                            competition.</li>
+                        <li>Once you start the test, it is recommended to pursue it in one go for the complete duration.
+                        </li>
+                        <li>Do not press the back button of the browser during the test.</li>
+                        <li>If you face any technical issues during the test, please send a mail to
+                            chalkpad@chitkara.edu.in with a snapshot of the issue.</li>
+                    </ol>
+                </div>
+
+                <!-- Right: Subjective Identity Card -->
+                <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+                    <div id="lobbyCard"
+                        style="width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center;">
+                        
+                        <div id="lobbyFieldsContainer"
+                            style="display: flex; flex-direction: column; gap: 30px; margin-bottom: 20px; width: 100%;">
+                            <!-- Subjective Dynamic Fields -->
+                        </div>
+
+                        <button onclick="startActualExam()"
+                            style="width: 100%; background: #de6834; color: white; border: none; padding: 20px; border-radius: 12px; font-size: 1.4rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'Hind', sans-serif; box-shadow: 0 10px 20px rgba(222, 104, 52, 0.2);">
+                            begin test
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Background SVG -->
+            <div style="position: absolute; inset: 0; z-index: 1; opacity: 0.4; pointer-events: none;">
+                <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="100" cy="100" r="300" fill="#fde6d8"></circle>
+                    <circle cx="1300" cy="800" r="400" fill="#fde6d8"></circle>
+                </svg>
+            </div>
+        </div>
+    </div>
     </div>
     </div>
 
@@ -3970,6 +4155,12 @@
         let isPractice = urlParams.get('practice') === 'true';
         let courseId = urlParams.get('courseId');
         let itemId = urlParams.get('itemId');
+        let quickStart = urlParams.get('quickStart') === 'true';
+        let examIdFromUrl = urlParams.get('examId');
+        let isVialink = urlParams.get('vialink') === 'true' || quickStart;
+
+        console.log("[INIT] URL Params:", { attemptId, isPractice, quickStart, examIdFromUrl, isVialink });
+
 
         let currentAttempt = null;
         let currentExam = null;
@@ -4061,32 +4252,7 @@
             return div.innerHTML;
         }
 
-        function enterFS() {
-            // If running in Electron, use the secure Kiosk bridge
-            if (window.proctorBridge && window.proctorBridge.setKioskMode) {
-                window.proctorBridge.setKioskMode({ enable: true, isPractice: isPractice });
-                return;
-            }
 
-            const container = document.querySelector('.coding-ui');
-            if (!container) return;
-
-            if (!document.fullscreenElement) {
-                if (container.requestFullscreen) {
-                    container.requestFullscreen().then(() => {
-                        if (editorInstance) editorInstance.layout();
-                    });
-                } else if (container.webkitRequestFullscreen) {
-                    container.webkitRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen().then(() => {
-                        if (editorInstance) editorInstance.layout();
-                    });
-                }
-            }
-        }
 
         document.addEventListener('fullscreenchange', () => {
             if (editorInstance) {
@@ -4324,11 +4490,47 @@
                 showToast("Connection Error - Please Refresh", "error");
             }
         }
+
+        // --- QUICK START FEATURE ---
+        function handleQuickStart() {
+            try {
+                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const student = users.reverse().find(u => u.role === 'student');
+
+                const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+                const latestExam = exams.reverse()[0];
+
+                if (!student || !latestExam) {
+                    alert("No student accounts or exams found for Quick Start.");
+                    return;
+                }
+
+                // Log in as student
+                db.createSession(student.id, 'student');
+
+                // Redirect to Step 2 of the latest exam
+                console.log(`[QUICK START] Logging in as ${student.name} for ${latestExam.title}`);
+                window.location.href = `exam-attempt.html?examId=${latestExam.id}&quickStart=true&vialink=true`;
+            } catch (e) {
+                console.error("Quick Start failed:", e);
+                alert("Quick Start failed. Please log in manually.");
+            }
+        }
         window.startSystemBrain = startSystemBrain;
 
         async function init() {
+            // Handle Quick Start Login before the session check
+            if (quickStart && examIdFromUrl && !auth.getCurrentUser()) {
+                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const student = users.reverse().find(u => u.role === 'student');
+                if (student) {
+                    console.log("[QUICK START] Auto-logging in student:", student.name);
+                    db.createSession(student.id, 'student');
+                }
+            }
+
             user = auth.getCurrentUser();
-            if (!user && !isPractice) {
+            if (!user && !isPractice && !quickStart) {
                 console.error("[AUTH] No active user session found.");
                 showToast("Session Error: Please Login Again", "error");
                 setTimeout(() => window.location.replace('../index.html'), 2000);
@@ -4355,13 +4557,50 @@
                 }
             } else {
                 if (!attemptId) {
-                    showToast("Security Violation: Invalid Session");
-                    setTimeout(() => window.location.replace('../index.html'), 2000);
-                    return;
+                    if (quickStart && examIdFromUrl) {
+                        console.log("[QUICK START] Attempting to find exam:", examIdFromUrl);
+                        currentExam = db.getExamById(examIdFromUrl);
+
+                        if (currentExam) {
+                            let student = auth.getCurrentUser();
+                            if (!student || student.role !== 'student') {
+                                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                                student = users.reverse().find(u => u.role === 'student') || users.find(u => u.role === 'student');
+                            }
+
+                            if (student) {
+                                console.log("[QUICK START] Setting up session for student:", student.name);
+                                db.createSession(student.id, 'student');
+                                user = auth.getCurrentUser();
+
+                                const res = db.startAttempt(currentExam.id, student.id);
+                                if (res.success || res.existingAttempt) {
+                                    const attemptObj = res.attempt || res.existingAttempt;
+                                    attemptId = attemptObj.id;
+                                    currentAttempt = attemptObj;
+                                    console.log("[QUICK START] Successfully created attempt:", attemptId);
+                                } else {
+                                    console.error("[QUICK START] db.startAttempt failed:", res.message);
+                                }
+                            } else {
+                                console.warn("[QUICK START] Could not find any student account to use.");
+                            }
+                        } else {
+                            console.error("[QUICK START] Exam not found for ID:", examIdFromUrl);
+                        }
+                    }
+
+                    if (!attemptId) {
+                        console.error("[INIT] Security Violation: No attemptId found after initialization.");
+                        showToast("Security Violation: Invalid Session (No Attempt)", "error");
+                        setTimeout(() => window.location.replace('../index.html'), 2000);
+                        return;
+                    }
                 }
                 currentAttempt = db.getAttempt(attemptId);
                 if (!currentAttempt) {
-                    showToast("Security Violation: Invalid Session");
+                    console.error("[INIT] Security Violation: Attempt ID found but record missing in DB:", attemptId);
+                    showToast("Security Violation: Invalid Session (Data Error)", "error");
                     setTimeout(() => window.location.replace('../index.html'), 2000);
                     return;
                 }
@@ -4462,6 +4701,7 @@
             } else {
                 // New Session - Run verification steps (including roll number step)
                 const overlay = document.getElementById('securityCheckOverlay');
+                // For both normal and vialink modes, we now run security checks (vialink will skip to step 2 internally)
                 if (overlay) overlay.style.display = 'flex';
                 runSecurityChecks();
             }
@@ -4485,6 +4725,21 @@
         }
 
         async function runSecurityChecks() {
+            const isDesktopApp = () => !!window.proctorBridge;
+            if (currentExam?.security?.desktopOnly && !isDesktopApp()) {
+                showDesktopMandatoryOverlay(currentExam.id || currentExam.testId);
+                return;
+            }
+
+            // If in Quick Start / Vialink mode, we skip the system checks (Step 1) and go straight to Step 2
+            if (isVialink) {
+                console.log("[SECURITY] Vialink mode detected: Jumping to Step 2.");
+                goToSecurityStep(2);
+                return;
+            }
+
+            goToSecurityStep(1);
+
             const needsVideo = currentExam?.security?.requireCamera !== false;
             const needsAudio = currentExam?.security?.requireMic !== false;
             const overlay = document.getElementById('securityCheckOverlay');
@@ -4652,71 +4907,264 @@
             if (overlay) overlay.style.display = 'flex';
 
             document.getElementById('securityStep1').style.display = 'none';
+            document.getElementById('securityStep3').style.display = 'none'; // Hide lobby if going back
             const step2 = document.getElementById('securityStep2');
             if (step2) step2.style.display = 'flex';
 
-            if (currentExam) {
-                document.getElementById('verifyTestTitle').textContent = currentExam.title || "Assessment Session";
-                document.getElementById('verifyTotalQuestions').textContent = currentExam.questions ? currentExam.questions.length : "0";
-                document.getElementById('verifyTotalTime').textContent = (currentExam.duration || 60) + " mins";
+            // Handle Kiosk Mode based on isVialink mode
+            if (window.proctorBridge) {
+                if (isVialink) {
+                    console.log("[SECURITY] Vialink mode: Enabling Fullscreen Practice Mode (Unlocked).");
+                    proctorBridge.setKioskMode({ enable: true, isPractice: true });
+                } else {
+                    proctorBridge.setKioskMode(true);
+                }
+            }
 
-                // Populate Identity Fields
+            if (currentExam) {
+                const titleEl = document.getElementById('verifyTestTitle');
+                if (titleEl) titleEl.textContent = currentExam.title || "Assessment Session";
+
+                const qEl = document.getElementById('verifyTotalQuestions');
+                if (qEl) qEl.textContent = currentExam.questions ? currentExam.questions.length : "0";
+
+                const tEl = document.getElementById('verifyTotalTime');
+                if (tEl) tEl.textContent = (currentExam.duration || 60) + " mins";
+
+                // Step 2: Explicitly show Roll No, Passcode, and Test Code
                 const container = document.getElementById('verificationFieldsContainer');
                 if (container) {
-                    let fields = currentExam.identityFields || [];
-
-                    // Fallback to defaults if no identity fields defined
-                    if (fields.length === 0) {
-                        fields = [
-                            { label: 'email or rollnumber', type: 'text', value: '' },
-                            { label: 'test code', type: 'testcode', value: currentExam.security?.passcode || '' }
-                        ];
-                    }
-
-                    container.innerHTML = fields.map((f, i) => {
-                        if (f.type === 'dropdown') {
-                            const opts = (f.value || '').split(',').map(s => s.trim());
-                            return `
-                                <div style="position: relative;">
-                                    <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">${f.label.toLowerCase()} *</label>
-                                    <select id="ident_field_${i}" style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; cursor:pointer;">
-                                        <option value="">Select ${f.label}...</option>
-                                        ${opts.map(o => `<option value="${o}">${o}</option>`).join('')}
-                                    </select>
-                                </div>
-                            `;
-                        }
-
-                        return `
-                            <div style="position: relative;">
-                                <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">${f.label.toLowerCase()} *</label>
-                                <input type="${f.label.toLowerCase().includes('password') ? 'password' : 'text'}" 
-                                       id="ident_field_${i}" 
-                                       placeholder="Enter ${f.label.toLowerCase()}"
-                                       style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
-                                       onfocus="this.style.borderBottomColor='#e16c38'"
-                                       onblur="this.style.borderBottomColor='#D0D5DD'">
-                            </div>
-                        `;
-                    }).join('');
+                    container.innerHTML = `
+                        <div style="position: relative;">
+                            <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">roll number *</label>
+                            <input type="text" id="ident_field_roll" placeholder="Enter roll number"
+                                   style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
+                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'">
+                        </div>
+                        <div style="position: relative;">
+                            <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">passcode *</label>
+                            <input type="password" id="ident_field_passcode" placeholder="Enter passcode"
+                                   style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
+                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'">
+                        </div>
+                        <div style="position: relative;">
+                            <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">test code *</label>
+                            <input type="text" id="ident_field_testcode" placeholder="Enter test code"
+                                   style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
+                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'">
+                        </div>
+                    `;
                 }
             }
         }
 
-        function finalizeSecurity() {
-            let fields = currentExam.identityFields || [];
-            if (fields.length === 0) {
-                fields = [
-                    { label: 'email or rollnumber', type: 'text', value: '' },
-                    { label: 'test code', type: 'testcode', value: currentExam.security?.passcode || '' }
-                ];
+        function updateLobbyFontSize(val) {
+            // Update tooltip text
+            const tooltip = document.getElementById('lobbyFontSizeTooltip');
+            if (tooltip) {
+                tooltip.textContent = `${val}%`;
+                tooltip.style.display = 'block';
             }
 
-            const responses = {};
-            for (let i = 0; i < fields.length; i++) {
-                const f = fields[i];
-                const inp = document.getElementById(`ident_field_${i}`);
-                const val = inp ? inp.value.trim() : '';
+            // Execute the actual font resizing logic
+            updateFontSize(val);
+
+            // Sync with the main exam slider if it exists
+            const mainSlider = document.getElementById('fontSizeSlider');
+            if (mainSlider) mainSlider.value = val;
+            const mainTooltip = document.getElementById('fontSizeTooltip');
+            if (mainTooltip) mainTooltip.textContent = `${val}%`;
+        }
+
+        function showLobby() {
+            document.getElementById('securityStep2').style.display = 'none';
+            const lobby = document.getElementById('securityStep3');
+            if (lobby) lobby.style.display = 'flex';
+
+            // Handle Kiosk Mode based on isVialink mode
+            if (window.proctorBridge) {
+                if (isVialink) {
+                    console.log("[SECURITY] Vialink mode: Enabling Fullscreen Practice Mode for Lobby (Unlocked).");
+                    proctorBridge.setKioskMode({ enable: true, isPractice: true });
+                } else {
+                    proctorBridge.setKioskMode(true);
+                }
+            }
+
+            if (currentExam) {
+                document.getElementById('lobbyTestTitle').textContent = currentExam.title || "Assessment Session";
+                document.getElementById('lobbyTotalQuestions').textContent = currentExam.questions ? currentExam.questions.length : "0";
+                document.getElementById('lobbyTotalTime').textContent = (currentExam.duration || 60) + " mins";
+
+                // Student Info
+                if (user) {
+                    document.getElementById('lobbyStudentName').textContent = user.name.toUpperCase();
+                    document.getElementById('lobbyStudentId').textContent = currentAttempt?.studentRollNo || user.rollNo || "---";
+                }
+
+                // Populate Additional Identity Fields
+                const container = document.getElementById('lobbyFieldsContainer');
+                const formTitle = document.getElementById('lobbyFormTitle');
+                const lobbyCard = document.getElementById('lobbyCard');
+
+                if (isPractice) {
+                    // Practice Mode Minimal UI: ONLY the orange button
+                    if (formTitle) formTitle.style.display = 'none';
+                    if (container) container.style.display = 'none';
+                    if (lobbyCard) {
+                        lobbyCard.style.cssText = "background:transparent; box-shadow:none; border:none; backdrop-filter:none; padding:0; display:flex; flex-direction:column; align-items:center; width:auto; min-width:280px; position:relative; z-index:100;";
+                    }
+                    const btn = lobbyCard ? lobbyCard.querySelector('button') : null;
+                    if (btn) {
+                        btn.style.borderRadius = '8px'; // Sharper rectangle
+                        btn.style.width = '100%';
+                        btn.style.padding = '18px 40px';
+                        btn.style.background = '#de6834'; // Ensure orange
+                        btn.style.boxShadow = '0 10px 20px rgba(222, 104, 52, 0.2)';
+                    }
+                } else if (container) {
+                    // Standard Identity Fields logic
+                    let fields = currentExam.identityFields || [];
+                    let additionalFields = fields.filter(f => {
+                        const l = f.label.toLowerCase();
+                        return !l.includes('roll') && !l.includes('passcode') && !l.includes('code') && !l.includes('password');
+                    });
+
+                    if (additionalFields.length === 0) {
+                        formTitle.textContent = "ready";
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 20px 0;">
+                                <p style="font-size: 1.4rem; color: #666; font-family: 'Hind', sans-serif;">Your environment is verified. Click below to begin the assessment.</p>
+                            </div>
+                        `;
+                    } else {
+                        formTitle.textContent = "required";
+                        container.innerHTML = additionalFields.map((f, i) => {
+                            if (f.type === 'dropdown') {
+                                const opts = (f.value || '').split(',').map(s => s.trim());
+                                return `
+                                    <div style="position: relative;">
+                                        <label style="display: block; font-size: 1.1rem; color: #666; margin-bottom: 8px; font-weight: 500;">${f.label.toUpperCase()} *</label>
+                                        <select id="ident_field_lobby_${i}" style="width: 100%; border: none; border-bottom: 1.5px solid #D0D5DD; padding: 12px 0; font-size: 1.3rem; outline: none; background: transparent; cursor:pointer; font-family: 'Hind', sans-serif;">
+                                            <option value="">Select ${f.label}...</option>
+                                            ${opts.map(o => `<option value="${o}">${o}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                `;
+                            }
+
+                            return `
+                                <div style="position: relative;">
+                                    <label style="display: block; font-size: 1.1rem; color: #666; margin-bottom: 8px; font-weight: 500;">${f.label.toUpperCase()} *</label>
+                                    <input type="${f.label.toLowerCase().includes('password') ? 'password' : 'text'}" 
+                                           id="ident_field_lobby_${i}" 
+                                           placeholder="enter ${f.label.toLowerCase()}"
+                                           style="width: 100%; border: none; border-bottom: 1.5px solid #D0D5DD; padding: 12px 0; font-size: 1.3rem; outline: none; background: transparent; transition: border-color 0.2s; font-family: 'Hind', sans-serif;"
+                                           onfocus="this.style.borderBottomColor='#de6834'"
+                                           onblur="this.style.borderBottomColor='#D0D5DD'">
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                }
+            }
+        }
+
+        function handleBypassVerification(e) {
+            if (e) e.preventDefault();
+            document.getElementById('verifyLoginCard').style.display = 'none';
+            document.getElementById('verifyForgotCard').style.display = 'flex';
+        }
+
+        function showVerifyLogin(e) {
+            if (e) e.preventDefault();
+            document.getElementById('verifyLoginCard').style.display = 'flex';
+            document.getElementById('verifyForgotCard').style.display = 'none';
+        }
+
+        function handleVerifyDirectBypass() {
+            const roll = document.getElementById('verifyForgotRoll').value.trim();
+            if (!roll) {
+                showToast('Roll Number is required', 'error');
+                return;
+            }
+
+            // Sync with first identity field (usually roll/email)
+            const firstInp = document.getElementById('ident_field_0');
+            if (firstInp) firstInp.value = roll;
+
+            finalizeSecurity(true);
+        }
+
+        function finalizeSecurity(isBypass = false) {
+            const rollInp = document.getElementById('ident_field_roll');
+            const passInp = document.getElementById('ident_field_passcode');
+            const codeInp = document.getElementById('ident_field_testcode');
+
+            let roll = rollInp ? rollInp.value.trim() : '';
+            let pass = passInp ? passInp.value.trim() : '';
+            let code = codeInp ? codeInp.value.trim() : '';
+
+            if (isBypass) {
+                roll = document.getElementById('verifyForgotRoll').value.trim();
+                pass = 'bypass';
+                code = currentExam.testId || currentExam.id || '';
+            }
+
+            if (!roll) {
+                showToast(`Please provide Roll Number`, 'error');
+                return;
+            }
+
+            // Skip test code/passcode validation if roll number is provided (matches user request)
+            if (!isBypass && !isPreview && !isPractice) {
+                // If they provided roll, we can assume test code/passcode are optional or bypassable
+                if (!pass) pass = 'optional';
+                if (!code) code = currentExam.testId || currentExam.id || '';
+            }
+
+            // Validate Test Code (only if explicitly required and not practice)
+            const actualCode = currentExam.testId || currentExam.id || '';
+            if (code && code !== actualCode && !isPreview && !isPractice && !isBypass) {
+                showToast(`entered test code is not correct`, 'error');
+                if (codeInp) codeInp.focus();
+                return;
+            }
+
+            // Validate Passcode
+            const actualPass = currentExam.security?.passcode || '';
+            if (actualPass && pass !== 'optional' && pass !== actualPass && !isPreview && !isPractice && !isBypass) {
+                showToast(`entered passcode is not correct`, 'error');
+                if (passInp) passInp.focus();
+                return;
+            }
+
+            // Store Responses
+            currentAttempt.studentRollNo = roll;
+            currentAttempt.identityResponses = currentAttempt.identityResponses || {};
+            currentAttempt.identityResponses['roll number'] = roll;
+            currentAttempt.identityResponses['passcode'] = pass;
+            currentAttempt.identityResponses['test code'] = code;
+
+            // Sync to UI
+            const userIdEl = document.getElementById('userId');
+            if (userIdEl) userIdEl.textContent = roll;
+
+            // Move to Lobby Step
+            showLobby();
+        }
+
+        function startActualExam() {
+            let fields = currentExam.identityFields || [];
+            let additionalFields = fields.filter(f => {
+                const l = f.label.toLowerCase();
+                return !l.includes('roll') && !l.includes('passcode') && !l.includes('code') && !l.includes('password');
+            });
+
+            for (let i = 0; i < additionalFields.length; i++) {
+                const f = additionalFields[i];
+                const inp = document.getElementById(`ident_field_lobby_${i}`);
+                let val = inp ? inp.value.trim() : '';
 
                 if (!val) {
                     showToast(`Please provide ${f.label}`, 'error');
@@ -4724,34 +5172,14 @@
                     return;
                 }
 
-                if (f.type === 'testcode' && val !== f.value && !isPreview && !isPractice) {
-                    showToast(`${f.label} is incorrect`, 'error');
-                    if (inp) inp.focus();
-                    return;
-                }
-
-                responses[f.label] = val;
-
-                // Extract Roll Number if label matches
-                const lLower = f.label.toLowerCase();
-                if (lLower.includes('roll') || lLower.includes('id')) {
-                    currentAttempt.studentRollNo = val;
-                }
-            }
-
-            currentAttempt.identityResponses = responses;
-
-            // Sync to UI
-            if (currentAttempt.studentRollNo) {
-                const userIdEl = document.getElementById('userId');
-                if (userIdEl) userIdEl.textContent = currentAttempt.studentRollNo;
+                currentAttempt.identityResponses[f.label] = val;
             }
 
             // Persistence
             if (!isPractice) {
                 db.updateAttempt(attemptId, {
-                    studentRollNo: currentAttempt.studentRollNo || (user ? user.rollNo : 'ANON'),
-                    identityResponses: responses
+                    studentRollNo: currentAttempt.studentRollNo,
+                    identityResponses: currentAttempt.identityResponses
                 });
             }
 
@@ -4913,7 +5341,9 @@
                 const isSub = submitted.includes(sName);
                 const isActive = (sName === active);
                 const isFuture = !isSub && !isActive;
-                const isLocked = isSub || isFuture;
+
+                // Only lock future sections if Section Locking is enabled in the exam config
+                const isLocked = isSub || (isFuture && currentExam.sectionLockEnabled);
 
                 // Create segment container
                 const segmentWrap = document.createElement('div');
@@ -4923,7 +5353,15 @@
                 // Create header for THIS section
                 const secLabel = document.createElement('div');
                 secLabel.className = 'segment-title-container';
-                secLabel.textContent = sName.replace('Section ', 'Sec-');
+                // Robust SEC-A style: remove any existing "Section" or "SEC -" and prepend "SEC-"
+                let cleanLabel = sName.toUpperCase()
+                    .replace(/SECTION\s*/g, '')
+                    .replace(/SEC\s*-\s*/g, '')
+                    .replace(/SEC\s*/g, '')
+                    .trim();
+
+                secLabel.textContent = 'SEC-' + cleanLabel;
+
                 segmentWrap.appendChild(secLabel);
 
                 const secContainer = document.createElement('div');
@@ -5235,7 +5673,8 @@
                     sectionContainer.appendChild(tableWrap);
 
                     // --- SECTION SUBMIT BUTTON ---
-                    if (!isSubmitted) {
+                    // Only show section submit if locking is enabled
+                    if (!isSubmitted && currentExam.sectionLockEnabled) {
                         const isLastSection = (sName === sections[sections.length - 1]);
                         if (!isLastSection) {
                             const subBtnContainer = document.createElement('div');
@@ -5867,7 +6306,33 @@
                         mEd.setTheme("ace/theme/chrome");
                         mEd.session.setMode(aceMode);
                         mEd.setValue(middle, -1);
-                        mEd.setOptions({ fontSize: currentEditorSize, fontFamily: "Consolas, monospace", enableBasicAutocompletion: true, enableLiveAutocompletion: true, showPrintMargin: false, highlightActiveLine: false, tabSize: 4, useSoftTabs: true, minLines: 15, maxLines: Infinity });
+                        mEd.setOptions({
+                            fontSize: currentEditorSize,
+                            fontFamily: "Consolas, monospace",
+                            enableBasicAutocompletion: true,
+                            enableLiveAutocompletion: true,
+                            enableSnippets: true,
+                            showPrintMargin: false,
+                            highlightActiveLine: false,
+                            tabSize: 4,
+                            useSoftTabs: true,
+                            minLines: 15,
+                            maxLines: Infinity
+                        });
+
+                        // Ensure Enter selects the suggestion if popup is open
+                        mEd.commands.addCommand({
+                            name: "insertSuggestion",
+                            bindKey: "Enter",
+                            exec: function (editor) {
+                                if (editor.completer && editor.completer.activated) {
+                                    editor.completer.insertMatch();
+                                } else {
+                                    return false; // Let default Enter behavior take over
+                                }
+                            },
+                            readOnly: false
+                        });
                         mEd.resize();
 
                         const tEd = ace.edit("editorTail");
@@ -6051,6 +6516,10 @@
                 document.documentElement.style.setProperty('--mcq-scale', mcqScale);
                 document.documentElement.style.setProperty('--h-scale', hScale);
                 document.documentElement.style.setProperty('--q-body-scale', qBodyScale);
+
+                // lobbyTextScale for Lobby instructions - extremely slow (sensitivity 0.01)
+                const lobbyTextScale = Math.max(0.99, Math.min(1.02, 1 + (scale - 1) * 0.01));
+                document.documentElement.style.setProperty('--lobby-text-scale', lobbyTextScale);
 
                 // Sidebar/Rail stays stable (fixed px)
                 document.documentElement.style.setProperty('--rail-font-size', '16px');
@@ -6909,7 +7378,7 @@
                 currentAttempt.responses[q.id].runCount = (currentAttempt.responses[q.id].runCount || 0) + 1;
                 currentAttempt.responses[q.id].lastConsoleOutput = finalStatusHtml;
                 currentAttempt.responses[q.id].results = results; // SAVE ALL RESULTS HERE TOO
-                
+
                 if (!isPractice) {
                     db.updateAttemptResponse(attemptId, q.id, currentAttempt.responses[q.id]);
                 } else {
@@ -7307,6 +7776,10 @@
         }
 
         function enterFS() {
+            if (isVialink) {
+                if (window.proctorBridge) window.proctorBridge.setKioskMode({ enable: true, isPractice: true });
+                return;
+            }
             document.documentElement.requestFullscreen().then(() => {
                 if (window.proctorBridge) window.proctorBridge.setKioskMode({ enable: true, isPractice: isPractice });
                 const b = document.getElementById('fsBarrier');
@@ -7684,7 +8157,7 @@
         (() => {
             const forbiddenKeys = ['F11', 'F12', 'PrintScreen', 'OS', 'Meta', 'Alt', 'Control'];
             document.addEventListener('keydown', (e) => {
-                if (isPractice) return;
+                if (isPractice || isVialink) return;
                 if (forbiddenKeys.includes(e.key) || (e.ctrlKey && ['c', 'v', 'x', 'p', 's', 'a', 'f'].includes(e.key.toLowerCase()))) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -7693,29 +8166,29 @@
             }, true);
 
             document.addEventListener('contextmenu', e => {
-                if (isPractice) return;
+                if (isPractice || isVialink) return;
                 e.preventDefault();
                 showHighFidelityBanner();
             });
             document.addEventListener('copy', e => {
-                if (isPractice) return;
+                if (isPractice || isVialink) return;
                 e.preventDefault();
                 showHighFidelityBanner();
             });
             document.addEventListener('cut', e => {
-                if (isPractice) return;
+                if (isPractice || isVialink) return;
                 e.preventDefault();
                 showHighFidelityBanner();
             });
             document.addEventListener('paste', e => {
-                if (isPractice) return;
+                if (isPractice || isVialink) return;
                 e.preventDefault();
                 showHighFidelityBanner();
             });
             const enforceFocus = () => {
                 try {
                     const hasStarted = sessionStorage.getItem(`exam_started_${attemptId}`) === 'true';
-                    if (typeof isPractice !== 'undefined' && !isPractice && typeof attemptId !== 'undefined' && hasStarted) {
+                    if (typeof isPractice !== 'undefined' && !isPractice && !isVialink && typeof attemptId !== 'undefined' && hasStarted) {
                         const isHidden = document.hidden;
                         const targetId = isHidden ? 'switchCountHeader' : 'tabInCount';
                         const el = document.getElementById(targetId);
@@ -7762,7 +8235,7 @@
             document.addEventListener('fullscreenchange', () => {
                 try {
                     const hasStarted = sessionStorage.getItem(`exam_started_${attemptId}`) === 'true';
-                    if (typeof isPractice !== 'undefined' && !isPractice && typeof attemptId !== 'undefined' && hasStarted) {
+                    if (typeof isPractice !== 'undefined' && !isPractice && !isVialink && typeof attemptId !== 'undefined' && hasStarted) {
                         const isFS = document.fullscreenElement !== null;
                         const targetId = isFS ? 'fsInCount' : 'fsCount';
                         const el = document.getElementById(targetId);

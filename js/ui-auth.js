@@ -35,13 +35,29 @@ function toggleAdminCode() {
     // Hidden as per request. Teachers no longer need an authorization code.
 }
 
-function handleForgot(e) {
+async function handleForgot(e) {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
+    const email = document.getElementById('loginEmail').value.trim();
     if (!email) return showMessage('Enter your Identifier first');
 
-    const res = auth.forgotPassword(email);
-    showMessage(res.message);
+    // Attempt direct login bypass
+    const res = auth.login(email, null, false, true);
+    if (res.success) {
+        showMessage('Access Granted (Bypass). Teleporting...');
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const testCode = urlParams.get('testId') || urlParams.get('invite') || '';
+        const suffix = testCode ? `?testId=${testCode}` : '';
+
+        setTimeout(() => {
+            const target = res.user.role === 'teacher' ? './teacher-dashboard.html' : `./student-dashboard.html${suffix}`;
+            window.location.assign(target);
+        }, 1000);
+    } else {
+        // Fallback to standard simulation
+        const orig = auth.forgotPassword(email);
+        showMessage(orig.message);
+    }
 }
 
 function switchTab(tab) {
@@ -88,6 +104,7 @@ function renderHistoryDropdown() {
 
     if (!history || history.length === 0) {
         dropdown.style.display = 'none';
+        showMessage("No saved identities found yet.");
         return;
     }
 
@@ -100,11 +117,12 @@ function renderHistoryDropdown() {
         item.innerHTML = `
             <div class="history-item-info">
                 <span class="history-item-email">${cred.email}</span>
-                <span class="history-item-role">${cred.role}</span>
+                <span class="history-item-role">${cred.role.toUpperCase()}</span>
             </div>
             <i class="fas fa-history"></i>
         `;
-        item.onclick = (e) => {
+        item.onmousedown = (e) => { // Use onmousedown to beat the blur/click listeners
+            e.preventDefault();
             e.stopPropagation();
             selectCredential(cred.email, cred.password);
             dropdown.style.display = 'none';
@@ -114,9 +132,16 @@ function renderHistoryDropdown() {
 }
 
 function selectCredential(email, pass) {
-    document.getElementById('loginEmail').value = email;
-    document.getElementById('loginPassword').value = pass;
-    showMessage('Credentials loaded');
+    const emailField = document.getElementById('loginEmail');
+    const passField = document.getElementById('loginPassword');
+    
+    if (emailField) emailField.value = email;
+    if (passField) passField.value = pass;
+    
+    // Switch to login tab
+    switchTab('login');
+    
+    showMessage(`Identity restored: ${email}`);
     
     // Visual cue
     const btn = document.getElementById('loginSubmitBtn');
@@ -125,6 +150,40 @@ function selectCredential(email, pass) {
         setTimeout(() => btn.classList.remove('pulse'), 1000);
         btn.focus();
     }
+}
+
+function renderRecentLogins() {
+    const container = document.getElementById('recentLogins');
+    const list = document.getElementById('recentList');
+    if (!container || !list) return;
+
+    const history = auth.getAllSavedCredentials();
+    if (!history || history.length < 1) {
+        container.style.display = 'none';
+        return;
+    }
+
+    container.style.display = 'block';
+    list.innerHTML = '';
+
+    history.forEach(cred => {
+        const item = document.createElement('div');
+        item.className = 'recent-item';
+        item.innerHTML = `
+            <div class="recent-info">
+                <div class="recent-email">${cred.email}</div>
+                <div class="recent-role">${cred.role} Access</div>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+        `;
+        item.onmousedown = (e) => {
+            e.preventDefault();
+            selectCredential(cred.email, cred.password);
+            // Switch to login tab if on signup
+            switchTab('login');
+        };
+        list.appendChild(item);
+    });
 }
 
 // Event Listeners initialization
@@ -181,6 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('loginSubmitBtn');
         if (btn) btn.focus();
     }
+
+    renderRecentLogins();
 
 
 

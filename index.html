@@ -13,9 +13,9 @@
 
     <style>
         :root {
-            --primary: #e30613;
-            --primary-dark: #b0050e;
-            --primary-soft: #fff0f1;
+            --primary: #de6834;
+            --primary-dark: #cc5420;
+            --primary-soft: #fff4ea;
             --bg-site: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #0f172a;
@@ -188,7 +188,7 @@
             font-size: 0.875rem;
             font-weight: 600;
             margin-bottom: 2rem;
-            box-shadow: 0 0 0 1px rgba(227, 6, 19, 0.1);
+            box-shadow: 0 0 0 1px rgba(222, 104, 52, 0.1);
             animation: slideUpFade 0.8s ease-out;
         }
 
@@ -270,7 +270,7 @@
         .portal-card:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-xl);
-            border-color: rgba(227, 6, 19, 0.2);
+            border-color: rgba(222, 104, 52, 0.2);
         }
 
         .portal-card:hover::before {
@@ -619,8 +619,10 @@
                     <img src="logo.jpg" alt="Logo" width="24">
                     <span style="font-weight: 700; color: var(--text-main);">CHITKARA</span>
                 </div>
-                <div class="footer-copyright" style="margin-top: 12px;">
-                    &copy; 2026 Powered by OM AGGARWAL Architecture.<br>All rights reserved.
+                <div class="footer-copyright" style="margin-top: 12px; cursor: pointer; user-select: none;"
+                    id="quickStartTrigger" onclick="handleQuickStart()">
+                    &copy; 2026 <span style="text-decoration: none;">Powered by CHITKARA Architecture.</span><br>All
+                    rights reserved.
                 </div>
             </div>
             <div class="footer-links">
@@ -657,6 +659,37 @@
         // Initialize Lucide Icons
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
+        }
+
+        function handleQuickStart() {
+            try {
+                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const student = users.reverse().find(u => u.role === 'student');
+                if (!student) {
+                    alert("No student accounts found. Please log in manually.");
+                    return;
+                }
+
+                const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+                const attempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+                
+                // Find latest exam that is NOT submitted or reviewed
+                const latestExam = exams.reverse().find(e => {
+                    const hasFinished = attempts.some(a => a.examId === e.id && a.studentId === student.id && (a.status === 'submitted' || a.status === 'reviewed'));
+                    return !hasFinished;
+                });
+
+                if (!latestExam) {
+                    alert("All available exams have been completed or no exams found.");
+                    return;
+                }
+
+                if (window.db) db.createSession(student.id, 'student');
+                window.location.href = `./pages/exam-attempt.html?examId=${latestExam.id}&quickStart=true&vialink=true&auto=true`;
+            } catch (e) {
+                console.error("Quick Start failed:", e);
+                alert("Quick Start failed.");
+            }
         }
     </script>
 </body>

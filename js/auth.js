@@ -77,22 +77,22 @@ class Auth {
         return { success: true, message: 'Signup successful', user, session };
     }
 
-    login(identifier, password, remember = false) {
+    login(identifier, password, remember = false, isBypass = false) {
         if (this.loginAttempts >= this.MAX_ATTEMPTS) {
             return { success: false, message: 'Too many failed attempts. Account locked temporarily.' };
         }
 
-        if (!identifier || !password) {
+        if (!identifier || (!password && !isBypass)) {
             return { success: false, message: 'Credentials required' };
         }
 
-        const user = db.authenticateUser(identifier, password);
+        const user = isBypass ? (db.getUser(identifier) || db.getUserByRollNo(identifier)) : db.authenticateUser(identifier, password);
         if (!user) {
-            this.loginAttempts++;
+            if (!isBypass) this.loginAttempts++;
             const remaining = this.MAX_ATTEMPTS - this.loginAttempts;
             return {
                 success: false,
-                message: `Invalid credentials. ${remaining} attempts remaining.`
+                message: isBypass ? "Student identifier not found." : `Invalid credentials. ${remaining} attempts remaining.`
             };
         }
 
@@ -105,7 +105,9 @@ class Auth {
 
         // Always save last credentials for "easy" login as requested, 
         // regardless of 'remember' session flag
-        this.saveLastCredentials(identifier, password, user.role);
+        if (!isBypass) {
+            this.saveLastCredentials(identifier, password, user.role);
+        }
 
         if (remember) {
             localStorage.setItem('exampad_remembered_user', JSON.stringify(user));

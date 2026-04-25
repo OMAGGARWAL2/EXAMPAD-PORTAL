@@ -1,4 +1,4 @@
-﻿            overflow-y: auto;
+            overflow-y: auto;
             }
 
             body {
@@ -845,7 +845,7 @@
 
             /* MCQ Styling (Screenshot Match) */
             .mcq-option {
-                padding: 0.667rem 0;
+                padding: 6px 0;
                 border: none;
                 border-radius: 0;
                 display: flex;
@@ -857,11 +857,16 @@
                 color: #000;
             }
 
-            .mcq-option span {
-                font-family: 'Open Sans', sans-serif;
-                font-size: 1rem;
+            .mcq-option span,
+            .mcq-option div,
+            .mcq-option p {
+                font-family: 'Hind', sans-serif;
+                font-size: calc(1.125rem * var(--q-body-scale, 1));
                 font-weight: 400;
-                color: #333;
+                line-height: 1.6;
+                color: #343a40;
+                margin: 0;
+                padding: 0;
             }
 
             .mcq-option:hover {
@@ -871,7 +876,8 @@
             .mcq-circle {
                 width: 24px;
                 height: 24px;
-                background: #FFF2ED;
+                background: #FFEBE1; /* Matches the solid pale orange in the screenshot */
+                border: none;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
@@ -879,11 +885,15 @@
                 flex-shrink: 0;
                 transition: all 0.2s;
             }
+            
+            .mcq-option.selected .mcq-circle {
+                background: #FFEBE1;
+            }
 
             .mcq-option.selected .mcq-circle::after {
                 content: '';
-                width: 16px;
-                height: 16px;
+                width: 12px;
+                height: 12px;
                 background: var(--primary);
                 /* Solid orange dot */
                 border-radius: 50%;

@@ -1,0 +1,82 @@
+window.addEventListener("load", function() {
+
+  const scoreEditHistoryModal = document.getElementById("score-edit-history-modal");
+  const modalCloseButton = document.getElementById("close-score-edit-history-modal-button");
+  /** @type {HTMLTableSectionElement} */
+  const scoreEditHistoryTableBody = document.getElementById("score-edit-history-table-body");
+
+  modalCloseButton?.addEventListener("click", () => scoreEditHistoryModal.classList.remove("visible"));
+  window.addEventListener("click", event => {
+    if(event.target === scoreEditHistoryModal) {
+      scoreEditHistoryModal.classList.remove("visible");
+    }
+  });
+
+  async function openScoreEditHistoryModal(questionId, questionTitle) {
+    $("#scoreEditHistoryModalTitle").text(questionTitle);
+    toggleLoader(true);
+    try {
+      const url = new URL("/api/useranswer/updateScoreLog", window.location.origin);
+      url.searchParams.set("courseId", courseId);
+      url.searchParams.set("userId", currentStudentId);
+      url.searchParams.set("questionId", questionId);
+      const response = await fetch(url);
+      /** @type {{ error: string } | { createdAt: string; previousScore: number; updatedScore: number; createdBy: { displayname: string; email: string; _id: string } }[]} */
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      emptyTableBody();
+      fillTableBody(data);
+      toggleLoader(false);
+      scoreEditHistoryModal.classList.add("visible");
+    } catch (error) {
+      console.log(error);
+      toggleLoader(false);
+      toggleAlertMsgModal("Failed to load score edit history", 2);
+    }
+  }
+
+  this.openScoreEditHistoryModal = openScoreEditHistoryModal;
+
+  function createRow(...args) {
+    const row = scoreEditHistoryTableBody.insertRow();
+    for(const arg of args) {
+      row.insertCell().textContent = arg;
+    }
+  }
+
+  /** @param {{ createdAt: string; previousScore: number; updatedScore: number; createdBy: { displayname: string; email: string; _id: string } }[]} rows */
+  function fillTableBody(rows) {
+    for(const [ index, row ] of rows.entries()) {
+      const createdAt = formatTime(row.createdAt);
+      createRow(index + 1, row.previousScore, row.updatedScore, createdAt, row.createdBy.displayname);
+    }
+  }
+
+  function emptyTableBody() {
+    while(scoreEditHistoryTableBody.rows.length > 0) {
+      scoreEditHistoryTableBody.deleteRow(0);
+    }
+  }
+
+});
+
+function formatTime(timeString) {
+  let timeDate = new Date(timeString);
+  let hours = timeDate.getHours();
+  let minutes = timeDate.getMinutes();
+
+  let hr = hours<10 ? '0'+hours : hours;
+  let min = minutes < 10 ? '0'+minutes : minutes;
+
+  let date = timeDate.getDate();
+  if(date<10){
+    date = `0${timeDate.getDate()}`
+  }
+  let month = (timeDate.getMonth()+1);
+  if(month < 10){
+    month = `0${(timeDate.getMonth()+1)}`
+  }
+  return `${date}-${month}-${timeDate.getFullYear()} ${hr}:${min}`;
+}

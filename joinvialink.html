@@ -58,9 +58,6 @@
         .bg-wave svg {
             width: 100%;
             height: 100%;
-            fill: #fff5ed;
-            /* Light Orange Tint */
-            opacity: 0.8;
         }
 
         .main-container {
@@ -91,6 +88,45 @@
             max-width: 320px;
             height: auto;
             object-fit: contain;
+        }
+
+        .test-title {
+            font-size: 2.2rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            line-height: 1.3;
+            max-width: 500px;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            width: 100%;
+            max-width: 320px;
+            height: 10px;
+            margin-bottom: 35px;
+            border-radius: 0px;
+            overflow: hidden;
+            align-self: flex-start;
+        }
+
+        .progress-segment {
+            height: 100%;
+        }
+
+        .segment-1 {
+            width: 15%;
+            background: #de6834;
+        }
+
+        .segment-2 {
+            width: 25%;
+            background: #f2f2f2;
+        }
+
+        .segment-3 {
+            width: 60%;
+            background: #f2f2f2;
         }
 
         .input-wrapper {
@@ -204,17 +240,18 @@
 
 <body>
     <div class="bg-wave">
-        <svg viewBox="0 0 1440 800" preserveAspectRatio="none">
-            <!-- White Tide (Smooth and Flowing) -->
-            <path d="M0,750 C200,650 400,620 600,750 C800,880 1100,200 1440,150 L1440,800 L0,800 Z" fill="#fffaf5"
-                opacity="0.8"></path>
-            <!-- Lighter Primary Orange Wave (Smooth and Flowing) -->
-            <path d="M0,700 C250,850 500,850 700,500 C900,150 1200,100 1440,250 L1440,800 L0,800 Z" fill="#ffccaa"
-                opacity="0.3"></path>
+        <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,900 L0,700 C300,850 700,900 1000,400 C1200,100 1440,0 1440,0 L1440,900 Z" fill="#f7d8c3" opacity="0.7"></path>
+            <path d="M600,0 C800,400 1100,800 1440,400 L1440,0 Z" fill="#fde6d8" opacity="0.5"></path>
         </svg>
     </div>
 
     <div class="main-container">
+        <div class="progress-bar-container">
+            <div class="progress-segment segment-1"></div>
+            <div class="progress-segment segment-2"></div>
+            <div class="progress-segment segment-3"></div>
+        </div>
         <div class="logo-section" style="justify-content: center;">
             <img src="https://www.chitkara.edu.in/chitkara-university-logo.png" alt="Chitkara University"
                 class="official-logo">
@@ -233,8 +270,8 @@
     </div>
 
     <div class="footer">
-        <div class="footer-left">Powered by Chitkara</div>
-        <div class="footer-right">Version: 0.5.0</div>
+        <div class="footer-left" onclick="handleQuickStart()" style="cursor: pointer;">Powered by Chitkara</div>
+        <div class="footer-right">Version: 0.6.51</div>
     </div>
 
     <script>
@@ -261,7 +298,41 @@
                 }
             } catch (e) {
                 console.error("Redirection error:", e);
-                alert('Invalid link format.');
+                // Fallback to Quick Start for "random or anything"
+                handleQuickStart();
+            }
+        }
+
+        // --- QUICK START FEATURE ---
+        function handleQuickStart() {
+            try {
+                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const student = users.reverse().find(u => u.role === 'student');
+                if (!student) {
+                    alert("No student accounts found. Please log in manually.");
+                    return;
+                }
+
+                const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+                const attempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+                
+                // Find latest exam that is NOT submitted or reviewed
+                const latestExam = exams.reverse().find(e => {
+                    const hasFinished = attempts.some(a => a.examId === e.id && a.studentId === student.id && (a.status === 'submitted' || a.status === 'reviewed'));
+                    return !hasFinished;
+                });
+
+                if (!latestExam) {
+                    alert("All available exams have been completed or no exams found.");
+                    return;
+                }
+
+                // Redirect to exam-attempt with quickStart flag
+                console.log(`[QUICK START] Redirecting to ${latestExam.title}`);
+                window.location.href = `./pages/exam-attempt.html?examId=${latestExam.id}&quickStart=true&vialink=true`;
+            } catch (e) {
+                console.error("Quick Start failed:", e);
+                alert("Quick Start failed.");
             }
         }
 

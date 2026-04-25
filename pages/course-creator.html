@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Architect | EXAMPAD</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,23 +13,25 @@
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="https://api.learntechww.com/college_icon/logo1733989968823.jpg">
+    <link rel="icon" type="image/x-icon" href="../logo.jpg">
     <!-- Quill Rich Text -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <!-- Monaco Editor Resources -->
-    <link rel="stylesheet" data-name="vs/editor/editor.main"
-        href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/editor/editor.main.min.css">
+    <!-- Ace Editor Resources -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.0/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.0/ext-language_tools.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            --primary: #D96C33;
+            --primary: #DE6834;
             --primary-light: #FF8D4D;
-            --primary-soft: #fff5f0;
-            --bg-body: #ffffff;
-            --bg-sidebar: #f8f9fa;
-            --text-main: #202124;
-            --text-secondary: #5f6368;
-            --border: #e0e0e0;
+            --primary-soft: #FFEEE5;
+            --bg-body: #f8f9fa;
+            --bg-sidebar: #ffffff;
+            --text-main: #333333;
+            --text-secondary: #888888;
+            --border: #dedede;
             --radius: 12px;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -51,9 +53,9 @@
             overflow-x: hidden;
         }
 
-        /* Premium Header */
+        /* Official Premium Header */
         .site-header {
-            height: 64px;
+            height: 53px;
             background: #fff;
             border-bottom: 1px solid var(--border);
             display: flex;
@@ -63,6 +65,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .header-left {
@@ -82,11 +85,14 @@
             height: 32px;
         }
 
-        .rail-item .icon-svg {
+        .rail-item .icon-svg,
+        .rail-item i {
             filter: grayscale(1) opacity(0.6);
+            transition: var(--transition);
         }
 
-        .rail-item.active .icon-svg {
+        .rail-item.active .icon-svg,
+        .rail-item.active i {
             filter: none;
             opacity: 1;
         }
@@ -101,17 +107,15 @@
         .logo-sq {
             width: 36px;
             height: 36px;
-            background: #f04438;
-            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .logo-sq img {
-            width: 20px;
-            height: 20px;
-            filter: brightness(0) invert(1);
+            width: auto;
+            height: 30px;
+            object-fit: contain;
         }
 
         .brand-text {
@@ -179,8 +183,8 @@
         /* Layout Grid */
         .workspace {
             display: grid;
-            grid-template-columns: 80px 320px 1fr;
-            height: calc(100vh - 64px);
+            grid-template-columns: 60px 300px 1fr;
+            height: calc(100vh - 53px);
         }
 
         /* Context Rail (Far Left) */
@@ -738,12 +742,19 @@
 
         .editor-workspace:focus-within {
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.1);
+            box-shadow: 0 4px 12px rgba(222, 104, 52, 0.15);
         }
 
         .ql-editor {
-            min-height: 120px;
-            cursor: text;
+            min-height: 200px;
+            cursor: text !important;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+
+        .ql-container {
+            font-size: 1rem !important;
+            font-family: 'Inter', sans-serif !important;
         }
 
         .ql-editor p {
@@ -803,45 +814,234 @@
             }
         }
 
-        /* MCQ */
+        /* MCQ (Exam Creator Style Unified) */
         .mcq-option {
             display: grid;
-            grid-template-columns: 40px 1fr 40px;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 12px;
-            background: var(--bg-sidebar);
-            padding: 8px 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
+            grid-template-columns: 48px 1fr 40px;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid #eee;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
         }
 
         .opt-check {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #ccc;
+            width: 26px;
+            height: 26px;
+            border: 2px solid #ddd;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
+            margin-top: 6px;
+            position: relative;
         }
 
         .mcq-option.correct {
-            border-color: #12B76A;
-            background: #ECFDF3;
+            border-color: var(--primary);
+            background: var(--primary-soft);
         }
 
         .mcq-option.correct .opt-check {
-            background: #12B76A;
-            border-color: #12B76A;
+            background: var(--primary);
+            border-color: var(--primary);
         }
 
         .mcq-option.correct .opt-check::after {
-            content: '✓';
-            color: #fff;
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            display: block;
+        }
+
+        /* Dashbord Carousel & Selection */
+        .module-carousel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px 4px 30px;
+            margin-bottom: 40px;
+            scroll-behavior: smooth;
+        }
+
+        .module-carousel::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .module-carousel::-webkit-scrollbar-thumb {
+            background: #eee;
+            border-radius: 10px;
+        }
+
+        .dash-mod-card {
+            flex: 0 0 260px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .dash-mod-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .dash-mod-card.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 10px 25px rgba(217, 108, 51, 0.2);
+        }
+
+        .dash-mod-card.active .mod-dash-idx,
+        .dash-mod-card.active .mod-dash-title,
+        .dash-mod-card.active .mod-dash-stat,
+        .dash-mod-card.active .mod-dash-counts {
+            color: #fff !important;
+        }
+
+        .dash-mod-card.active .mod-dash-idx {
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .mod-dash-idx {
+            width: 32px;
+            height: 32px;
+            background: #f1f3f4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.8rem;
             font-weight: 800;
+            color: #5f6368;
+            margin-bottom: 20px;
+        }
+
+        .mod-dash-stat {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+
+        .mod-dash-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #202124;
+            display: block;
+        }
+
+        .mod-dash-counts {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: #888;
+            font-weight: 600;
+        }
+
+        /* Detailed Lesson List */
+        .detailed-lesson-list {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .dash-lesson-item {
+            display: grid;
+            grid-template-columns: 60px 80px 1fr 120px;
+            gap: 20px;
+            align-items: center;
+            padding: 20px 32px;
+            border-bottom: 1px solid #f8f9fa;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .dash-lesson-item:hover {
+            background: #fdfdfd;
+        }
+
+        .dl-idx {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #bdc1c6;
+        }
+
+        .dl-type {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #a0a0a0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dl-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #3c4043;
+        }
+
+        .dl-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .dash-lesson-item:hover .dl-actions {
+            opacity: 1;
+        }
+
+        .course-dash-header {
+            margin-bottom: 40px;
+        }
+
+        .dash-tabs {
+            display: flex;
+            gap: 40px;
+            border-bottom: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        .dash-tab {
+            padding: 12px 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #5f6368;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .dash-tab.active {
+            color: var(--primary);
+        }
+
+        .dash-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
         }
 
         /* Modal */
@@ -875,45 +1075,189 @@
             transform: translateY(0);
             opacity: 1;
         }
+
+        /* Fullscreen Editor Overlay */
+        #editorOverlay {
+            position: fixed;
+            inset: 0;
+            background: #1e1e1e;
+            z-index: 20000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .overlay-header {
+            padding: 12px 24px;
+            background: #252526;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        #monaco-container {
+            flex: 1;
+        }
+
+        .code-workspace-block {
+            margin-top: 24px;
+            padding: 20px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 12px;
+        }
+
+        .workspace-lang-title {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #101828;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .workspace-lang-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .code-sub-container {
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .code-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background: #f6f8fa;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .code-label-main {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #57606a;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .code-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-fullscreen-toggle {
+            background: transparent;
+            border: 1px solid #d0d7de;
+            color: #0969da;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-fullscreen-toggle:hover {
+            background: #f3f4f6;
+        }
+
+        /* ACE Editor overrides matching exam-attempt */
+        .ace_editor {
+            font-family: Consolas, 'Monaco', 'Courier New', monospace !important;
+            font-size: 16px !important;
+            line-height: 1.4 !important;
+        }
+
+        .ace_gutter {
+            background: #f5f5f5 !important;
+            color: #444 !important;
+            border-right: 1px solid #e1e1e1 !important;
+            width: 48px !important;
+        }
+
+        .ace_scroller {
+            left: auto;
+        }
+
+        .ace_content {
+            background: #fff !important;
+        }
+
+        .ace_active-line {
+            background: transparent !important;
+        }
+
+        .ace_gutter-active-line {
+            background: transparent !important;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Fullscreen Monaco Editor Overlay -->
+    <div id="editorOverlay">
+        <div class="overlay-header">
+            <h3 id="overlayTitle" style="color: #fff; font-family: 'Outfit', sans-serif; margin: 0;">CODE WORKSPACE</h3>
+            <button class="btn btn-ghost" onclick="closeEditorOverlay()"
+                style="color: #fff; border-color: #555;">CLOSE</button>
+        </div>
+        <div id="monaco-container"></div>
+    </div>
     <header class="site-header">
         <div class="header-left">
             <div class="logo-box" onclick="location.href='./teacher-dashboard.html'">
                 <div class="logo-sq">
-                    <img src="https://course.testpad.chitkara.edu.in/icons/menu-active.svg" alt="Menu">
+                    <img src="../TESTPAD_WEBSITE__files/chitkara.png" alt="Chitkara">
                 </div>
                 <div class="brand-text">EXAMPAD <span class="brand-sub">COURSE ARCHITECT</span></div>
             </div>
             <nav class="nav-tabs" style="display:flex; gap:32px; height:64px; margin-left:40px;">
-                <div class="nav-tab active" style="height:64px; display:flex; align-items:center; font-weight:700; color:var(--primary); border-bottom:3px solid var(--primary); cursor:pointer;">Creator</div>
-                <div class="nav-tab" onclick="location.href='./teacher-dashboard.html'" style="height:64px; display:flex; align-items:center; font-weight:600; color:var(--text-secondary); cursor:pointer;">Dashboard</div>
+                <div class="nav-tab active"
+                    style="height:64px; display:flex; align-items:center; font-weight:700; color:var(--primary); border-bottom:3px solid var(--primary); cursor:pointer;">
+                    Creator</div>
+                <div class="nav-tab" onclick="location.href='./teacher-dashboard.html'"
+                    style="height:64px; display:flex; align-items:center; font-weight:600; color:var(--text-secondary); cursor:pointer;">
+                    Dashboard</div>
             </nav>
         </div>
         <div class="header-right">
             <div class="btn btn-ghost" onclick="saveDraft()"><i class="far fa-save"></i> Save Draft</div>
-            <button class="btn btn-primary" onclick="publishCourse()"><i class="fas fa-rocket"></i> Publish Course</button>
+            <button class="btn btn-primary" onclick="publishCourse()"><i class="fas fa-rocket"></i> Publish
+                Course</button>
             <div style="width:1px; height:24px; background:var(--border); margin:0 8px;"></div>
-            <div class="avatar-circle" style="width:36px; height:36px; border-radius:50%; background:#E0E4EC; color:#555; display:flex; align-items:center; justify-content:center; font-weight:700;">A</div>
+            <div class="avatar-circle"
+                style="width:36px; height:36px; border-radius:50%; background:#E0E4EC; color:#555; display:flex; align-items:center; justify-content:center; font-weight:700;">
+                A</div>
         </div>
     </header>
 
     <main class="workspace">
         <aside class="context-rail">
-            <div class="rail-item active" title="Curriculum Builder">
-                <img src="https://course.testpad.chitkara.edu.in/icons/folder-2.svg" class="icon-svg">
+            <div class="rail-item active" title="Curriculum Builder" onclick="switchSidebar('curriculum', this)">
+                <img src="https://course.testpad.chitkara.edu.in/icons/folder-2.svg" class="icon-svg"
+                    style="width: 24px; height: 24px;">
             </div>
-            <div class="rail-item" title="Interactive Quizzes">
-                <img src="https://course.testpad.chitkara.edu.in/icons/quiz.svg" class="icon-svg" style="filter:grayscale(1) opacity(0.5);">
+            <div class="rail-item" title="Question Pool & Resources" onclick="switchSidebar('pool', this)">
+                <img src="https://course.testpad.chitkara.edu.in/icons/quiz.svg" class="icon-svg"
+                    style="width: 24px; height: 24px;">
             </div>
-            <div class="rail-item" title="Course Analytics">
-                <img src="https://course.testpad.chitkara.edu.in/icons/statistics-active.svg" class="icon-svg" style="filter:grayscale(1) opacity(0.5);">
+            <div class="rail-item" title="Live Course Analytics" onclick="switchSidebar('analytics', this)">
+                <img src="https://course.testpad.chitkara.edu.in/icons/statistics-active.svg" class="icon-svg"
+                    style="width: 24px; height: 24px;">
             </div>
         </aside>
 
-        <aside class="sidebar">
+        <aside class="sidebar" id="viewCurriculumSidebar">
             <div class="sidebar-header">
                 <h3>Curriculum</h3>
                 <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 0.75rem;" onclick="addNewModule()">+
@@ -922,7 +1266,7 @@
             <div class="module-list" id="curriculumList"></div>
         </aside>
 
-        <section class="editor-container">
+        <section class="editor-container" id="viewCurriculumContent">
             <div class="editor-content" id="mainEditorArea">
                 <!-- Welcome State -->
                 <div id="welcomeState">
@@ -931,31 +1275,54 @@
                         <div class="tl-2"></div>
                         <div class="tl-3"></div>
                     </div>
-                    <h1 style="font-family: 'Outfit'; font-size: 2.5rem; font-weight: 800; margin-bottom: 8px;">Course
-                        Master Plan</h1>
-                    <p style="color: var(--text-secondary); margin-bottom: 40px;">Design your professional learning
-                        journey.</p>
+                    <div class="course-dash-header">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <span id="dashCourseCode"
+                                    style="font-size: 0.85rem; color: var(--primary); font-weight: 800; letter-spacing: 1px;">COURSE
+                                    ARCHITECT</span>
+                                <h1 id="dashCourseTitle"
+                                    style="font-family: 'Outfit'; font-size: 2rem; font-weight: 800; margin-top: 4px; color: #202124;">
+                                    Course Dashboard</h1>
+                            </div>
+                            <button class="btn" onclick="editCourseIdentity()"
+                                style="border-radius:30px; padding: 0 20px; font-size:0.75rem;"><i
+                                    class="fas fa-pen"></i> EDIT IDENTITY</button>
+                        </div>
 
-                    <div class="field-group">
-                        <label class="field-label">Course Brand Title</label>
-                        <input type="text" class="premium-input" id="courseTitle"
-                            placeholder="e.g. Advanced System Design Masterclass">
+                        <div class="dash-tabs">
+                            <div class="dash-tab active">Learning Content</div>
+                            <div class="dash-tab">Assignments</div>
+                            <div class="dash-tab">Attempts</div>
+                            <div class="dash-tab">Digital Library</div>
+                        </div>
                     </div>
 
-                    <div class="field-group">
-                        <label class="field-label">Executive Summary</label>
-                        <textarea class="standard-input" id="courseSummary" rows="4"
-                            placeholder="Briefly describe the professional impact..."></textarea>
+                    <div id="moduleCarousel" class="module-carousel">
+                        <!-- Module cards dynamically here -->
                     </div>
 
-                    <div class="field-group">
-                        <label class="field-label">Primary Category</label>
-                        <select class="standard-input" id="courseCategory">
-                            <option>Engineering & Technology</option>
-                            <option>Data Science & AI</option>
-                            <option>Management & Business</option>
-                            <option>Creative Arts & Design</option>
-                        </select>
+                    <div id="moduleDetailedView" style="display: none;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h3 id="selectedModName"
+                                style="font-family: 'Outfit'; font-size: 1.2rem; font-weight: 700; color: #3c4043;">
+                                Module Lessons</h3>
+                            <button class="btn btn-primary" onclick="startNewLesson(currentModuleIndex)"><i
+                                    class="fas fa-plus"></i> Add Intellectual Content</button>
+                        </div>
+                        <div id="dashLessonList" class="detailed-lesson-list">
+                            <!-- Detailed lessons here -->
+                        </div>
+                    </div>
+
+                    <div id="dashEmptyState"
+                        style="text-align: center; padding: 100px 40px; background: #fff; border-radius: 20px; border: 1px dashed #eee;">
+                        <img src="https://course.testpad.chitkara.edu.in/icons/course.svg"
+                            style="width: 80px; opacity: 0.2; margin-bottom: 20px;">
+                        <h2 style="font-family: 'Outfit'; color: #bdc1c6;">Select a module to architect</h2>
+                        <p style="color: #ccc; font-size: 0.9rem; margin-top: 8px;">Click on a module card above to
+                            manage lessons and assessments.</p>
                     </div>
                 </div>
 
@@ -977,6 +1344,8 @@
                         </div>
                         <div style="display: flex; gap: 12px;">
                             <button class="btn" onclick="goBackToOverview()"><i class="fas fa-times"></i></button>
+                            <button class="btn btn-ghost" onclick="saveLessonDraft()"><i class="far fa-save"></i> SAVE
+                                DRAFT</button>
                             <button class="btn btn-primary" onclick="saveCurrentLesson()"><i class="fas fa-check"></i>
                                 BUILD CONTENT</button>
                         </div>
@@ -1011,8 +1380,75 @@
                                     class="fas fa-tasks"></i><span>Interactive Quiz</span></div>
                         </div>
                     </div>
-
                     <div id="formContainer" style="margin-top: 40px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUESTION POOL VIEW -->
+        <section id="viewPool"
+            style="display: none; grid-column: 2 / -1; padding: 40px; overflow-y: auto; background: #fafafa; border-radius: 20px 0 0 0; border: 1px solid var(--border); border-right: none; border-bottom: none;">
+            <h2 style="font-family: 'Outfit'; font-size: 2.5rem; font-weight: 800; margin-bottom: 24px;">Question Pool
+                Memory</h2>
+            <div
+                style="background: #fff; padding: 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px;">
+                <input type="text" class="standard-input" placeholder="Search pool memory..."
+                    style="max-width: 400px; padding: 12px;">
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <th
+                                    style="padding: 16px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">
+                                    ID</th>
+                                <th
+                                    style="padding: 16px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">
+                                    Type</th>
+                                <th
+                                    style="padding: 16px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">
+                                    Contents</th>
+                                <th
+                                    style="padding: 16px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">
+                                    Marks</th>
+                                <th
+                                    style="padding: 16px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">
+                                    Ref</th>
+                            </tr>
+                        </thead>
+                        <tbody id="poolTableBody">
+                            <tr>
+                                <td colspan="5" style="padding: 24px; text-align: center; color: #888;">Loading pool
+                                    network...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALYTICS VIEW -->
+        <section id="viewAnalytics"
+            style="display: none; grid-column: 2 / -1; padding: 40px; overflow-y: auto; background: #fafafa; border-radius: 20px 0 0 0; border: 1px solid var(--border); border-right: none; border-bottom: none;">
+            <h2 style="font-family: 'Outfit'; font-size: 2.5rem; font-weight: 800; margin-bottom: 8px;">Live Course
+                Analytics</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 32px;">Real-time insights and student telemetry data.
+            </p>
+
+            <div id="analyticsChartsGrid"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                <div
+                    style="background: #fff; padding: 32px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center;">
+                    <h3
+                        style="font-family: 'Outfit'; font-size: 1.2rem; margin-bottom: 24px; color: var(--text-main); font-weight: 700; width: 100%;">
+                        Student Completion Progress</h3>
+                    <div style="width: 100%; max-width: 320px;"><canvas id="completionPieChart"></canvas></div>
+                </div>
+                <div
+                    style="background: #fff; padding: 32px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center;">
+                    <h3
+                        style="font-family: 'Outfit'; font-size: 1.2rem; margin-bottom: 24px; color: var(--text-main); font-weight: 700; width: 100%;">
+                        Module Engagement Reports</h3>
+                    <div style="width: 100%;"><canvas id="performanceBarChart"></canvas></div>
                 </div>
             </div>
         </section>
@@ -1024,17 +1460,17 @@
             <p id="modalDesc" style="color: var(--text-secondary); margin-bottom: 24px; font-size: 0.9rem;">Description.
             </p>
             <div id="modalBody"></div>
-            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
-                <button class="btn btn-primary" onclick="publishCourse()">Publish Course</button>
-                <button class="btn btn-ghost" style="border:1px solid #ddd;" onclick="saveDraft()">Save Draft</button>
-                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+            <div id="modalFooter" class="modal-footer"
+                style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
+                <button id="modalConfirmBtn" class="btn btn-primary" style="display:none;">Confirm</button>
+                <button id="modalCancelBtn" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
             </div>
         </div>
     </div>
 
     <div id="toast-container"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <div id="toast-container"></div>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="../js/db.js"></script>
     <script src="../js/auth.js"></script>
@@ -1043,21 +1479,43 @@
         let currentModuleIndex = -1;
         let currentLessonType = '';
         let quillEditor = null;
-        let monacoEditors = {};
+        let inlineAceEditors = {};
+        let editingId = null;
 
         window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('id');
+
+            if (courseId) {
+                const course = db.getCourseById(courseId);
+                if (course) {
+                    editingId = courseId;
+                    courseData = course;
+                    renderCurriculum();
+                    return;
+                }
+            }
+
             const saved = localStorage.getItem('current_editing_course');
             if (saved) {
-                courseData = JSON.parse(saved);
-                document.getElementById('courseTitle').value = courseData.title;
-                document.getElementById('courseSummary').value = courseData.summary;
-                document.getElementById('courseCategory').value = courseData.category;
-                renderCurriculum();
+                try {
+                    courseData = JSON.parse(saved);
+                    editingId = courseData.id || null;
+                    renderCurriculum();
+                } catch (e) {
+                    console.error("Error parsing saved course", e);
+                    localStorage.removeItem('current_editing_course');
+                    loadDefaultCourse();
+                }
             } else {
-                courseData.modules.push({ title: 'Introduction', lessons: [] });
-                renderCurriculum();
+                loadDefaultCourse();
             }
         };
+
+        function loadDefaultCourse() {
+            courseData = { title: 'Untitled Course', summary: '', category: 'Engineering & Technology', modules: [{ title: 'Introduction', lessons: [] }] };
+            renderCurriculum();
+        }
 
         function initMonaco() {
             if (window.monacoLoaded) return;
@@ -1072,12 +1530,20 @@
 
         function renderCurriculum() {
             const list = document.getElementById('curriculumList');
+            const carousel = document.getElementById('moduleCarousel');
+            const lessonList = document.getElementById('dashLessonList');
+
             list.innerHTML = '';
+            carousel.innerHTML = '';
+
+            document.getElementById('dashCourseTitle').innerText = courseData.title || 'Untitled Course';
+
             courseData.modules.forEach((mod, mIdx) => {
+                // Sidebar List
                 const card = document.createElement('div');
                 card.className = `module-card ${currentModuleIndex === mIdx ? 'active' : ''}`;
                 card.innerHTML = `
-                    <div class="module-head" onclick="toggleModule(${mIdx})">
+                    <div class="module-head" onclick="selectModule(${mIdx})">
                         <div class="module-info">
                             <div class="module-index">${mIdx + 1}</div>
                             <span class="module-title">${mod.title}</span>
@@ -1089,23 +1555,62 @@
                             <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: #ccc;"></i>
                         </div>
                     </div>
-                    <div class="lesson-list" style="display: ${currentModuleIndex === mIdx ? 'block' : 'none'}">
-                        ${mod.lessons.map((less, lIdx) => `
-                            <div class="lesson-item" onclick="editLesson(${mIdx}, ${lIdx})">
-                                ${getIcon(less.type)}
-                                <span>${less.title}</span>
-                                <div class="delete-action" title="Delete Lesson" onclick="event.stopPropagation(); deleteLesson(${mIdx}, ${lIdx})">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                            </div>
-                        `).join('')}
-                        <div class="lesson-item" style="color: var(--primary); font-weight: 600;" onclick="startNewLesson(${mIdx})">
-                            <i class="fas fa-plus"></i><span>Add Content</span>
-                        </div>
-                    </div>
                 `;
                 list.appendChild(card);
+
+                // Dashboard Carousel Card
+                const dashCard = document.createElement('div');
+                dashCard.className = `dash-mod-card ${currentModuleIndex === mIdx ? 'active' : ''}`;
+                dashCard.onclick = () => selectModule(mIdx);
+
+                const artCount = (mod.lessons || []).filter(l => l.type === 'reading' || l.type === 'video').length;
+                const qCount = (mod.lessons || []).filter(l => !['reading', 'video'].includes(l.type)).length;
+
+                dashCard.innerHTML = `
+                    <div class="mod-dash-idx">${mIdx + 1}</div>
+                    <div class="mod-dash-stat">ACTIVE</div>
+                    <span class="mod-dash-title">${mod.title}</span>
+                    <div class="mod-dash-counts">
+                        <div style="display:flex; align-items:center; gap:6px;"><i class="far fa-file-alt"></i> ${artCount}</div>
+                        <div style="display:flex; align-items:center; gap:6px;"><i class="far fa-question-circle"></i> ${qCount}</div>
+                    </div>
+                `;
+                carousel.appendChild(dashCard);
             });
+
+            // If a module is selected, render its detailed lessons
+            if (currentModuleIndex !== -1) {
+                document.getElementById('moduleDetailedView').style.display = 'block';
+                document.getElementById('dashEmptyState').style.display = 'none';
+                const mod = courseData.modules[currentModuleIndex];
+                document.getElementById('selectedModName').innerText = mod.title;
+
+                lessonList.innerHTML = mod.lessons.map((less, lIdx) => `
+                    <div class="dash-lesson-item" onclick="editLesson(${currentModuleIndex}, ${lIdx})">
+                        <span class="dl-idx">${lIdx + 1}</span>
+                        <span class="dl-type">${less.type}</span>
+                        <span class="dl-title">${less.title}</span>
+                        <div class="dl-actions">
+                            <button class="btn-fullscreen-toggle" style="background:transparent; border:none;" onclick="event.stopPropagation(); deleteLesson(${currentModuleIndex}, ${lIdx})"><i class="fas fa-trash-alt"></i></button>
+                            <i class="fas fa-chevron-right" style="color:#eee"></i>
+                        </div>
+                    </div>
+                `).join('');
+
+                if (mod.lessons.length === 0) {
+                    lessonList.innerHTML = `<div style="padding:40px; text-align:center; color:#ccc; font-style:italic;">No lessons architecture yet. Start by adding intellectual content.</div>`;
+                }
+            } else {
+                document.getElementById('moduleDetailedView').style.display = 'none';
+                document.getElementById('dashEmptyState').style.display = 'block';
+            }
+        }
+
+        function selectModule(idx) {
+            currentModuleIndex = idx;
+            document.getElementById('welcomeState').style.display = 'block';
+            document.getElementById('lessonEditor').style.display = 'none';
+            renderCurriculum();
         }
 
         function confirmDeleteModule(mIdx) {
@@ -1113,33 +1618,11 @@
                 courseData.modules.splice(mIdx, 1);
                 if (currentModuleIndex >= courseData.modules.length) {
                     currentModuleIndex = -1;
-                    goBackToOverview();
                 }
                 renderCurriculum();
                 saveToLocal();
                 showToast("Module archived.");
             }
-        }
-
-        function deleteLesson(mIdx, lIdx) {
-            if (confirm("Permanently archive this content asset?")) {
-                courseData.modules[mIdx].lessons.splice(lIdx, 1);
-                renderCurriculum();
-                saveToLocal();
-                showToast("Content archived.");
-            }
-        }
-
-        function deleteModule(mIdx) {
-            courseData.modules.splice(mIdx, 1);
-            if (currentModuleIndex === mIdx) {
-                goBackToOverview();
-            } else if (currentModuleIndex > mIdx) {
-                currentModuleIndex--;
-            }
-            saveToLocal();
-            renderCurriculum();
-            showToast("Module deleted");
         }
 
         function deleteLesson(mIdx, lIdx) {
@@ -1149,8 +1632,6 @@
                 mod.lessons.splice(lIdx, 1);
                 saveToLocal();
                 renderCurriculum();
-                // If we were editing this lesson, go back
-                goBackToOverview();
                 showToast("Lesson deleted");
             }
         }
@@ -1182,8 +1663,13 @@
             });
         }
 
+        let currentLessonId = null;
+
         function startNewLesson(mIdx) {
             currentModuleIndex = mIdx;
+            currentLessonId = null;
+            destroyQuills(); // Clean up previous editors
+            inlineAceEditors = {}; // Reset ace refs
             document.getElementById('welcomeState').style.display = 'none';
             document.getElementById('lessonEditor').style.display = 'block';
             document.getElementById('typeSelector').style.display = 'block';
@@ -1194,10 +1680,47 @@
         let inlineMonacoEditors = {};
         let activeQuills = {};
 
-        function destroyQuills() {
-            Object.values(activeQuills).forEach(q => {
-                try { q.disable(); } catch (e) { }
+        function initQuill(id, content = '') {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            // If already exists, just update content and return
+            if (activeQuills[id]) {
+                if (content) activeQuills[id].root.innerHTML = content;
+                return activeQuills[id];
+            }
+
+            const editor = new Quill('#' + id, {
+                theme: 'snow',
+                placeholder: 'Type content here...',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['code-block', 'link', 'image'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['clean']
+                    ]
+                }
             });
+
+            if (content) editor.root.innerHTML = content;
+            activeQuills[id] = editor;
+            
+            // Fix: Ensure the editor is focusable and interactive
+            editor.root.setAttribute('spellcheck', 'false');
+            editor.on('selection-change', (range) => {
+                if (range) {
+                    el.style.borderColor = 'var(--primary)';
+                } else {
+                    el.style.borderColor = '#e0e0e0';
+                }
+            });
+
+            return editor;
+        }
+
+        function destroyQuills() {
             activeQuills = {};
         }
 
@@ -1254,7 +1777,6 @@
                 `;
                 setTimeout(() => {
                     initQuill('q-code');
-                    initMonaco();
                     populateLanguages();
                     addTestCaseRow('// Input', '// Output', 20, true);
                 }, 50);
@@ -1329,16 +1851,15 @@
             const id = 'opt_' + Math.random().toString(36).substr(2, 9);
             const div = document.createElement('div');
             div.className = 'mcq-option';
-            div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
             div.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div class="opt-check" onclick="setMcqCorrect(this)"></div>
-                        <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
-                    </div>
-                    <i class="fas fa-trash" style="color:#F04438; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                <div class="opt-check" onclick="setMcqCorrect(this)"></div>
+                <div>
+                   <label style="font-size:0.65rem; font-weight:800; color:#999; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; display:block;">Choice Content</label>
+                   <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none; background:transparent;"></div>
                 </div>
-                <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+                <div style="display:flex; justify-content:center;">
+                    <i class="fas fa-trash-alt delete-action" style="font-size:1rem;" onclick="this.parentElement.parentElement.remove()"></i>
+                </div>
             `;
             document.getElementById('mcqOptions').appendChild(div);
             setTimeout(() => initQuill(id), 50);
@@ -1378,10 +1899,10 @@
 
             langs.forEach(l => {
                 const t = templates[l];
-                if (t && inlineMonacoEditors[`prefix_${l}`]) {
-                    inlineMonacoEditors[`prefix_${l}`].setValue(t.prefix);
-                    inlineMonacoEditors[`middle_${l}`].setValue(t.middle);
-                    inlineMonacoEditors[`suffix_${l}`].setValue(t.suffix);
+                if (t && inlineAceEditors[`code_prefix_${l}`]) {
+                    inlineAceEditors[`code_prefix_${l}`].setValue(t.prefix, -1);
+                    inlineAceEditors[`code_middle_${l}`].setValue(t.middle, -1);
+                    inlineAceEditors[`code_suffix_${l}`].setValue(t.suffix, -1);
                 }
             });
             showToast("Boilerplate templates applied!");
@@ -1393,7 +1914,13 @@
                 console.error("Language Grid not found in DOM!");
                 return;
             }
-            const langs = [{ id: 'python', name: 'Python' }, { id: 'javascript', name: 'JavaScript' }, { id: 'java', name: 'Java' }, { id: 'cpp', name: 'C++' }];
+            const langs = [
+                { id: 'python', name: 'Python' }, 
+                { id: 'javascript', name: 'JavaScript' }, 
+                { id: 'java', name: 'Java' }, 
+                { id: 'cpp', name: 'C++' },
+                { id: 'c', name: 'C' }
+            ];
             grid.innerHTML = langs.map(l => `
                 <label class="lang-check" style="min-width:120px; border:1px solid #ddd; background:#fff; padding:12px; border-radius:8px; display:flex; align-items:center; gap:8px;">
                     <input type="checkbox" value="${l.id}" onchange="updateLanguages()" style="width:18px; height:18px;">
@@ -1410,52 +1937,131 @@
             updateLanguages();
         }
 
+        let activeAceEditor = null;
+        let aceTargetId = null;
+
         function updateLanguages(savedCodes = null) {
             const langs = Array.from(document.querySelectorAll('#langSelectorGrid input:checked')).map(c => c.value);
             const container = document.getElementById('languageCodeTemplates');
 
             // Dispose existing
-            Object.values(inlineMonacoEditors).forEach(ed => ed.dispose());
-            inlineMonacoEditors = {};
+            Object.values(inlineAceEditors).forEach(ed => ed.destroy());
+            inlineAceEditors = {};
 
-            container.innerHTML = langs.map(l => `
+            container.innerHTML = langs.map(l => {
+                const prefixId = `code_prefix_${l}`;
+                const middleId = `code_middle_${l}`;
+                const suffixId = `code_suffix_${l}`;
+
+                return `
                 <div class="code-workspace-block">
                     <div class="workspace-lang-title">${l.toUpperCase()} WORKSPACE</div>
                     <div class="code-sub-container">
-                        <div class="code-header-row"><span class="code-label-main">HEADER (HIDDEN)</span></div>
-                        <div id="prefix_${l}" class="monaco-inline-wrapper" style="height:100px;"></div>
+                        <div class="code-header-row">
+                            <span class="code-label-main">HEADER (HIDDEN FROM STUDENT)</span>
+                            <div class="code-controls">
+                                <button class="btn-fullscreen-toggle" onclick="openEditorOverlay('${prefixId}', '${l}', 'HEADER')">[ FULLSCREEN ]</button>
+                                <label style="font-size:0.75rem; color:#666; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="lock_prefix_${l}" checked> Locked</label>
+                                <label style="font-size:0.75rem; color:#666; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="hide_prefix_${l}"> Visible to student</label>
+                            </div>
+                        </div>
+                        <div id="${prefixId}" style="height:100px; width: 100%;"></div>
                     </div>
                     <div class="code-sub-container" style="margin-top:16px;">
-                        <div class="code-header-row"><span class="code-label-main">STUDENT TEMPLATE</span></div>
-                        <div id="middle_${l}" class="monaco-inline-wrapper" style="height:200px;"></div>
+                        <div class="code-header-row">
+                            <span class="code-label-main">CODE TEMPLATE (STUDENT EDITOR)</span>
+                            <div class="code-controls">
+                                <button class="btn-fullscreen-toggle" onclick="openEditorOverlay('${middleId}', '${l}', 'TEMPLATE')">[ FULLSCREEN ]</button>
+                            </div>
+                        </div>
+                        <div id="${middleId}" style="height:200px; width: 100%;"></div>
                     </div>
-                    <div class="code-sub-container" style="margin-top:16px;">
-                        <div class="code-header-row"><span class="code-label-main">FOOTER (READ-ONLY)</span></div>
-                        <div id="suffix_${l}" class="monaco-inline-wrapper" style="height:100px;"></div>
+                    <div class="code-sub-container" style="margin-top:16px; margin-bottom:0;">
+                        <div class="code-header-row">
+                            <span class="code-label-main">FOOTER (READ-ONLY)</span>
+                            <div class="code-controls">
+                                <button class="btn-fullscreen-toggle" onclick="openEditorOverlay('${suffixId}', '${l}', 'FOOTER')">[ FULLSCREEN ]</button>
+                                <label style="font-size:0.75rem; color:#666; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="lock_suffix_${l}" checked> Locked</label>
+                                <label style="font-size:0.75rem; color:#666; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="hide_suffix_${l}"> Visible to student</label>
+                            </div>
+                        </div>
+                        <div id="${suffixId}" style="height:100px; width: 100%;"></div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
 
             langs.forEach(l => {
                 const code = savedCodes ? savedCodes[l] : null;
-                initMonacoInline(`prefix_${l}`, l, code ? code.prefix : '// Setup...');
-                initMonacoInline(`middle_${l}`, l, code ? code.middle : '// Your code here...');
-                initMonacoInline(`suffix_${l}`, l, code ? code.suffix : '// Execution...');
+                initAceInline(`code_prefix_${l}`, l, code ? code.prefix : '// Setup...');
+                initAceInline(`code_middle_${l}`, l, code ? code.middle : '// Your code here...');
+                initAceInline(`code_suffix_${l}`, l, code ? code.suffix : '// Execution...');
+
+                if (code) {
+                    document.getElementById(`lock_prefix_${l}`).checked = code.lockPrefix;
+                    document.getElementById(`lock_suffix_${l}`).checked = code.lockSuffix;
+                    document.getElementById(`hide_prefix_${l}`).checked = code.hidePrefix;
+                    document.getElementById(`hide_suffix_${l}`).checked = code.hideSuffix;
+                }
             });
         }
 
-        function initMonacoInline(id, lang, val) {
-            require(['vs/editor/editor.main'], () => {
-                inlineMonacoEditors[id] = monaco.editor.create(document.getElementById(id), {
-                    value: val,
-                    language: lang === 'cpp' ? 'cpp' : (lang === 'python' ? 'python' : 'javascript'),
-                    theme: 'vs-light',
-                    automaticLayout: true,
-                    minimap: { enabled: false },
-                    scrollBeyondLastLine: false,
-                    fontSize: 13
+        function getAceMode(lang) {
+            if (lang === 'python') return 'ace/mode/python';
+            if (lang === 'cpp' || lang === 'c') return 'ace/mode/c_cpp';
+            if (lang === 'java') return 'ace/mode/java';
+            return 'ace/mode/javascript';
+        }
+
+        function openEditorOverlay(sourceId, lang, title) {
+            aceTargetId = sourceId;
+            document.getElementById('overlayTitle').textContent = `${lang.toUpperCase()} ARCHITECT - ${title}`;
+            document.getElementById('editorOverlay').style.display = 'flex';
+
+            const initialValue = inlineAceEditors[sourceId] ? inlineAceEditors[sourceId].getValue() : '';
+
+            if (!activeAceEditor) {
+                activeAceEditor = window.ace.edit('monaco-container');
+                activeAceEditor.setTheme('ace/theme/textmate');
+                activeAceEditor.session.setMode(getAceMode(lang));
+                activeAceEditor.setOptions({
+                    fontSize: "18px",
+                    fontFamily: "Consolas, 'Monaco', 'Courier New', monospace",
+                    enableBasicAutocompletion: true,
+                    enableLiveAutocompletion: true
                 });
+                activeAceEditor.session.setUseWorker(false);
+                activeAceEditor.setValue(initialValue, -1);
+            } else {
+                activeAceEditor.session.setMode(getAceMode(lang));
+                activeAceEditor.setValue(initialValue, -1);
+            }
+        }
+
+        function closeEditorOverlay() {
+            if (activeAceEditor && aceTargetId) {
+                if (inlineAceEditors[aceTargetId]) {
+                    inlineAceEditors[aceTargetId].setValue(activeAceEditor.getValue(), -1);
+                }
+            }
+            document.getElementById('editorOverlay').style.display = 'none';
+            aceTargetId = null;
+        }
+
+        function initAceInline(id, lang, val) {
+            const editor = window.ace.edit(id);
+            editor.setTheme('ace/theme/textmate');
+            editor.session.setMode(getAceMode(lang));
+            editor.setOptions({
+                fontSize: "14px",
+                fontFamily: "Consolas, 'Monaco', 'Courier New', monospace",
+                showGutter: true,
+                maxLines: Infinity,
+                minLines: 5
             });
+            editor.session.setUseWorker(false);
+            editor.setValue(val, -1);
+            inlineAceEditors[id] = editor;
         }
 
         function addTestCaseRow(input = '', output = '', marks = 20, isSample = false) {
@@ -1486,16 +2092,15 @@
             const id = 'opt_diag_' + Math.random().toString(36).substr(2, 9);
             const div = document.createElement('div');
             div.className = 'mcq-option';
-            div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
             div.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div class="opt-check" onclick="setDiagCorrect(this)"></div>
-                        <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
-                    </div>
-                    <i class="fas fa-trash" style="color:#F04438; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                <div class="opt-check" onclick="setDiagCorrect(this)"></div>
+                <div>
+                   <label style="font-size:0.65rem; font-weight:800; color:#999; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; display:block;">Choice Content</label>
+                   <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none; background:transparent;"></div>
                 </div>
-                <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+                <div style="display:flex; justify-content:center;">
+                    <i class="fas fa-trash-alt delete-action" style="font-size:1rem;" onclick="this.parentElement.parentElement.remove()"></i>
+                </div>
             `;
             document.getElementById('diagOptions').appendChild(div);
             setTimeout(() => initQuill(id), 50);
@@ -1510,16 +2115,15 @@
             const id = 'opt_quiz_' + Math.random().toString(36).substr(2, 9);
             const div = document.createElement('div');
             div.className = 'mcq-option';
-            div.style = "display:flex; flex-direction:column; gap:8px; border:1px solid #eee; padding:16px; border-radius:12px; background:#fff; margin-bottom:12px;";
             div.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div class="opt-check" onclick="setQuizCorrect(this)"></div>
-                        <span style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Choice Content</span>
-                    </div>
-                    <i class="fas fa-trash" style="color:#F04438; cursor:pointer;" onclick="this.parentElement.parentElement.remove()"></i>
+                <div class="opt-check" onclick="setQuizCorrect(this)"></div>
+                <div>
+                   <label style="font-size:0.65rem; font-weight:800; color:#999; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; display:block;">Choice Content</label>
+                   <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none; background:transparent;"></div>
                 </div>
-                <div id="${id}" class="editor-workspace" style="height:140px; min-height:140px; border:none;"></div>
+                <div style="display:flex; justify-content:center;">
+                    <i class="fas fa-trash-alt delete-action" style="font-size:1rem;" onclick="this.parentElement.parentElement.remove()"></i>
+                </div>
             `;
             document.getElementById('quizOptions').appendChild(div);
             setTimeout(() => initQuill(id), 50);
@@ -1530,34 +2134,14 @@
             el.parentElement.parentElement.parentElement.classList.add('correct');
         }
 
-        function initQuill(id) {
-            const el = document.getElementById(id);
-            if (!el) return;
 
-            activeQuills[id] = new Quill('#' + id, {
-                theme: 'snow',
-                placeholder: 'Craft your content here...',
-                modules: {
-                    toolbar: [
-                        [{ header: [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['link', 'image', 'code-block'],
-                        ['clean']
-                    ]
-                }
-            });
-
-            const editor = el.querySelector('.ql-editor');
-            if (editor) {
-                editor.style.minHeight = el.style.height || '150px';
-            }
-        }
 
         function editLesson(mIdx, lIdx) {
             const less = courseData.modules[mIdx].lessons[lIdx];
             currentModuleIndex = mIdx;
+            currentLessonId = less.id;
             startNewLesson(mIdx);
+            currentLessonId = less.id; // ensure ID is preserved
             document.getElementById('lTitle').value = less.title;
             initLessonType(less.type);
 
@@ -1666,11 +2250,15 @@
             }
         }
 
-        function saveCurrentLesson() {
+        function saveLessonDraft() {
+            saveCurrentLesson(true);
+        }
+
+        function saveCurrentLesson(isDraft = false) {
             const title = document.getElementById('lTitle').value;
             if (!title) return showToast("Enter title");
 
-            const lesson = { id: 'less_' + Date.now(), title, type: currentLessonType, data: {} };
+            const lesson = { id: currentLessonId || ('less_' + Date.now()), title, type: currentLessonType, data: {} };
 
             if (currentLessonType === 'video') {
                 lesson.data.url = document.getElementById('vUrl').value;
@@ -1683,9 +2271,13 @@
                 lesson.data.code = {};
                 lesson.data.languages.forEach(l => {
                     lesson.data.code[l] = {
-                        prefix: inlineMonacoEditors[`prefix_${l}`].getValue(),
-                        middle: inlineMonacoEditors[`middle_${l}`].getValue(),
-                        suffix: inlineMonacoEditors[`suffix_${l}`].getValue()
+                        prefix: inlineAceEditors[`code_prefix_${l}`] ? inlineAceEditors[`code_prefix_${l}`].getValue() : '',
+                        middle: inlineAceEditors[`code_middle_${l}`] ? inlineAceEditors[`code_middle_${l}`].getValue() : '',
+                        suffix: inlineAceEditors[`code_suffix_${l}`] ? inlineAceEditors[`code_suffix_${l}`].getValue() : '',
+                        lockPrefix: document.getElementById(`lock_prefix_${l}`)?.checked || false,
+                        lockSuffix: document.getElementById(`lock_suffix_${l}`)?.checked || false,
+                        hidePrefix: document.getElementById(`hide_prefix_${l}`)?.checked || false,
+                        hideSuffix: document.getElementById(`hide_suffix_${l}`)?.checked || false
                     };
                 });
                 lesson.data.testCases = Array.from(document.querySelectorAll('.test-case-card')).map(card => ({
@@ -1694,6 +2286,8 @@
                     marks: parseInt(card.querySelector('.t-marks').value) || 0,
                     isSample: card.querySelector('.t-sample').checked
                 }));
+
+
             } else if (currentLessonType === 'assertion') {
                 lesson.data.assertion = activeQuills['q-assertion'] ? activeQuills['q-assertion'].root.innerHTML : '';
                 lesson.data.reason = activeQuills['q-reason'] ? activeQuills['q-reason'].root.innerHTML : '';
@@ -1750,16 +2344,57 @@
                 }
             }
 
+            // UNIFIED QUESTION POOL SYNC
+            if (['coding', 'mcq', 'assertion', 'diagram', 'quiz'].includes(currentLessonType)) {
+                let pMarks = 0;
+                let pTitle = '';
+
+                if (currentLessonType === 'coding') {
+                    pMarks = lesson.data.testCases.reduce((sum, tc) => sum + tc.marks, 0);
+                    pTitle = lesson.data.description;
+                } else {
+                    pMarks = 10; // Default marks for course questions
+                    pTitle = lesson.data.question || lesson.data.desc || lesson.title;
+                }
+
+                const poolQ = {
+                    id: 'q_' + Date.now(),
+                    type: currentLessonType,
+                    heading: title,
+                    title: pTitle,
+                    marks: pMarks,
+                    section: 'General',
+                    timer: 0,
+                    // Assessment specific data
+                    languages: lesson.data.languages || [],
+                    code: lesson.data.code || null,
+                    testCases: lesson.data.testCases || [],
+                    options: lesson.data.options || [],
+                    correct: lesson.data.correct || null,
+                    assertion: lesson.data.assertion || null,
+                    reason: lesson.data.reason || null
+                };
+
+                if (window.db && window.db.addToQuestionPool) {
+                    window.db.addToQuestionPool(poolQ);
+                }
+            }
+
             // Check if editing
             const mod = courseData.modules[currentModuleIndex];
-            const existingIdx = mod.lessons.findIndex(l => l.title === title);
+            const existingIdx = currentLessonId ? mod.lessons.findIndex(l => l.id === currentLessonId) : -1;
             if (existingIdx !== -1) mod.lessons[existingIdx] = lesson;
             else mod.lessons.push(lesson);
 
             saveToLocal();
             renderCurriculum();
-            goBackToOverview();
-            showToast("Lesson built!");
+            if (!isDraft) {
+                selectModule(currentModuleIndex); // Stay in module view
+                showToast("Lesson built!");
+            } else {
+                currentLessonId = lesson.id; // Store ID in case it was a new draft
+                showToast("Lesson saved as draft");
+            }
         }
 
         function goBackToOverview() {
@@ -1769,22 +2404,77 @@
             renderCurriculum();
         }
 
+        function editCourseIdentity() {
+            showModal({
+                title: "Course Identity Architect",
+                desc: "Update the core proposition and branding of this course.",
+                body: `
+                    <div class="field-group">
+                        <label class="field-label">Course Proposition</label>
+                        <input type="text" id="editTitle" class="standard-input" value="${courseData.title || ''}" placeholder="Enter Title...">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Executive Summary</label>
+                        <textarea id="editSummary" class="standard-input" rows="4" placeholder="Description...">${courseData.summary || ''}</textarea>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Category</label>
+                        <select id="editCategory" class="standard-input">
+                            <option ${courseData.category === 'Engineering & Technology' ? 'selected' : ''}>Engineering & Technology</option>
+                            <option ${courseData.category === 'Data Science & AI' ? 'selected' : ''}>Data Science & AI</option>
+                            <option ${courseData.category === 'Management & Business' ? 'selected' : ''}>Management & Business</option>
+                            <option ${courseData.category === 'Creative Arts & Design' ? 'selected' : ''}>Creative Arts & Design</option>
+                        </select>
+                    </div>
+                `,
+                confirmText: "SYNC CHANGES",
+                onConfirm: () => {
+                    courseData.title = document.getElementById('editTitle').value;
+                    courseData.summary = document.getElementById('editSummary').value;
+                    courseData.description = courseData.summary;
+                    courseData.category = document.getElementById('editCategory').value;
+                    renderCurriculum();
+                    saveToLocal();
+                    closeModal();
+                }
+            });
+        }
+
         function saveToLocal() {
-            courseData.title = document.getElementById('courseTitle').value;
-            courseData.summary = document.getElementById('courseSummary').value;
-            courseData.category = document.getElementById('courseCategory').value;
             localStorage.setItem('current_editing_course', JSON.stringify(courseData));
         }
 
+        function showModal({ title, desc, body, confirmText, onConfirm }) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('modalBody').innerHTML = body;
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            confirmBtn.style.display = 'block';
+            confirmBtn.innerText = confirmText || 'Confirm';
+            confirmBtn.onclick = onConfirm;
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
         function publishCourse() {
+            saveToLocal();
             if (!courseData.title) return showToast("Enter course title");
             courseData.status = 'published';
             saveToDB();
         }
 
         function saveDraft() {
+            saveToLocal();
             if (!courseData.title) return showToast("Enter course title");
-            courseData.status = 'draft';
+
+            // If the course is already published, keep it published when saving changes
+            if (courseData.status !== 'published') {
+                courseData.status = 'draft';
+            }
+
             saveToDB();
         }
 
@@ -1799,7 +2489,10 @@
                 if (editingId) {
                     db.updateCourse(editingId, courseData);
                 } else {
-                    db.createCourse(courseData, user.id);
+                    const newCourse = db.createCourse(courseData, user.id);
+                    editingId = newCourse.id;
+                    // Update URL without reload to prevent re-creation on refresh
+                    window.history.replaceState(null, '', `?id=${editingId}`);
                 }
 
                 hideLoader();
@@ -1813,6 +2506,7 @@
             document.getElementById('modalTitle').innerText = "Processing Curriculum...";
             document.getElementById('modalDesc').innerText = "Syncing with the global network.";
             document.getElementById('modalBody').innerHTML = `<div style="text-align:center; padding:20px;"><i class="fas fa-circle-notch fa-spin" style="font-size:2rem; color:var(--primary);"></i></div>`;
+            document.getElementById('modalFooter').style.display = 'none';
         }
 
         function hideLoader() {
@@ -1824,17 +2518,10 @@
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalDesc').innerText = title.includes('SAVED') ? "Your draft has been securely stored." : "Your curriculum is now live and available for enrollment.";
             document.getElementById('modalBody').innerHTML = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; border:1px solid #eee; text-align:center; font-weight:700; color:var(--primary);">${courseData.title}</div>`;
-            const btn = document.getElementById('modalConfirmBtn');
-            if (btn) {
-                btn.style.display = 'block';
-                btn.innerText = "Return to Dashboard";
-                btn.onclick = () => location.href = './teacher-dashboard.html';
-            } else {
-                // If it's the prompt modal body replacement, we might need to recreate a button or just use the cancel button
-                document.getElementById('modalConfirmBtn')?.remove();
-                const footer = document.querySelector('.modal-footer');
-                footer.innerHTML = `<button class="btn btn-primary" onclick="location.href='./teacher-dashboard.html'">Return to Dashboard</button>`;
-            }
+
+            document.getElementById('modalFooter').style.display = 'flex';
+            const footer = document.getElementById('modalFooter');
+            footer.innerHTML = `<button class="btn btn-primary" onclick="location.href='./teacher-dashboard.html'">Return to Dashboard</button>`;
         }
 
         function showPrompt(title, desc, placeholder, onConfirm) {
@@ -1843,9 +2530,13 @@
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalDesc').innerText = desc;
             document.getElementById('modalBody').innerHTML = `<input type="text" id="promptInput" class="standard-input" placeholder="${placeholder}">`;
+
+            document.getElementById('modalFooter').style.display = 'flex';
+            document.getElementById('modalCancelBtn').style.display = 'block';
+
             const btn = document.getElementById('modalConfirmBtn');
             btn.style.display = 'block';
-            btn.innerText = "Confirm";
+            btn.innerText = "Save Module";
             btn.onclick = () => {
                 const val = document.getElementById('promptInput').value;
                 if (val) {
@@ -1863,6 +2554,210 @@
             const c = document.getElementById('toast-container');
             const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<i class="fas fa-check-circle"></i> ${m}`;
             c.appendChild(t); setTimeout(() => t.remove(), 3000);
+        }
+        function switchSidebar(view, el) {
+            document.querySelectorAll('.rail-item').forEach(i => i.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            document.getElementById('viewCurriculumSidebar').style.display = 'none';
+            document.getElementById('viewCurriculumContent').style.display = 'none';
+            document.getElementById('viewPool').style.display = 'none';
+            document.getElementById('viewAnalytics').style.display = 'none';
+
+            if (view === 'curriculum') {
+                document.getElementById('viewCurriculumSidebar').style.display = 'flex';
+                document.getElementById('viewCurriculumContent').style.display = 'block';
+            } else if (view === 'pool') {
+                document.getElementById('viewPool').style.display = 'block';
+                loadQuestionPool();
+            } else if (view === 'analytics') {
+                document.getElementById('viewAnalytics').style.display = 'block';
+                loadAnalytics();
+            }
+        }
+
+        let analyticsChartsLoaded = false;
+
+        function loadAnalytics() {
+            const analyticsContainer = document.getElementById('viewAnalytics');
+            const chartsGrid = document.getElementById('analyticsChartsGrid');
+
+            // Cleanup previous messages
+            const existingMsg = document.getElementById('analyticsNoDataMsg');
+            if (existingMsg) existingMsg.remove();
+
+            // Fetch real progress
+            const progressData = JSON.parse(localStorage.getItem('exampad_course_progress') || '[]');
+            const courseProgress = progressData.filter(p => p.courseId === (courseData.id || 'N/A'));
+
+            if (courseProgress.length === 0) {
+                chartsGrid.style.display = 'none';
+                const msg = document.createElement('div');
+                msg.id = 'analyticsNoDataMsg';
+                msg.innerHTML = `
+                    <div style="text-align: center; padding: 100px 40px; background: #fff; border-radius: 20px; border: 1px dashed #e2e8f0; margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div style="width: 80px; height: 80px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+                            <img src="https://course.testpad.chitkara.edu.in/icons/statistics-active.svg" style="width: 40px; opacity: 0.3; filter: grayscale(1);">
+                        </div>
+                        <h3 style="font-family: 'Outfit'; color: #334155; font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;">No Participation Detected</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; max-width: 400px; line-height: 1.6;">Your curriculum is live, but no students have engaged with the content yet. Once students begin, real-time telemetry will appear here.</p>
+                        <button class="btn btn-primary" style="margin-top: 32px;" onclick="switchSidebar('curriculum', document.querySelector('.rail-item'))">Manage Curriculum</button>
+                    </div>
+                `;
+                analyticsContainer.appendChild(msg);
+                return;
+            }
+
+            chartsGrid.style.display = 'grid';
+            if (analyticsChartsLoaded) return;
+
+            // Calculate Metrics
+            const totalStudents = courseProgress.length;
+            const totalLessons = courseData.modules.reduce((sum, m) => sum + (m.lessons ? m.lessons.length : 0), 0);
+
+            const completedCount = courseProgress.filter(p => p.completedItems.length >= totalLessons && totalLessons > 0).length;
+            const inProgressCount = totalStudents - completedCount;
+
+            const pieCtx = document.getElementById('completionPieChart').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'In Progress'],
+                    datasets: [{
+                        data: [completedCount, inProgressCount],
+                        backgroundColor: ['#10b981', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Outfit', weight: 600 } } }
+                    },
+                    cutout: '75%'
+                }
+            });
+
+            const modLabels = courseData.modules.map(m => m.title);
+            const modData = courseData.modules.map(m => {
+                const lessonIds = (m.lessons || []).map(l => l.id);
+                if (lessonIds.length === 0) return 0;
+                let totalCompletions = 0;
+                courseProgress.forEach(p => {
+                    const finishedInMod = p.completedItems.filter(cid => lessonIds.includes(cid)).length;
+                    totalCompletions += (finishedInMod / lessonIds.length) * 100;
+                });
+                return (totalCompletions / totalStudents).toFixed(1);
+            });
+
+            const barCtx = document.getElementById('performanceBarChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: modLabels,
+                    datasets: [{
+                        label: 'Completion %',
+                        data: modData,
+                        backgroundColor: '#D96C33',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { borderDash: [5, 5] }, ticks: { font: { family: 'Outfit' } } },
+                        x: { ticks: { font: { family: 'Outfit' } } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+            analyticsChartsLoaded = true;
+        }
+
+        function loadQuestionPool() {
+            const tbody = document.getElementById('poolTableBody');
+            const pool = (window.db && window.db.getQuestionPool) ? window.db.getQuestionPool() : [];
+
+            if (pool.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="padding: 24px; text-align: center; color: #888;">No questions in global pool yet. Create coding lessons to populate.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = pool.map(q => `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 16px; font-weight: 600; font-family: monospace; color: #666;">${(q.id || q.poolId || '').substring(0, 8)}</td>
+                    <td style="padding: 16px;"><span style="background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">${q.type}</span></td>
+                    <td style="padding: 16px;">
+                        <div style="font-weight: 600; color: #111;">${q.heading || 'Untitled'}</div>
+                        <div style="font-size: 0.8rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;">${(q.title || '').replace(/<[^>]+>/g, '')}</div>
+                    </td>
+                    <td style="padding: 16px; font-weight: 600; color: #059669;">${q.marks} pts</td>
+                    <td style="padding: 16px;"><button class="btn btn-ghost" style="padding: 4px 12px; border: 1px solid #ddd; font-size: 0.75rem;" onclick="importFromPool('${q.id || q.poolId}')">Import</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function importFromPool(qId) {
+            const pool = (window.db && window.db.getQuestionPool) ? window.db.getQuestionPool() : [];
+            const q = pool.find(x => (x.id || x.poolId) === qId);
+            if (!q) return showToast('Question not found');
+
+            if (courseData.modules.length === 0) {
+                return showToast('Create a module first to import questions.');
+            }
+
+            let optionsHtml = courseData.modules.map((m, idx) => `<option value="${idx}">${m.title}</option>`).join('');
+
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('modalTitle').innerText = "Import to Module";
+            document.getElementById('modalDesc').innerText = "Select where to add: " + (q.heading || 'Question');
+            document.getElementById('modalBody').innerHTML = `
+                <div class="field-group">
+                    <label class="field-label">Target Module</label>
+                    <select id="importModuleSelect" class="standard-input">
+                        ${optionsHtml}
+                    </select>
+                </div>
+            `;
+
+            document.getElementById('modalFooter').style.display = 'flex';
+            document.getElementById('modalCancelBtn').style.display = 'block';
+
+            const btn = document.getElementById('modalConfirmBtn');
+            btn.style.display = 'block';
+            btn.innerText = "Import Question";
+            btn.onclick = () => {
+                const mIdx = parseInt(document.getElementById('importModuleSelect').value);
+
+                const lesson = {
+                    id: 'less_' + Date.now(),
+                    title: q.heading || 'Imported Question',
+                    type: q.type || 'coding',
+                    data: {}
+                };
+
+                if (q.type === 'coding') {
+                    lesson.data.description = q.title;
+                    lesson.data.languages = Object.keys(q.code || {});
+                    lesson.data.code = q.code;
+                    lesson.data.testCases = q.testCases;
+                } else if (q.type === 'mcq') {
+                    lesson.data.question = q.title;
+                    lesson.data.options = q.options;
+                    lesson.data.correct = q.correct;
+                } else {
+                    lesson.data.question = q.title;
+                }
+
+                if (!courseData.modules[mIdx].lessons) courseData.modules[mIdx].lessons = [];
+                courseData.modules[mIdx].lessons.push(lesson);
+
+                saveToLocal();
+                closeModal();
+                showToast("Question imported successfully!");
+
+                // Switch back
+                switchSidebar('curriculum', document.querySelector('.rail-item[title="Curriculum Builder"]'));
+                renderCurriculum();
+            };
         }
     </script>
 </body>

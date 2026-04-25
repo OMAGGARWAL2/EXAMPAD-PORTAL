@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookmarks | EXAMPAD</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../logo.jpg">
+    <script src="../js/app-db.js"></script>
+    <script src="../js/auth.js"></script>
+    <style>
+        :root {
+            --primary: #DE5B2B;
+            --primary-dark: #C44A1E;
+            --primary-soft: #FFF4ED;
+            --bg: #F9FAFB;
+            --border: #EAECF0;
+            --text-main: #101828;
+            --text-sub: #667085;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); font-family: 'Hind', sans-serif; color: var(--text-main); min-height: 100vh; }
+
+        header {
+            height: 64px; background: #fff; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; position: sticky; top: 0; z-index: 1000;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 40px; }
+        .nav-icons { display: flex; gap: 24px; color: #475467; font-size: 1.1rem; }
+        .nav-icons i { cursor: pointer; transition: color 0.2s; }
+        .nav-icons i:hover { color: var(--primary); }
+
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        .page-header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
+        .page-title { font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 700; color: #101828; }
+        
+        .bookmark-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .bookmark-card {
+            background: #fff; border: 1px solid var(--border); border-radius: 12px;
+            padding: 24px; display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.2s; cursor: pointer;
+        }
+        .bookmark-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.04); }
+
+        .card-info { display: flex; align-items: center; gap: 20px; }
+        .card-icon { 
+            width: 48px; height: 48px; background: var(--primary-soft); color: var(--primary);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; 
+        }
+        .card-text h4 { font-size: 1.25rem; font-weight: 600; color: #101828; margin-bottom: 4px; }
+        .card-meta { font-size: 0.95rem; color: var(--text-sub); display: flex; gap: 16px; }
+
+        .card-actions { display: flex; gap: 12px; }
+        .btn-action {
+            height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 600; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border);
+            background: #fff; color: #344054;
+        }
+        .btn-action.primary { background: var(--primary); color: #fff; border: none; }
+        .btn-action.primary:hover { background: var(--primary-dark); }
+        .btn-action.remove:hover { border-color: #fda29b; color: #d92d20; background: #fef3f2; }
+
+        .empty-state {
+            text-align: center; padding: 80px 0; background: #fff; border-radius: 16px; border: 1px dashed #D0D5DD;
+        }
+        .empty-state i { font-size: 4rem; color: #F2F4F7; margin-bottom: 24px; }
+        .empty-state h3 { font-size: 1.5rem; color: #101828; margin-bottom: 8px; }
+
+        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; }
+        .toast {
+            background: #333; color: #fff; padding: 12px 24px; border-radius: 8px; margin-top: 10px;
+            animation: slideIn 0.3s ease-out; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <div style="font-weight: 800; font-size: 1.4rem; color: #333; cursor: pointer;" onclick="location.href='./student-dashboard.html'">EXAMPAD</div>
+            <nav class="nav-icons">
+                <i class="far fa-file-alt" title="Assessment List" onclick="location.href='./student-dashboard.html'"></i>
+                <i class="far fa-folder-open" title="My Courses" onclick="location.href='./student-dashboard.html'"></i>
+            </nav>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+            <div id="uName" style="font-weight:600; color:#344054;">STUDENT</div>
+            <div id="uAvatar" style="width:36px; height:36px; background:var(--primary); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700;">S</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">My Bookmarks</h1>
+            <div style="color:var(--text-sub); font-size: 1.1rem;" id="bookmarkCount">0 questions saved</div>
+        </div>
+
+        <div id="bookmarkList" class="bookmark-grid">
+            <!-- Bookmarks populated by JS -->
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        const user = auth.getCurrentUser();
+        if (!user) location.href = './student-login.html';
+
+        document.getElementById('uName').textContent = user.name;
+        document.getElementById('uAvatar').textContent = user.name[0];
+
+        function renderBookmarks() {
+            const bookmarks = db.getBookmarks(user.id) || [];
+            const container = document.getElementById('bookmarkList');
+            document.getElementById('bookmarkCount').textContent = `${bookmarks.length} question${bookmarks.length === 1 ? '' : 's'} saved`;
+
+            if (bookmarks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bookmark"></i>
+                        <h3>Your bookmark list is empty</h3>
+                        <p style="color:var(--text-sub)">Bookmark questions during practice to review them later.</p>
+                        <button class="btn-action primary" onclick="location.href='./student-dashboard.html'" style="margin-top:24px; margin-left:auto; margin-right:auto;">Explore Courses</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = bookmarks.map(b => `
+                <div class="bookmark-card">
+                    <div class="card-info" onclick="goToQuestion('${b.courseId}', ${b.moduleIdx}, ${b.lessonIdx})">
+                        <div class="card-icon">
+                            <i class="far fa-file-code"></i>
+                        </div>
+                        <div class="card-text">
+                            <h4>${b.lessonTitle}</h4>
+                            <div class="card-meta">
+                                <span><i class="far fa-clock" style="margin-right:6px;"></i>Saved ${new Date(b.timestamp).toLocaleDateString()}</span>
+                                <span style="color:var(--primary); font-weight:600;">#Practice</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <div class="btn-action primary" onclick="goToQuestion('${b.courseId}', ${b.moduleIdx}, ${b.lessonIdx})">Practice Now</div>
+                        <div class="btn-action remove" onclick="removeBookmark('${b.lessonId}')">Remove</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function goToQuestion(cId, mIdx, lIdx) {
+            location.href = `./course-player.html?courseId=${cId}&mIdx=${mIdx}&lIdx=${lIdx}`;
+        }
+
+        function removeBookmark(lId) {
+            const bookmarks = db.getBookmarks(user.id) || [];
+            const idx = bookmarks.findIndex(b => b.lessonId === lId);
+            if (idx > -1) {
+                bookmarks.splice(idx, 1);
+                db.saveBookmarks(user.id, bookmarks);
+                showToast("Bookmark removed");
+                renderBookmarks();
+            }
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            container.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
+        renderBookmarks();
+    </script>
+</body>
+
+</html>

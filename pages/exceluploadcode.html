@@ -133,7 +133,7 @@
         .architect-table { width: 100%; border-collapse: collapse; border: 1px solid var(--erp-border); font-size: 11px; table-layout: fixed; }
         .architect-table th { background: var(--primary-light); color: var(--primary); padding: 8px; text-align: left; border-bottom: 2px solid var(--erp-border); }
         .architect-table td { padding: 0; border: 1px solid #eee; }
-        .cell-content { padding: 8px; outline: none; min-height: 20px; white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; overflow: hidden; text-overflow: ellipsis; }
+        .cell-content { padding: 8px; outline: none; min-height: 24px; white-space: pre-wrap; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 11px; word-break: break-all; }
         .cell-content:focus { background: #fff; box-shadow: inset 0 0 0 1px var(--primary); }
         tr.selected { background: #eaf1fb !important; }
 
@@ -640,23 +640,95 @@
         updateMarksCount();
     }
 
+    function parseExcelTSV(text) {
+        let rows = [];
+        let currentRow = [];
+        let currentCell = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            let nextChar = text[i + 1] || '';
+
+            if (inQuotes) {
+                if (char === '"') {
+                    if (nextChar === '"') {
+                        currentCell += '"';
+                        i++; // skip escaped quote
+                    } else {
+                        inQuotes = false;
+                    }
+                } else {
+                    currentCell += char;
+                }
+            } else {
+                if (char === '"') {
+                    inQuotes = true;
+                } else if (char === '\t') {
+                    currentRow.push(currentCell);
+                    currentCell = '';
+                } else if (char === '\n' || (char === '\r' && nextChar === '\n')) {
+                    if (char === '\r') i++; // skip \n
+                    currentRow.push(currentCell);
+                    rows.push(currentRow);
+                    currentRow = [];
+                    currentCell = '';
+                } else {
+                    currentCell += char;
+                }
+            }
+        }
+        
+        if (currentCell !== '' || currentRow.length > 0) {
+            currentRow.push(currentCell);
+            rows.push(currentRow);
+        }
+        
+        return rows.filter(row => row.some(cell => cell.trim() !== ''));
+    }
+
     function handleTCPaste(e) {
         e.preventDefault();
-        const text = (e.originalEvent || e).clipboardData.getData('text/plain');
-        const rows = text.split(/\r?\n/).filter(line => line.trim() !== "");
+        let text = (e.originalEvent || e).clipboardData.getData('text/plain');
         
         if (activeQIndex === -1) return;
         const q = questionsPool[activeQIndex];
         const target = e.target.closest('.cell-container');
+
+        // HEURISTIC: If pasting into a cell and NO tabs are present, 
+        // treat as a single multi-line value even if it has newlines.
+        if (target) {
+            const row = parseInt(target.dataset.row);
+            const col = parseInt(target.dataset.col);
+
+            let val = text;
+
+            // Clean quotes
+            if (val.startsWith('"') && val.endsWith('"')) {
+                val = val.slice(1, -1).replace(/""/g, '"');
+            }
+            
+            // Remove trailing single newline often added by clipboard systems
+            val = val.replace(/\r?\n$/, '');
+
+            if (col === 3) q.testCases[row].input = val;
+            if (col === 4) q.testCases[row].output = val;
+            if (col === 5) q.testCases[row].marks = parseInt(val) || 0;
+
+            renderTestCases(q.testCases);
+            updateMarksCount();
+            return;
+        }
+
+        const rows = parseExcelTSV(text);
         
         // If not pasting into a specific cell, behave like bulk append
         if (!target) {
-            rows.forEach(row => {
-                const cols = row.split('\t');
+            rows.forEach(cols => {
                 if (cols.length >= 2) {
                     q.testCases.push({
-                        input: cols[0].trim(),
-                        output: cols[1].trim(),
+                        input: cols[0],
+                        output: cols[1],
                         marks: (cols[3] || "").toLowerCase().includes("sample") ? 0 : (parseInt(cols[2]) || 5),
                         isSample: (cols[3] || "").toLowerCase().includes("sample"),
                         selected: false
@@ -664,29 +736,6 @@
                 }
             });
             showToast(`Bulk Appended ${rows.length} test cases`);
-        } else {
-            // Range-based pasting starting from current cell
-            const startR = parseInt(target.dataset.row);
-            const startC = parseInt(target.dataset.col);
-
-            rows.forEach((rowText, rOffset) => {
-                const targetR = startR + rOffset;
-                // Add new rows if pasting beyond current count
-                if (!q.testCases[targetR]) {
-                    q.testCases.push({ input: '', output: '', marks: 5, isSample: false, selected: false });
-                }
-                
-                const columns = rowText.split('\t');
-                columns.forEach((colText, cOffset) => {
-                    const targetC = startC + cOffset;
-                    if (targetC === 3) q.testCases[targetR].input = colText.trim();
-                    if (targetC === 4) q.testCases[targetR].output = colText.trim();
-                    if (targetC === 5) {
-                        q.testCases[targetR].marks = parseInt(colText) || 0;
-                    }
-                });
-            });
-            showToast(`Grid Paste Complete (${rows.length} rows updated)`);
         }
 
         renderTestCases(q.testCases);

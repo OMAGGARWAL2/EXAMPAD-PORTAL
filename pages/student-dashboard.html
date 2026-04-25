@@ -271,13 +271,15 @@
         .dashboard-container {
             display: grid;
             grid-template-columns: 1fr 340px;
-            min-height: calc(100vh - 64px);
+            height: calc(100vh - 64px);
+            overflow: hidden;
         }
 
         .main-panel {
             padding: 40px;
             background: #ffffff;
             border-right: 1px solid var(--border);
+            overflow-y: auto;
         }
 
         .panel-header {
@@ -520,6 +522,7 @@
         .side-panel {
             padding: 40px 25px;
             background: #fafafa;
+            overflow-y: auto;
         }
 
         .side-section-title {
@@ -754,6 +757,33 @@
         .copy-widget i {
             font-size: 0.85rem;
         }
+
+        /* --- CUSTOM SCROLLBARS --- */
+        .main-panel::-webkit-scrollbar,
+        .side-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-panel::-webkit-scrollbar-track,
+        .side-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main-panel::-webkit-scrollbar-thumb,
+        .side-panel::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .main-panel::-webkit-scrollbar-thumb:hover,
+        .side-panel::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
     </style>
 </head>
 
@@ -864,7 +894,7 @@
         <div class="side-panel">
             <h3 class="side-section-title">Quick Links</h3>
             <div class="side-cards">
-                <div class="quick-link-card dark" onclick="location.href='./erp-login.html'"
+                <div class="quick-link-card dark" onclick="location.href='index.html'"
                     style="background-color: #3b5998;">
                     <div class="ql-title">
                         <span>Chalkpad ERP</span>

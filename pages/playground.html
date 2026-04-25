@@ -4,11 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXAMPAD | Playground Environment</title>
-    <link rel="icon" type="image/x-icon" href="https://api.learntechww.com/college_icon/logo1733989968823.jpg">
+    <title>TESTPAD</title>
+    <link rel="icon" type="image/x-icon" href="../icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Monaco Editor -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <!-- Ace Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.0/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.0/ext-language_tools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.0/ext-beautify.js"></script>
+    <!-- Pyodide -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <script src="../js/db.js"></script>
+    <script src="../js/auth.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -21,18 +27,19 @@
         :root {
             --primary-bg: #FFFFFF;
             --header-bg: #FFFFFF;
-            --accent-color: #2563EB;
-            /* Professional Blue */
-            --accent-hover: #1D4ED8;
-            --accent-soft: #EFF6FF;
-            --text-primary: #0F172A;
-            --text-secondary: #475569;
+            --accent-color: #ce866a;
+            /* Terracotta Orange */
+            --accent-hover: #bc775a;
+            --accent-soft: #fff6f2;
+            --text-primary: #101828;
+            --text-secondary: #475467;
             --border-color: #F1F5F9;
             --editor-bg: #FFFFFF;
             --panel-bg: #FFFFFF;
             --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
             --font-main: 'Outfit', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
+            --editor-font-size: 18px;
         }
 
         body {
@@ -431,97 +438,142 @@
         .editor-container {
             flex: 1;
             position: relative;
-            overflow: visible;
+            overflow: hidden;
             display: flex;
-            justify-content: flex-start;
-            align-items: stretch;
-            min-width: 0;
-            min-height: 0;
-        }
-
-        .CodeMirror {
-            width: 100% !important;
-            height: 100% !important;
-            margin: 0;
-            padding: 0;
+            flex-direction: column;
             background: #fff;
         }
 
-        #codeEditor {
-            height: 100%;
+        #codeEditorWrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: #fff;
+            position: relative;
+        }
+
+        .ace_editor {
+            font-family: Consolas, 'Monaco', 'Courier New', monospace !important;
+            font-size: var(--editor-font-size, 18px) !important;
+            line-height: 1.4 !important;
+            width: 100% !important;
+        }
+
+        .ace_gutter {
+            background: #f5f5f5 !important;
+            color: #444 !important;
+            border-right: 1px solid #e1e1e1 !important;
+            width: 48px !important;
+        }
+
+        .ace_content {
+            background: #fff !important;
+        }
+
+        #editorHead,
+        #editorHead .ace_content,
+        #editorTail,
+        #editorTail .ace_content {
+            background: #f5f5f5 !important;
+        }
+
+        #editorHead .ace_scroller,
+        #editorTail .ace_scroller,
+        #editorHead .ace_gutter,
+        #editorTail .ace_gutter {
+            background: transparent !important;
+        }
+
+        .editor-gap {
+            background: #fff !important;
+            flex-shrink: 0 !important;
+            position: relative !important;
+            min-height: 1px !important;
+            background: linear-gradient(to right, #f5f5f5 48px, #fff 48px) !important;
+        }
+
+        .editor-gap::after {
+            content: '' !important;
+            position: absolute !important;
+            left: 47px !important;
+            width: 1px !important;
+            height: 100% !important;
+            background: #e1e1e1 !important;
+            z-index: 10 !important;
+        }
+
+        #editorHead .ace_gutter-cell,
+        #editorTail .ace_gutter-cell {
+            color: transparent !important;
+        }
+
+        .editor-head,
+        .editor-tail {
+            flex-shrink: 0;
             width: 100%;
-            border-radius: 0;
+            position: relative;
         }
 
-        .CodeMirror pre {
-            text-align: left !important;
+        .editor-main {
+            flex: 1;
+            width: 100%;
+            position: relative;
         }
 
-        .CodeMirror-cursor {
-            border-left: 3px solid var(--cursor-color, #fb923c) !important;
+        .ace_active-line {
+            background: transparent !important;
         }
 
-        .CodeMirror-gutters {
-            background: var(--editor-bg);
-            border-right: 1px solid #1f2937;
+        .ace_gutter-active-line {
+            background: transparent !important;
         }
 
-        .CodeMirror-hints {
-            background: var(--hint-bg, #111827);
-            border: 1px solid var(--hint-border, #1f2937);
-            color: var(--hint-fg, #e5e7eb);
-            border-radius: 8px;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
-            padding: 4px;
-            animation: hintFade 120ms ease;
-            max-height: 220px;
-            overflow: auto;
+        .ace_gutter-cell {
+            color: #000 !important;
+            opacity: 1 !important;
         }
 
-        @keyframes hintFade {
-            from {
-                opacity: 0;
-                transform: translateY(-4px)
-            }
-
-            to {
-                opacity: 1;
-                transform: none
-            }
+        .ace_selection {
+            background: rgba(0, 120, 215, 0.4) !important;
         }
 
-        .CodeMirror-hint {
-            padding: 6px 8px;
-            border-radius: 6px;
-            font-size: 13px;
+        /* Ace Syntax Overrides to match platform */
+        .ace_keyword,
+        .ace_meta,
+        .ace_storage,
+        .ace_storage.ace_type,
+        .ace_support.ace_function,
+        .ace_support.ace_class,
+        .ace_support.ace_type {
+            color: #0000FF !important;
         }
 
-        .CodeMirror-hint-active {
-            background: rgba(251, 146, 60, 0.18);
-            color: #fff;
+        .ace_comment {
+            color: #008000 !important;
+            font-style: normal !important;
         }
 
-        .cm-hint-keyword {
-            color: #93c5fd
+        .ace_identifier,
+        .ace_punctuation,
+        .ace_operator,
+        .ace_constant.ace_numeric,
+        .ace_string {
+            color: #000000 !important;
         }
 
-        .cm-hint-function {
-            color: #86efac
+        .ace_autocomplete {
+            border: 1px solid #D1D5DB !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+            background: #ffffff !important;
+            border-radius: 4px !important;
+            font-size: 16px !important;
+            width: 350px !important;
+            max-width: 450px !important;
         }
 
-        .cm-hint-variable {
-            color: #fca5a5
-        }
 
-        .CodeMirror-hints::-webkit-scrollbar {
-            width: 8px;
-            height: 8px
-        }
 
-        .CodeMirror-hints::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 6px
-        }
 
         .editor-color-options {
             display: flex;
@@ -543,9 +595,239 @@
             background: #ffffff;
         }
 
-        .editor-color-option.active {
-            border-color: var(--accent-color);
-            background: var(--accent-soft);
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 240px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: none;
+            z-index: 10005;
+            padding: 8px 0;
+            margin-top: 8px;
+            animation: dropFade 0.2s ease;
+        }
+
+        @keyframes dropFade {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-dropdown.show { display: block; }
+
+        /* Problem Panel */
+        .problem-panel {
+            width: 0;
+            background: #f8fafc;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .problem-panel.active {
+            width: 350px;
+        }
+
+        .problem-content {
+            padding: 1.5rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .problem-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .problem-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .problem-badge {
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-easy { background: #dcfce7; color: #166534; }
+        .badge-medium { background: #fef9c3; color: #854d0e; }
+        .badge-hard { background: #fee2e2; color: #991b1b; }
+
+        /* Dark Mode Overrides */
+        body.dark-mode {
+            --primary-bg: #0f172a;
+            --header-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --editor-bg: #0f172a;
+            --panel-bg: #1e293b;
+        }
+
+        body.dark-mode .ide-header, 
+        body.dark-mode .language-selector,
+        body.dark-mode .problem-header,
+        body.dark-mode .problem-panel {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        body.dark-mode .icon-btn:hover { background: #334155; }
+        body.dark-mode .tab.active { background: #0f172a; }
+
+        /* Execution UX */
+        .exec-success {
+            background: #dcfce7;
+            border-left: 4px solid #22c55e;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            color: #166534;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exec-error {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            color: #991b1b;
+            font-weight: 600;
+        }
+
+        .dropdown-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #F1F5F9;
+            margin-bottom: 4px;
+        }
+
+        .dropdown-header span {
+            display: block;
+            font-weight: 700;
+            color: #1E293B;
+            font-size: 14px;
+        }
+
+        .dropdown-header small {
+            color: #64748B;
+            font-size: 12px;
+        }
+
+        .profile-dropdown .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            color: #475467;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .profile-dropdown .dropdown-item:hover {
+            background: #F8FAFC;
+            color: var(--accent-color);
+        }
+
+        .profile-dropdown .dropdown-item i {
+            width: 16px;
+            color: #94A3B8;
+        }
+
+        /* Custom Context Menu */
+        .ctx-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+            border-radius: 6px;
+            padding: 4px 0;
+            min-width: 260px;
+            z-index: 10001;
+            display: none;
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .ctx-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: #24292f;
+            font-size: 13px;
+            font-weight: 400;
+            transition: background 0.1s;
+        }
+
+        .ctx-item:hover {
+            background: #f6f8fa;
+        }
+
+        .ctx-item.primary {
+            background: #007bff;
+            color: white;
+            font-weight: 600;
+            padding: 10px 16px;
+        }
+
+        .ctx-item.primary:hover {
+            background: #0069d9;
+        }
+
+        .ctx-shortcut {
+            font-size: 11px;
+            color: #57606a;
+            margin-left: 20px;
+        }
+
+        .ctx-item.primary .ctx-shortcut {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .ctx-divider {
+            height: 1px;
+            background: #d0d7de;
+            margin: 4px 0;
+        }
+
+        .ctx-item:hover i {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .ctx-divider {
+            height: 1px;
+            background: #F1F5F9;
+            margin: 6px 4px;
+        }
+
+        .ctx-shortcut {
+            font-size: 11px;
+            color: #94A3B8;
+            font-weight: 400;
+        }
             color: var(--accent-color);
             font-weight: 700;
         }
@@ -900,8 +1182,15 @@
         }
 
         @keyframes dropdownFadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .custom-language-selector.open .dropdown-menu {
@@ -1159,8 +1448,8 @@
             background: #fff;
         }
 
-        .coding-practice-section.theme-monaco-dark {
-            background: #1e1e1e;
+        .coding-practice-section.theme-ace-light {
+            background: #fff;
         }
 
         .coding-practice-section.theme-ocean {
@@ -1380,9 +1669,9 @@
             <div style="display: flex; align-items: center; gap: 1.5rem;">
                 <a href="index.html" class="logo">
                     <div class="logo-box">
-                        <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara">
+                        <img src="../icon.png" alt="Chitkara">
                     </div>
-                    <span class="logo-text">EXAMPAD</span>
+                    <span class="logo-text">TESTPAD</span>
                 </a>
                 <div style="height: 20px; width: 1px; background: var(--border-color);"></div>
                 <div
@@ -1469,6 +1758,13 @@
                 </div>
 
                 <div class="ide-header-right">
+                    <div class="btn-group">
+                        <button class="icon-btn" onclick="shareCode()" title="Share Code"><i
+                                class="fas fa-share-nodes"></i></button>
+                        <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Theme"><i
+                                class="fas fa-moon"></i></button>
+                    </div>
+                    <div style="height: 24px; width: 1px; background: var(--border-color); margin: 0 4px;"></div>
                     <div class="btn-group">
                         <button class="icon-btn" onclick="toggleTestCases()" title="Tests"><i
                                 class="fas fa-tasks"></i></button>
@@ -1591,9 +1887,9 @@
 
             <div class="ide-body" id="ideBody">
                 <div class="editor-panel" id="editorPanel"
-                    style="flex: 1.4; display: flex; flex-direction: column; background: var(--editor-bg);">
-                    <div class="editor-container" id="codeEditor" style="flex: 1;">
-                        <!-- Monaco Editor will be injected here -->
+                    style="flex: 1.4; display: flex; flex-direction: column; background: #fff;">
+                    <div class="editor-container" id="codeEditorContainer">
+                        <div id="codeEditor" style="flex: 1; height: 100%;"></div>
                     </div>
                 </div>
 
@@ -1657,6 +1953,7 @@
                             </style>
                             <div style="display: flex; gap: 0rem; height: 100%;">
                                 <div class="console-tab active" onclick="switchConsoleTab('output')">Output</div>
+                                <div class="console-tab" onclick="switchConsoleTab('history')">History</div>
                                 <div class="console-tab" onclick="switchConsoleTab('errors')">Errors</div>
                                 <div class="console-tab" onclick="switchConsoleTab('testresults')">Test Results</div>
                             </div>
@@ -1738,6 +2035,41 @@
             </div>
         </div>
     </div>
+    <!-- Custom Context Menu -->
+    <div id="customCtxMenu" class="ctx-menu">
+        <div class="ctx-item primary" onclick="handleCtxAction('run')">
+            <span>Compile and Run</span>
+            <span class="ctx-shortcut">Ctrl+Enter</span>
+        </div>
+        <div class="ctx-divider"></div>
+        <div class="ctx-item" onclick="handleCtxAction('occurrence')">
+            <span>Change All Occurrences</span>
+            <span class="ctx-shortcut">Ctrl+F2</span>
+        </div>
+        <div class="ctx-divider"></div>
+        <div class="ctx-item" onclick="handleCtxAction('cut')">
+            <span>Cut</span>
+            <span class="ctx-shortcut">Ctrl+X</span>
+        </div>
+        <div class="ctx-item" onclick="handleCtxAction('copy')">
+            <span>Copy</span>
+            <span class="ctx-shortcut">Ctrl+C</span>
+        </div>
+        <div class="ctx-item" onclick="handleCtxAction('paste')">
+            <span>Paste</span>
+            <span class="ctx-shortcut">Ctrl+V</span>
+        </div>
+        <div class="ctx-divider"></div>
+        <div class="ctx-item" onclick="handleCtxAction('format')">
+            <span>Format Code</span>
+            <span class="ctx-shortcut">Alt+Shift+F</span>
+        </div>
+        <div class="ctx-item" onclick="handleCtxAction('commandpalette')">
+            <span>Command Palette</span>
+            <span class="ctx-shortcut">F1</span>
+        </div>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <!-- Pyodide for Python execution -->
@@ -1762,7 +2094,7 @@
                 const compiled = [{ id: 'java', label: 'Java', icon: '☕' }, { id: 'c', label: 'C', icon: 'C' }, { id: 'c99', label: 'C99', icon: 'C' }, { id: 'cpp', label: 'C++', icon: 'C++' }];
                 const scripting = [{ id: 'python3', label: 'Python 3', icon: '🐍' }, { id: 'python2', label: 'Python 2', icon: '🐍' }, { id: 'javascript', label: 'JS', icon: '🟨' }, { id: 'bash', label: 'Bash', icon: '$' }];
                 const database = [{ id: 'sql', label: 'SQL', icon: 'DB' }, { id: 'mysql', label: 'MySQL', icon: 'DB' }];
-                
+
                 const d = document.getElementById('langDropdown');
                 if (d) {
                     let html = '';
@@ -1786,29 +2118,29 @@
                     }
                 };
             },
-            toggleLangDropdown: function () { 
-                const s = document.getElementById('customLanguageSelector'); 
+            toggleLangDropdown: function () {
+                const s = document.getElementById('customLanguageSelector');
                 if (s) s.classList.toggle('open');
             },
-            closeLangDropdown: function () { 
-                const s = document.getElementById('customLanguageSelector'); 
+            closeLangDropdown: function () {
+                const s = document.getElementById('customLanguageSelector');
                 if (s) s.classList.remove('open');
             },
-            selectLang: function (id, label, icon) { 
-                const input = document.getElementById('languageSelect'); 
-                if (input) input.value = id; 
-                const ll = document.getElementById('langLabel'); 
-                if (ll) ll.textContent = label; 
-                this.closeLangDropdown(); 
-                
+            selectLang: function (id, label, icon) {
+                const input = document.getElementById('languageSelect');
+                if (input) input.value = id;
+                const ll = document.getElementById('langLabel');
+                if (ll) ll.textContent = label;
+                this.closeLangDropdown();
+
                 // Update active state in UI
                 const items = document.querySelectorAll('.dropdown-item');
                 items.forEach(item => {
                     if (item.textContent === label) item.classList.add('active');
                     else item.classList.remove('active');
                 });
-                
-                changeLanguage(id); 
+
+                changeLanguage(id);
             },
             keySelectLang: function (ev, el) { if (ev.key === 'Enter') el.click() },
             filterLang: function () { const v = document.getElementById('langSearch').value.toLowerCase();['groupCompiled', 'groupScripting', 'groupDatabase'].forEach(id => { const c = document.getElementById(id); if (c) [...c.children].forEach(child => { const l = child.dataset.label.toLowerCase(); child.style.display = l.includes(v) ? 'flex' : 'none' }) }) },
@@ -1906,11 +2238,12 @@
         };
 
         const CompilerConfig = {
-            judge0Enabled: true,
-            judge0Endpoint: "https://ce.judge0.com",
-            judge0AuthToken: null,
-            pistonEnabled: true,
-            pistonEndpoint: "https://emkc.org/api/v2/piston/execute"
+            get judge0Enabled() { return localStorage.getItem('executionEngine') === 'judge0'; },
+            get judge0Endpoint() { return "https://ce.judge0.com"; },
+            get judge0AuthToken() { return localStorage.getItem('judge0Key') || null; },
+            get pistonEnabled() { return localStorage.getItem('executionEngine') === 'piston' || !localStorage.getItem('executionEngine'); },
+            get pistonEndpoint() { return localStorage.getItem('pistonEndpoint') || "https://emkc.org/api/v2/piston/execute"; },
+            get localEnabled() { return localStorage.getItem('executionEngine') === 'local'; }
         };
 
         // Initialize Pyodide for Python execution
@@ -2029,74 +2362,104 @@ SELECT 'Hello, World!' AS message;`,
 echo "Hello, World!"`
         };
 
-        // Initialize Monaco Editor
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' } });
-        require(['vs/editor/editor.main'], function () {
-            // Define Testpad Light Theme (Refined Codespace Style)
-            monaco.editor.defineTheme('testpad-light', {
-                base: 'vs',
-                inherit: true,
-                rules: [
-                    { token: 'keyword', foreground: '#0000FF', fontStyle: 'normal' },
-                    { token: 'type', foreground: '#000000' },
-                    { token: 'string', foreground: '#05522e' },
-                    { token: 'comment', foreground: '#008000', fontStyle: 'italic' },
-                    { token: 'number', foreground: '#032f62' },
-                    { token: 'identifier', foreground: '#000000' },
-                    { token: 'function', foreground: '#000000' },
-                    { token: 'operator', foreground: '#000000' },
-                    { token: 'bracket', foreground: '#000000' },
-                    { token: 'delimiter', foreground: '#000000' },
-                    { token: 'class', foreground: '#000000', fontStyle: 'bold' }
-                ],
-                colors: {
-                    'editor.background': '#FFFFFF',
-                    'editor.lineHighlightBackground': '#F3F4F6',
-                    'editorCursor.foreground': '#000000',
-                    'editorLineNumber.foreground': '#999999',
-                    'editorLineNumber.activeForeground': '#000000',
-                    'editor.selectionBackground': '#ADD6FF',
-                    'editorIndentGuide.background': '#F1F5F9',
-                    'editorIndentGuide.activeBackground': '#E2E8F0',
-                    'editor.border': '#FFFFFF'
+        function loadSettings() {
+            if (!editor) return;
+            const theme = localStorage.getItem('editorTheme') || 'chrome';
+            const fontSize = localStorage.getItem('editorFontSize') || 18;
+            const lineHeight = localStorage.getItem('editorLineHeight') || 1.6;
+            const keybinding = localStorage.getItem('editorKeybindings') || 'ace';
+            const autoComplete = localStorage.getItem('editorAutoComplete') === 'true';
+            const tabSize = parseInt(localStorage.getItem('editorTabSize') || 4);
+            const softTabs = localStorage.getItem('editorSoftTabs') !== 'false';
+
+            editor.setTheme("ace/theme/" + theme);
+            editor.setFontSize(parseInt(fontSize));
+            editor.container.style.lineHeight = lineHeight;
+
+            if (keybinding && keybinding !== 'ace') {
+                ace.config.loadModule("ace/keyboard/" + keybinding, function (m) {
+                    if (m && m.handler) {
+                        editor.setKeyboardHandler(m.handler);
+                    }
+                });
+            } else {
+                editor.setKeyboardHandler(null);
+            }
+
+            editor.setOptions({
+                enableBasicAutocompletion: autoComplete,
+                enableLiveAutocompletion: autoComplete,
+                enableSnippets: autoComplete,
+                tabSize: tabSize,
+                useSoftTabs: softTabs
+            });
+            
+            console.log('IDE Context Rebuilt:', { theme, fontSize, lineHeight, keybinding, autoComplete, tabSize, softTabs });
+        }
+
+        function updateFontSize(size) {
+            if (!editor) return;
+            localStorage.setItem('editorFontSize', size);
+            editor.setFontSize(parseInt(size));
+            uiManager.toast('Font Size: ' + size + 'px');
+        }
+
+        // Initialize Ace Editor
+        function initAceEditor() {
+            const savedFontSize = parseInt(localStorage.getItem('editorFontSize') || 18);
+            const savedLineHeight = parseFloat(localStorage.getItem('editorLineHeight') || 1.6);
+            const savedTheme = localStorage.getItem('editorTheme') || 'chrome';
+            const savedAutoComplete = localStorage.getItem('editorAutoComplete') === 'true';
+
+            const mEd = ace.edit("codeEditor");
+
+            // Enable language tools for autocompletion
+            ace.require("ace/ext/language_tools");
+
+            mEd.setOptions({
+                fontFamily: "JetBrains Mono, Consolas, monospace",
+                showPrintMargin: false,
+                highlightActiveLine: true,
+                showLineNumbers: true,
+                behavioursEnabled: true,
+                wrapBehavioursEnabled: true
+            });
+
+            // Ensure Enter selects the suggestion if popup is open
+            mEd.commands.addCommand({
+                name: "insertSuggestion",
+                bindKey: "Enter",
+                exec: function (editor) {
+                    if (editor.completer && editor.completer.activated) {
+                        editor.completer.insertMatch();
+                    } else {
+                        return false; // Let default Enter behavior take over
+                    }
+                },
+                readOnly: false
+            });
+
+            mEd.container.style.lineHeight = savedLineHeight;
+            mEd.resize();
+
+            window.mainEditor = mEd;
+            editor = mEd;
+
+            mEd.getSession().on('change', () => {
+                if (files[currentFileId]) {
+                    files[currentFileId].code = mEd.getValue();
                 }
             });
 
-            editor = monaco.editor.create(document.getElementById('codeEditor'), {
-                value: defaultCode['java'],
-                language: 'java',
-                theme: 'testpad-light',
-                automaticLayout: true,
-                fontSize: 16,
-                lineHeight: 28,
-                fontFamily: "'JetBrains Mono', monospace",
-                minimap: { enabled: false },
-                lineNumbers: 'on',
-                roundedSelection: true,
-                scrollBeyondLastLine: false,
-                readOnly: false,
-                cursorStyle: 'line',
-                cursorBlinking: 'smooth',
-                cursorSmoothCaretAnimation: true,
-                smoothScrolling: true,
-                padding: { top: 24, bottom: 24 },
-                renderLineHighlight: 'all',
-                fontLigatures: true,
-                letterSpacing: 0.5
-            });
-
-            // Sync Header Filename
-            const headerFile = document.getElementById('headerFileName');
-            if (headerFile) headerFile.textContent = 'playground.java';
-
-            // Re-initialize files and startup logic after editor is ready
+            // Re-initialize files and startup logic
             files[currentFileId] = {
                 name: 'playground',
                 language: 'java',
                 code: defaultCode['java']
             };
+            mEd.setValue(defaultCode['java'], -1);
+            mEd.session.setMode("ace/mode/java");
 
-            // Vital initializations that depend on the editor
             loadSavedByQuery();
             uiManager.initLangDropdown();
             storageManager.init();
@@ -2104,11 +2467,16 @@ echo "Hello, World!"`
             loadSettings();
 
             // Sync Profile Data
-            const authUser = JSON.parse(localStorage.getItem('auth_user') || '{}');
+            const authUser = auth.getCurrentUser() || {};
+
             if (authUser.name) {
                 const navName = document.getElementById('navUserName');
+                const dropdownName = document.getElementById('dropdownName');
                 const navAvatar = document.getElementById('navUserAvatar');
+
                 if (navName) navName.textContent = authUser.name;
+                if (dropdownName) dropdownName.textContent = authUser.name;
+
                 if (navAvatar) {
                     navAvatar.textContent = authUser.name.charAt(0).toUpperCase();
                     const savedPic = localStorage.getItem('userPic_' + authUser.id);
@@ -2118,12 +2486,16 @@ echo "Hello, World!"`
                 }
             }
 
-            // Monaco-style keyboard shortcuts
-            editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
-                runCode();
+            // Keyboard shortcuts
+            mEd.commands.addCommand({
+                name: "runCode",
+                bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },
+                exec: function () { runCode(); }
             });
-            editor.addCommand(monaco.KeyCode.F5, function () {
-                runCode();
+            mEd.commands.addCommand({
+                name: "runCodeF5",
+                bindKey: { win: "F5", mac: "F5" },
+                exec: function () { runCode(); }
             });
 
             // Resizer Implementation
@@ -2134,29 +2506,152 @@ echo "Hello, World!"`
 
             if (resizer && ideBody) {
                 let isResizing = false;
-
                 resizer.addEventListener('mousedown', function (e) {
                     isResizing = true;
                     document.body.style.cursor = 'col-resize';
                 });
-
                 document.addEventListener('mousemove', function (e) {
                     if (!isResizing) return;
                     const bodyWidth = ideBody.offsetWidth;
                     const newEditorWidth = (e.clientX / bodyWidth) * 100;
-
                     if (newEditorWidth > 20 && newEditorWidth < 80) {
                         editorPanel.style.flex = newEditorWidth;
                         consolePanel.style.flex = 100 - newEditorWidth;
                     }
                 });
-
                 document.addEventListener('mouseup', function () {
                     isResizing = false;
                     document.body.style.cursor = 'default';
                 });
             }
-        });
+
+            // --- SECURITY MEASURES ---
+            // Disable right-click globally
+            document.addEventListener('contextmenu', e => e.preventDefault());
+
+            // Block inspection shortcuts
+            window.addEventListener('keydown', function (e) {
+                // Block F12
+                if (e.keyCode === 123) {
+                    e.preventDefault();
+                    return false;
+                }
+                // Block Ctrl+U (View Source)
+                if (e.ctrlKey && e.keyCode === 85) {
+                    e.preventDefault();
+                    return false;
+                }
+                // Block Ctrl+Shift+I, J, C (Inspect/Console)
+                if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Global Context Menu Intercept for Editor Area
+            const ctxMenu = document.getElementById('customCtxMenu');
+            
+            window.addEventListener('contextmenu', function (e) {
+                const editorArea = document.getElementById('codeEditor');
+                if (editorArea && editorArea.contains(e.target)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const { clientX: x, clientY: y } = e;
+
+                    // Adjust positioning to keep menu inside viewport
+                    const menuWidth = 220;
+                    const menuHeight = 350;
+                    let posX = x;
+                    let posY = y;
+
+                    if (x + menuWidth > window.innerWidth) posX = x - menuWidth;
+                    if (y + menuHeight > window.innerHeight) posY = y - menuHeight;
+
+                    if (ctxMenu) {
+                        ctxMenu.style.left = posX + 'px';
+                        ctxMenu.style.top = posY + 'px';
+                        ctxMenu.style.display = 'block';
+                    }
+                }
+            }, true);
+
+            document.addEventListener('click', (e) => {
+                if (ctxMenu) ctxMenu.style.display = 'none';
+                if (!e.target.closest('.user-info')) {
+                    const profileDropdown = document.getElementById('profileDropdown');
+                    if (profileDropdown) profileDropdown.classList.remove('show');
+                }
+            });
+        }
+
+        function toggleProfileDropdown(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function handleCtxAction(action) {
+            if (!editor) return;
+
+            switch (action) {
+                case 'run':
+                    runCode();
+                    break;
+                case 'format':
+                    const beautify = ace.require("ace/ext/beautify");
+                    beautify.beautify(editor.session);
+                    uiManager.toast('Code Formatted');
+                    break;
+                case 'occurrence':
+                    editor.execCommand("selectMoreAfter");
+                    uiManager.toast('Selecting next occurrence...');
+                    break;
+                case 'undo':
+                    editor.undo();
+                    break;
+                case 'redo':
+                    editor.redo();
+                    break;
+                case 'copy':
+                    document.execCommand('copy');
+                    break;
+                case 'paste':
+                    navigator.clipboard.readText().then(text => {
+                        editor.insert(text);
+                    });
+                    break;
+                case 'selectall':
+                    editor.selectAll();
+                    break;
+            }
+            document.getElementById('customCtxMenu').style.display = 'none';
+        }
+
+        function shareCode() {
+            if (!editor) return;
+            const code = editor.getValue();
+            const lang = currentLanguage;
+            const encoded = btoa(unescape(encodeURIComponent(JSON.stringify({ code, lang }))));
+            const url = new URL(window.location.href);
+            url.searchParams.set('share', encoded);
+            
+            navigator.clipboard.writeText(url.href).then(() => {
+                uiManager.toast('Share link copied to clipboard!');
+            });
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            if (editor) {
+                editor.setTheme(isDark ? "ace/theme/tomorrow_night" : "ace/theme/chrome");
+            }
+            uiManager.toast(isDark ? 'Dark Mode Enabled' : 'Light Mode Enabled');
+        }
+
+        // Call initialization
+        initAceEditor();
 
         function switchConsoleTab(tabId) {
             const tabs = document.querySelectorAll('.console-tab');
@@ -2164,286 +2659,328 @@ echo "Hello, World!"`
             const target = Array.from(tabs).find(t => t.textContent.toLowerCase().replace(' ', '') === tabId);
             if (target) target.classList.add('active');
 
-            uiManager.toast('Viewing ' + tabId);
-        }
-
-        function clearConsole() {
-            const output = document.getElementById('consoleOutput');
-            if (output) output.innerHTML = '<div class="info">Console cleared.</div>';
-            const execTime = document.getElementById('executionTime');
-            if (execTime) execTime.style.display = 'none';
-        }
-
-        window.addEventListener('beforeunload', uiManager.beforeUnloadGuard);
-
-        // Beautiful Refresh Interceptor
-        window.addEventListener('keydown', function (e) {
-            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.metaKey && e.key === 'r')) {
-                e.preventDefault();
-                uiManager.handleRefresh();
-            }
-            // Font Scaling Shortcuts
-            if (e.ctrlKey && (e.key === '=' || e.key === '+')) {
-                e.preventDefault();
-                const current = parseInt(localStorage.getItem('editorFontSize') || 16);
-                if (current < 32) updateFontSize(current + 2);
-            }
-            if (e.ctrlKey && (e.key === '-')) {
-                e.preventDefault();
-                const current = parseInt(localStorage.getItem('editorFontSize') || 16);
-                if (current > 8) updateFontSize(current - 2);
-            }
-        });
-
-        // Activity Logger for Progress
-        function logActivity(action, file = 'playground.java', status = 'Success') {
-            const logs = JSON.parse(localStorage.getItem('ep_activity_logs') || '[]');
-            logs.unshift({
-                action: action,
-                file: file,
-                status: status,
-                timestamp: Date.now()
-            });
-            // Keep last 100 logs
-            if (logs.length > 100) logs.pop();
-            localStorage.setItem('ep_activity_logs', JSON.stringify(logs));
-        }
-
-        // Hook into core actions
-        const originalRunCode = window.runCode;
-        window.runCode = function () {
-            logActivity('Ran Code', document.getElementById('headerFileName').textContent, 'Executing');
-            if (originalRunCode) originalRunCode();
-        };
-
-        const originalSave = storageManager.confirmSave;
-        storageManager.confirmSave = function () {
-            logActivity('Saved Snippet', document.getElementById('saveTitle').value || 'Unsaved', 'Success');
-            if (originalSave) originalSave.apply(this, arguments);
-        };
-        // Intercept all internal links
-        document.querySelectorAll('.nav-link-intercept, .dropdown-item, .logo, .dropdown-item-intercept').forEach(link => {
-            link.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href && !href.startsWith('#') && !href.includes(':')) {
-                    e.preventDefault();
-                    uiManager.handleNavigation(href);
-                }
-            });
-        });
-
-        function toggleProfileDropdown(e) {
-            e.stopPropagation();
-            const dropdown = document.getElementById('profileDropdown');
-            const isActive = dropdown.style.display === 'block';
-            dropdown.style.display = isActive ? 'none' : 'block';
-        }
-
-        window.addEventListener('click', () => {
-            const dropdown = document.getElementById('profileDropdown');
-            if (dropdown) dropdown.style.display = 'none';
-        });
-
-        async function confirmLanguageSwitchIfReset(oldLang, newLang) {
-            if (!editor) return true;
-            const current = editor.getValue()?.trim() || '';
-            const defCode = (defaultCode[oldLang] || '').trim();
-            if (current === defCode) return true;
-            return await uiManager.confirm('Switch language? Your code differs from default and may be incompatible.', 'Warning');
-        }
-
-        async function changeLanguage(newLanguageParam) {
-            const selectInput = document.getElementById('languageSelect');
-            const newLanguage = newLanguageParam || (selectInput ? selectInput.value : '');
-            const oldLanguage = currentLanguage;
-
-            if (!newLanguage) return;
-
-            if (oldLanguage && oldLanguage !== newLanguage) {
-                const confirmed = await confirmLanguageSwitchIfReset(oldLanguage, newLanguage);
-                if (!confirmed) {
-                    if (selectInput) selectInput.value = oldLanguage;
-                    return;
-                }
-            }
-
-            currentLanguage = newLanguage;
-            if (selectInput) selectInput.value = newLanguage;
-
-            const mode = languageModes[currentLanguage] || 'text';
-
-            // Get current editor state
-            let codeToSet = '';
-            const currentCode = editor ? editor.getValue() : '';
-            const oldDefaultCode = defaultCode[oldLanguage] || '';
-            const newDefaultCode = defaultCode[currentLanguage] || '// Write your code here';
-
-            // Logic to determine if we overwrite or keep code
-            if (!currentCode.trim() || currentCode.trim() === oldDefaultCode.trim()) {
-                codeToSet = newDefaultCode;
+            if (tabId === 'history') {
+                displaySubmissionHistory();
             } else {
-                codeToSet = currentCode; // Keep user changes
-            }
-
-            // Sync with files object
-            if (files[currentFileId]) {
-                files[currentFileId].code = codeToSet;
-                files[currentFileId].language = currentLanguage;
-            }
-
-            // Update Monaco Editor
-            if (editor && editor.getModel()) {
-                monaco.editor.setModelLanguage(editor.getModel(), mode);
-                editor.setValue(codeToSet);
-            }
-
-            // Initialize Pyodide if Python is selected
-            if (currentLanguage === 'python3' || currentLanguage === 'python2') {
-                initPyodide();
+                uiManager.toast('Viewing ' + tabId);
             }
         }
 
-        // Execute code locally based on language
-        async function runCode() {
-            const code = editor.getValue();
+        function displaySubmissionHistory() {
             const output = document.getElementById('consoleOutput');
-            const customInput = document.getElementById('customInput').value;
+            const logs = JSON.parse(localStorage.getItem('ep_activity_logs') || '[]');
+            
+            if (logs.length === 0) {
+                output.innerHTML = '<div class="info">No submission history found.</div>';
+                return;
+            }
 
-            output.innerHTML = `
-                <div class="info">
-                    <i class="fas fa-spinner fa-spin"></i> Running your code, please wait...
+            let html = '<div style="display: flex; flex-direction: column; gap: 8px;">';
+            logs.forEach(log => {
+                const date = new Date(log.timestamp).toLocaleString();
+                html += `
+                <div style="padding: 10px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 13px; color: var(--text-primary);">${log.action} (${log.file})</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">${date}</div>
+                    </div>
+                    <div style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: ${log.status === 'Success' ? '#dcfce7' : '#fee2e2'}; color: ${log.status === 'Success' ? '#166534' : '#991b1b'};">
+                        ${log.status}
+                    </div>
                 </div>`;
-            const startTime = performance.now();
+            });
+            html += '</div>';
+            output.innerHTML = html;
+        }
 
-            try {
-                let result = '';
+            function clearConsole() {
+                const output = document.getElementById('consoleOutput');
+                if (output) output.innerHTML = '<div class="info">Console cleared.</div>';
+                const execTime = document.getElementById('executionTime');
+                if (execTime) execTime.style.display = 'none';
+            }
 
-                // JavaScript - Execute directly in browser
-                if (currentLanguage === 'javascript') {
-                    result = await runJavaScript(code, customInput);
+            window.addEventListener('beforeunload', uiManager.beforeUnloadGuard);
+
+            // Beautiful Refresh Interceptor
+            window.addEventListener('keydown', function (e) {
+                if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.metaKey && e.key === 'r')) {
+                    e.preventDefault();
+                    uiManager.handleRefresh();
                 }
-                // Python - Use Pyodide
-                else if (currentLanguage === 'python3' || currentLanguage === 'python2') {
-                    result = await runPython(code, customInput);
+                // Font Scaling Shortcuts
+                if (e.ctrlKey && (e.key === '=' || e.key === '+')) {
+                    e.preventDefault();
+                    const current = parseInt(localStorage.getItem('editorFontSize') || 16);
+                    if (current < 32) updateFontSize(current + 2);
                 }
-                // Compiled languages - Use Judge0 CE (FREE) or Piston API fallback
-                else if (['java', 'c', 'c99', 'cpp', 'csharp', 'php', 'ruby', 'sql', 'mysql', 'bash'].includes(currentLanguage)) {
-                    // Try Judge0 CE first (FREE, supports 60+ languages, no API key needed!)
-                    if (CompilerConfig.judge0Enabled) {
-                        result = await runWithJudge0(code, customInput);
-                        // If Judge0 fails, try Piston as fallback
-                        if (result.includes('Error') && CompilerConfig.pistonEnabled) {
-                            result = await runWithPiston(code, customInput);
-                        }
+                if (e.ctrlKey && (e.key === '-')) {
+                    e.preventDefault();
+                    const current = parseInt(localStorage.getItem('editorFontSize') || 16);
+                    if (current > 8) updateFontSize(current - 2);
+                }
+            });
+
+            // Activity Logger for Progress
+            function logActivity(action, file = 'playground.java', status = 'Success') {
+                const logs = JSON.parse(localStorage.getItem('ep_activity_logs') || '[]');
+                logs.unshift({
+                    action: action,
+                    file: file,
+                    status: status,
+                    timestamp: Date.now()
+                });
+                // Keep last 100 logs
+                if (logs.length > 100) logs.pop();
+                localStorage.setItem('ep_activity_logs', JSON.stringify(logs));
+            }
+
+            // Hook into core actions
+            const originalRunCode = window.runCode;
+            window.runCode = function () {
+                logActivity('Ran Code', document.getElementById('headerFileName').textContent, 'Executing');
+                if (originalRunCode) originalRunCode();
+            };
+
+            const originalSave = storageManager.confirmSave;
+            storageManager.confirmSave = function () {
+                logActivity('Saved Snippet', document.getElementById('saveTitle').value || 'Unsaved', 'Success');
+                if (originalSave) originalSave.apply(this, arguments);
+            };
+            // Intercept all internal links
+            document.querySelectorAll('.nav-link-intercept, .dropdown-item, .logo, .dropdown-item-intercept').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href && !href.startsWith('#') && !href.includes(':')) {
+                        e.preventDefault();
+                        uiManager.handleNavigation(href);
                     }
-                    // Fallback to Piston API
-                    else if (CompilerConfig.pistonEnabled) {
-                        result = await runWithPiston(code, customInput);
-                    } else {
-                        output.innerHTML = `
-                            <div class="error">⚠️ ${currentLanguage.toUpperCase()} compiler not configured.</div>
-                            <div class="info">✅ Judge0 CE is FREE and enabled by default!</div>
-                            <div class="info">If you see this, there might be a network issue. Try refreshing.</div>
-                            <div class="info" style="margin-top: 0.5rem;">Use JavaScript or Python for guaranteed local execution.</div>`;
+                });
+            });
+
+            function toggleProfileDropdown(e) {
+                e.stopPropagation();
+                const dropdown = document.getElementById('profileDropdown');
+                const isActive = dropdown.style.display === 'block';
+                dropdown.style.display = isActive ? 'none' : 'block';
+            }
+
+            window.addEventListener('click', () => {
+                const dropdown = document.getElementById('profileDropdown');
+                if (dropdown) dropdown.style.display = 'none';
+            });
+
+            async function confirmLanguageSwitchIfReset(oldLang, newLang) {
+                if (!editor) return true;
+                const current = editor.getValue()?.trim() || '';
+                const defCode = (defaultCode[oldLang] || '').trim();
+                if (current === defCode) return true;
+                return await uiManager.confirm('Switch language? Your code differs from default and may be incompatible.', 'Warning');
+            }
+
+            async function changeLanguage(newLanguageParam) {
+                const selectInput = document.getElementById('languageSelect');
+                const newLanguage = newLanguageParam || (selectInput ? selectInput.value : '');
+                const oldLanguage = currentLanguage;
+
+                if (!newLanguage) return;
+
+                if (oldLanguage && oldLanguage !== newLanguage) {
+                    const confirmed = await confirmLanguageSwitchIfReset(oldLanguage, newLanguage);
+                    if (!confirmed) {
+                        if (selectInput) selectInput.value = oldLanguage;
                         return;
                     }
                 }
-                // Other languages
-                else {
-                    result = `<div class="info">Language "${currentLanguage}" execution not yet implemented locally.</div>
-                              <div class="info">Use JavaScript or Python for immediate local execution.</div>`;
+
+                currentLanguage = newLanguage;
+                if (selectInput) selectInput.value = newLanguage;
+
+                const mode = languageModes[currentLanguage] || 'text';
+
+                // Get current editor state
+                let codeToSet = '';
+                const currentCode = editor ? editor.getValue() : '';
+                const oldDefaultCode = defaultCode[oldLanguage] || '';
+                const newDefaultCode = defaultCode[currentLanguage] || '// Write your code here';
+
+                // Logic to determine if we overwrite or keep code
+                if (!currentCode.trim() || currentCode.trim() === oldDefaultCode.trim()) {
+                    codeToSet = newDefaultCode;
+                } else {
+                    codeToSet = currentCode; // Keep user changes
                 }
 
-                const durationMs = Math.round(performance.now() - startTime);
-                const timeEl = document.getElementById('executionTime');
-                if (timeEl) {
-                    timeEl.textContent = durationMs + 'ms';
-                    timeEl.style.display = 'block';
+                // Sync with files object
+                if (files[currentFileId]) {
+                    files[currentFileId].code = codeToSet;
+                    files[currentFileId].language = currentLanguage;
                 }
-                output.innerHTML = result;
-            } catch (error) {
-                output.innerHTML = `<div class="error">❌ Error: ${escapeHtml(error.message)}</div>`;
-                const timeEl = document.getElementById('executionTime');
-                if (timeEl) timeEl.style.display = 'none';
+
+                // Update Ace Editor
+                if (editor) {
+                    editor.getSession().setMode("ace/mode/" + mode);
+                    editor.setValue(codeToSet, -1);
+                }
+
+                // Initialize Pyodide if Python is selected
+                if (currentLanguage === 'python3' || currentLanguage === 'python2') {
+                    initPyodide();
+                }
             }
-        }
 
-        // Run JavaScript code
-        async function runJavaScript(code, input) {
-            return new Promise((resolve) => {
+            // Execute code locally based on language
+            // Execute code locally based on language
+            async function runCode() {
+                const code = editor.getValue();
+                const output = document.getElementById('consoleOutput');
+                const customInput = document.getElementById('customInput').value;
+
+                output.innerHTML = `
+                <div class="info" style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-circle-notch fa-spin" style="font-size: 20px; color: var(--accent-color);"></i>
+                    <div>
+                        <div style="font-weight: 700; color: var(--text-primary);">Executing solution...</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Connecting to secure compiler node...</div>
+                    </div>
+                </div>`;
+                const startTime = performance.now();
+
                 try {
-                    // Capture console.log output
-                    let outputText = '';
-                    const originalLog = console.log;
-                    const originalError = console.error;
+                    let result = '';
 
-                    console.log = (...args) => {
-                        outputText += args.map(arg =>
-                            typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-                        ).join(' ') + '\n';
-                        originalLog.apply(console, args);
-                    };
-
-                    console.error = (...args) => {
-                        outputText += args.map(arg =>
-                            typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-                        ).join(' ') + '\n';
-                        originalError.apply(console, args);
-                    };
-
-                    // Simulate stdin
-                    if (input) {
-                        const inputLines = input.split('\n');
-                        let inputIndex = 0;
-                        window.prompt = () => inputLines[inputIndex++] || '';
-
-                        // Simple readline simulation
-                        if (typeof readline === 'undefined') {
-                            window.readline = () => inputLines[inputIndex++] || '';
+                    // JavaScript - Execute directly in browser
+                    if (currentLanguage === 'javascript') {
+                        result = await runJavaScript(code, customInput);
+                    }
+                    // Python - Use Pyodide
+                    else if (currentLanguage === 'python3' || currentLanguage === 'python2') {
+                        result = await runPython(code, customInput);
+                    }
+                    // Compiled languages
+                    else {
+                        if (CompilerConfig.judge0Enabled) {
+                            result = await runWithJudge0(code, customInput);
+                        } else if (CompilerConfig.pistonEnabled) {
+                            result = await runWithPiston(code, customInput);
+                        } else {
+                            throw new Error("No compiler service configured.");
                         }
                     }
 
-                    // Execute code
-                    eval(code);
+                    const durationMs = Math.round(performance.now() - startTime);
+                    const timeEl = document.getElementById('executionTime');
+                    if (timeEl) {
+                        timeEl.textContent = durationMs + 'ms';
+                        timeEl.style.display = 'block';
+                    }
 
-                    // Restore console
-                    console.log = originalLog;
-                    console.error = originalError;
-
-                    const result = outputText || "(No output)";
-                    resolve(`<div class="success">${escapeHtml(result).replace(/\n/g, "<br>")}</div>`);
+                    // Success or Error formatting
+                    if (result.includes('Error') || result.includes('Exception')) {
+                        logActivity('Ran Code', document.getElementById('headerFileName').textContent, 'Error');
+                        output.innerHTML = `<div class="exec-error">
+                            <div style="margin-bottom: 8px;"><i class="fas fa-times-circle"></i> Runtime Error</div>
+                            <pre style="font-size: 12px; font-family: 'JetBrains Mono';">${escapeHtml(result)}</pre>
+                        </div>`;
+                    } else {
+                        logActivity('Ran Code', document.getElementById('headerFileName').textContent, 'Success');
+                        output.innerHTML = `
+                        <div class="exec-success">
+                            <i class="fas fa-check-circle"></i> Execution Successful
+                        </div>
+                        <div style="padding: 12px; background: #f8fafc; border-radius: 8px; font-family: 'JetBrains Mono';">
+                            <div style="font-size: 11px; color: #64748b; text-transform: uppercase; margin-bottom: 8px;">Output:</div>
+                            <pre style="font-size: 13px;">${escapeHtml(result)}</pre>
+                        </div>`;
+                    }
                 } catch (error) {
-                    resolve(`<div class="error">${escapeHtml(error.message)}</div>`);
+                    logActivity('Ran Code', document.getElementById('headerFileName').textContent, 'Error');
+                    output.innerHTML = `
+                    <div class="exec-error">
+                        <i class="fas fa-exclamation-triangle"></i> Compilation Failed
+                        <div style="font-size: 12px; margin-top: 8px; font-weight: 400;">${escapeHtml(error.message)}</div>
+                    </div>`;
+                    const timeEl = document.getElementById('executionTime');
+                    if (timeEl) timeEl.style.display = 'none';
                 }
-            });
-        }
+            }
 
-        // Run Python code using Pyodide
-        async function runPython(code, input) {
-            try {
-                // Initialize Pyodide if not already loaded
-                if (!pyodide) {
-                    output.innerHTML = '<div class="info">Loading Python runtime...</div>';
-                    await initPyodide();
-                }
+            // Run JavaScript code
+            async function runJavaScript(code, input) {
+                return new Promise((resolve) => {
+                    try {
+                        // Capture console.log output
+                        let outputText = '';
+                        const originalLog = console.log;
+                        const originalError = console.error;
 
-                if (!pyodide) {
-                    return '<div class="error">Failed to load Python runtime. Please refresh the page.</div>';
-                }
+                        console.log = (...args) => {
+                            outputText += args.map(arg =>
+                                typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+                            ).join(' ') + '\n';
+                            originalLog.apply(console, args);
+                        };
 
-                // Set up stdout capture
-                pyodide.runPython(`
+                        console.error = (...args) => {
+                            outputText += args.map(arg =>
+                                typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+                            ).join(' ') + '\n';
+                            originalError.apply(console, args);
+                        };
+
+                        // Simulate stdin
+                        if (input) {
+                            const inputLines = input.split('\n');
+                            let inputIndex = 0;
+                            window.prompt = () => inputLines[inputIndex++] || '';
+
+                            // Simple readline simulation
+                            if (typeof readline === 'undefined') {
+                                window.readline = () => inputLines[inputIndex++] || '';
+                            }
+                        }
+
+                        // Execute code
+                        eval(code);
+
+                        // Restore console
+                        console.log = originalLog;
+                        console.error = originalError;
+
+                        const result = outputText || "(No output)";
+                        resolve(`<div class="success">${escapeHtml(result).replace(/\n/g, "<br>")}</div>`);
+                    } catch (error) {
+                        resolve(`<div class="error">${escapeHtml(error.message)}</div>`);
+                    }
+                });
+            }
+
+            // Run Python code using Pyodide
+            async function runPython(code, input) {
+                try {
+                    // Initialize Pyodide if not already loaded
+                    if (!pyodide) {
+                        output.innerHTML = '<div class="info">Loading Python runtime...</div>';
+                        await initPyodide();
+                    }
+
+                    if (!pyodide) {
+                        return '<div class="error">Failed to load Python runtime. Please refresh the page.</div>';
+                    }
+
+                    // Set up stdout capture
+                    pyodide.runPython(`
                     import sys
                     from io import StringIO
                     sys.stdout = StringIO()
                 `);
 
-                // Set stdin if provided
-                if (input) {
-                    const inputLines = input.split('\n');
+                    // Set stdin if provided
+                    if (input) {
+                        const inputLines = input.split('\n');
 
-                    // Override input() function
-                    pyodide.runPython(`
+                        // Override input() function
+                        pyodide.runPython(`
                         input_lines = ${JSON.stringify(inputLines)}
                         input_index = [0]
                         
@@ -2457,564 +2994,564 @@ echo "Hello, World!"`
                         import builtins
                         builtins.input = _input
                     `);
+                    }
+
+                    // Execute Python code
+                    try {
+                        pyodide.runPython(code);
+                    } catch (e) {
+                        // Error will be caught below
+                        throw e;
+                    }
+
+                    // Get stdout
+                    const outputText = pyodide.runPython('sys.stdout.getvalue()');
+
+                    return `<div class="success">${escapeHtml(outputText || "(No output)").replace(/\n/g, "<br>")}</div>`;
+                } catch (error) {
+                    return `<div class="error">${escapeHtml(error.message)}</div>`;
                 }
-
-                // Execute Python code
-                try {
-                    pyodide.runPython(code);
-                } catch (e) {
-                    // Error will be caught below
-                    throw e;
-                }
-
-                // Get stdout
-                const outputText = pyodide.runPython('sys.stdout.getvalue()');
-
-                return `<div class="success">${escapeHtml(outputText || "(No output)").replace(/\n/g, "<br>")}</div>`;
-            } catch (error) {
-                return `<div class="error">${escapeHtml(error.message)}</div>`;
             }
-        }
 
-        // Run code using Piston API (FREE, no API key needed!)
-        async function runWithPiston(code, input) {
-            try {
-                // Map our language names to Piston language names
-                const pistonLanguageMap = {
+            // Run code using Piston API (FREE, no API key needed!)
+            async function runWithPiston(code, input) {
+                try {
+                    // Map our language names to Piston language names
+                    const pistonLanguageMap = {
+                        'java': 'java',
+                        'c': 'c',
+                        'c99': 'c',
+                        'cpp': 'cpp',
+                        'csharp': 'csharp',
+                        'php': 'php',
+                        'ruby': 'ruby',
+                        'sql': 'sql',
+                        'mysql': 'sql'
+                    };
+
+                    const pistonLang = pistonLanguageMap[currentLanguage];
+                    if (!pistonLang) {
+                        return `<div class="error">Language ${currentLanguage} not supported by Piston API.</div>`;
+                    }
+
+                    // Piston API version map
+                    const pistonVersionMap = {
+                        'java': '15.0.2',
+                        'c': '10.2.0',
+                        'cpp': '10.2.0',
+                        'csharp': '5.0.201',
+                        'php': '8.0.3',
+                        'ruby': '3.0.1',
+                        'sql': '3.35.5'
+                    };
+
+                    const version = pistonVersionMap[pistonLang] || 'latest';
+
+                    const response = await fetch(CompilerConfig.pistonEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            language: pistonLang,
+                            version: version,
+                            files: [{
+                                content: code
+                            }],
+                            stdin: input || ''
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.run) {
+                        const stdout = result.run.stdout || '';
+                        const stderr = result.run.stderr || '';
+
+                        if (stderr) {
+                            return `<div class="error">${escapeHtml(stderr).replace(/\n/g, "<br>")}</div>`;
+                        } else if (stdout) {
+                            return `<div class="success">${escapeHtml(stdout).replace(/\n/g, "<br>")}</div>`;
+                        } else {
+                            return `<div class="info">Code executed successfully (no output)</div>`;
+                        }
+                    } else if (result.compile) {
+                        const compileError = result.compile.stderr || '';
+                        if (compileError) {
+                            return `<div class="error">Compilation Error:<br>${escapeHtml(compileError).replace(/\n/g, "<br>")}</div>`;
+                        }
+                    }
+
+                    return `<div class="info">Execution completed. ${result.message || ''}</div>`;
+                } catch (error) {
+                    return `<div class="error">Compiler Error: ${escapeHtml(error.message)}</div>
+                        <div class="info" style="margin-top: 0.5rem;">Trying alternative compiler...</div>`;
+                }
+            }
+
+            // Run code using Judge0 CE (FREE public endpoint - no API key needed!)
+            async function runWithJudge0(code, input) {
+                try {
+                    const languageId = judge0LanguageMap[currentLanguage];
+                    if (!languageId) {
+                        return `<div class="error">Language ${currentLanguage} not supported by Judge0 CE.</div>`;
+                    }
+
+                    // Prepare headers (only add auth token if provided)
+                    const headers = {
+                        'Content-Type': 'application/json'
+                    };
+                    if (CompilerConfig.judge0AuthToken) {
+                        headers['X-Auth-Token'] = CompilerConfig.judge0AuthToken;
+                    }
+
+                    // Create submission
+                    const response = await fetch(`${CompilerConfig.judge0Endpoint}/submissions?base64_encoded=false`, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify({
+                            source_code: code,
+                            stdin: input || '',
+                            language_id: languageId
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
+                    }
+
+                    const submission = await response.json();
+                    const token = submission.token;
+
+                    if (!token) {
+                        throw new Error('No token received from Judge0');
+                    }
+
+                    // Poll for result (max 30 seconds)
+                    let result = null;
+                    let attempts = 0;
+                    const maxAttempts = 30;
+
+                    while (attempts < maxAttempts) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+
+                        const resultHeaders = {};
+                        if (CompilerConfig.judge0AuthToken) {
+                            resultHeaders['X-Auth-Token'] = CompilerConfig.judge0AuthToken;
+                        }
+
+                        const resultResponse = await fetch(`${CompilerConfig.judge0Endpoint}/submissions/${token}?base64_encoded=false`, {
+                            headers: resultHeaders
+                        });
+
+                        if (!resultResponse.ok) {
+                            throw new Error(`HTTP ${resultResponse.status}: ${resultResponse.statusText}`);
+                        }
+
+                        result = await resultResponse.json();
+
+                        // Check if submission is done (status.id 1-3 are terminal states)
+                        // Status IDs: 1=In Queue, 2=Processing, 3=Accepted, 4=Wrong Answer, etc.
+                        if (result.status && result.status.id >= 3) {
+                            break;
+                        }
+
+                        attempts++;
+                    }
+
+                    if (!result) {
+                        return `<div class="error">Timeout: Submission took too long to process.</div>`;
+                    }
+
+                    // Handle result based on status
+                    const statusId = result.status?.id;
+                    const statusDesc = result.status?.description || 'Unknown';
+
+                    // Status 3 = Accepted
+                    if (statusId === 3) {
+                        const stdout = result.stdout || '';
+                        if (stdout) {
+                            return `<div class="success">${escapeHtml(stdout).replace(/\n/g, "<br>")}</div>`;
+                        } else {
+                            return `<div class="info">Code executed successfully (no output)</div>`;
+                        }
+                    }
+                    // Compilation Error (status 6)
+                    else if (statusId === 6) {
+                        const compileError = result.compile_output || '';
+                        return `<div class="error">Compilation Error:<br>${escapeHtml(compileError).replace(/\n/g, "<br>")}</div>`;
+                    }
+                    // Runtime Error (status 11) or other errors
+                    else if (result.stderr) {
+                        return `<div class="error">${statusDesc}:<br>${escapeHtml(result.stderr).replace(/\n/g, "<br>")}</div>`;
+                    }
+                    // Other statuses (Wrong Answer, Time Limit Exceeded, etc.)
+                    else {
+                        const stdout = result.stdout || '';
+                        const message = result.message || statusDesc;
+                        let output = `<div class="${statusId === 3 ? 'success' : 'error'}">${escapeHtml(message)}</div>`;
+                        if (stdout) {
+                            output += `<div class="info" style="margin-top: 0.5rem;">Output:<br>${escapeHtml(stdout).replace(/\n/g, "<br>")}</div>`;
+                        }
+                        return output;
+                    }
+                } catch (error) {
+                    return `<div class="error">Judge0 Error: ${escapeHtml(error.message)}</div>`;
+                }
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function getFileExtension() {
+                const extensions = {
                     'java': 'java',
                     'c': 'c',
                     'c99': 'c',
                     'cpp': 'cpp',
-                    'csharp': 'csharp',
-                    'php': 'php',
-                    'ruby': 'ruby',
+                    'javascript': 'js',
+                    'python2': 'py',
+                    'python3': 'py',
                     'sql': 'sql',
-                    'mysql': 'sql'
+                    'ruby': 'rb',
+                    'csharp': 'cs',
+                    'php': 'php',
+                    'mysql': 'sql',
+                    'bash': 'sh'
                 };
-
-                const pistonLang = pistonLanguageMap[currentLanguage];
-                if (!pistonLang) {
-                    return `<div class="error">Language ${currentLanguage} not supported by Piston API.</div>`;
-                }
-
-                // Piston API version map
-                const pistonVersionMap = {
-                    'java': '15.0.2',
-                    'c': '10.2.0',
-                    'cpp': '10.2.0',
-                    'csharp': '5.0.201',
-                    'php': '8.0.3',
-                    'ruby': '3.0.1',
-                    'sql': '3.35.5'
-                };
-
-                const version = pistonVersionMap[pistonLang] || 'latest';
-
-                const response = await fetch(CompilerConfig.pistonEndpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        language: pistonLang,
-                        version: version,
-                        files: [{
-                            content: code
-                        }],
-                        stdin: input || ''
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-
-                if (result.run) {
-                    const stdout = result.run.stdout || '';
-                    const stderr = result.run.stderr || '';
-
-                    if (stderr) {
-                        return `<div class="error">${escapeHtml(stderr).replace(/\n/g, "<br>")}</div>`;
-                    } else if (stdout) {
-                        return `<div class="success">${escapeHtml(stdout).replace(/\n/g, "<br>")}</div>`;
-                    } else {
-                        return `<div class="info">Code executed successfully (no output)</div>`;
-                    }
-                } else if (result.compile) {
-                    const compileError = result.compile.stderr || '';
-                    if (compileError) {
-                        return `<div class="error">Compilation Error:<br>${escapeHtml(compileError).replace(/\n/g, "<br>")}</div>`;
-                    }
-                }
-
-                return `<div class="info">Execution completed. ${result.message || ''}</div>`;
-            } catch (error) {
-                return `<div class="error">Compiler Error: ${escapeHtml(error.message)}</div>
-                        <div class="info" style="margin-top: 0.5rem;">Trying alternative compiler...</div>`;
-            }
-        }
-
-        // Run code using Judge0 CE (FREE public endpoint - no API key needed!)
-        async function runWithJudge0(code, input) {
-            try {
-                const languageId = judge0LanguageMap[currentLanguage];
-                if (!languageId) {
-                    return `<div class="error">Language ${currentLanguage} not supported by Judge0 CE.</div>`;
-                }
-
-                // Prepare headers (only add auth token if provided)
-                const headers = {
-                    'Content-Type': 'application/json'
-                };
-                if (CompilerConfig.judge0AuthToken) {
-                    headers['X-Auth-Token'] = CompilerConfig.judge0AuthToken;
-                }
-
-                // Create submission
-                const response = await fetch(`${CompilerConfig.judge0Endpoint}/submissions?base64_encoded=false`, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        source_code: code,
-                        stdin: input || '',
-                        language_id: languageId
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
-                }
-
-                const submission = await response.json();
-                const token = submission.token;
-
-                if (!token) {
-                    throw new Error('No token received from Judge0');
-                }
-
-                // Poll for result (max 30 seconds)
-                let result = null;
-                let attempts = 0;
-                const maxAttempts = 30;
-
-                while (attempts < maxAttempts) {
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    const resultHeaders = {};
-                    if (CompilerConfig.judge0AuthToken) {
-                        resultHeaders['X-Auth-Token'] = CompilerConfig.judge0AuthToken;
-                    }
-
-                    const resultResponse = await fetch(`${CompilerConfig.judge0Endpoint}/submissions/${token}?base64_encoded=false`, {
-                        headers: resultHeaders
-                    });
-
-                    if (!resultResponse.ok) {
-                        throw new Error(`HTTP ${resultResponse.status}: ${resultResponse.statusText}`);
-                    }
-
-                    result = await resultResponse.json();
-
-                    // Check if submission is done (status.id 1-3 are terminal states)
-                    // Status IDs: 1=In Queue, 2=Processing, 3=Accepted, 4=Wrong Answer, etc.
-                    if (result.status && result.status.id >= 3) {
-                        break;
-                    }
-
-                    attempts++;
-                }
-
-                if (!result) {
-                    return `<div class="error">Timeout: Submission took too long to process.</div>`;
-                }
-
-                // Handle result based on status
-                const statusId = result.status?.id;
-                const statusDesc = result.status?.description || 'Unknown';
-
-                // Status 3 = Accepted
-                if (statusId === 3) {
-                    const stdout = result.stdout || '';
-                    if (stdout) {
-                        return `<div class="success">${escapeHtml(stdout).replace(/\n/g, "<br>")}</div>`;
-                    } else {
-                        return `<div class="info">Code executed successfully (no output)</div>`;
-                    }
-                }
-                // Compilation Error (status 6)
-                else if (statusId === 6) {
-                    const compileError = result.compile_output || '';
-                    return `<div class="error">Compilation Error:<br>${escapeHtml(compileError).replace(/\n/g, "<br>")}</div>`;
-                }
-                // Runtime Error (status 11) or other errors
-                else if (result.stderr) {
-                    return `<div class="error">${statusDesc}:<br>${escapeHtml(result.stderr).replace(/\n/g, "<br>")}</div>`;
-                }
-                // Other statuses (Wrong Answer, Time Limit Exceeded, etc.)
-                else {
-                    const stdout = result.stdout || '';
-                    const message = result.message || statusDesc;
-                    let output = `<div class="${statusId === 3 ? 'success' : 'error'}">${escapeHtml(message)}</div>`;
-                    if (stdout) {
-                        output += `<div class="info" style="margin-top: 0.5rem;">Output:<br>${escapeHtml(stdout).replace(/\n/g, "<br>")}</div>`;
-                    }
-                    return output;
-                }
-            } catch (error) {
-                return `<div class="error">Judge0 Error: ${escapeHtml(error.message)}</div>`;
-            }
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function getFileExtension() {
-            const extensions = {
-                'java': 'java',
-                'c': 'c',
-                'c99': 'c',
-                'cpp': 'cpp',
-                'javascript': 'js',
-                'python2': 'py',
-                'python3': 'py',
-                'sql': 'sql',
-                'ruby': 'rb',
-                'csharp': 'cs',
-                'php': 'php',
-                'mysql': 'sql',
-                'bash': 'sh'
-            };
-            return extensions[currentLanguage] || 'txt';
-        }
-
-        function clearConsole() {
-            document.getElementById('consoleOutput').innerHTML =
-                '<div class="info">Console cleared. Ready to run code.</div>';
-        }
-
-        // Tab Management Functions
-        function createNewFile() {
-            fileCounter++;
-            const fileId = `file-${fileCounter}`;
-            const fileName = `Untitled-${fileCounter}`;
-
-            // Save current file
-            if (files[currentFileId]) {
-                files[currentFileId].code = editor.getValue();
+                return extensions[currentLanguage] || 'txt';
             }
 
-            // Create new file
-            files[fileId] = {
-                name: fileName,
-                language: currentLanguage,
-                code: defaultCode[currentLanguage] || '// Write your code here'
-            };
+            function clearConsole() {
+                document.getElementById('consoleOutput').innerHTML =
+                    '<div class="info">Console cleared. Ready to run code.</div>';
+            }
 
-            // Create tab button
-            const tabsContainer = document.getElementById('tabsContainer');
-            const tabWorkspace = tabsContainer.querySelector('.tab-workspace');
+            // Tab Management Functions
+            function createNewFile() {
+                fileCounter++;
+                const fileId = `file-${fileCounter}`;
+                const fileName = `Untitled-${fileCounter}`;
 
-            const tabButton = document.createElement('button');
-            tabButton.className = 'tab-item';
-            tabButton.id = `tab-${fileId}`;
-            tabButton.innerHTML = `
+                // Save current file
+                if (files[currentFileId]) {
+                    files[currentFileId].code = editor.getValue();
+                }
+
+                // Create new file
+                files[fileId] = {
+                    name: fileName,
+                    language: currentLanguage,
+                    code: defaultCode[currentLanguage] || '// Write your code here'
+                };
+
+                // Create tab button
+                const tabsContainer = document.getElementById('tabsContainer');
+                const tabWorkspace = tabsContainer.querySelector('.tab-workspace');
+
+                const tabButton = document.createElement('button');
+                tabButton.className = 'tab-item';
+                tabButton.id = `tab-${fileId}`;
+                tabButton.innerHTML = `
                 <span>${fileName}</span>
                 <button class="tab-close" onclick="event.stopPropagation(); closeFile('${fileId}')" title="Close">×</button>
             `;
-            tabButton.onclick = () => switchFile(fileId);
+                tabButton.onclick = () => switchFile(fileId);
 
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
-
-            // Insert before workspace
-            tabsContainer.insertBefore(tabButton, tabWorkspace);
-            tabButton.classList.add('active');
-
-            // Switch to new file
-            switchFile(fileId);
-        }
-
-        function switchFile(fileId) {
-            // Save current file
-            if (files[currentFileId]) {
-                files[currentFileId].code = editor.getValue();
-            }
-
-            // Load new file
-            currentFileId = fileId;
-            const file = files[fileId];
-
-            if (file) {
-                currentLanguage = file.language;
-                document.getElementById('languageSelect').value = currentLanguage;
-
-                if (editor && editor.getModel()) {
-                    const mode = languageModes[currentLanguage];
-                    monaco.editor.setModelLanguage(editor.getModel(), mode);
-                    editor.setValue(file.code);
-                }
-
-                // Update active tab
+                // Remove active class from all tabs
                 document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
-                const activeTab = document.getElementById(`tab-${fileId}`);
-                if (activeTab) activeTab.classList.add('active');
-            }
-        }
 
-        async function closeFile(fileId) {
-            if (Object.keys(files).length <= 1) {
-                uiManager.alert('Cannot close the last file!', 'Error');
-                return;
+                // Insert before workspace
+                tabsContainer.insertBefore(tabButton, tabWorkspace);
+                tabButton.classList.add('active');
+
+                // Switch to new file
+                switchFile(fileId);
             }
 
-            // Save current file before closing
-            if (files[currentFileId]) {
-                files[currentFileId].code = editor.getValue();
-            }
+            function switchFile(fileId) {
+                // Save current file
+                if (files[currentFileId]) {
+                    files[currentFileId].code = editor.getValue();
+                }
 
-            // Remove file
-            delete files[fileId];
+                // Load new file
+                currentFileId = fileId;
+                const file = files[fileId];
 
-            // Remove tab
-            const tab = document.getElementById(`tab-${fileId}`);
-            if (tab) tab.remove();
+                if (file) {
+                    currentLanguage = file.language;
+                    document.getElementById('languageSelect').value = currentLanguage;
 
-            // Switch to another file if current was closed
-            if (currentFileId === fileId) {
-                const remainingFiles = Object.keys(files);
-                if (remainingFiles.length > 0) {
-                    switchFile(remainingFiles[0]);
+                    if (editor) {
+                        const mode = languageModes[currentLanguage] || 'text';
+                        editor.getSession().setMode("ace/mode/" + mode);
+                        editor.setValue(file.code, -1);
+                    }
+
+                    // Update active tab
+                    document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+                    const activeTab = document.getElementById(`tab-${fileId}`);
+                    if (activeTab) activeTab.classList.add('active');
                 }
             }
-        }
 
-        // Settings Functions
-        function openSettings() {
-            document.getElementById('settingsModal').classList.add('active');
-        }
+            async function closeFile(fileId) {
+                if (Object.keys(files).length <= 1) {
+                    uiManager.alert('Cannot close the last file!', 'Error');
+                    return;
+                }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.remove('active');
-        }
+                // Save current file before closing
+                if (files[currentFileId]) {
+                    files[currentFileId].code = editor.getValue();
+                }
 
-        function updateFontSize(size) {
-            // Cap the editor font size at 24px as requested
-            const fontSize = Math.min(24, parseInt(size));
-            document.getElementById('fontSizeValue').textContent = fontSize;
-            if (document.getElementById('fontSizeSlider')) document.getElementById('fontSizeSlider').value = fontSize;
-            if (document.getElementById('fontSizeInput')) document.getElementById('fontSizeInput').value = fontSize;
-            if (editor) {
-                editor.updateOptions({ fontSize: fontSize });
-            }
-            localStorage.setItem('editorFontSize', fontSize);
-        }
+                // Remove file
+                delete files[fileId];
 
-        function changeEditorTextColor(colorKey) {
-            let colorValue = '#ffffff';
-            if (colorKey === 'soft-white') colorValue = '#f3f4f6';
-            else if (colorKey === 'blue') colorValue = '#1d4ed8';
-            else if (colorKey === 'soft-blue') colorValue = '#93c5fd';
-            else if (colorKey === 'cyan') colorValue = '#22d3ee';
-            else if (colorKey === 'amber') colorValue = '#f59e0b';
-            else if (colorKey === 'yellow') colorValue = '#facc15';
-            else if (colorKey === 'lime') colorValue = '#84cc16';
-            else if (colorKey === 'pink') colorValue = '#ec4899';
-            else if (colorKey === 'orange') colorValue = '#fb923c';
-            else if (colorKey === 'light-green') colorValue = '#86efac';
-            else if (colorKey === 'lavender') colorValue = '#c4b5fd';
-            document.documentElement.style.setProperty('--editor-fg', colorValue);
-            const currentBgKey = localStorage.getItem('editorBgColor') || 'graphite';
-            const isLightBg = ['white', 'cream', 'solarized-light', 'light-blue'].includes(currentBgKey);
-            document.documentElement.style.setProperty('--cursor-color', isLightBg ? '#111827' : colorValue);
-            if (editor) {
-                // In Monaco, we don't 'refresh' like CodeMirror, but we can update options if needed
-            }
-            document.querySelectorAll('.editor-color-option').forEach(opt => {
-                if (opt.hasAttribute('data-color')) {
-                    opt.classList.remove('active');
-                    if (opt.getAttribute('data-color') === colorKey) {
-                        opt.classList.add('active');
+                // Remove tab
+                const tab = document.getElementById(`tab-${fileId}`);
+                if (tab) tab.remove();
+
+                // Switch to another file if current was closed
+                if (currentFileId === fileId) {
+                    const remainingFiles = Object.keys(files);
+                    if (remainingFiles.length > 0) {
+                        switchFile(remainingFiles[0]);
                     }
                 }
-            });
-            localStorage.setItem('editorTextColor', colorKey);
-        }
-
-        function changeEditorBackgroundColor(bgKey) {
-            // Updated to use our premium custom theme
-            if (editor) {
-                monaco.editor.setTheme('testpad-light');
             }
-            document.documentElement.style.setProperty('--editor-bg', '#ffffff');
-            document.documentElement.style.setProperty('--editor-fg', '#24292f');
-            localStorage.setItem('editorBgColor', 'white');
-        }
 
-        function changeTheme(theme) {
-            const codingSection = document.querySelector('.coding-practice-section');
-            const allThemes = ['white', 'light-blue', 'deep-blue', 'black', 'graphite', 'green', 'monaco-dark', 'ocean', 'solarized-light', 'solarized-dark', 'midnight', 'cream'].map(t => 'theme-' + t);
-            codingSection.classList.remove(...allThemes);
-            codingSection.classList.add('theme-' + theme);
-            document.querySelectorAll('.theme-option').forEach(opt => {
-                opt.classList.remove('active');
-                if (opt.onclick && opt.onclick.toString().includes(`'${theme}'`)) {
-                    opt.classList.add('active');
+            // Settings Functions
+            function openSettings() {
+                document.getElementById('settingsModal').classList.add('active');
+            }
+
+            function closeSettings() {
+                document.getElementById('settingsModal').classList.remove('active');
+            }
+
+            function updateFontSize(size) {
+                // Cap the editor font size at 24px as requested
+                const fontSize = Math.min(24, parseInt(size));
+                document.getElementById('fontSizeValue').textContent = fontSize;
+                if (document.getElementById('fontSizeSlider')) document.getElementById('fontSizeSlider').value = fontSize;
+                if (document.getElementById('fontSizeInput')) document.getElementById('fontSizeInput').value = fontSize;
+                if (editor) {
+                    editor.setOptions({ fontSize: fontSize + "px" });
                 }
-            });
-            localStorage.setItem('backgroundTheme', theme);
-        }
-
-        function loadSettings() {
-            const savedFontSize = localStorage.getItem('editorFontSize');
-            if (savedFontSize) {
-                updateFontSize(savedFontSize);
+                localStorage.setItem('editorFontSize', fontSize);
             }
-            const savedTheme = localStorage.getItem('backgroundTheme');
-            if (savedTheme) {
+
+            function changeEditorTextColor(colorKey) {
+                let colorValue = '#ffffff';
+                if (colorKey === 'soft-white') colorValue = '#f3f4f6';
+                else if (colorKey === 'blue') colorValue = '#1d4ed8';
+                else if (colorKey === 'soft-blue') colorValue = '#93c5fd';
+                else if (colorKey === 'cyan') colorValue = '#22d3ee';
+                else if (colorKey === 'amber') colorValue = '#f59e0b';
+                else if (colorKey === 'yellow') colorValue = '#facc15';
+                else if (colorKey === 'lime') colorValue = '#84cc16';
+                else if (colorKey === 'pink') colorValue = '#ec4899';
+                else if (colorKey === 'orange') colorValue = '#fb923c';
+                else if (colorKey === 'light-green') colorValue = '#86efac';
+                else if (colorKey === 'lavender') colorValue = '#c4b5fd';
+                document.documentElement.style.setProperty('--editor-fg', colorValue);
+                const currentBgKey = localStorage.getItem('editorBgColor') || 'graphite';
+                const isLightBg = ['white', 'cream', 'solarized-light', 'light-blue'].includes(currentBgKey);
+                document.documentElement.style.setProperty('--cursor-color', isLightBg ? '#111827' : colorValue);
+                if (editor) {
+                    // In Monaco, we don't 'refresh' like CodeMirror, but we can update options if needed
+                }
+                document.querySelectorAll('.editor-color-option').forEach(opt => {
+                    if (opt.hasAttribute('data-color')) {
+                        opt.classList.remove('active');
+                        if (opt.getAttribute('data-color') === colorKey) {
+                            opt.classList.add('active');
+                        }
+                    }
+                });
+                localStorage.setItem('editorTextColor', colorKey);
+            }
+
+            function changeEditorBackgroundColor(bgKey) {
+                // Updated to use our premium custom theme
+                if (editor) {
+                    editor.setTheme("ace/theme/chrome");
+                }
+                document.documentElement.style.setProperty('--editor-bg', '#ffffff');
+                document.documentElement.style.setProperty('--editor-fg', '#24292f');
+                localStorage.setItem('editorBgColor', 'white');
+            }
+
+            function changeTheme(theme) {
                 const codingSection = document.querySelector('.coding-practice-section');
-                if (codingSection) {
-                    const allThemes = ['white', 'light-blue', 'deep-blue', 'black', 'graphite', 'green', 'monaco-dark', 'ocean', 'solarized-light', 'solarized-dark', 'midnight', 'cream'].map(t => 'theme-' + t);
-                    codingSection.classList.remove(...allThemes);
-                    codingSection.classList.add('theme-' + savedTheme);
+                const allThemes = ['white', 'light-blue', 'deep-blue', 'black', 'graphite', 'green', 'ace-light', 'ocean', 'solarized-light', 'solarized-dark', 'midnight', 'cream'].map(t => 'theme-' + t);
+                codingSection.classList.remove(...allThemes);
+                codingSection.classList.add('theme-' + theme);
+                document.querySelectorAll('.theme-option').forEach(opt => {
+                    opt.classList.remove('active');
+                    if (opt.onclick && opt.onclick.toString().includes(`'${theme}'`)) {
+                        opt.classList.add('active');
+                    }
+                });
+                localStorage.setItem('backgroundTheme', theme);
+            }
+
+            function loadSettings() {
+                const savedFontSize = localStorage.getItem('editorFontSize');
+                if (savedFontSize) {
+                    updateFontSize(savedFontSize);
                 }
-                document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
-                const themeOption = Array.from(document.querySelectorAll('.theme-option')).find(opt =>
-                    opt.onclick.toString().includes(`'${savedTheme}'`)
-                );
-                if (themeOption) themeOption.classList.add('active');
+                const savedTheme = localStorage.getItem('backgroundTheme');
+                if (savedTheme) {
+                    const codingSection = document.querySelector('.coding-practice-section');
+                    if (codingSection) {
+                        const allThemes = ['white', 'light-blue', 'deep-blue', 'black', 'graphite', 'green', 'ace-light', 'ocean', 'solarized-light', 'solarized-dark', 'midnight', 'cream'].map(t => 'theme-' + t);
+                        codingSection.classList.remove(...allThemes);
+                        codingSection.classList.add('theme-' + savedTheme);
+                    }
+                    document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                    const themeOption = Array.from(document.querySelectorAll('.theme-option')).find(opt =>
+                        opt.onclick.toString().includes(`'${savedTheme}'`)
+                    );
+                    if (themeOption) themeOption.classList.add('active');
+                }
+                const savedAuthToken = localStorage.getItem('judge0AuthToken');
+                if (savedAuthToken) {
+                    CompilerConfig.judge0AuthToken = savedAuthToken;
+                }
+                const savedTextColor = localStorage.getItem('editorTextColor') || 'black';
+                changeEditorTextColor(savedTextColor);
+                const savedBgColor = localStorage.getItem('editorBgColor') || 'white';
+                changeEditorBackgroundColor(savedBgColor);
             }
-            const savedAuthToken = localStorage.getItem('judge0AuthToken');
-            if (savedAuthToken) {
-                CompilerConfig.judge0AuthToken = savedAuthToken;
+
+            function saveJudge0AuthToken() {
+                const input = document.getElementById('judge0AuthTokenInput');
+                const authToken = input.value.trim();
+
+                if (authToken) {
+                    localStorage.setItem('judge0AuthToken', authToken);
+                    CompilerConfig.judge0AuthToken = authToken;
+                    uiManager.alert('Judge0 authentication token saved successfully!', 'Success');
+                } else {
+                    localStorage.removeItem('judge0AuthToken');
+                    CompilerConfig.judge0AuthToken = null;
+                    uiManager.alert('Judge0 authentication token removed. Using public endpoint.', 'Notice');
+                }
             }
-            const savedTextColor = localStorage.getItem('editorTextColor') || 'black';
-            changeEditorTextColor(savedTextColor);
-            const savedBgColor = localStorage.getItem('editorBgColor') || 'white';
-            changeEditorBackgroundColor(savedBgColor);
-        }
 
-        function saveJudge0AuthToken() {
-            const input = document.getElementById('judge0AuthTokenInput');
-            const authToken = input.value.trim();
+            // Upload/Download Functions
+            function uploadFile() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.java,.c,.cpp,.js,.py,.rb,.cs,.php,.sql,.sh';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            // Save current file
+                            if (files[currentFileId]) {
+                                files[currentFileId].code = editor.getValue();
+                            }
 
-            if (authToken) {
-                localStorage.setItem('judge0AuthToken', authToken);
-                CompilerConfig.judge0AuthToken = authToken;
-                uiManager.alert('Judge0 authentication token saved successfully!', 'Success');
-            } else {
-                localStorage.removeItem('judge0AuthToken');
-                CompilerConfig.judge0AuthToken = null;
-                uiManager.alert('Judge0 authentication token removed. Using public endpoint.', 'Notice');
-            }
-        }
+                            // Detect language from extension
+                            const ext = file.name.split('.').pop().toLowerCase();
+                            const langMap = {
+                                'java': 'java',
+                                'c': 'c',
+                                'cpp': 'cpp',
+                                'js': 'javascript',
+                                'py': 'python3',
+                                'rb': 'ruby',
+                                'cs': 'csharp',
+                                'php': 'php',
+                                'sql': 'sql',
+                                'sh': 'bash'
+                            };
 
-        // Upload/Download Functions
-        function uploadFile() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.java,.c,.cpp,.js,.py,.rb,.cs,.php,.sql,.sh';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        // Save current file
-                        if (files[currentFileId]) {
-                            files[currentFileId].code = editor.getValue();
-                        }
+                            if (langMap[ext]) {
+                                currentLanguage = langMap[ext];
+                                document.getElementById('languageSelect').value = currentLanguage;
+                                changeLanguage();
+                            }
 
-                        // Detect language from extension
-                        const ext = file.name.split('.').pop().toLowerCase();
-                        const langMap = {
-                            'java': 'java',
-                            'c': 'c',
-                            'cpp': 'cpp',
-                            'js': 'javascript',
-                            'py': 'python3',
-                            'rb': 'ruby',
-                            'cs': 'csharp',
-                            'php': 'php',
-                            'sql': 'sql',
-                            'sh': 'bash'
+                            editor.setValue(e.target.result);
                         };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            }
 
-                        if (langMap[ext]) {
-                            currentLanguage = langMap[ext];
-                            document.getElementById('languageSelect').value = currentLanguage;
-                            changeLanguage();
-                        }
+            function downloadFile() {
+                const code = editor.getValue();
+                const ext = getFileExtension();
+                const fileName = files[currentFileId]?.name || 'code';
 
-                        editor.setValue(e.target.result);
-                    };
-                    reader.readAsText(file);
+                const blob = new Blob([code], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${fileName}.${ext}`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            // Test Cases Functions
+            function toggleTestCases() {
+                const panel = document.getElementById('testCasesPanel');
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            }
+
+            function togglePanel(panelId) {
+                const panel = document.getElementById(panelId);
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            }
+
+            function addTestCase() {
+                const testCaseId = `test-${Date.now()}`;
+                testCases.push({
+                    id: testCaseId,
+                    input: '',
+                    expectedOutput: '',
+                    hidden: false,
+                    result: 'pending'
+                });
+                renderTestCases();
+            }
+
+            function removeTestCase(id) {
+                testCases = testCases.filter(tc => tc.id !== id);
+                renderTestCases();
+            }
+
+            function updateTestCase(id, field, value) {
+                const testCase = testCases.find(tc => tc.id === id);
+                if (testCase) {
+                    testCase[field] = value;
                 }
-            };
-            input.click();
-        }
-
-        function downloadFile() {
-            const code = editor.getValue();
-            const ext = getFileExtension();
-            const fileName = files[currentFileId]?.name || 'code';
-
-            const blob = new Blob([code], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${fileName}.${ext}`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Test Cases Functions
-        function toggleTestCases() {
-            const panel = document.getElementById('testCasesPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function togglePanel(panelId) {
-            const panel = document.getElementById(panelId);
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function addTestCase() {
-            const testCaseId = `test-${Date.now()}`;
-            testCases.push({
-                id: testCaseId,
-                input: '',
-                expectedOutput: '',
-                hidden: false,
-                result: 'pending'
-            });
-            renderTestCases();
-        }
-
-        function removeTestCase(id) {
-            testCases = testCases.filter(tc => tc.id !== id);
-            renderTestCases();
-        }
-
-        function updateTestCase(id, field, value) {
-            const testCase = testCases.find(tc => tc.id === id);
-            if (testCase) {
-                testCase[field] = value;
-            }
-        }
-
-        function renderTestCases() {
-            const container = document.getElementById('testCasesContent');
-            if (testCases.length === 0) {
-                container.innerHTML = '<div class="info" style="padding: 1rem;">No test cases yet. Click + to add one.</div>';
-                return;
             }
 
-            container.innerHTML = testCases.map(tc => `
+            function renderTestCases() {
+                const container = document.getElementById('testCasesContent');
+                if (testCases.length === 0) {
+                    container.innerHTML = '<div class="info" style="padding: 1rem;">No test cases yet. Click + to add one.</div>';
+                    return;
+                }
+
+                container.innerHTML = testCases.map(tc => `
                 <div class="test-case-item">
                     <div class="test-case-input">
                         <label>Input</label>
@@ -3027,8 +3564,8 @@ echo "Hello, World!"`
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center; min-width: 120px;">
                         <div class="test-case-result ${tc.result}" id="result-${tc.id}" style="width: 100%; text-align: center;">
                             ${tc.result === 'pass' ? '<i class="fas fa-check-circle"></i> Pass' :
-                    tc.result === 'fail' ? '<i class="fas fa-times-circle"></i> Fail' :
-                        '<i class="fas fa-clock"></i> Pending'}
+                        tc.result === 'fail' ? '<i class="fas fa-times-circle"></i> Fail' :
+                            '<i class="fas fa-clock"></i> Pending'}
                         </div>
                         ${tc.result === 'fail' && tc.actualOutput ? `
                             <div style="font-size: 0.75rem; color: #6b7280; max-width: 100%; word-break: break-word; text-align: center;">
@@ -3044,120 +3581,120 @@ echo "Hello, World!"`
                     </div>
                 </div>
             `).join('');
-        }
-
-        async function runTestCases() {
-            if (testCases.length === 0) {
-                await uiManager.alert('Please add at least one test case before running.', 'No Test Cases');
-                toggleTestCases();
-                return;
             }
 
-            const code = editor.getValue();
-            const output = document.getElementById('consoleOutput');
+            async function runTestCases() {
+                if (testCases.length === 0) {
+                    await uiManager.alert('Please add at least one test case before running.', 'No Test Cases');
+                    toggleTestCases();
+                    return;
+                }
 
-            output.innerHTML = '<div class="info">Running test cases...</div>';
+                const code = editor.getValue();
+                const output = document.getElementById('consoleOutput');
 
-            let passed = 0;
-            let failed = 0;
+                output.innerHTML = '<div class="info">Running test cases...</div>';
 
-            for (const testCase of testCases) {
-                if (!testCase.input && !testCase.expectedOutput) continue;
+                let passed = 0;
+                let failed = 0;
 
-                testCase.result = 'pending';
-                renderTestCases();
+                for (const testCase of testCases) {
+                    if (!testCase.input && !testCase.expectedOutput) continue;
 
-                try {
-                    let actualOutput = '';
+                    testCase.result = 'pending';
+                    renderTestCases();
 
-                    // Run code with test input
-                    const customInput = document.getElementById('customInput');
-                    const originalInput = customInput.value;
-                    customInput.value = testCase.input;
+                    try {
+                        let actualOutput = '';
 
-                    // Execute based on language
-                    let result = '';
-                    if (currentLanguage === 'javascript') {
-                        result = await runJavaScript(code, testCase.input);
-                        actualOutput = extractOutput(result);
-                    } else if (currentLanguage === 'python3' || currentLanguage === 'python2') {
-                        result = await runPython(code, testCase.input);
-                        actualOutput = extractOutput(result);
-                    } else if (['java', 'c', 'c99', 'cpp', 'csharp', 'php', 'ruby', 'sql', 'mysql', 'bash'].includes(currentLanguage)) {
-                        // Use Judge0 CE for compiled languages (with Piston fallback)
-                        if (CompilerConfig.judge0Enabled) {
-                            result = await runWithJudge0(code, testCase.input);
+                        // Run code with test input
+                        const customInput = document.getElementById('customInput');
+                        const originalInput = customInput.value;
+                        customInput.value = testCase.input;
+
+                        // Execute based on language
+                        let result = '';
+                        if (currentLanguage === 'javascript') {
+                            result = await runJavaScript(code, testCase.input);
                             actualOutput = extractOutput(result);
-                            // If Judge0 fails, try Piston
-                            if (result.includes('Error') && CompilerConfig.pistonEnabled) {
+                        } else if (currentLanguage === 'python3' || currentLanguage === 'python2') {
+                            result = await runPython(code, testCase.input);
+                            actualOutput = extractOutput(result);
+                        } else if (['java', 'c', 'c99', 'cpp', 'csharp', 'php', 'ruby', 'sql', 'mysql', 'bash'].includes(currentLanguage)) {
+                            // Use Judge0 CE for compiled languages (with Piston fallback)
+                            if (CompilerConfig.judge0Enabled) {
+                                result = await runWithJudge0(code, testCase.input);
+                                actualOutput = extractOutput(result);
+                                // If Judge0 fails, try Piston
+                                if (result.includes('Error') && CompilerConfig.pistonEnabled) {
+                                    result = await runWithPiston(code, testCase.input);
+                                    actualOutput = extractOutput(result);
+                                }
+                            } else if (CompilerConfig.pistonEnabled) {
                                 result = await runWithPiston(code, testCase.input);
                                 actualOutput = extractOutput(result);
                             }
-                        } else if (CompilerConfig.pistonEnabled) {
-                            result = await runWithPiston(code, testCase.input);
-                            actualOutput = extractOutput(result);
+                        } else {
+                            output.innerHTML += `<div class="error">Test cases not supported for ${currentLanguage} yet.</div>`;
+                            continue;
                         }
-                    } else {
-                        output.innerHTML += `<div class="error">Test cases not supported for ${currentLanguage} yet.</div>`;
-                        continue;
-                    }
 
-                    // Compare outputs (trim whitespace and normalize line endings)
-                    const expected = String(testCase.expectedOutput).trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                    const actual = actualOutput.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                        // Compare outputs (trim whitespace and normalize line endings)
+                        const expected = String(testCase.expectedOutput).trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                        const actual = actualOutput.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
-                    // Check if actual output matches expected (exact match or contains expected)
-                    const exactMatch = expected === actual;
-                    const containsMatch = expected && actual.includes(expected);
+                        // Check if actual output matches expected (exact match or contains expected)
+                        const exactMatch = expected === actual;
+                        const containsMatch = expected && actual.includes(expected);
 
-                    if (exactMatch || (containsMatch && expected.length > 0)) {
-                        testCase.result = 'pass';
-                        testCase.actualOutput = actual;
-                        passed++;
-                    } else {
+                        if (exactMatch || (containsMatch && expected.length > 0)) {
+                            testCase.result = 'pass';
+                            testCase.actualOutput = actual;
+                            passed++;
+                        } else {
+                            testCase.result = 'fail';
+                            testCase.actualOutput = actual;
+                            failed++;
+                        }
+
+                        customInput.value = originalInput;
+                        renderTestCases();
+                    } catch (error) {
                         testCase.result = 'fail';
-                        testCase.actualOutput = actual;
                         failed++;
+                        renderTestCases();
                     }
-
-                    customInput.value = originalInput;
-                    renderTestCases();
-                } catch (error) {
-                    testCase.result = 'fail';
-                    failed++;
-                    renderTestCases();
                 }
-            }
 
-            output.innerHTML = `
+                output.innerHTML = `
                 <div class="success">Test Cases Completed!</div>
                 <div class="info">Passed: ${passed} | Failed: ${failed} | Total: ${testCases.length}</div>
             `;
-        }
-
-        function extractOutput(htmlResult) {
-            const div = document.createElement('div');
-            div.innerHTML = htmlResult;
-            const text = div.textContent || div.innerText || '';
-            return text.replace(/[\r\n]+/g, '\n').trim();
-        }
-
-        // Code Fixing Functions
-        function fixCode() {
-            const code = editor.getValue();
-            const fixPanel = document.getElementById('codeFixContent');
-
-            fixPanel.innerHTML = '<div class="info">Analyzing code...</div>';
-            document.getElementById('codeFixPanel').style.display = 'block';
-
-            const fixes = analyzeCode(code);
-
-            if (fixes.length === 0) {
-                fixPanel.innerHTML = '<div class="info">✓ No issues found! Your code looks good.</div>';
-                return;
             }
 
-            fixPanel.innerHTML = fixes.map((fix, index) => `
+            function extractOutput(htmlResult) {
+                const div = document.createElement('div');
+                div.innerHTML = htmlResult;
+                const text = div.textContent || div.innerText || '';
+                return text.replace(/[\r\n]+/g, '\n').trim();
+            }
+
+            // Code Fixing Functions
+            function fixCode() {
+                const code = editor.getValue();
+                const fixPanel = document.getElementById('codeFixContent');
+
+                fixPanel.innerHTML = '<div class="info">Analyzing code...</div>';
+                document.getElementById('codeFixPanel').style.display = 'block';
+
+                const fixes = analyzeCode(code);
+
+                if (fixes.length === 0) {
+                    fixPanel.innerHTML = '<div class="info">✓ No issues found! Your code looks good.</div>';
+                    return;
+                }
+
+                fixPanel.innerHTML = fixes.map((fix, index) => `
                 <div class="fix-item ${fix.type}">
                     <div class="fix-item-title">
                         <i class="fas fa-${fix.type === 'error' ? 'exclamation-circle' : fix.type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
@@ -3173,297 +3710,297 @@ echo "Hello, World!"`
                 </div>
             `).join('');
 
-            window.currentFixes = fixes;
-        }
+                window.currentFixes = fixes;
+            }
 
-        function analyzeCode(code) {
-            const fixes = [];
-            const lines = code.split('\n');
+            function analyzeCode(code) {
+                const fixes = [];
+                const lines = code.split('\n');
 
-            // Check for common issues
-            if (currentLanguage === 'javascript' || currentLanguage === 'python3' || currentLanguage === 'python2') {
-                // Check for unused variables
-                const varMatches = code.match(/(?:let|const|var)\s+(\w+)/g) || [];
-                const usedVars = [];
-                varMatches.forEach(match => {
-                    const varName = match.match(/(\w+)$/)[1];
-                    const usageCount = (code.match(new RegExp(`\\b${varName}\\b`, 'g')) || []).length;
-                    if (usageCount <= 1) {
-                        fixes.push({
-                            type: 'warning',
-                            title: 'Potentially Unused Variable',
-                            description: `Variable "${varName}" is declared but may not be used.`,
-                            code: match,
-                            suggestion: `Remove the unused variable declaration.`
-                        });
-                    }
-                });
-
-                // Check for missing semicolons (JavaScript)
-                if (currentLanguage === 'javascript') {
-                    lines.forEach((line, index) => {
-                        const trimmed = line.trim();
-                        if (trimmed && !trimmed.match(/[{};]|^(if|for|while|function|class|const|let|var)\b/)) {
-                            if (!trimmed.endsWith(';') && !trimmed.endsWith('{') && !trimmed.endsWith('}')) {
-                                fixes.push({
-                                    type: 'warning',
-                                    title: 'Missing Semicolon',
-                                    description: `Line ${index + 1} may need a semicolon.`,
-                                    code: line,
-                                    suggestion: `Add semicolon at the end: ${line.trim()};`
-                                });
-                            }
+                // Check for common issues
+                if (currentLanguage === 'javascript' || currentLanguage === 'python3' || currentLanguage === 'python2') {
+                    // Check for unused variables
+                    const varMatches = code.match(/(?:let|const|var)\s+(\w+)/g) || [];
+                    const usedVars = [];
+                    varMatches.forEach(match => {
+                        const varName = match.match(/(\w+)$/)[1];
+                        const usageCount = (code.match(new RegExp(`\\b${varName}\\b`, 'g')) || []).length;
+                        if (usageCount <= 1) {
+                            fixes.push({
+                                type: 'warning',
+                                title: 'Potentially Unused Variable',
+                                description: `Variable "${varName}" is declared but may not be used.`,
+                                code: match,
+                                suggestion: `Remove the unused variable declaration.`
+                            });
                         }
                     });
+
+                    // Check for missing semicolons (JavaScript)
+                    if (currentLanguage === 'javascript') {
+                        lines.forEach((line, index) => {
+                            const trimmed = line.trim();
+                            if (trimmed && !trimmed.match(/[{};]|^(if|for|while|function|class|const|let|var)\b/)) {
+                                if (!trimmed.endsWith(';') && !trimmed.endsWith('{') && !trimmed.endsWith('}')) {
+                                    fixes.push({
+                                        type: 'warning',
+                                        title: 'Missing Semicolon',
+                                        description: `Line ${index + 1} may need a semicolon.`,
+                                        code: line,
+                                        suggestion: `Add semicolon at the end: ${line.trim()};`
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    // Check for console.log statements (suggest removing in production)
+                    if (code.includes('console.log')) {
+                        fixes.push({
+                            type: 'info',
+                            title: 'Debug Statements Found',
+                            description: 'Consider removing console.log statements before production.',
+                            suggestion: 'Remove or comment out console.log statements.'
+                        });
+                    }
                 }
 
-                // Check for console.log statements (suggest removing in production)
-                if (code.includes('console.log')) {
+                // Check for TODO comments
+                if (code.match(/TODO|FIXME|XXX/i)) {
                     fixes.push({
                         type: 'info',
-                        title: 'Debug Statements Found',
-                        description: 'Consider removing console.log statements before production.',
-                        suggestion: 'Remove or comment out console.log statements.'
+                        title: 'TODO Comments Found',
+                        description: 'You have TODO/FIXME comments in your code.',
+                        suggestion: 'Review and address TODO comments.'
                     });
                 }
+
+                // Check code length
+                if (lines.length > 500) {
+                    fixes.push({
+                        type: 'warning',
+                        title: 'Long Code File',
+                        description: `Your file has ${lines.length} lines. Consider breaking it into smaller functions or files.`
+                    });
+                }
+
+                // Check for empty functions
+                const emptyFunctionPattern = currentLanguage === 'javascript'
+                    ? /function\s+\w+\s*\([^)]*\)\s*\{\s*\}/g
+                    : currentLanguage.startsWith('python')
+                        ? /def\s+\w+\s*\([^)]*\)\s*:\s*pass/g
+                        : null;
+
+                if (emptyFunctionPattern && code.match(emptyFunctionPattern)) {
+                    fixes.push({
+                        type: 'warning',
+                        title: 'Empty Functions',
+                        description: 'You have empty function definitions. Add implementation or remove them.',
+                        suggestion: 'Implement the function or remove it if not needed.'
+                    });
+                }
+
+                return fixes;
             }
 
-            // Check for TODO comments
-            if (code.match(/TODO|FIXME|XXX/i)) {
-                fixes.push({
-                    type: 'info',
-                    title: 'TODO Comments Found',
-                    description: 'You have TODO/FIXME comments in your code.',
-                    suggestion: 'Review and address TODO comments.'
-                });
-            }
+            function applyFix(fixIndex) {
+                const fix = window.currentFixes[fixIndex];
+                if (!fix || !fix.suggestion) return;
 
-            // Check code length
-            if (lines.length > 500) {
-                fixes.push({
-                    type: 'warning',
-                    title: 'Long Code File',
-                    description: `Your file has ${lines.length} lines. Consider breaking it into smaller functions or files.`
-                });
-            }
+                let code = editor.getValue();
+                let updated = false;
 
-            // Check for empty functions
-            const emptyFunctionPattern = currentLanguage === 'javascript'
-                ? /function\s+\w+\s*\([^)]*\)\s*\{\s*\}/g
-                : currentLanguage.startsWith('python')
-                    ? /def\s+\w+\s*\([^)]*\)\s*:\s*pass/g
-                    : null;
-
-            if (emptyFunctionPattern && code.match(emptyFunctionPattern)) {
-                fixes.push({
-                    type: 'warning',
-                    title: 'Empty Functions',
-                    description: 'You have empty function definitions. Add implementation or remove them.',
-                    suggestion: 'Implement the function or remove it if not needed.'
-                });
-            }
-
-            return fixes;
-        }
-
-        function applyFix(fixIndex) {
-            const fix = window.currentFixes[fixIndex];
-            if (!fix || !fix.suggestion) return;
-
-            let code = editor.getValue();
-            let updated = false;
-
-            // Apply different types of fixes
-            if (fix.title.includes('Semicolon')) {
-                const lines = code.split('\n');
-                const lineMatch = fix.description.match(/Line (\d+)/);
-                if (lineMatch) {
-                    const lineIndex = parseInt(lineMatch[1]) - 1;
-                    if (lines[lineIndex] && !lines[lineIndex].trim().endsWith(';')) {
-                        lines[lineIndex] = lines[lineIndex].trim() + ';';
-                        code = lines.join('\n');
+                // Apply different types of fixes
+                if (fix.title.includes('Semicolon')) {
+                    const lines = code.split('\n');
+                    const lineMatch = fix.description.match(/Line (\d+)/);
+                    if (lineMatch) {
+                        const lineIndex = parseInt(lineMatch[1]) - 1;
+                        if (lines[lineIndex] && !lines[lineIndex].trim().endsWith(';')) {
+                            lines[lineIndex] = lines[lineIndex].trim() + ';';
+                            code = lines.join('\n');
+                            updated = true;
+                        }
+                    }
+                } else if (fix.title.includes('Debug Statements')) {
+                    code = code.replace(/console\.log\([^)]*\);?\n?/g, '');
+                    updated = true;
+                } else if (fix.title.includes('Unused Variable')) {
+                    const varName = fix.description.match(/"([^"]+)"/)?.[1];
+                    if (varName) {
+                        // Remove the variable declaration line
+                        const lines = code.split('\n');
+                        const newLines = lines.filter(line => {
+                            const trimmed = line.trim();
+                            return !trimmed.match(new RegExp(`(?:let|const|var)\\s+${varName}\\b`));
+                        });
+                        code = newLines.join('\n');
+                        updated = true;
+                    }
+                } else if (fix.title.includes('Empty Functions')) {
+                    // For JavaScript - remove empty functions
+                    if (currentLanguage === 'javascript') {
+                        code = code.replace(/function\s+\w+\s*\([^)]*\)\s*\{\s*\}/g, '');
+                        updated = true;
+                    } else if (currentLanguage.startsWith('python')) {
+                        code = code.replace(/def\s+\w+\s*\([^)]*\)\s*:\s*pass\s*\n/g, '');
                         updated = true;
                     }
                 }
-            } else if (fix.title.includes('Debug Statements')) {
-                code = code.replace(/console\.log\([^)]*\);?\n?/g, '');
-                updated = true;
-            } else if (fix.title.includes('Unused Variable')) {
-                const varName = fix.description.match(/"([^"]+)"/)?.[1];
-                if (varName) {
-                    // Remove the variable declaration line
-                    const lines = code.split('\n');
-                    const newLines = lines.filter(line => {
-                        const trimmed = line.trim();
-                        return !trimmed.match(new RegExp(`(?:let|const|var)\\s+${varName}\\b`));
-                    });
-                    code = newLines.join('\n');
-                    updated = true;
-                }
-            } else if (fix.title.includes('Empty Functions')) {
-                // For JavaScript - remove empty functions
-                if (currentLanguage === 'javascript') {
-                    code = code.replace(/function\s+\w+\s*\([^)]*\)\s*\{\s*\}/g, '');
-                    updated = true;
-                } else if (currentLanguage.startsWith('python')) {
-                    code = code.replace(/def\s+\w+\s*\([^)]*\)\s*:\s*pass\s*\n/g, '');
-                    updated = true;
-                }
-            }
 
-            if (updated) {
-                editor.setValue(code);
-                // Show success message
-                const fixPanel = document.getElementById('codeFixContent');
-                const fixItem = fixPanel.children[fixIndex];
-                if (fixItem) {
-                    const actionsDiv = fixItem.querySelector('.fix-item-actions');
-                    if (actionsDiv) {
-                        actionsDiv.innerHTML = '<span style="color: #10b981; font-weight: 600;">✓ Fix applied!</span>';
+                if (updated) {
+                    editor.setValue(code);
+                    // Show success message
+                    const fixPanel = document.getElementById('codeFixContent');
+                    const fixItem = fixPanel.children[fixIndex];
+                    if (fixItem) {
+                        const actionsDiv = fixItem.querySelector('.fix-item-actions');
+                        if (actionsDiv) {
+                            actionsDiv.innerHTML = '<span style="color: #10b981; font-weight: 600;">✓ Fix applied!</span>';
+                        }
                     }
+                    // Re-analyze after a short delay
+                    setTimeout(() => fixCode(), 1000);
                 }
-                // Re-analyze after a short delay
-                setTimeout(() => fixCode(), 1000);
             }
-        }
 
-        // Close modal when clicking outside
-        document.getElementById('settingsModal').addEventListener('click', (e) => {
-            if (e.target.id === 'settingsModal') {
-                closeSettings();
+            // Close modal when clicking outside
+            document.getElementById('settingsModal').addEventListener('click', (e) => {
+                if (e.target.id === 'settingsModal') {
+                    closeSettings();
+                }
+            });
+
+            // Keyboard shortcut for running code moved into Ace initialization block above.
+
+            let currentProblem = null;
+            let lockedRegions = { upper: null, lower: null };
+
+            function getQueryParam(key) {
+                const params = new URLSearchParams(window.location.search);
+                return params.get(key);
             }
-        });
 
-        // Keyboard shortcut for running code moved into Monaco initialization block above.
+            function saveCurrentCode() { uiManager.openSaveModal(files[currentFileId]?.name || 'playground') }
 
-        let currentProblem = null;
-        let lockedRegions = { upper: null, lower: null };
-
-        function getQueryParam(key) {
-            const params = new URLSearchParams(window.location.search);
-            return params.get(key);
-        }
-
-        function saveCurrentCode() { uiManager.openSaveModal(files[currentFileId]?.name || 'playground') }
-
-        function toggleCreateProblem() {
-            const panel = document.getElementById('createProblemPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function rteCmd(cmd) {
-            document.execCommand(cmd, false, null);
-        }
-
-        function rteFont(v) {
-            if (v === 'inherit') return;
-            document.execCommand('fontName', false, v);
-        }
-
-        function rteFontSize(v) {
-            if (v === 'inherit') return;
-            document.getElementById('problemEditor').style.fontSize = v;
-        }
-
-        function rteLineHeight(v) {
-            document.getElementById('problemEditor').style.lineHeight = v;
-        }
-
-        function wrapSelection(type) {
-            const sel = window.getSelection();
-            if (!sel.rangeCount) return;
-            const range = sel.getRangeAt(0);
-            const el = document.createElement(type === 'box' ? 'div' : 'span');
-            el.className = type === 'box' ? 'statement-box' : 'statement-highlight';
-            range.surroundContents(el);
-        }
-
-        function saveProblem() {
-            const content = document.getElementById('problemEditor').innerHTML;
-            const lang = document.getElementById('templateLanguage').value;
-            const upper = document.getElementById('upperTemplateInput').value || '';
-            const lower = document.getElementById('lowerTemplateInput').value || '';
-            const id = 'problem-' + Date.now();
-            const item = { id, content, templates: { [lang]: { upper, lower } }, testCases, createdAt: Date.now() };
-            const list = JSON.parse(localStorage.getItem('customProblems') || '[]');
-            list.unshift(item);
-            localStorage.setItem('customProblems', JSON.stringify(list));
-            currentProblem = item;
-            applyProblemToEditor(item, lang);
-        }
-
-        function applyProblemToEditor(problem, lang) {
-            currentProblem = problem;
-            const t = problem.templates[lang] || { upper: '', lower: '' };
-            const middle = '';
-            const content = [t.upper, middle, t.lower].filter(x => x !== undefined).join('\n');
-            editor.setValue(content);
-            setLockedRegions(t.upper, t.lower);
-        }
-
-        function setLockedRegions(upperText, lowerText) {
-            // Simplified for Monaco: We could use monaco.editor.IReadOnlyRegion, 
-            // but for now we will just set the editor to readOnly if needed or handle it via styles.
-            // Placeholder for Monaco compatible locking logic if needed.
-            console.log('Template code regions registered');
-        }
-        function addLockedLabel(text, line) {
-            const wrap = editor.getWrapperElement();
-            let label = wrap.querySelector('.locked-label-' + line);
-            if (!label) {
-                label = document.createElement('div');
-                label.className = 'locked-label locked-label-' + line;
-                label.textContent = text;
-                wrap.appendChild(label);
+            function toggleCreateProblem() {
+                const panel = document.getElementById('createProblemPanel');
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
             }
-        }
 
-        function posInLocked(pos) {
-            return false;
-        }
+            function rteCmd(cmd) {
+                document.execCommand(cmd, false, null);
+            }
 
-        function getEditableMiddleCode() {
-            return editor ? editor.getValue() : '';
-        }
+            function rteFont(v) {
+                if (v === 'inherit') return;
+                document.execCommand('fontName', false, v);
+            }
 
-        function loadSavedByQuery() {
-            const savedId = getQueryParam('savedId');
-            if (!savedId) return;
-            const dataRaw = localStorage.getItem('savedCodes') || '[]';
-            let item = null;
-            try {
-                const data = JSON.parse(dataRaw);
-                if (Array.isArray(data)) {
-                    item = data.find(x => x.id === savedId);
-                } else if (data && data.folders) {
-                    for (const f of data.folders) {
-                        const found = (f.codes || []).find(x => x.id === savedId);
-                        if (found) { item = found; break; }
+            function rteFontSize(v) {
+                if (v === 'inherit') return;
+                document.getElementById('problemEditor').style.fontSize = v;
+            }
+
+            function rteLineHeight(v) {
+                document.getElementById('problemEditor').style.lineHeight = v;
+            }
+
+            function wrapSelection(type) {
+                const sel = window.getSelection();
+                if (!sel.rangeCount) return;
+                const range = sel.getRangeAt(0);
+                const el = document.createElement(type === 'box' ? 'div' : 'span');
+                el.className = type === 'box' ? 'statement-box' : 'statement-highlight';
+                range.surroundContents(el);
+            }
+
+            function saveProblem() {
+                const content = document.getElementById('problemEditor').innerHTML;
+                const lang = document.getElementById('templateLanguage').value;
+                const upper = document.getElementById('upperTemplateInput').value || '';
+                const lower = document.getElementById('lowerTemplateInput').value || '';
+                const id = 'problem-' + Date.now();
+                const item = { id, content, templates: { [lang]: { upper, lower } }, testCases, createdAt: Date.now() };
+                const list = JSON.parse(localStorage.getItem('customProblems') || '[]');
+                list.unshift(item);
+                localStorage.setItem('customProblems', JSON.stringify(list));
+                currentProblem = item;
+                applyProblemToEditor(item, lang);
+            }
+
+            function applyProblemToEditor(problem, lang) {
+                currentProblem = problem;
+                const t = problem.templates[lang] || { upper: '', lower: '' };
+                const middle = '';
+                const content = [t.upper, middle, t.lower].filter(x => x !== undefined).join('\n');
+                editor.setValue(content);
+                setLockedRegions(t.upper, t.lower);
+            }
+
+            function setLockedRegions(upperText, lowerText) {
+                // Simplified for Monaco: We could use monaco.editor.IReadOnlyRegion, 
+                // but for now we will just set the editor to readOnly if needed or handle it via styles.
+                // Placeholder for Monaco compatible locking logic if needed.
+                console.log('Template code regions registered');
+            }
+            function addLockedLabel(text, line) {
+                const wrap = editor.getWrapperElement();
+                let label = wrap.querySelector('.locked-label-' + line);
+                if (!label) {
+                    label = document.createElement('div');
+                    label.className = 'locked-label locked-label-' + line;
+                    label.textContent = text;
+                    wrap.appendChild(label);
+                }
+            }
+
+            function posInLocked(pos) {
+                return false;
+            }
+
+            function getEditableMiddleCode() {
+                return editor ? editor.getValue() : '';
+            }
+
+            function loadSavedByQuery() {
+                const savedId = getQueryParam('savedId');
+                if (!savedId) return;
+                const dataRaw = localStorage.getItem('savedCodes') || '[]';
+                let item = null;
+                try {
+                    const data = JSON.parse(dataRaw);
+                    if (Array.isArray(data)) {
+                        item = data.find(x => x.id === savedId);
+                    } else if (data && data.folders) {
+                        for (const f of data.folders) {
+                            const found = (f.codes || []).find(x => x.id === savedId);
+                            if (found) { item = found; break; }
+                        }
                     }
-                }
-            } catch (e) { }
-            if (!item) return;
-            currentLanguage = item.language;
-            document.getElementById('languageSelect').value = currentLanguage;
-            changeLanguage();
-            const content = [item.upperCode || '', item.editableCode || '', item.lowerCode || ''].join('\n');
-            editor.setValue(content);
-            setLockedRegions(item.upperCode || '', item.lowerCode || '');
-            testCases = item.testCases || [];
-            renderTestCases();
-        }
-
-        function toggleSelfTestPanel() {
-            const exists = document.getElementById('selfTestPanel');
-            if (exists) {
-                exists.style.display = exists.style.display === 'none' ? 'block' : 'none';
-                return;
+                } catch (e) { }
+                if (!item) return;
+                currentLanguage = item.language;
+                document.getElementById('languageSelect').value = currentLanguage;
+                changeLanguage();
+                const content = [item.upperCode || '', item.editableCode || '', item.lowerCode || ''].join('\n');
+                editor.setValue(content);
+                setLockedRegions(item.upperCode || '', item.lowerCode || '');
+                testCases = item.testCases || [];
+                renderTestCases();
             }
-            const wrap = document.createElement('div');
-            wrap.id = 'selfTestPanel';
-            wrap.style.background = '#fff';
-            wrap.style.borderTop = '1px solid #e5e7eb';
-            wrap.innerHTML = `
+
+            function toggleSelfTestPanel() {
+                const exists = document.getElementById('selfTestPanel');
+                if (exists) {
+                    exists.style.display = exists.style.display === 'none' ? 'block' : 'none';
+                    return;
+                }
+                const wrap = document.createElement('div');
+                wrap.id = 'selfTestPanel';
+                wrap.style.background = '#fff';
+                wrap.style.borderTop = '1px solid #e5e7eb';
+                wrap.innerHTML = `
                 <div style="padding:1rem; display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap;">
                     <div style="flex:1; min-width:220px;">
                         <label style="font-weight:600;">Start Time</label>
@@ -3493,99 +4030,99 @@ echo "Hello, World!"`
                 <div id="selfTestResult" class="card" style="padding:1rem; display:none;"></div>
                 <div id="selfTestHistory" class="card" style="padding:1rem; display:none;"></div>
             `;
-            document.querySelector('.coding-practice-section').insertBefore(wrap, document.querySelector('.ide-body'));
-        }
+                document.querySelector('.coding-practice-section').insertBefore(wrap, document.querySelector('.ide-body'));
+            }
 
-        function scheduleSelfTest() {
-            const start = document.getElementById('selfTestStart').value;
-            const duration = parseInt(document.getElementById('selfTestDuration').value || '0');
-            if (!start || duration <= 0) return;
-            const id = 'selftest-' + Date.now();
-            const entry = { id, start, duration, problem: currentProblem, attempted: false, testCases };
-            const list = JSON.parse(localStorage.getItem('selfTests') || '[]');
-            list.unshift(entry);
-            localStorage.setItem('selfTests', JSON.stringify(list));
-            document.getElementById('selfTestStatus').textContent = 'Scheduled';
-            monitorSelfTest(entry);
-        }
+            function scheduleSelfTest() {
+                const start = document.getElementById('selfTestStart').value;
+                const duration = parseInt(document.getElementById('selfTestDuration').value || '0');
+                if (!start || duration <= 0) return;
+                const id = 'selftest-' + Date.now();
+                const entry = { id, start, duration, problem: currentProblem, attempted: false, testCases };
+                const list = JSON.parse(localStorage.getItem('selfTests') || '[]');
+                list.unshift(entry);
+                localStorage.setItem('selfTests', JSON.stringify(list));
+                document.getElementById('selfTestStatus').textContent = 'Scheduled';
+                monitorSelfTest(entry);
+            }
 
-        let countdownInterval = null;
+            let countdownInterval = null;
 
-        function monitorSelfTest(entry) {
-            const startTs = new Date(entry.start).getTime();
-            const statusEl = document.getElementById('selfTestStatus');
-            const cdEl = document.getElementById('selfTestCountdown');
-            function tick() {
-                const now = Date.now();
-                if (now < startTs) {
-                    const diff = Math.max(0, Math.floor((startTs - now) / 1000));
-                    statusEl.textContent = 'Starts soon';
-                    cdEl.textContent = diff + 's';
-                } else {
-                    clearInterval(countdownInterval);
-                    startSelfTest(entry);
+            function monitorSelfTest(entry) {
+                const startTs = new Date(entry.start).getTime();
+                const statusEl = document.getElementById('selfTestStatus');
+                const cdEl = document.getElementById('selfTestCountdown');
+                function tick() {
+                    const now = Date.now();
+                    if (now < startTs) {
+                        const diff = Math.max(0, Math.floor((startTs - now) / 1000));
+                        statusEl.textContent = 'Starts soon';
+                        cdEl.textContent = diff + 's';
+                    } else {
+                        clearInterval(countdownInterval);
+                        startSelfTest(entry);
+                    }
                 }
+                countdownInterval = setInterval(tick, 1000);
+                tick();
             }
-            countdownInterval = setInterval(tick, 1000);
-            tick();
-        }
 
-        function startSelfTest(entry) {
-            const statusEl = document.getElementById('selfTestStatus');
-            const cdEl = document.getElementById('selfTestCountdown');
-            const tests = JSON.parse(localStorage.getItem('selfTests') || '[]');
-            const found = tests.find(t => t.id === entry.id);
-            if (found && found.attempted) { statusEl.textContent = 'Attempt already used'; cdEl.textContent = ''; return; }
-            statusEl.textContent = 'In progress';
-            document.getElementById('problemEditor').setAttribute('contenteditable', 'false');
-            document.getElementById('selfTestHeader').style.display = 'flex';
-            const endTs = Date.now() + entry.duration * 60000;
-            function tick() {
-                const remain = Math.max(0, endTs - Date.now());
-                cdEl.textContent = Math.ceil(remain / 1000) + 's';
-                if (remain <= 0) {
-                    clearInterval(countdownInterval);
-                    finishSelfTest(entry);
+            function startSelfTest(entry) {
+                const statusEl = document.getElementById('selfTestStatus');
+                const cdEl = document.getElementById('selfTestCountdown');
+                const tests = JSON.parse(localStorage.getItem('selfTests') || '[]');
+                const found = tests.find(t => t.id === entry.id);
+                if (found && found.attempted) { statusEl.textContent = 'Attempt already used'; cdEl.textContent = ''; return; }
+                statusEl.textContent = 'In progress';
+                document.getElementById('problemEditor').setAttribute('contenteditable', 'false');
+                document.getElementById('selfTestHeader').style.display = 'flex';
+                const endTs = Date.now() + entry.duration * 60000;
+                function tick() {
+                    const remain = Math.max(0, endTs - Date.now());
+                    cdEl.textContent = Math.ceil(remain / 1000) + 's';
+                    if (remain <= 0) {
+                        clearInterval(countdownInterval);
+                        finishSelfTest(entry);
+                    }
                 }
+                countdownInterval = setInterval(tick, 1000);
+                tick();
             }
-            countdownInterval = setInterval(tick, 1000);
-            tick();
-        }
 
-        async function finishSelfTest(entry) {
-            const output = document.getElementById('consoleOutput');
-            let passed = 0, total = 0;
-            for (const tc of entry.testCases || []) {
-                total++;
-                let actual = '';
-                const result = await runForSelfTest(editor.getValue(), tc.input);
-                actual = extractOutput(result);
-                const exp = String(tc.expectedOutput || '').trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                const act = actual.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-                if (exp === act || (exp && act.includes(exp))) passed++;
+            async function finishSelfTest(entry) {
+                const output = document.getElementById('consoleOutput');
+                let passed = 0, total = 0;
+                for (const tc of entry.testCases || []) {
+                    total++;
+                    let actual = '';
+                    const result = await runForSelfTest(editor.getValue(), tc.input);
+                    actual = extractOutput(result);
+                    const exp = String(tc.expectedOutput || '').trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                    const act = actual.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                    if (exp === act || (exp && act.includes(exp))) passed++;
+                }
+                const score = total ? Math.round((passed / total) * 100) : 0;
+                output.innerHTML = `<div class="success">Self Test Completed</div><div class="info">Score: ${score}% (${passed}/${total})</div>`;
+                const bar = document.getElementById('scoreFill'); if (bar) bar.style.width = score + '%';
+                const results = JSON.parse(localStorage.getItem('selfTestResults') || '[]');
+                results.unshift({ id: entry.id, score, passed, total, time: Date.now(), code: editor.getValue() });
+                localStorage.setItem('selfTestResults', JSON.stringify(results));
+                const tests = JSON.parse(localStorage.getItem('selfTests') || '[]');
+                const idx = tests.findIndex(t => t.id === entry.id);
+                if (idx >= 0) { tests[idx].attempted = true; localStorage.setItem('selfTests', JSON.stringify(tests)); }
+                selfTestManager.renderResult(score, passed, total);
+                selfTestManager.renderHistory();
             }
-            const score = total ? Math.round((passed / total) * 100) : 0;
-            output.innerHTML = `<div class="success">Self Test Completed</div><div class="info">Score: ${score}% (${passed}/${total})</div>`;
-            const bar = document.getElementById('scoreFill'); if (bar) bar.style.width = score + '%';
-            const results = JSON.parse(localStorage.getItem('selfTestResults') || '[]');
-            results.unshift({ id: entry.id, score, passed, total, time: Date.now(), code: editor.getValue() });
-            localStorage.setItem('selfTestResults', JSON.stringify(results));
-            const tests = JSON.parse(localStorage.getItem('selfTests') || '[]');
-            const idx = tests.findIndex(t => t.id === entry.id);
-            if (idx >= 0) { tests[idx].attempted = true; localStorage.setItem('selfTests', JSON.stringify(tests)); }
-            selfTestManager.renderResult(score, passed, total);
-            selfTestManager.renderHistory();
-        }
 
-        async function runForSelfTest(code, input) {
-            if (currentLanguage === 'javascript') return await runJavaScript(code, input);
-            if (currentLanguage === 'python3' || currentLanguage === 'python2') return await runPython(code, input);
-            if (['java', 'c', 'c99', 'cpp', 'csharp', 'php', 'ruby', 'sql', 'mysql', 'bash'].includes(currentLanguage)) {
-                if (CompilerConfig.judge0Enabled) return await runWithJudge0(code, input);
-                if (CompilerConfig.pistonEnabled) return await runWithPiston(code, input);
+            async function runForSelfTest(code, input) {
+                if (currentLanguage === 'javascript') return await runJavaScript(code, input);
+                if (currentLanguage === 'python3' || currentLanguage === 'python2') return await runPython(code, input);
+                if (['java', 'c', 'c99', 'cpp', 'csharp', 'php', 'ruby', 'sql', 'mysql', 'bash'].includes(currentLanguage)) {
+                    if (CompilerConfig.judge0Enabled) return await runWithJudge0(code, input);
+                    if (CompilerConfig.pistonEnabled) return await runWithPiston(code, input);
+                }
+                return '<div class="error">Unsupported</div>';
             }
-            return '<div class="error">Unsupported</div>';
-        }
 
         // Initializations moved inside Monaco ready callback to prevent errors
         // uiManager.setupAutosave(); etc.

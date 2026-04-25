@@ -1000,89 +1000,142 @@
                 `
             },
             {
-                id: "res_cs_02",
-                title: "Introduction to Linear Algebra",
-                author: "Strang, G.",
-                source: "MIT 18.06",
-                category: "Mathematics",
-                type: "lecture_notes",
-                pages: 14,
-                readTime: "12 min",
+                id: "res_cs_01",
+                title: "Computing Machinery and Intelligence",
+                author: "Turing, A. M.",
+                source: "Mind, New Series, Vol. 59",
+                category: "Computer Science",
+                type: "classic_paper",
+                pages: 28,
+                readTime: "25 min",
                 premium: false,
-                published: "v.2024.1",
-                doi: "10.mit/18.06.lec01",
-                citations: 894,
-                excerpt: "Lecture 1: The Geometry of Linear Equations. Systems of n equations in n unknowns.",
-                summary: "Introduction to rows and columns. Solving systems by elimination. The concept of the 'Pivot'.",
+                published: "1950",
+                doi: "10.1093/mind/LIX.236.433",
+                citations: 15400,
+                excerpt: "I propose to consider the question, 'Can machines think?' This should begin with definitions of the meaning of the terms 'machine' and 'think'.",
+                summary: "This paper introduces the Turing Test, a criterion for intelligence in machines. Turing argues that instead of asking if machines can think, we should ask if they can pass a 'limitation game' of imitation.",
                 content: `
-                    <h4>Linear Algebra</h4>
-                    <h2>The High-Level View of Elimination</h2>
-                    <p>The central problem of linear algebra is to solve a system of equations. These equations are linear, which means that the unknowns only appear to the first power—there are no squares or cubes or sines or exponentials. The geometry involves lines and planes and hyperplanes.</p>
+                    <h4>Foundational Computing</h4>
+                    <h2>The Imitation Game</h2>
+                    <p>I propose to consider the question, 'Can machines think?' This should begin with definitions of the meaning of the terms 'machine' and 'think'. The definitions might be framed so as to reflect so far as possible the normal use of the words, but this attitude is dangerous. If the meaning of the words 'machine' and 'think' are to be found by examining how they are commonly used it is difficult to escape the conclusion that the meaning and the answer to the question, 'Can machines think?' is to be sought in a statistical survey such as a Gallup poll. But this is absurd.</p>
                     
-                    <h3>Elimination and Matrices</h3>
-                    <p>The standard way to solve these equations is elimination. This is the method that every computer uses to solve large systems. It was Gauss who made the method systematic, but the basic idea is much older. We use the first equation to eliminate the first unknown from all the other equations. Then we use the second equation to eliminate the second unknown from the remaining equations. When we are finished, the system is 'triangular'.</p>
+                    <h3>Critique of the New Problem</h3>
+                    <p>The new form of the problem can be described in terms of a game which we call the 'imitation game'. It is played with three people, a man (A), a woman (B), and an interrogator (C) who may be of either sex. The interrogator stays in a room apart from the other two. The object of the game for the interrogator is to determine which of the other two is the man and which is the woman. He knows them by labels X and Y, and at the end of the game he says either 'X is A and Y is B' or 'X is B and Y is A'.</p>
 
-                    <p>We can solve the last equation directly. Then we can 'back substitute' to find the other unknowns. This sounds simple, and it is. But there are complications. What if the first equation doesn't have the first unknown? Then we must swap it with another equation. What if no equation has that unknown? Then the system is singular and there may be no solution or infinitely many.</p>
+                    <p>We now ask the question, 'What will happen when a machine takes the part of A in this game?' Will the interrogator decide wrongly as often when the game is played like this as he does when the game is played between a man and a woman? These questions replace our original, 'Can machines think?'</p>
+
+                    <h3>The Digital Computers</h3>
+                    <p>The idea behind digital computers may be explained by saying that these machines are intended to carry out any operations which could be done by a human computer. The human computer is supposed to be following fixed rules; he has no authority to deviate from them in any detail. We may suppose that these rules are supplied in a book, which is altered whenever he is put on to a new job. He has also an unlimited supply of paper on which he does his calculations.</p>
+                `
+            },
+            {
+                id: "res_cs_02",
+                title: "Clean Code: A Handbook of Agile Software Craftsmanship",
+                author: "Martin, Robert C.",
+                source: "Prentice Hall",
+                category: "Computer Science",
+                type: "professional_guide",
+                pages: 464,
+                readTime: "180 min",
+                premium: true,
+                published: "2008",
+                doi: "10.professional/cleancode",
+                citations: 8200,
+                excerpt: "Even bad code can function. But if code isn’t clean, it can bring a development organization to its knees.",
+                summary: "A definitive guide to writing code that is readable, maintainable, and robust. It covers meaningful names, functions, comments, and formatting.",
+                content: `
+                    <h4>Software Engineering</h4>
+                    <h2>Meaningful Names</h2>
+                    <p>Names are everywhere in software. We name our variables, our functions, our arguments, classes, and packages. We name our source files and the directories that contain them. Because we do so much of it, we’d better do it well.</p>
+                    
+                    <h3>Use Intention-Revealing Names</h3>
+                    <p>It is easy to say that names should reveal intent. What we want to impress upon you is that we are serious about it. Choosing good names takes time but saves more than it takes. So take care with your names and change them when you find better ones. Everyone who reads your code (including you) will be happier if you do.</p>
+                    
+                    <p>The name of a variable, function, or class, should answer all the big questions. It should tell you why it exists, what it does, and how it is used. If a name requires a comment, then the name does not reveal its intent.</p>
+
+                    <h3>Avoid Disinformation</h3>
+                    <p>Programmers must avoid leaving false clues that obscure the meaning of code. We should avoid words whose entrenched meanings differ from our intended meaning. For example, hp, aix, and sco would be poor variable names because they are the names of Unix platforms or variants. Even if you are coding a hypotenuse and hp looks like a good abbreviation, it could be disinformative.</p>
                 `
             },
             {
                 id: "res_law_01",
-                title: "Constitutional Law I: Case Study of Kesavananda Bharati",
-                author: "LMS Archive",
-                source: "Supreme Court Rep.",
+                title: "The Constitution of India: An Overview",
+                author: "Institutional Archive",
+                source: "Govt. Registry",
                 category: "Law",
-                type: "case_study",
-                pages: 52,
-                readTime: "45 min",
-                premium: true,
-                published: "1973/rev2024",
-                doi: "10.scr/kb-73",
-                citations: 2140,
-                excerpt: "The 'Basic Structure' doctrine and its implications on the amending power of the Parliament.",
+                type: "legal_document",
+                pages: 395,
+                readTime: "120 min",
+                premium: false,
+                published: "1950/2024",
+                doi: "10.law.in/const",
+                citations: 25000,
+                excerpt: "WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC...",
+                summary: "The supreme law of India, establishing the framework for political principles, procedures, powers, and duties of government institutions.",
                 content: `
-                    <h4>Judiciary Analysis</h4>
-                    <h2>The Basic Structure Doctrine</h2>
-                    <p>Kesavananda Bharati v. State of Kerala is a landmark decision of the Supreme Court of India that outlined the basic structure doctrine of the Constitution. Justice Hans Raj Khanna posited that the Constitution possesses a basic structure of constitutional principles and values that cannot be altered by Parliament through amendments.</p>
+                    <h4>Constitutional Law</h4>
+                    <h2>Preamble</h2>
+                    <p>WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC and to secure to all its citizens: JUSTICE, social, economic and political; LIBERTY of thought, expression, belief, faith and worship; EQUALITY of status and of opportunity; and to promote among them all FRATERNITY assuring the dignity of the individual and the unity and integrity of the Nation.</p>
                     
-                    <h3>Origins of the Conflict</h3>
-                    <p>The conflict arose from a series of cases where the government sought to amend the Constitution to facilitate land reform and social justice measures, which were being struck down by the courts for violating property rights. This led to a tug-of-war between the legislature and the judiciary over the extent of the amending power under Article 368.</p>
+                    <h3>Fundamental Rights (Part III)</h3>
+                    <p>Part III of the Indian Constitution guarantees fundamental rights to all citizens. These rights are essential for the development of the personality of every individual and to preserve human dignity. These rights include Right to Equality, Right to Freedom, Right against Exploitation, Right to Freedom of Religion, Cultural and Educational Rights, and Right to Constitutional Remedies.</p>
                     
-                    <p>The government argued that the power to amend was absolute. The petitioners argued that there were implied limitations. The court, in a 7-6 decision, sided with the idea of limitations—not explicit ones, but ones inherent in the very identity of the Constitution.</p>
+                    <p>Article 14 guarantees equality before the law and equal protection of the laws within the territory of India. Article 21 guarantees that no person shall be deprived of his life or personal liberty except according to procedure established by law. This article has been interpreted broadly by the judiciary to include various facets of human rights.</p>
                 `
             },
             {
-                id: "res_extra_01",
-                title: "Draft Notes: Concurrency in Go",
-                author: "Unknown Author",
-                category: "Computer Science",
-                type: "draft",
-                pages: 2,
-                readTime: "4 min",
+                id: "res_math_01",
+                title: "Introduction to Linear Algebra (Lecture 1)",
+                author: "Strang, Gilbert",
+                source: "MIT OpenCourseWare",
+                category: "Mathematics",
+                type: "lecture_notes",
+                pages: 12,
+                readTime: "15 min",
                 premium: false,
-                content: "<p>Unfinished draft regarding channels and goroutines. Goroutines are multiplexed onto OS threads...</p>"
+                published: "2016",
+                doi: "10.mit.ocw/18.06",
+                citations: 1200,
+                excerpt: "The fundamental problem of linear algebra is to solve n linear equations in n unknowns.",
+                summary: "A high-level introduction to rows, columns, and the elimination method for solving systems of linear equations.",
+                content: `
+                    <h4>Linear Algebra</h4>
+                    <h2>The Geometry of Linear Equations</h2>
+                    <p>The fundamental problem of linear algebra is to solve n linear equations in n unknowns. In the simplest case, n = 2. We can look at this problem in two ways: the row picture and the column picture. Most students are familiar with the row picture, where each equation represents a line in the plane. The solution is the point where the lines intersect.</p>
+                    
+                    <h3>The Column Picture</h3>
+                    <p>The column picture is much more important for this course. In the column picture, we are looking for a linear combination of the columns that equals the right-hand side vector. This approach generalizes more easily to higher dimensions. Instead of looking for where hyperplanes intersect, we are looking for weights to apply to vectors.</p>
+                    
+                    <p>Consider the system: 2x - y = 0 and -x + 2y = 3. In the row picture, these are two lines. In the column picture, we have x[2, -1] + y[-1, 2] = [0, 3]. We are asking how much of vector 1 and vector 2 we need to reach the target vector.</p>
+                `
+            },
+            {
+                id: "res_med_01",
+                title: "Molecular Biology of the Cell",
+                author: "Alberts, B. et al.",
+                source: "Garland Science",
+                category: "Medicine",
+                type: "textbook",
+                pages: 1400,
+                readTime: "240 min",
+                premium: true,
+                published: "2014",
+                doi: "10.med/mboc-6",
+                citations: 45000,
+                excerpt: "The cell is the basic unit of life. All living organisms are composed of cells.",
+                summary: "The definitive text in cell biology, covering everything from basic biochemistry to complex cell signaling pathways.",
+                content: `
+                    <h4>Cellular Biology</h4>
+                    <h2>The Evolution of the Cell</h2>
+                    <p>Cells are the fundamental units of life. All living things are composed of cells, and all cells arise from pre-existing cells. This simple statement, known as the cell theory, is one of the pillars of modern biology. But where did the first cell come from? How did complex multicellular organisms evolve from simple unicellular ones?</p>
+                    
+                    <h3>The Prebiotic Soup</h3>
+                    <p>Life is thought to have originated in a 'prebiotic soup' of organic molecules on the early Earth. Experiments by Miller and Urey showed that simple organic molecules, including amino acids, could be synthesized under conditions that mimicked the early atmosphere. These molecules eventually organized themselves into self-replicating systems, leading to the first primitive cells.</p>
+                    
+                    <p>The first cells were likely prokaryotic, similar to modern bacteria. They lacked a nucleus and other membrane-bound organelles. Over time, some of these cells evolved more complex structures. The endosymbiotic theory suggests that mitochondria and chloroplasts evolved from free-living bacteria that were engulfed by a larger cell.</p>
+                `
             }
         ];
-
-        // Fill with randomized academic noise
-        const subList = ['Computer Science', 'Medicine', 'Law', 'Mathematics'];
-        const publishers = ['Oxford', 'Springer', 'O\'Reilly', 'MIT Press', 'Pearson'];
-        for (let i = 1; i <= 15; i++) {
-            libraryData.push({
-                id: `res_extra_${i}`,
-                title: i % 3 === 0 ? `${subList[i % 4]} Archive: Section ${i}` : `Notes on ${subList[i % 4]} (Draft v${i})`,
-                author: i % 2 === 0 ? `Dr. ${['Kaufman', 'Zhao', 'Olsen'][i % 3]}` : 'Anonymous Staff',
-                source: publishers[i % 5],
-                category: subList[i % 4],
-                type: i % 2 === 0 ? "Resource" : "Paper",
-                pages: Math.floor(Math.random() * 40) + 1,
-                readTime: `${Math.floor(Math.random() * 20) + 2} min`,
-                premium: i > 3,
-                published: i % 4 === 0 ? "" : (2010 + i).toString(),
-                doi: `10.${publishers[i % 5].toLowerCase()}/${i}.992`,
-                citations: Math.floor(Math.random() * 500),
-                content: `<h2>Section ${i}</h2><p>This entry covers miscellaneous data collected in the field of ${subList[i % 4]}. The findings here are still undergoing peer review.</p>`
-            });
-        }
 
         // --- STATE MANAGEMENT ---
         let state = {

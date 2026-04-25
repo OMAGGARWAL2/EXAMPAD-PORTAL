@@ -36,6 +36,9 @@ class ExampadDB {
         if (!localStorage.getItem('exampad_practice_sessions')) {
             localStorage.setItem('exampad_practice_sessions', JSON.stringify({}));
         }
+        if (!localStorage.getItem('exampad_bookmarks')) {
+            localStorage.setItem('exampad_bookmarks', JSON.stringify({}));
+        }
     }
 
     // ===== CIRCULAR MANAGEMENT =====
@@ -184,12 +187,18 @@ class ExampadDB {
             credits: examData.credits || 1,
             questions: examData.questions || [],
             scheduledDate: examData.scheduledDate || null,
+            scheduledEndDate: examData.scheduledEndDate || null,
+            isUniversalTime: examData.isUniversalTime || false,
             wifiRestriction: examData.wifiRestriction || false,
             allowedWifi: examData.allowedWifi || null,
             sections: examData.sections || [],
-            languages: examData.languages || ['JavaScript'], // for coding problems
+            languages: examData.languages || ['JavaScript'],
+            pools: examData.pools || {},
+            identityFields: examData.identityFields || [],
+            theme: examData.theme || { primaryColor: '#D96C33' },
+            sectionLockEnabled: examData.sectionLockEnabled || false,
             createdAt: new Date().toISOString(),
-            status: examData.status || 'draft', // draft, live, completed
+            status: examData.status || 'draft',
             security: examData.security || {}
         };
 
@@ -626,6 +635,18 @@ class ExampadDB {
     getPracticeSession(itemId) {
         const sessions = JSON.parse(localStorage.getItem('exampad_practice_sessions')) || {};
         return sessions[itemId] || null;
+    }
+
+    // ===== BOOKMARKS MANAGEMENT ======
+    getBookmarks(userId) {
+        const bookmarksObj = JSON.parse(localStorage.getItem('exampad_bookmarks')) || {};
+        return bookmarksObj[userId] || [];
+    }
+
+    saveBookmarks(userId, bookmarks) {
+        const bookmarksObj = JSON.parse(localStorage.getItem('exampad_bookmarks')) || {};
+        bookmarksObj[userId] = bookmarks;
+        localStorage.setItem('exampad_bookmarks', JSON.stringify(bookmarksObj));
     }
 }
 

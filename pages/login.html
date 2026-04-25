@@ -489,7 +489,7 @@
         .recent-item:hover {
             background: #fff;
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transform: translateX(4px);
         }
 
@@ -526,9 +526,17 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .pulse {
@@ -568,7 +576,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             margin-top: 5px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             display: none;
             flex-direction: column;
             z-index: 1000;
@@ -578,8 +586,15 @@
         }
 
         @keyframes dropdownFade {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .history-item {
@@ -692,8 +707,10 @@
                         <label for="loginEmail">Email or Enrollment Id</label>
                         <div class="input-with-action">
                             <input type="text" id="loginEmail" class="input-field"
-                                placeholder="Email or EnrollmentId(RollNo / EmployeeId)" autocomplete="username" required>
-                            <button type="button" class="history-toggle" id="historyToggle" onclick="toggleHistoryMenu(event)">
+                                placeholder="Email or EnrollmentId(RollNo / EmployeeId)" autocomplete="username"
+                                required>
+                            <button type="button" class="history-toggle" id="historyToggle"
+                                onclick="toggleHistoryMenu(event)">
                                 <i class="fas fa-chevron-down"></i>
                             </button>
                             <div class="history-dropdown" id="historyDropdown"></div>
