@@ -19,6 +19,9 @@ contextBridge.exposeInMainWorld('proctorBridge', {
     // Deep Linking: Handlers for opening specific exams from browser
     onOpenExam: (callback) => ipcRenderer.on('open-exam-intent', (event, data) => callback(data)),
 
+    // Network & IP Access
+    getNetworkInfo: () => ipcRenderer.invoke('get-network-info'),
+
     // Version Check
     getAppVersion: () => '1.0.0-PROCTOR-CORE'
 });

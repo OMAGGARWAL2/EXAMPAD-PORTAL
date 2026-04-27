@@ -204,23 +204,26 @@
             top: -100px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #fee2e2;
-            color: #ef4444;
-            padding: 10px 30px;
-            border-radius: 12px;
+            background: #FEF3F2;
+            color: #B42318;
+            padding: 10px 45px;
+            border-radius: 20px;
             font-size: 1rem;
-            font-weight: 500;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             z-index: 1000;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
-            gap: 10px;
-            border: 1px solid #fecaca;
+            gap: 12px;
+            border: 1px solid #FECDCA;
+            font-family: 'Hind', sans-serif;
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
         }
 
         .error-banner.show {
-            top: 30px;
+            top: 74px;
         }
     </style>
 </head>
@@ -237,7 +240,8 @@
     </div>
     <div class="bg-wave">
         <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,900 L0,700 C300,850 700,900 1000,400 C1200,100 1440,0 1440,0 L1440,900 Z" fill="#f7d8c3" opacity="0.7"></path>
+            <path d="M0,900 L0,700 C300,850 700,900 1000,400 C1200,100 1440,0 1440,0 L1440,900 Z" fill="#f7d8c3"
+                opacity="0.7"></path>
             <path d="M600,0 C800,400 1100,800 1440,400 L1440,0 Z" fill="#fde6d8" opacity="0.5"></path>
         </svg>
     </div>
@@ -261,7 +265,8 @@
     </div>
 
     <div class="footer">
-        <div class="footer-left" style="cursor: pointer; user-select: none;" onclick="handleQuickStart()">Powered by Chitkara</div>
+        <div class="footer-left" style="cursor: pointer; user-select: none;" onclick="handleQuickStart()">Powered by
+            Chitkara</div>
         <div class="footer-right" style="cursor: pointer;" onclick="window.location.href='../index.html'">Version:
             0.6.51
         </div>
@@ -403,40 +408,55 @@
         // --- QUICK START FEATURE ---
         function handleQuickStart() {
             try {
-                if (typeof db === 'undefined') {
-                    alert("Database engine not loaded.");
-                    return;
-                }
-                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
-                const student = users.reverse().find(u => u.role === 'student');
-                if (!student) {
-                    alert("No student accounts found. Please log in manually.");
+                if (typeof db === 'undefined' || typeof auth === 'undefined') {
+                    console.error("System engines not ready.");
                     return;
                 }
 
-                const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
-                const attempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
-                
-                // Find latest exam that is NOT submitted or reviewed
-                const latestExam = exams.reverse().find(e => {
-                    const hasFinished = attempts.some(a => a.examId === e.id && a.studentId === student.id && (a.status === 'submitted' || a.status === 'reviewed'));
-                    return !hasFinished;
+                // 1. Identify the latest student
+                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const student = [...users].reverse().find(u => u.role === 'student');
+
+                if (!student) {
+                    showError("No student account found. Access restricted.");
+                    return;
+                }
+
+                // 2. Identify the appropriate exam (Newest -> Oldest fallback)
+                // Rule: If latest is done OR pending, go to next latest.
+                const allExams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+                const allAttempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+
+                const pendingExam = [...allExams].reverse().find(exam => {
+                    const attempt = allAttempts.find(a => a.examId === exam.id && a.studentId === student.id);
+                    const status = attempt ? attempt.status : 'none';
+
+                    // SKIP if already finished (submitted/reviewed)
+                    if (['submitted', 'reviewed'].includes(status)) return false;
+
+                    // SKIP if pending (already has a session/started)
+                    // This satisfies the "if previous test is pending it opens next latest test" rule
+                    if (status === 'pending' || (attempt && Object.keys(attempt.responses || {}).length > 0)) return false;
+
+                    // Only return true for fresh/not-started tests
+                    return true;
                 });
 
-                if (!latestExam) {
-                    alert("All available exams have been completed or no exams found.");
-                    return;
-                }
-
-                // Log in as student
+                // 3. Establish Session
                 db.createSession(student.id, 'student');
-                
-                // Redirect to exam-attempt with quickStart flag
-                console.log(`[QUICK START] Redirecting to ${latestExam.title} (Student: ${student.name})`);
-                window.location.href = `./exam-attempt.html?examId=${latestExam.id}&quickStart=true&vialink=true`;
+
+                if (pendingExam) {
+                    // 4a. Fast-track to the pending exam
+                    console.log(`[QUICK START] Fast-tracking to ${pendingExam.title} for ${student.name}`);
+                    window.location.href = `./exam-attempt.html?examId=${pendingExam.id}&quickStart=true&vialink=true`;
+                } else {
+                    // 4b. Fallback: If all are done, go to dashboard (prevents "Invalid Session" error)
+                    console.log(`[QUICK START] All exams completed for ${student.name}. Loading dashboard.`);
+                    window.location.href = `./student-dashboard.html?vialink=true`;
+                }
             } catch (e) {
-                console.error("Quick Start failed:", e);
-                alert("Quick Start failed. Please log in manually.");
+                console.error("Quick Start Exception:", e);
+                showError("System encountered a problem during quick start.");
             }
         }
     </script>

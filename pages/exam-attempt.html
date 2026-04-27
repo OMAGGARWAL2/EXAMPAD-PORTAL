@@ -1151,8 +1151,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -1169,6 +1170,10 @@
             text-align: center;
             border: 1px solid rgba(0, 0, 0, 0.05);
             animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .otp-modal-shift {
+            margin-top: -20vh !important;
         }
 
         .otp-input-line {
@@ -1714,23 +1719,11 @@
         }
 
         /* --- WARNING TOAST --- */
-        .warning-toast {
+        .error-banner {
             position: fixed;
-            top: 80px;
+            top: -100px;
             left: 50%;
             transform: translateX(-50%);
-            background: #fff;
-            color: #101828;
-            padding: 12px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-            font-family: 'Hind', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 999999;
-            animation: slideDown 0.3s ease;
-            display: flex;
-            align-items: center;
             gap: 10px;
         }
 
@@ -3371,20 +3364,18 @@
             position: absolute;
             bottom: 100%;
             left: 50%;
-            transform: translateX(-50%) translateY(-15px);
+            transform: translateX(-50%) translateY(-35px);
             background: #fff;
-            /* White Bubble */
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 22px 26px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 32px 28px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
             z-index: 10002;
-            width: 320px;
+            width: 340px;
             text-align: center;
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
             font-family: 'Hind', sans-serif;
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -3396,13 +3387,51 @@
             }
 
             to {
-                transform: translateX(-50%) translateY(-15px) scale(1);
+                transform: translateX(-50%) translateY(-35px) scale(1);
                 opacity: 1;
             }
         }
 
         .confirm-popover.show {
             display: flex;
+        }
+
+        .confirm-popover::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 12px solid #fff;
+        }
+
+        .popover-btn-yes {
+            background: #e66a35;
+            color: #fff;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-family: 'Hind', sans-serif;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .popover-btn-no {
+            background: #fff;
+            color: #475467;
+            border: 1px solid #eaecf0;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            flex: 1;
         }
 
         .confirm-popover::after {
@@ -3644,7 +3673,8 @@
                             your Roll Number *</label>
                         <input type="text" id="verifyForgotRoll"
                             style="width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #ddd; background: transparent; font-size: 1.1rem; color: #333; outline: none;"
-                            placeholder="e.g. 211099XXXX">
+                            placeholder="e.g. 211099XXXX"
+                            onkeydown="if(event.key === 'Enter') handleVerifyDirectBypass()">
                     </div>
 
                     <button onclick="handleVerifyDirectBypass()"
@@ -3748,7 +3778,7 @@
                 <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
                     <div id="lobbyCard"
                         style="width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center;">
-                        
+
                         <div id="lobbyFieldsContainer"
                             style="display: flex; flex-direction: column; gap: 30px; margin-bottom: 20px; width: 100%;">
                             <!-- Subjective Dynamic Fields -->
@@ -4077,9 +4107,9 @@
 
     <!-- MODAL (Submission OTP) -->
     <div id="confirmModal"
-        style="display: none; position: fixed; inset: 0; background: transparent; z-index: 20000; align-items: center; justify-content: center; font-family: 'Hind', sans-serif;">
+        style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 999999; align-items: center; justify-content: center; font-family: 'Hind', sans-serif;">
         <div
-            style="background: #ffffff; width: 600px; padding: 40px 48px; border-radius: 12px; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden;">
+            style="background: #ffffff; width: 600px; padding: 40px 48px; border-radius: 12px; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden; margin-top: -20vh;">
             <button onclick="closeModal('confirmModal')"
                 style="position: absolute; top: 16px; right: 20px; background: none; border: none; font-size: 28px; cursor: pointer; color: #999; display: flex; align-items: center; justify-content: center; outline: none; transition: 0.2s;"
                 onmouseover="this.style.color='#333'" onmouseout="this.style.color='#999'">
@@ -4108,9 +4138,9 @@
 
     <!-- MODAL (Section Submission OTP) -->
     <div id="sectionModal"
-        style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 20000; align-items: center; justify-content: center; font-family: 'Hind', Arial, sans-serif;">
+        style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 999999; align-items: center; justify-content: center; font-family: 'Hind', Arial, sans-serif;">
         <div
-            style="background: #ffffff; width: 480px; padding: 40px 50px; border-radius: 8px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center;">
+            style="background: #ffffff; width: 480px; padding: 40px 50px; border-radius: 8px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; margin-top: -20vh;">
             <button onclick="closeModal('sectionModal')"
                 style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center; outline: none;">
                 <i style="font-style: normal; font-weight: 300; font-family: inherit;">✕</i>
@@ -4516,6 +4546,76 @@
                 alert("Quick Start failed. Please log in manually.");
             }
         }
+        // --- NETWORK & IP SECURITY ---
+        async function validateNetwork(exam) {
+            if (!exam.security || !exam.security.ipRestriction) return true;
+
+            const allowedStr = exam.security.allowedIP || '';
+            const allowedIPs = allowedStr.split(',').map(ip => ip.trim()).filter(ip => ip);
+            if (allowedIPs.length === 0) return true;
+
+            try {
+                const networks = await window.proctorBridge.getNetworkInfo();
+                const currentIPs = networks.map(n => n.address);
+                const isAllowed = currentIPs.some(ip => allowedIPs.includes(ip));
+
+                if (!isAllowed) {
+                    showFatalNetworkError(currentIPs);
+                    return false;
+                }
+
+                if (exam.security.blockWifiSwitching) {
+                    startNetworkMonitoring(allowedIPs);
+                }
+                return true;
+            } catch (e) {
+                console.error("Network validation error:", e);
+                return true; // Fallback
+            }
+        }
+
+        function showFatalNetworkError(currentIPs) {
+            const modal = document.createElement('div');
+            modal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999999; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Hind', sans-serif; text-align:center; padding:40px;";
+            modal.innerHTML = `
+                <div style="max-width:600px; background:#1a1a1a; padding:60px; border-radius:24px; border:1px solid #333; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+                    <div style="width:80px; height:80px; background:#D92D20; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 30px;">
+                        <i class="fas fa-network-wired" style="font-size:40px;"></i>
+                    </div>
+                    <h1 style="font-size:2rem; font-weight:800; margin-bottom:20px; color:#F97066;">UNAUTHORIZED NETWORK</h1>
+                    <p style="font-size:1.1rem; color:#94a3b8; line-height:1.6; margin-bottom:30px;">
+                        This assessment is restricted to specific institutional networks. Your current IP address is not authorized for access.
+                    </p>
+                    <div style="background:#2d2d2d; padding:15px; border-radius:12px; font-family:'JetBrains Mono'; font-size:0.9rem; color:#f39c12; margin-bottom:30px;">
+                        DETECTED IP: ${currentIPs.join(', ') || 'UNKNOWN'}
+                    </div>
+                    <button onclick="window.location.replace('../index.html')" style="background:#fff; color:#000; border:none; padding:12px 32px; border-radius:8px; font-weight:700; cursor:pointer;">Return to Gateway</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        let networkInterval;
+        function startNetworkMonitoring(allowedIPs) {
+            if (networkInterval) clearInterval(networkInterval);
+            networkInterval = setInterval(async () => {
+                try {
+                    const networks = await window.proctorBridge.getNetworkInfo();
+                    const currentIPs = networks.map(n => n.address);
+                    const isAllowed = currentIPs.some(ip => allowedIPs.includes(ip));
+
+                    if (!isAllowed) {
+                        clearInterval(networkInterval);
+                        // Trigger a security violation
+                        handleSecurityViolation('NETWORK_SWITCH', 'WiFi/Network switching detected during active session.');
+                        showFatalNetworkError(currentIPs);
+                    }
+                } catch (e) {
+                    console.error("Monitoring error:", e);
+                }
+            }, 5000); // Check every 5 seconds
+        }
+
         window.startSystemBrain = startSystemBrain;
 
         async function init() {
@@ -4535,6 +4635,15 @@
                 showToast("Session Error: Please Login Again", "error");
                 setTimeout(() => window.location.replace('../index.html'), 2000);
                 return;
+            }
+
+            // 0. NETWORK VALIDATION PHASE (Added for IP Restriction)
+            const exams_list = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+            const exam_ref = exams_list.find(e => e.id === (examIdFromUrl || currentExam?.id));
+
+            if (exam_ref && exam_ref.security && exam_ref.security.ipRestriction && !exam_ref.security.isPracticeTest && !isPractice) {
+                const isValid = await validateNetwork(exam_ref);
+                if (!isValid) return; // Stop initialization if network is invalid
             }
 
             // 1. HYDRATION PHASE
@@ -4590,7 +4699,7 @@
                         }
                     }
 
-                    if (!attemptId) {
+                    if (!attemptId && !quickStart) {
                         console.error("[INIT] Security Violation: No attemptId found after initialization.");
                         showToast("Security Violation: Invalid Session (No Attempt)", "error");
                         setTimeout(() => window.location.replace('../index.html'), 2000);
@@ -4939,19 +5048,22 @@
                             <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">roll number *</label>
                             <input type="text" id="ident_field_roll" placeholder="Enter roll number"
                                    style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
-                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'">
+                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'"
+                                   onkeydown="if(event.key === 'Enter') finalizeSecurity()">
                         </div>
                         <div style="position: relative;">
                             <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">passcode *</label>
                             <input type="password" id="ident_field_passcode" placeholder="Enter passcode"
                                    style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
-                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'">
+                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'"
+                                   onkeydown="if(event.key === 'Enter') finalizeSecurity()">
                         </div>
                         <div style="position: relative;">
                             <label style="display: block; font-size: 0.95rem; color: #667085; margin-bottom: 8px;">test code *</label>
                             <input type="text" id="ident_field_testcode" placeholder="Enter test code"
                                    style="width: 100%; border: none; border-bottom: 1px solid #D0D5DD; padding: 8px 0; font-size: 1.1rem; outline: none; background: transparent; transition: border-color 0.2s;"
-                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'">
+                                   onfocus="this.style.borderBottomColor='#e16c38'" onblur="this.style.borderBottomColor='#D0D5DD'"
+                                   onkeydown="if(event.key === 'Enter') finalizeSecurity()">
                         </div>
                     `;
                 }
@@ -5061,7 +5173,8 @@
                                            placeholder="enter ${f.label.toLowerCase()}"
                                            style="width: 100%; border: none; border-bottom: 1.5px solid #D0D5DD; padding: 12px 0; font-size: 1.3rem; outline: none; background: transparent; transition: border-color 0.2s; font-family: 'Hind', sans-serif;"
                                            onfocus="this.style.borderBottomColor='#de6834'"
-                                           onblur="this.style.borderBottomColor='#D0D5DD'">
+                                           onblur="this.style.borderBottomColor='#D0D5DD'"
+                                           onkeydown="if(event.key === 'Enter') startActualExam()">
                                 </div>
                             `;
                         }).join('');
@@ -5274,7 +5387,7 @@
 
             if (currentQuestionIndex < currentExam.questions.length - 1) {
                 const nextQ = currentExam.questions[currentQuestionIndex + 1];
-                if ((nextQ.section || "Section A") !== sName) {
+                if (currentExam.sectionLockEnabled && (nextQ.section || "Section A") !== sName) {
                     showDashboard();
                 } else {
                     loadQuestion(currentQuestionIndex + 1);
@@ -5342,8 +5455,8 @@
                 const isActive = (sName === active);
                 const isFuture = !isSub && !isActive;
 
-                // Only lock future sections if Section Locking is enabled in the exam config
-                const isLocked = isSub || (isFuture && currentExam.sectionLockEnabled);
+                // Lock all non-active sections (either submitted or future if locking is enabled)
+                const isLocked = isSub || (currentExam.sectionLockEnabled && isFuture);
 
                 // Create segment container
                 const segmentWrap = document.createElement('div');
@@ -5426,7 +5539,7 @@
                     overlay.appendChild(lockContainer);
 
                     overlay.onclick = () => {
-                        showToast(isSub ? "Section already submitted." : "Please complete previous sections first.", 'error');
+                        showToast(isSub ? "Section already submitted." : "Please complete previous section first", 'error');
                     };
 
                     secContainer.appendChild(overlay);
@@ -5543,15 +5656,13 @@
                 const qs = secMap[sName];
                 const isSubmitted = currentAttempt.submittedSections.includes(sName);
                 const isActive = (sName === activeSection);
-                const isLocked = !isSubmitted && !isActive;
+                const isLocked = !isSubmitted && (currentExam.sectionLockEnabled && !isActive);
                 const isCollapsed = isLocked ? true : (collapsedSections[sName] || false);
 
                 const subCount = qs.filter(item => currentAttempt.responses[item.q.id]?.submitted).length;
 
                 const sectionContainer = document.createElement('div');
                 sectionContainer.className = "section-table-container";
-                // Premium TestPad shadow
-                sectionContainer.style = "background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.06); margin-bottom: 24px;";
 
                 // --- SECTION HEADER ---
                 const header = document.createElement('div');
@@ -5559,26 +5670,43 @@
                 let textColor = '#fff';
 
                 if (isSubmitted) {
-                    headerColor = '#059669'; // Emerald green
+                    headerColor = '#7fb07b'; // Muted Green matching screenshot
                 }
 
-                // Explicit 72px height and 500 weight for a premium, platform-authentic feel
-                header.style = `background: ${headerColor}; color: ${textColor}; height: 72px; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; font-size: calc(18px * var(--header-scale)); font-family: 'Hind', sans-serif; cursor: ${isLocked ? 'not-allowed' : 'pointer'}; border-radius: 8px 8px 0 0; border: none; transition: all 0.2s;`;
+                if (isLocked) {
+                    // Header-only style for locked sections
+                    sectionContainer.style = "background: transparent; border-radius: 8px; overflow: visible; box-shadow: none; margin-bottom: 24px; padding-bottom: 0;";
+                    header.style = `background: ${headerColor}; color: ${textColor}; height: 80px; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; font-size: calc(18px * var(--header-scale)); font-family: 'Hind', sans-serif; cursor: not-allowed; border-radius: 8px; border: none; transition: all 0.2s;`;
+                } else {
+                    // Full card style for active/submitted sections
+                    sectionContainer.style = "background: #fff; border-radius: 12px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.06); margin-bottom: 80px; padding-bottom: 20px;";
+                    header.style = `background: ${headerColor}; color: ${textColor}; height: 80px; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; font-size: calc(18px * var(--header-scale)); font-family: 'Hind', sans-serif; cursor: pointer; border-radius: 12px 12px 0 0; border: none; transition: all 0.2s;`;
+                }
 
-                if (!isLocked) {
-                    header.onclick = () => {
+                header.onclick = () => {
+                    if (isLocked) {
+                        showToast("Please complete previous section first", 'error');
+                    } else {
                         collapsedSections[sName] = !collapsedSections[sName];
                         renderDashboardTable();
-                    };
-                }
+                    }
+                };
 
                 const indicatorIcon = isLocked ? '<i class="fas fa-lock" style="font-size: 16px; opacity: 0.8;"></i>' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}" style="font-size: 16px; margin-left: 12px; opacity: 0.8;"></i>`;
                 const sectionTypeText = qs[0]?.q?.section_type || `Section ${sections.indexOf(sName) + 1}`;
 
+                const sectionTitleContent = isSubmitted
+                    ? `<span style="letter-spacing: 0.1px; display: flex; align-items: center; gap: 10px;">${sName} - ${sectionTypeText} <span style="background: #fff; color: ${headerColor}; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px;"><i class="fas fa-check"></i></span></span>`
+                    : `<span style="letter-spacing: 0.1px;">${sName} - ${sectionTypeText}</span>`;
+
+                const sectionStatusContent = isSubmitted
+                    ? `<span style="opacity: 0.95;">${subCount}/${qs.length} Questions submitted successfully</span>`
+                    : `<span style="opacity: 0.9;">${subCount}/${qs.length} Questions</span>`;
+
                 header.innerHTML = `
-                    <span style="letter-spacing: 0.1px;">${sName} - ${sectionTypeText} ${isSubmitted ? '<i class="fas fa-check-circle" style="margin-left: 8px; font-size: 1.2rem;"></i>' : ''}</span>
+                    ${sectionTitleContent}
                     <div style="display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 400; font-family: 'Hind', sans-serif;">
-                        <span style="opacity: 0.9;">${subCount}/${qs.length} Questions</span>
+                        ${sectionStatusContent}
                         ${indicatorIcon}
                     </div>
                 `;
@@ -5642,18 +5770,19 @@
                         const wrapState = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-scale')) > 1.05 ? 'normal' : 'nowrap';
                         const displayAction = actionText.replace('<br>', (wrapState === 'normal' ? '<br>' : ' '));
 
+                        const clickAction = isLocked ? `showToast('Please complete previous section first', 'error')` : `loadQuestion(${i})`;
                         const tr = document.createElement('tr');
-                        tr.style = "border-bottom: none; background: #fff; transition: all 0.2s;";
+                        tr.style = `background: #fff; transition: all 0.2s; ${isLocked ? 'cursor: not-allowed; opacity: 0.75;' : ''}`;
                         tr.innerHTML = `
-                            <td style="padding: 14px 0; color: #101828; text-align: left; font-weight: 400; font-size: calc(15px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${i + 1}.</td>
-                            <td style="padding: 14px 10px; color: #101828; text-align: left; font-weight: 400; font-size: calc(15px * var(--dash-font-scale)); white-space: normal; overflow-wrap: break-word; font-family: 'Hind', sans-serif;">
-                                <span class="q-title-link" onclick="loadQuestion(${i})" style="cursor: pointer; transition: all 0.2s;">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
+                            <td style="padding: 20px 0; color: #101828; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${i + 1}.</td>
+                            <td style="padding: 20px 10px; color: #101828; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); white-space: normal; overflow-wrap: break-word; font-family: 'Hind', sans-serif;">
+                                <span class="q-title-link" onclick="${clickAction}" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; transition: all 0.2s;">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
                             </td>
-                            <td style="padding: 14px 10px; color: #475467; text-align: left; font-weight: 400; font-size: calc(15px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${(qInfo.type || 'MCQ').charAt(0).toUpperCase() + (qInfo.type || 'MCQ').slice(1).replace('_', ' ')}</td>
-                            <td style="padding: 14px 10px; color: ${statusColor}; text-align: left; font-weight: 400; font-size: calc(15px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${status}</td>
-                            <td style="padding: 14px 0; text-align: left;">
-                                <a href="javascript:void(0)" class="solve-link" onclick="loadQuestion(${i})" 
-                                   style="color: ${actionColor}; text-decoration: none; font-weight: 500; font-size: calc(15px * var(--dash-font-scale)); line-height: 1.25; display: block; border: none; cursor: pointer; font-family: 'Hind', sans-serif; white-space: ${wrapState};">${displayAction}</a>
+                            <td style="padding: 20px 10px; color: #475467; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${(qInfo.type || 'MCQ').charAt(0).toUpperCase() + (qInfo.type || 'MCQ').slice(1).replace('_', ' ')}</td>
+                            <td style="padding: 20px 10px; color: ${statusColor}; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${status}</td>
+                            <td style="padding: 20px 0; text-align: left;">
+                                <a href="javascript:void(0)" class="solve-link" onclick="${clickAction}" 
+                                   style="color: ${isLocked ? '#98A2B3' : actionColor}; text-decoration: none; font-weight: 500; font-size: calc(16px * var(--dash-font-scale)); line-height: 1.25; display: block; border: none; cursor: ${isLocked ? 'not-allowed' : 'pointer'}; font-family: 'Hind', sans-serif; white-space: normal;">${displayAction}</a>
                             </td>
                         `;
                         const titleSpan = tr.querySelector('.q-title-link');
@@ -5673,45 +5802,55 @@
                     sectionContainer.appendChild(tableWrap);
 
                     // --- SECTION SUBMIT BUTTON ---
-                    // Only show section submit if locking is enabled
-                    if (!isSubmitted && currentExam.sectionLockEnabled) {
-                        const isLastSection = (sName === sections[sections.length - 1]);
-                        if (!isLastSection) {
-                            const subBtnContainer = document.createElement('div');
-                            subBtnContainer.style = "padding: 24px 40px 40px 40px; display: flex; justify-content: center; position: relative;";
+                    const isLastSection = (sName === sections[sections.length - 1]);
+                    if (currentExam.sectionLockEnabled && !isSubmitted && !isLastSection) {
+                        const subBtnContainer = document.createElement('div');
+                        // Absolute positioning to hang half-out
+                        subBtnContainer.style = "position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; width: auto; z-index: 100;";
 
-                            const sBtn = document.createElement('button');
-                            sBtn.style = "background: #e68a5c; color: #fff; border: none; padding: 12px 64px; border-radius: 4px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);";
-                            sBtn.innerText = "submit section";
+                        const sBtn = document.createElement('button');
+                        // Clean Pill Style from User Solution
+                        sBtn.style = "background: #ce866a; color: #fff; border: none; padding: 12px 60px 42px 60px; border-radius: 50px; font-weight: 500; font-size: 20px; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 10px 30px rgba(206, 134, 106, 0.35); font-family: 'Hind', sans-serif; text-transform: lowercase;";
+                        sBtn.innerText = "submit this section";
 
-                            const popover = document.createElement('div');
-                            popover.className = 'confirm-popover';
-                            popover.innerHTML = `
-                                <div style="font-weight:500; color:#101828; margin-bottom:12px; font-size:1.2rem; line-height:1.4; padding: 0 5px;">Do you really want to submit this section?</div>
-                                <div style="display:flex; gap:16px; width:100%; justify-content:center;">
-                                    <button class="popover-btn-yes">Yes</button>
-                                    <button class="popover-btn-no">No</button>
-                                </div>
-                            `;
+                        // Hover & Click Effects (Still and Fixed)
+                        sBtn.onmouseenter = () => { sBtn.style.background = "#bc775a"; };
+                        sBtn.onmouseleave = () => { sBtn.style.background = "#ce866a"; };
+                        sBtn.onmousedown = () => { /* No scale/transform */ };
+                        sBtn.onmouseup = () => { /* No scale/transform */ };
 
-                            popover.querySelector('.popover-btn-yes').onclick = () => {
-                                popover.classList.remove('show');
-                                submitSection(sName);
-                            };
-                            popover.querySelector('.popover-btn-no').onclick = () => {
-                                popover.classList.remove('show');
-                            };
+                        const popover = document.createElement('div');
+                        popover.className = 'confirm-popover';
+                        popover.innerHTML = `
+                            <div style="font-weight:500; color:#101828; margin-bottom:12px; font-size:1.35rem; line-height:1.4; padding: 0 10px;">
+                                Do you really want to submit <span style="color: #e66a35;">${sName}</span> segment?
+                            </div>
+                            <div style="color: #475467; font-size: 1.15rem; margin-bottom: 36px; padding: 0 15px; line-height: 1.5; font-weight: 400;">
+                                You won't be able to submit questions from this segment again.
+                            </div>
+                            <div style="display:flex; gap:16px; width:100%; justify-content:center; padding: 0 10px;">
+                                <button class="popover-btn-yes">Yes</button>
+                                <button class="popover-btn-no">No</button>
+                            </div>
+                        `;
 
-                            sBtn.onclick = (e) => {
-                                e.stopPropagation();
-                                document.querySelectorAll('.confirm-popover').forEach(p => p.classList.remove('show'));
-                                popover.classList.add('show');
-                            };
+                        popover.querySelector('.popover-btn-yes').onclick = () => {
+                            popover.classList.remove('show');
+                            submitSection(sName);
+                        };
+                        popover.querySelector('.popover-btn-no').onclick = () => {
+                            popover.classList.remove('show');
+                        };
 
-                            subBtnContainer.appendChild(popover);
-                            subBtnContainer.appendChild(sBtn);
-                            sectionContainer.appendChild(subBtnContainer);
-                        }
+                        sBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            document.querySelectorAll('.confirm-popover').forEach(p => p.classList.remove('show'));
+                            popover.classList.add('show');
+                        };
+
+                        subBtnContainer.appendChild(popover);
+                        subBtnContainer.appendChild(sBtn);
+                        sectionContainer.appendChild(subBtnContainer);
                     }
                 }
 
@@ -5726,12 +5865,12 @@
                 const popover = document.createElement('div');
                 popover.className = 'confirm-popover';
                 popover.innerHTML = `
-                    <div style="font-weight:500; color:#101828; margin-bottom:12px; font-size:1.2rem; line-height:1.4; padding: 0 10px;">Do you really want to submit the test?</div>
-                    <div style="display:flex; gap:16px; width:100%; justify-content:center;">
-                        <button class="popover-btn-yes">Yes</button>
-                        <button class="popover-btn-no">No</button>
-                    </div>
-                `;
+                     <div style="font-weight:500; color:#101828; margin-bottom:12px; font-size:1.25rem; line-height:1.4; padding: 0 10px;">Do you really want to submit the test?</div>
+                     <div style="display:flex; gap:16px; width:100%; justify-content:center; padding-top: 10px;">
+                         <button class="popover-btn-yes">Yes</button>
+                         <button class="popover-btn-no">No</button>
+                     </div>
+                 `;
 
                 popover.querySelector('.popover-btn-yes').onclick = () => {
                     popover.classList.remove('show');
@@ -5742,7 +5881,8 @@
                 };
 
                 const submitLink = document.createElement('div');
-                submitLink.style = "background-color: #fbe9e2; color: #de6834; padding: 14px 48px; border-radius: 5px; font-size: 18px; font-weight: 500; cursor: pointer; border: 1px solid #fbe9e2; font-family: 'Hind', sans-serif;";
+                // Reverted to original rectangular style
+                submitLink.style = "background-color: #fbe9e2; color: #de6834; padding: 16px 60px; border-radius: 5px; font-size: 18px; font-weight: 500; cursor: pointer; border: 1px solid #fbe9e2; font-family: 'Hind', sans-serif; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.2s;";
                 submitLink.innerText = "Submit Test";
 
                 submitLink.onclick = (e) => {
@@ -5785,7 +5925,7 @@
                 showDashboard();
                 return;
             }
-            if (sName !== active) {
+            if (currentExam.sectionLockEnabled && sName !== active) {
                 showHighFidelityBanner("Section Locked: Please submit previous section first to attempt further.", "lock");
                 showDashboard();
                 return;
@@ -6596,7 +6736,7 @@
             }
 
             overlay.innerHTML = `
-                <div class="reset-modal">
+                <div class="reset-modal otp-modal-shift">
                     <i class="fas fa-times modal-close" id="otpClose" style="font-size: 24px; top: 12px; right: 12px; opacity: 0.6;"></i>
                     <div class="otp-title">Please use <b>${otpValue || '1312'}</b> to submit test.</div>
                     <div style="margin-top: 24px; position: relative; width: 100%;">
@@ -7587,7 +7727,7 @@
                 closeModal('confirmModal');
                 submitFinal(false, true);
             } else {
-                showToast("Invalid OTP. Please check and try again.");
+                showToast("Invalid OTP. Please check and try again.", "error");
                 document.getElementById('submissionOtpInput').style.borderColor = 'var(--danger)';
             }
         }
@@ -7905,47 +8045,48 @@
             const existing = document.getElementById('globalToast');
             if (existing) existing.remove();
 
-            if (type === 'warning') {
-                const t = document.createElement('div');
-                t.id = 'globalToast';
-                t.className = 'warning-toast';
-                t.innerHTML = `<i class="fas fa-exclamation-triangle" style="color: #F79009;"></i> <span>${m}</span>`;
-                document.body.appendChild(t);
-
-                setTimeout(() => {
-                    if (t.parentElement) {
-                        t.style.opacity = '0';
-                        t.style.transition = 'opacity 0.4s ease';
-                        setTimeout(() => t.remove(), 400);
-                    }
-                }, 3500);
-                return;
-            }
-
             const t = document.createElement('div');
             t.id = 'globalToast';
 
             const isError = (type === 'error' || type === 'danger');
-            // Matching the requested screenshot: Light glassmorphism, soft border, red text for errors, green/grey for success
-            const bgColor = isError ? 'rgba(254, 243, 242, 0.95)' : 'rgba(255, 255, 255, 0.95)';
-            const borderColor = isError ? '#FECDCA' : 'var(--border)';
-            const textColor = isError ? '#D92120' : '#101828';
+            const isSuccess = (type === 'success');
+            const isWarning = (type === 'warning');
+
+            // Premium Palette (Consistent across all types)
+            let bgColor, borderColor, textColor;
+            if (isError) {
+                bgColor = '#FEF3F2'; // Light Red
+                borderColor = '#FECDCA';
+                textColor = '#B42318'; // Deep Red
+            } else if (isSuccess) {
+                bgColor = '#ECFDF3'; // Light Green
+                borderColor = '#D1FADF';
+                textColor = '#027A48'; // Deep Green
+            } else if (isWarning) {
+                bgColor = '#FFFAEB'; // Light Yellow/Orange
+                borderColor = '#FEDF89';
+                textColor = '#B54708'; // Deep Orange
+            } else {
+                bgColor = 'rgba(255, 255, 255, 0.95)';
+                borderColor = 'var(--border)';
+                textColor = '#101828';
+            }
 
             t.style = `
                 position: fixed;
-                top: 55px;
+                top: 74px;
                 left: 50%;
-                transform: translate(-50%, -50%) scale(0.95);
+                transform: translateX(-50%) scale(0.95);
                 background: ${bgColor};
                 color: ${textColor};
                 border: 1px solid ${borderColor};
-                padding: 8px 24px;
-                border-radius: 30px;
-                font-weight: 600;
+                padding: 14px 48px;
+                border-radius: 8px;
+                font-weight: 500;
                 z-index: 100001;
-                font-size: 15.4px;
-                font-family: 'Open Sans', sans-serif;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                font-size: 16px;
+                font-family: 'Hind', sans-serif;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.04);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -7953,21 +8094,21 @@
                 transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
                 white-space: nowrap;
                 pointer-events: none;
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
             `;
             t.innerHTML = `<span>${m}</span>`;
             document.body.appendChild(t);
 
             requestAnimationFrame(() => {
                 t.style.opacity = '1';
-                t.style.transform = 'translate(-50%, -50%) scale(1)';
+                t.style.transform = 'translateX(-50%) scale(1)';
             });
 
             setTimeout(() => {
                 if (t.parentElement) {
                     t.style.opacity = '0';
-                    t.style.transform = 'translate(-50%, -50%) scale(0.95)';
+                    t.style.transform = 'translateX(-50%) scale(0.95)';
                     setTimeout(() => t.remove(), 400);
                 }
             }, 3500);
@@ -8043,7 +8184,7 @@
                 if (v) v.srcObject = s;
             }).catch(() => {
                 const hasStarted = sessionStorage.getItem(`exam_started_${attemptId}`);
-                if (hasStarted !== 'true') showToast("Security: Camera Access Failed");
+                if (hasStarted !== 'true') showToast("Security: Camera Access Failed", 'error');
             });
         }
 

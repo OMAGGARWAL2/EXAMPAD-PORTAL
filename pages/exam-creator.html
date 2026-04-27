@@ -9,10 +9,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
     <!-- Quill Rich Text Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="icon" type="image/x-icon" href="https://api.learntechww.com/college_icon/logo1733989968823.jpg">
     <!-- Monaco Editor Resources -->
     <link rel="stylesheet" data-name="vs/editor/editor.main"
@@ -32,11 +34,19 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            background-color: var(--bg-body);
+            font-family: 'Hind', sans-serif;
+            background-color: transparent;
             color: var(--text-main);
             margin: 0;
             overflow-x: hidden;
+        }
+
+        .workspace {
+            background: transparent !important;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
         /* Real Site Header */
@@ -49,7 +59,7 @@
             padding: 0 24px;
             position: sticky;
             top: 0;
-            background: #fff;
+            background: transparent;
             z-index: 1000;
         }
 
@@ -351,7 +361,7 @@
 
         /* Sidebar Stats */
         .sidebar {
-            background: var(--bg-sidebar);
+            background: transparent;
             padding: 32px;
             border-left: 1px solid var(--border);
             position: sticky;
@@ -404,15 +414,29 @@
 
         .builder-left,
         .builder-right {
-            background: #fff;
+            background: transparent;
             border-radius: 16px;
             padding: 32px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            border: 1px solid #f0f0f0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .builder-right {
-            background: #fafafa;
+        .form-card {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin-bottom: 40px !important;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #1a1a1b;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .question-id-wrapper {
@@ -1167,6 +1191,7 @@
 
         .wizard-step {
             display: none;
+            position: relative;
         }
 
         .wizard-step.active {
@@ -1540,10 +1565,81 @@
             border-radius: 2px;
         }
 
-        @media print {
-            body {
-                display: none !important;
+        /* Custom Context Menu */
+        .custom-context-menu {
+            position: fixed;
+            z-index: 10000;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(217, 108, 51, 0.15);
+            border: 1px solid #ffe8dd;
+            min-width: 220px;
+            display: none;
+            flex-direction: column;
+            padding: 8px;
+            animation: menuFadeIn 0.2s ease-out;
+        }
+
+        @keyframes menuFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
             }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .ctx-item {
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            color: #444;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .ctx-item:hover {
+            background: #fff5f0;
+            color: var(--primary);
+        }
+
+        .ctx-item i {
+            width: 18px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .ctx-divider {
+            height: 1px;
+            background: #eee;
+            margin: 6px 0;
+        }
+
+        .security-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-color: #fffaf5;
+            overflow: hidden;
+            pointer-events: none;
+            display: block;
+        }
+
+        .security-bg-container svg {
+            width: 100%;
+            height: 100%;
+            transform: scale(1.1);
+            filter: blur(3px);
         }
     </style>
 </head>
@@ -1557,6 +1653,12 @@
     <div
         style="font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px;">
         EXAMPAD CREATOR</div>
+</div>
+<div class="security-bg-container" id="globalSecurityBg">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="350" fill="#fde6d8" opacity="0.4"></circle>
+        <circle cx="1300" cy="800" r="450" fill="#fde6d8" opacity="0.4"></circle>
+    </svg>
 </div>
 
 <div class="security-blackout" id="securityBlackout">
@@ -1578,6 +1680,15 @@
     </div>
 </div>
 
+<div class="custom-context-menu" id="customContextMenu">
+    <div class="ctx-item" onclick="promptAddSection()"><i data-lucide="plus-circle"></i> Add Section</div>
+    <div class="ctx-divider"></div>
+    <div class="ctx-item" onclick="window.location.href='excelupload.html'"><i data-lucide="file-spreadsheet"></i>
+        Upload MCQ via Excel</div>
+    <div class="ctx-item" onclick="window.location.href='exceluploadcode.html'"><i data-lucide="code-2"></i> Code Upload
+        via Excel</div>
+</div>
+
 <!-- Fullscreen Monaco Editor Overlay -->
 <div id="editorOverlay">
     <div class="overlay-header">
@@ -1591,7 +1702,7 @@
 <header class="site-header">
     <div class="header-left">
         <div class="logo" onclick="goBack()">
-            <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara">
+            <img src="../icon.png" alt="Chitkara">
         </div>
         <div class="nav-icons">
             <div class="nav-icon" title="Dashboard" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24"
@@ -1636,9 +1747,27 @@
             <div style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%;"></div>
             <span>Changes Saved</span>
         </div>
+
+        <!-- Session & Progress Widgets -->
+        <div id="editorTimer" style="display: flex; align-items: center; gap: 8px; background: #fdf8f5; border: 1px solid #ffe8dd; padding: 6px 14px; border-radius: 20px; margin-left: 15px;">
+            <i data-lucide="clock" style="width:14px; height:14px; color:var(--primary);"></i>
+            <span id="sessionTimer" style="font-size: 0.75rem; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono';">00:00:00</span>
+        </div>
+        <div id="headerQuestionCount" style="display: flex; align-items: center; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 6px 14px; border-radius: 20px; margin-left: 10px;">
+            <i data-lucide="list" style="width:14px; height:14px; color:#166534;"></i>
+            <span id="headerQCount" style="font-size: 0.75rem; font-weight: 800; color: #166534;">0 Questions</span>
+        </div>
+
+        <div id="lockStatusHeader"
+            style="display:none; align-items:center; gap:6px; background:#fff1f0; border:1px solid #ffccc7; padding:4px 10px; border-radius:20px; margin-left:12px;">
+            <i data-lucide="lock" style="width:12px; height:12px; color:#cf1322;"></i>
+            <span
+                style="font-size:0.65rem; font-weight:800; color:#cf1322; text-transform:uppercase; letter-spacing:0.5px;">Protected</span>
+        </div>
         <button class="nav-icon-btn" onclick="showVersionHistory()" title="Version History"
-            style="margin-left: 10px; background: #fff; border: 1px solid #eee; height: 36px; padding: 0 12px;"><i
-                class="fas fa-history"></i> History</button>
+            style="margin-left: 10px; background: #fff; border: 1px solid #eee; height: 36px; padding: 0 12px; display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="history" style="width:16px; height:16px;"></i> History
+        </button>
         <button class="plus-btn" title="Create New Assessment" onclick="createNewExam()">+</button>
         <div class="profile-container" id="profileToggle">
             <div class="profile-circle">OA</div>
@@ -1668,23 +1797,23 @@
             </div>
             <div class="step-indicator" id="ind3" onclick="goToStep(3)">
                 <div class="step-num">3</div>
-                <span>QUESTION ARCHITECT</span>
+                <span>NETWORK ACCESS</span>
             </div>
             <div class="step-indicator" id="ind4" onclick="goToStep(4)">
                 <div class="step-num">4</div>
+                <span>QUESTION ARCHITECT</span>
+            </div>
+            <div class="step-indicator" id="ind5" onclick="goToStep(5)">
+                <div class="step-num">5</div>
                 <span>SECURE DEPLOYMENT</span>
             </div>
         </div>
 
-        <!-- STEP 1: Details -->
         <div id="step-1" class="wizard-step active">
             <div class="form-card">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
-                    <div
-                        style="width:40px; height:40px; background:rgba(217, 108, 51, 0.1); color:var(--primary); border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                        <i class="fas fa-id-card" style="font-size:1.2rem;"></i>
-                    </div>
-                    <h2 class="section-title" style="margin:0;">Assessment Identity</h2>
+                <div class="section-title">
+                    <i data-lucide="fingerprint" style="color:var(--primary); width: 28px; height: 28px;"></i>
+                    Assessment Identity
                 </div>
 
                 <div class="input-group">
@@ -1756,20 +1885,17 @@
                     </div>
                     <div class="input-group">
                         <label class="label">TIME CONFIGURATION</label>
-                        <label class="sec-toggle" style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(217, 108, 51, 0.05); padding:10px; border-radius:8px; border:1px dashed rgba(217, 108, 51, 0.3);">
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(217, 108, 51, 0.05); padding:10px; border-radius:8px; border:1px dashed rgba(217, 108, 51, 0.3);">
                             <input type="checkbox" id="isUniversalTime" style="width:18px; height:18px;">
                             <span style="font-size:0.9rem; font-weight:700; color:#D96C33;">UNIVERSAL TIME FRAME</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Exam Theme Designer -->
                 <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee;">
                     <div style="display:flex; align-items:center; gap:12px; margin-bottom: 20px;">
-                        <div
-                            style="width:32px; height:32px; background:rgba(155, 89, 182, 0.1); color:#9b59b6; border-radius:8px; display:flex; align-items:center; justify-content:center;">
-                            <i class="fas fa-palette"></i>
-                        </div>
+                        <i data-lucide="palette" style="color:#9b59b6; width: 24px; height: 24px;"></i>
                         <h3 style="margin:0; font-size: 1.1rem; font-family: 'Outfit';">Exam Visual Theme Designer</h3>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px;">
@@ -1796,26 +1922,30 @@
                 </div>
             </div>
 
-            <div class="form-card" style="margin-top: 24px; border-left: 4px solid var(--primary);">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
-                    <div
-                        style="width:40px; height:40px; background:rgba(46, 204, 113, 0.1); color:#2ecc71; border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                        <i class="fas fa-shield-alt" style="font-size:1.2rem;"></i>
-                    </div>
-                    <h2 class="section-title" style="margin:0;">Integrity Shield & Policy</h2>
+            <div class="form-card"
+                style="margin-top: 40px; border-left: 4px solid #2ecc71; padding-left: 24px !important; background:transparent;">
+                <div class="section-title">
+                    <i data-lucide="shield-check" style="color:#2ecc71; width: 28px; height: 28px;"></i> Integrity
+                    Shield & Policy
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                    <div class="security-card"
-                        style="background:#fcfcfc; border:1px solid #f0f0f0; padding:20px; border-radius:12px;">
+                    <div
+                        style="background:transparent; border:1px solid rgba(0,0,0,0.05); padding:20px; border-radius:12px;">
                         <label class="sec-toggle"
                             style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:12px;">
                             <input type="checkbox" id="blockCopyPaste" style="width:18px; height:18px;">
-                            <span style="font-size:0.9rem; font-weight:500;">Block Copy-Paste Activity</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <i data-lucide="clipboard-off" style="width:16px; height:16px; color:#666;"></i>
+                                <span style="font-size:0.9rem; font-weight:500;">Block Copy-Paste Activity</span>
+                            </div>
                         </label>
                         <label class="sec-toggle" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
                             <input type="checkbox" id="blockScreenshot" style="width:18px; height:18px;">
-                            <span style="font-size:0.9rem; font-weight:500;">Block PrintScreen & Snipping</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <i data-lucide="camera-off" style="width:16px; height:16px; color:#666;"></i>
+                                <span style="font-size:0.9rem; font-weight:500;">Block PrintScreen & Snipping</span>
+                            </div>
                         </label>
                         <label class="sec-toggle"
                             style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-top:12px; padding:10px; background:rgba(217, 108, 51, 0.05); border-radius:8px; border:1px dashed rgba(217, 108, 51, 0.3);">
@@ -1829,7 +1959,10 @@
                         <label class="sec-toggle"
                             style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:12px;">
                             <input type="checkbox" id="fullScreenRequired" style="width:18px; height:18px;">
-                            <span style="font-size:0.9rem; font-weight:500;">Enforce Strict Fullscreen</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <i data-lucide="maximize" style="width:16px; height:16px; color:#666;"></i>
+                                <span style="font-size:0.9rem; font-weight:500;">Enforce Strict Fullscreen</span>
+                            </div>
                         </label>
                         <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #eee;">
                             <label class="label" style="font-size:0.7rem; color:#A01E17;">MAX VIOLATIONS ALLOWED</label>
@@ -1840,13 +1973,11 @@
                 </div>
             </div>
 
-            <div class="form-card" style="margin-top: 24px; border-left: 4px solid #f39c12;">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
-                    <div
-                        style="width:40px; height:40px; background:rgba(243, 156, 18, 0.1); color:#f39c12; border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                        <i class="fas fa-user-check" style="font-size:1.2rem;"></i>
-                    </div>
-                    <h2 class="section-title" style="margin:0;">Identity Verification Architect</h2>
+            <div class="form-card"
+                style="margin-top: 40px; border-left: 4px solid #f39c12; padding-left: 24px !important; background:transparent;">
+                <div class="section-title">
+                    <i data-lucide="user-check" style="color:#f39c12; width: 28px; height: 28px;"></i> Identity
+                    Verification Architect
                 </div>
                 <p style="color:#666; font-size: 0.85rem; margin-bottom: 20px;">Define mandatory information students
                     must provide before starting the assessment (e.g. Blind Roll No, Section, Name).</p>
@@ -1875,11 +2006,13 @@
             </div>
         </div>
 
-        <!-- STEP 2: Sections -->
         <div id="step-2" class="wizard-step">
             <div class="form-card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h2 class="section-title">Sectional Architecture</h2>
+                    <div class="section-title">
+                        <i data-lucide="layers" style="color:var(--primary); width: 28px; height: 28px;"></i> Sectional
+                        Architecture
+                    </div>
                     <button class="btn btn-ghost" onclick="promptAddSection()">+ Define New Section</button>
                 </div>
                 <p style="color:#777; font-size: 0.9rem; margin-bottom: 24px;">Add sections to categorize questions
@@ -1888,38 +2021,116 @@
             </div>
 
             <!-- Sectional Navigation Policy -->
-            <div class="form-card" style="margin-top: 24px; border-left: 4px solid #3498db;" id="sectionLockCard">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 24px;">
-                    <div
-                        style="width:40px; height:40px; background:rgba(52, 152, 219, 0.1); color:#3498db; border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                        <i class="fas fa-lock" style="font-size:1.2rem;"></i>
-                    </div>
-                    <h2 class="section-title" style="margin:0;">Sectional Navigation Policy</h2>
+            <div class="form-card"
+                style="margin-top: 40px; border-left: 4px solid #3498db; padding-left: 24px !important; background:transparent;"
+                id="sectionLockCard">
+                <div class="section-title">
+                    <i data-lucide="navigation-2" style="color:#3498db; width: 28px; height: 28px;"></i> Sectional
+                    Navigation Policy
                 </div>
-                <div
-                    style="display: flex; align-items: flex-start; gap: 20px; background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                    <label class="sec-toggle" style="display:flex; align-items:center; gap:12px; cursor:pointer;">
-                        <input type="checkbox" id="sectionLockEnabled" style="width:20px; height:20px;"
-                            onchange="exams.sectionLockEnabled = this.checked">
-                        <div>
-                            <span style="font-size:1rem; font-weight:700; color:#2c3e50; display:block;">Enable Section
-                                Locking (Sequential)</span>
-                            <span style="font-size:0.85rem; color:#666;">If enabled, students must complete sections in
-                                order and cannot return to previous sections once submitted.</span>
-                        </div>
-                    </label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+                    <div
+                        style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 24px; border-radius: 16px; border: 1px solid #dee2e6; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;">
+                        <label class="sec-toggle" style="display:flex; align-items:center; gap:16px; cursor:pointer;">
+                            <input type="checkbox" id="sectionLockEnabled" style="width:24px; height:24px;"
+                                onchange="exams.sectionLockEnabled = this.checked; if(document.getElementById('lockSections')) document.getElementById('lockSections').checked = this.checked;">
+                            <div>
+                                <span
+                                    style="font-size:1.1rem; font-weight:800; color:#2c3e50; display:block; margin-bottom: 4px;">Enable
+                                    Section Locking</span>
+                                <span style="font-size:0.85rem; color:#6c757d; font-weight: 500;">Enforce a strict
+                                    sequential order for assessment sections.</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div
+                        style="background: linear-gradient(135deg, #e7f3ff 0%, #d0e7ff 100%); padding: 24px; border-radius: 16px; border: 1px solid #b8daff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;">
+                        <label class="sec-toggle" style="display:flex; align-items:center; gap:16px; cursor:pointer;">
+                            <input type="checkbox" id="requireNetworkConfig" style="width:24px; height:24px;"
+                                onchange="document.getElementById('ipRestrictionEnabled').checked = this.checked; if(this.checked) toggleIPConfig(true);">
+                            <div>
+                                <span
+                                    style="font-size:1.1rem; font-weight:800; color:#0056b3; display:block; margin-bottom: 4px;">Network
+                                    & IP Security</span>
+                                <span style="font-size:0.85rem; color:#495057; font-weight: 500;">Restrict access to
+                                    specific institutional IP ranges or WiFi.</span>
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </div>
 
             <div style="margin-top: 40px; display: flex; justify-content: space-between;">
                 <button class="btn btn-ghost" onclick="goToStep(1)">&larr; Back to Details</button>
-                <button class="btn btn-run" onclick="goToStep(3)" style="width: 200px; height: 50px;">Architect
-                    Questions &rarr;</button>
+                <button class="btn btn-run" onclick="nextStep()" style="width: 200px; height: 50px;">Continue
+                    &rarr;</button>
             </div>
         </div>
 
-        <!-- STEP 3: Question Builder (SCR 2 Layout) -->
+        <!-- STEP 3: IP Settings (NEW) -->
         <div id="step-3" class="wizard-step">
+            <div class="step-header">
+                <h2 class="step-title">Step 3: Network & IP Access Control</h2>
+                <p class="step-desc">Restrict this assessment to specific institutional networks or WiFi zones.</p>
+            </div>
+
+            <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+                <div class="form-card"
+                    style="border-left: 4px solid #3498db; padding-left: 24px !important; background:transparent;">
+                    <label class="sec-toggle"
+                        style="display:flex; justify-content:space-between; align-items:center; background:rgba(240, 247, 255, 0.5); padding:20px; border-radius:12px; border:1px solid #d6eaf8; cursor:pointer;">
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <i data-lucide="shield" style="color:#2980b9; width: 24px; height: 24px;"></i>
+                            <div class="section-title" style="margin:0; font-size:1rem;">
+                                Enable IP/WiFi Restriction
+                            </div>
+                        </div>
+                        <input type="checkbox" id="ipRestrictionEnabled" style="width:24px; height:24px;">
+                    </label>
+
+                    <div id="ipConfigArea"
+                        style="margin-top:20px; padding: 20px; background: transparent; border-radius: 12px; border: 1px dashed #3498db; display: none; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label style="font-size: 0.8rem; font-weight: 700; color: #555;">ALLOWED IP ADDRESSES / WIFI
+                                NETWORKS</label>
+                            <button onclick="detectIP()"
+                                style="background:#3498db; color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                                <i data-lucide="map-pin" style="width:14px; height:14px;"></i> Detect My IP
+                            </button>
+                        </div>
+                        <input type="text" id="allowedIPAddress" placeholder="e.g. 192.168.1.1, 10.0.0.1"
+                            style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: 'JetBrains Mono'; font-size: 0.95rem;">
+                        <div style="font-size: 0.75rem; color: #777; font-style: italic;">Separate multiple IPs with
+                            commas. Leave empty for all access.</div>
+
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px; margin-top:10px;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i class="fas fa-unlink" style="color:#555;"></i>
+                                <div style="font-weight:700; font-size:0.9rem;">Block WiFi Switching</div>
+                            </div>
+                            <input type="checkbox" id="blockWifiSwitching" style="width:20px; height:20px;">
+                        </label>
+                    </div>
+
+                    <div
+                        style="margin-top:20px; padding: 15px; background: #fff8f0; border-radius: 10px; border: 1px solid #fee2e2; font-size: 0.8rem; color: #b91c1c; display: flex; align-items: flex-start; gap: 10px;">
+                        <i class="fas fa-info-circle" style="margin-top: 3px;"></i>
+                        <span>Note: These restrictions will be automatically bypassed for <b>Practice Tests</b> to
+                            ensure accessibility.</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                    <button class="btn btn-ghost" onclick="prevStep()">&larr; Back to Sections</button>
+                    <button class="btn btn-run" onclick="nextStep()" style="width: 240px; height: 50px;">Architect
+                        Questions &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: Question Builder -->
+        <div id="step-4" class="wizard-step">
             <div id="builder-anchor"></div>
             <div class="type-selector" style="overflow-x: auto; white-space: nowrap; max-width: 100%;">
                 <div class="type-tab active" id="type-mcq" onclick="selectQuestionType('mcq')">Multiple Choice</div>
@@ -1953,8 +2164,8 @@
                         style="background: #f6ffed; border: 1px solid #b7eb8f; padding: 20px 24px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(82, 196, 26, 0.05); margin-bottom: 30px;">
                         <div style="display: flex; align-items: center; gap: 16px;">
                             <div
-                                style="width: 48px; height: 48px; background: #52c41a; color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                <i class="fas fa-file-excel"></i>
+                                style="width: 48px; height: 48px; background: #52c41a; color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="file-spreadsheet" style="width: 24px; height: 24px;"></i>
                             </div>
                             <div>
                                 <div
@@ -1971,15 +2182,15 @@
                         <div style="display: flex; gap: 12px;">
                             <button class="btn btn-ghost" onclick="downloadExcelTemplate()"
                                 style="border-color: #52c41a; color: #52c41a; background: #fff; font-weight: 700; border-radius: 10px;">
-                                <i class="fas fa-download" style="margin-right:8px;"></i> TEMPLATE
+                                <i data-lucide="download" style="width:16px; height:16px;"></i> TEMPLATE
                             </button>
                             <button class="btn btn-ghost" onclick="window.location.href='excelupload.html'"
                                 style="border-color: #52c41a; color: #52c41a; background: #f6ffed; font-weight: 700; border-radius: 10px;">
-                                <i class="fas fa-table" style="margin-right:8px;"></i> WEB ARCHITECT
+                                <i data-lucide="table" style="width:16px; height:16px;"></i> WEB ARCHITECT
                             </button>
                             <button class="btn btn-ghost" onclick="window.location.href='exceluploadcode.html'"
                                 style="border-color: #1890ff; color: #1890ff; background: #e6f7ff; font-weight: 700; border-radius: 10px;">
-                                <i class="fas fa-code" style="margin-right:8px;"></i> CODING ARCHITECT
+                                <i data-lucide="terminal" style="width:16px; height:16px;"></i> CODING ARCHITECT
                             </button>
                             <button class="btn btn-run" onclick="document.getElementById('excelUploadBanner').click()"
                                 style="background: #52c41a; color: #fff; border: none; font-weight: 700; height: 44px; padding: 0 24px; border-radius: 10px; box-shadow: 0 6px 15px rgba(82, 196, 26, 0.25);">
@@ -1993,7 +2204,7 @@
                     <div class="split-builder" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
                         <!-- Center: Problem -->
                         <div class="builder-left"
-                            style="background: #fff; border-radius: 16px; padding: 32px; border: 1px solid #eee;">
+                            style="background: transparent; border-radius: 16px; padding: 32px; border: 1px solid rgba(0,0,0,0.05);">
                             <div class="question-id-wrapper">
                                 <div class="question-id-wrapper">
                                     <div
@@ -2055,7 +2266,7 @@
 
                         <!-- Right: Logic & Preview -->
                         <div class="builder-right"
-                            style="background: #fafafa; border-radius: 16px; padding: 32px; border: 1px solid #eee; display: flex; flex-direction: column;">
+                            style="background: transparent; border-radius: 16px; padding: 32px; border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column;">
 
                             <!-- Panel Toggle -->
                             <div
@@ -2088,6 +2299,21 @@
                                         <label class="label">TEACHER NOTES</label>
                                         <input type="text" id="teacherNotes" class="clean-input"
                                             style="font-size: 0.9rem;" placeholder="Internal only...">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="label">DIFFICULTY</label>
+                                        <select id="questionDifficulty" class="clean-input" style="font-size: 0.9rem;">
+                                            <option value="easy">Easy</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="hard">Hard</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group" id="shuffleOptionsGroup" style="display: none;">
+                                        <label class="label">ANTI-CHEAT</label>
+                                        <label class="sec-toggle" style="font-size: 0.8rem; margin-top: 10px;">
+                                            <input type="checkbox" id="shuffleOptions" style="width:16px; height:16px;">
+                                            <span>Shuffle MCQ Options</span>
+                                        </label>
                                     </div>
                                     <div class="input-group">
                                         <label class="label">PREREQUISITE Q</label>
@@ -2185,255 +2411,268 @@
             </div>
 
             <div style="margin-top: 50px; display: flex; justify-content: space-between;">
-                <button class="btn btn-ghost" onclick="goToStep(2)">&larr; Manage Sections</button>
+                <button class="btn btn-ghost" onclick="prevStep()">&larr; Go Back</button>
                 <div style="display: flex; gap: 12px;">
                     <button class="btn btn-ghost" onclick="saveDraft()">SYNC DRAFT</button>
-                    <button class="btn btn-run" onclick="goToStep(4)" style="padding: 0 40px;">Finalize Architecture
+                    <button class="btn btn-run" onclick="nextStep()" style="padding: 0 40px;">Finalize Architecture
                         &rarr;</button>
                 </div>
             </div>
         </div>
 
-        <!-- STEP 4: Finalization & Deployment -->
-        <div id="step-4" class="wizard-step">
-            <div class="form-grid" style="grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: start;">
-                <div class="left-col">
-                    <div class="form-card" style="margin-bottom: 24px;">
-                        <h2 class="section-title"><i class="fas fa-lock"
-                                style="margin-right:12px; color:var(--primary);"></i>Entry Control & Security</h2>
+        <!-- STEP 5: Finalization & Deployment -->
+        <div id="step-5" class="wizard-step">
+            <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px;">
+                <!-- Entry Control & Security -->
+                <div class="form-card"
+                    style="background:transparent; border-left: 4px solid var(--primary); padding-left: 24px !important;">
+                    <div class="section-title">
+                        <i data-lucide="shield-alert" style="color:var(--primary); width: 28px; height: 28px;"></i>
+                        Entry Control & Security
+                    </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                            <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#FFF5F0; padding:16px; border-radius:12px; border: 1.5px dashed var(--primary);">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <i class="fas fa-desktop" style="color:var(--primary); font-size: 1.2rem;"></i>
-                                    <div>
-                                        <div style="font-weight:800; font-size:0.95rem; color: #101828;">Mandatory
-                                            Desktop Application</div>
-                                        <div style="font-size:0.75rem; color:#666; font-weight: 500;">Enforce proctoring
-                                            by blocking browser attempts</div>
-                                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#FFF5F0; padding:20px; border-radius:12px; border: 1.5px dashed var(--primary); cursor: pointer;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i data-lucide="monitor" style="color:var(--primary); width: 24px; height: 24px;"></i>
+                                <div>
+                                    <div style="font-weight:800; font-size:1rem; color: #101828;">Mandatory Desktop
+                                        Application</div>
+                                    <div style="font-size:0.8rem; color:#666; font-weight: 500;">Enforce proctoring by
+                                        blocking browser attempts</div>
                                 </div>
-                                <input type="checkbox" id="desktopOnly" style="width:22px; height:22px;">
-                            </label>
+                            </div>
+                            <input type="checkbox" id="desktopOnly" style="width:24px; height:24px;">
+                        </label>
 
-                            <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#EBF5FF; padding:16px; border-radius:12px; border: 1.5px dashed #007bff; margin-top: 10px;">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <i class="fas fa-graduation-cap" style="color:#007bff; font-size: 1.2rem;"></i>
-                                    <div>
-                                        <div style="font-weight:800; font-size:0.95rem; color: #101828;">Practice Test
-                                            Mode</div>
-                                        <div style="font-size:0.75rem; color:#666; font-weight: 500;">Disable Kiosk mode
-                                            and tab-switch alerts for this session</div>
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#EBF5FF; padding:20px; border-radius:12px; border: 1.5px dashed #007bff; cursor: pointer;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i data-lucide="graduation-cap" style="color:#007bff; width: 24px; height: 24px;"></i>
+                                <div>
+                                    <div style="font-weight:800; font-size:1rem; color: #101828;">Practice Test Mode
                                     </div>
+                                    <div style="font-size:0.8rem; color:#666; font-weight: 500;">Disable Kiosk mode and
+                                        tab-switch alerts</div>
                                 </div>
-                                <input type="checkbox" id="isPracticeTest" style="width:22px; height:22px;">
+                            </div>
+                            <input type="checkbox" id="isPracticeTest" style="width:24px; height:24px;">
+                        </label>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <div class="input-group">
+                            <label class="label">ENTRANCE PASSCODE</label>
+                            <input type="text" id="examPasscode" class="clean-input" placeholder="e.g. EXAM2024"
+                                style="font-family:'JetBrains Mono'; font-weight:700; font-size: 1.1rem;">
+                            <label
+                                style="display:flex; align-items:center; gap:8px; margin-top:12px; font-size:0.85rem; cursor:pointer;">
+                                <input type="checkbox" id="strictPasscode" style="width:18px; height:18px;" checked>
+                                <span style="color:#555; font-weight:600;">Strict Exact Match Required</span>
                             </label>
                         </div>
 
-                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top:0;">
-                            <div class="input-group">
-                                <label class="label">ENTRANCE PASSCODE</label>
-                                <input type="text" id="examPasscode" class="clean-input" placeholder="e.g. EXAM2024"
-                                    style="font-family:'JetBrains Mono'; font-weight:700;">
-                                <label
-                                    style="display:flex; align-items:center; gap:8px; margin-top:10px; font-size:0.75rem; cursor:pointer;">
-                                    <input type="checkbox" id="strictPasscode" style="width:16px; height:16px;" checked>
-                                    <span style="color:#555; font-weight:600;">Strict Exact Match Required</span>
-                                </label>
+                        <div class="input-group">
+                            <label class="label">MAX TAB SWITCHES</label>
+                            <input type="number" id="maxTabSwitches" class="clean-input" value="3"
+                                style="font-weight:700; font-size: 1.1rem;">
+                        </div>
+
+                        <div class="input-group"
+                            style="background: #fdfdfd; padding: 24px; border: 1px solid #eee; border-radius: 12px;">
+                            <label class="label"
+                                style="color: var(--primary); font-weight: 800; letter-spacing: 1px;">UNIQUE JOINING
+                                KEY</label>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <input type="text" id="joiningKey" class="clean-input" placeholder="e.g. Quiz@Room-101!"
+                                    style="font-family:'Outfit'; font-weight:800; font-size: 1.2rem; color: #101828; flex: 1; border-bottom: 2px solid #eee;"
+                                    onchange="exams.joiningKey = this.value">
+                                <button class="btn btn-ghost" onclick="regenJoiningKey()"
+                                    style="padding: 12px; border-radius: 8px; width: auto; height: auto;"
+                                    title="Generate Random Key">
+                                    <i class="fas fa-magic"></i>
+                                </button>
                             </div>
-                            <div class="input-group">
-                                <label class="label">MAX TAB SWITCHES</label>
-                                <input type="number" id="maxTabSwitches" class="clean-input" value="3"
-                                    style="font-weight:700;">
+                            <div style="font-size: 0.8rem; color: #888; margin-top: 12px; font-weight: 500;">
+                                Students can enter this formatted key to instantly join the assessment.
                             </div>
                         </div>
 
                         <div class="input-group">
                             <label class="label">LATE ENTRY DEADLINE</label>
-                            <input type="datetime-local" id="entryDeadline" class="clean-input">
+                            <input type="datetime-local" id="entryDeadline" class="clean-input"
+                                style="font-size: 1rem;">
                         </div>
 
-                        <label class="sec-toggle"
-                            style="display:flex; align-items:center; gap:12px; cursor:pointer; background:#fdf8f5; padding:12px; border-radius:8px; border:1px solid #ffe8dd; margin-top:10px;">
-                            <input type="checkbox" id="showResults" checked style="width:18px; height:18px;">
-                            <span style="font-size:0.85rem; font-weight:600; color:#333;">Show Results/Answers to
-                                Student after Submission</span>
-                        </label>
-                        <label class="sec-toggle"
-                            style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(46, 204, 113, 0.05); padding:12px; border-radius:8px; border:1px solid #2ecc7133; margin-top:10px;">
-                            <input type="checkbox" id="autoPublishResults" checked style="width:18px; height:18px;">
-                            <span style="font-size:0.85rem; font-weight:700; color:#27ae60;">Upload and Publish Marks
-                                after Test</span>
-                        </label>
-                    </div>
-
-                    <div class="form-card">
-                        <h2 class="section-title"><i class="fas fa-eye"
-                                style="margin-right:12px; color:#2ecc71;"></i>Advanced Proctoring (AI)</h2>
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
                             <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px;">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <i class="fas fa-video" style="color:#555;"></i>
-                                    <div>
-                                        <div style="font-weight:700; font-size:0.9rem;">Enable Webcam Proctoring</div>
-                                        <div style="font-size:0.75rem; color:#888;">AI will monitor eye-movement and
-                                            presence</div>
-                                    </div>
-                                </div>
-                                <input type="checkbox" id="webcamEnabled" style="width:20px; height:20px;">
+                                style="display:flex; align-items:center; gap:12px; cursor:pointer; background:#fdf8f5; padding:16px; border-radius:10px; border:1px solid #ffe8dd;">
+                                <input type="checkbox" id="showResults" checked style="width:20px; height:20px;">
+                                <span style="font-size:0.9rem; font-weight:600; color:#333;">Show Results/Answers to
+                                    Student after Submission</span>
                             </label>
-
                             <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px;">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <i class="fas fa-microphone" style="color:#555;"></i>
-                                    <div>
-                                        <div style="font-weight:700; font-size:0.9rem;">Enable Microphone Audio-Audit
-                                        </div>
-                                        <div style="font-size:0.75rem; color:#888;">Listen for unauthorized voice
-                                            assistance</div>
-                                    </div>
-                                </div>
-                                <input type="checkbox" id="micEnabled" style="width:20px; height:20px;">
+                                style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(46, 204, 113, 0.05); padding:16px; border-radius:10px; border:1px solid #2ecc7133;">
+                                <input type="checkbox" id="autoPublishResults" checked style="width:20px; height:20px;">
+                                <span style="font-size:0.9rem; font-weight:700; color:#27ae60;">Upload and Publish Marks
+                                    after Test</span>
                             </label>
-
-                            <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px;">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <i class="fas fa-lock" style="color:#555;"></i>
-                                    <div>
-                                        <div style="font-weight:700; font-size:0.9rem;">Enable Sequential Section
-                                            Locking</div>
-                                        <div style="font-size:0.75rem; color:#888;">Students must complete sections in
-                                            order and cannot return</div>
-                                    </div>
-                                </div>
-                                <input type="checkbox" id="lockSections" style="width:20px; height:20px;" checked>
-                            </label>
-
-                            <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-radius:10px;">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <i class="fas fa-network-wired" style="color:#555;"></i>
-                                    <div>
-                                        <div style="font-weight:700; font-size:0.9rem;">Block VPN & Proxy</div>
-                                        <div style="font-size:0.75rem; color:#888;">Prevent IP spoofing and location
-                                            bypass</div>
-                                    </div>
-                                </div>
-                                <input type="checkbox" id="vpnBlocked" style="width:20px; height:20px;">
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-card" style="margin-top: 24px; border-left: 4px solid #f39c12;">
-                        <h2 class="section-title"><i class="fas fa-user-edit"
-                                style="margin-right:12px; color:#f39c12;"></i>Evaluation Configuration</h2>
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#fef9e7; padding:15px; border-radius:10px; border:1px solid #f9e79f;">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <i class="fas fa-marker" style="color:#d4ac0d;"></i>
-                                    <div>
-                                        <div style="font-weight:700; font-size:0.9rem;">Enable Manual Teacher Review
-                                        </div>
-                                        <div style="font-size:0.75rem; color:#888;">Subjective and File-Upload questions
-                                            will be manually graded by teacher</div>
-                                    </div>
-                                </div>
-                                <input type="checkbox" id="manualGrading" style="width:20px; height:20px;">
-                            </label>
-                            <p style="font-size: 0.75rem; color: #777; font-style: italic;">
-                                Note: MCQs, T/F, Assertion-Reason, and Numeric questions will still be graded
-                                automatically by the AI system.
-                            </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="right-col">
-                    <div class="form-card" style="margin-bottom: 24px;">
-                        <h2 class="section-title"><i class="fas fa-user-shield"
-                                style="margin-right:12px; color:#F04438;"></i>Proctoring Dashboard (Demo)</h2>
-                        <div style="background: #f8f9fa; border: 1px solid #eee; border-radius: 8px; padding: 15px;">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
-                                <span style="font-size: 0.75rem; font-weight: 700; color: #444;">Live Activity
-                                    Log</span>
-                                <span style="font-size: 0.65rem; color: #2ecc71;">● RECORDER ACTIVE</span>
-                            </div>
-                            <div
-                                style="display: flex; flex-direction: column; gap: 8px; font-family: 'JetBrains Mono'; font-size: 0.65rem;">
-                                <div style="color: #555;"><span style="color: #8844ff;">[10:14:02]</span> Student #38423
-                                    Attempt Started</div>
-                                <div style="color: #d9480f;"><span style="color: #8844ff;">[10:15:45]</span> <i
-                                        class="fas fa-exclamation-triangle"></i> ALERT: Tab Switch detected (User OA)
+                <!-- Advanced Proctoring -->
+                <div class="form-card"
+                    style="background:transparent; border-left: 4px solid #2ecc71; padding-left: 24px !important;">
+                    <div class="section-title">
+                        <i data-lucide="cpu" style="color:#2ecc71; width: 28px; height: 28px;"></i> Advanced Proctoring
+                        (AI)
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:20px; border-radius:12px; cursor: pointer;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i class="fas fa-video" style="color:#555; width: 20px;"></i>
+                                <div>
+                                    <div style="font-weight:700; font-size:1rem;">Enable Webcam Proctoring</div>
+                                    <div style="font-size:0.8rem; color:#888;">AI will monitor eye-movement and presence
+                                    </div>
                                 </div>
-                                <div style="color: #d33;"><span style="color: #8844ff;">[10:16:12]</span> <i
-                                        class="fas fa-ban"></i> CRITICAL: Unauthorized Clipboard Access blocked</div>
-                                <div style="color: #555;"><span style="color: #8844ff;">[10:17:05]</span> AI Score: 98%
-                                    (No help detected)</div>
+                            </div>
+                            <input type="checkbox" id="webcamEnabled" style="width:22px; height:22px;">
+                        </label>
+
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:20px; border-radius:12px; cursor: pointer;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i class="fas fa-microphone" style="color:#555; width: 20px;"></i>
+                                <div>
+                                    <div style="font-weight:700; font-size:1rem;">Enable Microphone Audio-Audit</div>
+                                    <div style="font-size:0.8rem; color:#888;">Listen for unauthorized voice assistance
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="micEnabled" style="width:22px; height:22px;">
+                        </label>
+
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:20px; border-radius:12px; cursor: pointer;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i class="fas fa-lock" style="color:#555; width: 20px;"></i>
+                                <div>
+                                    <div style="font-weight:700; font-size:1rem;">Enable Sequential Section Locking
+                                    </div>
+                                    <div style="font-size:0.8rem; color:#888;">Students must complete sections in order
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="lockSections" style="width:22px; height:22px;" 
+                                onchange="exams.sectionLockEnabled = this.checked; if(document.getElementById('sectionLockEnabled')) document.getElementById('sectionLockEnabled').checked = this.checked;">
+                        </label>
+
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:20px; border-radius:12px; cursor: pointer;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i class="fas fa-network-wired" style="color:#555; width: 20px;"></i>
+                                <div>
+                                    <div style="font-weight:700; font-size:1rem;">Block VPN & Proxy</div>
+                                    <div style="font-size:0.8rem; color:#888;">Prevent IP spoofing and location bypass
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="vpnBlocked" style="width:22px; height:22px;">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Evaluation Configuration -->
+                <div class="form-card"
+                    style="background:transparent; border-left: 4px solid #f39c12; padding-left: 24px !important;">
+                    <div class="section-title">
+                        <i data-lucide="clipboard-check" style="color:#f39c12; width: 28px; height: 28px;"></i>
+                        Evaluation Configuration
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#fef9e7; padding:20px; border-radius:12px; border:1px solid #f9e79f; cursor: pointer;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i class="fas fa-marker" style="color:#d4ac0d;"></i>
+                                <div>
+                                    <div style="font-weight:700; font-size:1rem;">Enable Manual Teacher Review</div>
+                                    <div style="font-size:0.8rem; color:#888;">Subjective questions will be manually
+                                        graded</div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="manualGrading" style="width:22px; height:22px;">
+                        </label>
+                        <p style="font-size: 0.8rem; color: #777; font-style: italic; margin-top: 8px;">
+                            Note: MCQs and objective questions are always graded automatically.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Final Release Configuration -->
+                <div class="form-card"
+                    style="background:transparent; border:2px solid #ffe8dd; padding: 32px !important; border-radius: 20px;">
+                    <div class="section-title">
+                        <i data-lucide="send" style="color:var(--primary); width: 28px; height: 28px;"></i> Final
+                        Release Configuration
+                    </div>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:24px;">Review your settings before taking this
+                        assessment live.</p>
+
+                    <div
+                        style="background:#fff; border:1px solid #eee; padding:24px; border-radius:16px; margin-bottom:24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div style="display:flex; flex-direction:column; gap:16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:0.85rem; font-weight:700; color:#888;">RELEASE STATUS</span>
+                                <span
+                                    style="background:#e9ecef; color:#495057; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:800;">DRAFT
+                                    MODE</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:0.85rem; font-weight:700; color:#888;">TEST IDENTITY</span>
+                                <strong
+                                    style="color:var(--primary); font-family:'JetBrains Mono'; font-size: 1.1rem;">${editExamId
+                                    ? exams.testId : 'AUTO-GENERATE'}</strong>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-card" style="background:#fff5f0; border:2px solid #ffe8dd;">
-                        <h2 class="section-title"><i class="fas fa-rocket"
-                                style="margin-right:12px; color:var(--primary);"></i>Final Release Configuration</h2>
-                        <p style="font-size:0.8rem; color:#666; margin-bottom:20px;">Review your security keys and
-                            deployment settings before taking this assessment live.</p>
-
-                        <div
-                            style="background:#fff; border:1px solid #eee; padding:20px; border-radius:12px; margin-bottom:20px;">
-                            <div style="display:flex; flex-direction:column; gap:12px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <span style="font-size:0.75rem; font-weight:700; color:#888;">RELEASE STATUS</span>
-                                    <span
-                                        style="background:#e9ecef; color:#495057; padding:4px 10px; border-radius:20px; font-size:0.65rem; font-weight:800;">DRAFT
-                                        MODE</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <span style="font-size:0.75rem; font-weight:700; color:#888;">TEST IDENTITY</span>
-                                    <strong style="color:var(--primary); font-family:'JetBrains Mono';">${editExamId ?
-                                        exams.testId : 'AUTO-GENERATE'}</strong>
-                                </div>
-                            </div>
+                    <div style="margin-bottom:32px;">
+                        <label class="label" style="margin-bottom: 16px; display: block;">FINAL VALIDATION</label>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <label
+                                style="display:flex; align-items:center; gap:12px; font-size:0.95rem; cursor:pointer; background: #f8f9fa; padding: 12px; border-radius: 8px;">
+                                <input type="checkbox" id="val_points" required style="width: 18px; height: 18px;">
+                                <span>I have verified all question points</span>
+                            </label>
+                            <label
+                                style="display:flex; align-items:center; gap:12px; font-size:0.95rem; cursor:pointer; background: #f8f9fa; padding: 12px; border-radius: 8px;">
+                                <input type="checkbox" id="val_security" required style="width: 18px; height: 18px;">
+                                <span>Security protocols are configured correctly</span>
+                            </label>
                         </div>
-
-                        <div style="margin-bottom:24px;">
-                            <label class="label">FINAL VALIDATION</label>
-                            <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-                                <label
-                                    style="display:flex; align-items:center; gap:10px; font-size:0.8rem; cursor:pointer;"><input
-                                        type="checkbox" id="val_points" required> I have verified all question
-                                    points</label>
-                                <label
-                                    style="display:flex; align-items:center; gap:10px; font-size:0.8rem; cursor:pointer;"><input
-                                        type="checkbox" id="val_security" required> Security protocols are
-                                    configured</label>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-run" onclick="publishExam()"
-                            style="width:100%; height:60px; font-size:1.1rem; border-radius:12px; box-shadow:0 8px 20px rgba(217,108,51,0.2);">
-                            <i class="fas fa-globe" style="margin-right:10px;"></i> DEPLOY LIVE ASSESSMENT
-                        </button>
-
-                        <button class="btn btn-ghost" onclick="previewAsStudent()"
-                            style="width:100%; height:50px; margin-top:12px; border:1px dashed #ddd; font-weight:700;">
-                            <i class="fas fa-eye" style="margin-right:10px;"></i> PREVIEW STUDENT EXPERIENCE
-                        </button>
                     </div>
 
-                    <div class="form-card" style="margin-top:24px;">
-                        <h2 class="section-title">Exam Blueprint Review</h2>
-                        <div id="previewQuestionsList"
-                            style="max-height:400px; overflow-y:auto; border:1px solid #f0f0f0; border-radius:8px;">
-                            <!-- Populated dynamically -->
-                        </div>
+                    <button class="btn btn-run" onclick="publishExam()"
+                        style="width:100%; height:64px; font-size:1.2rem; border-radius:16px; box-shadow:0 8px 25px rgba(217,108,51,0.25); font-weight: 800;">
+                        <i class="fas fa-globe" style="margin-right:12px;"></i> DEPLOY LIVE ASSESSMENT
+                    </button>
+
+                    <button class="btn btn-ghost" onclick="previewAsStudent()"
+                        style="width:100%; height:54px; margin-top:16px; border:1px dashed #ddd; font-weight:700; border-radius: 12px;">
+                        <i class="fas fa-eye" style="margin-right:12px;"></i> PREVIEW STUDENT EXPERIENCE
+                    </button>
+                </div>
+
+                <!-- Exam Blueprint Review -->
+                <div class="form-card" style="background:transparent; border: 1px solid #eee;">
+                    <h2 class="section-title">Exam Blueprint Review</h2>
+                    <div id="previewQuestionsList"
+                        style="max-height:500px; overflow-y:auto; border:1px solid #f0f0f0; border-radius:12px; background: #fff; padding: 12px;">
+                        <!-- Populated dynamically -->
                     </div>
                 </div>
             </div>
@@ -2459,7 +2698,7 @@
                 <i class="fas fa-file-excel" style="margin-right:8px;"></i> Bulk Import (File)
             </button>
             <button class="btn btn-ghost" onclick="window.location.href='excelupload.html'"
-                style="width:100%; margin-bottom: 20px; border:1px solid #2ecc71; color:#2ecc71; background:white;">
+                style="width:100%; margin-bottom: 20px; border:1px solid #2ecc71; color:#2ecc71; background:transparent;">
                 <i class="fas fa-table" style="margin-right:8px;"></i> Web Excel Architect
             </button>
             <input type="file" id="excelUploadGlobal" style="display:none" accept=".xlsx, .xls"
@@ -2589,10 +2828,41 @@
             e.preventDefault();
             redo();
         }
+        if (e.ctrlKey && e.key === 'n') {
+            if (currentStep === 2) {
+                e.preventDefault();
+                promptAddSection();
+            }
+        }
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable) {
             if (e.key === 'q' || e.key === 'Q') navigateBuilder(-1);
             if (e.key === 'a' || e.key === 'A') navigateBuilder(1);
         }
+    });
+
+    // Context Menu Logic
+    document.addEventListener('contextmenu', (e) => {
+        if (currentStep === 2) {
+            e.preventDefault();
+            const menu = document.getElementById('customContextMenu');
+            menu.style.display = 'flex';
+            menu.style.left = e.clientX + 'px';
+            menu.style.top = e.clientY + 'px';
+
+            // Adjust position if it goes off screen
+            const rect = menu.getBoundingClientRect();
+            if (rect.right > window.innerWidth) {
+                menu.style.left = (e.clientX - rect.width) + 'px';
+            }
+            if (rect.bottom > window.innerHeight) {
+                menu.style.top = (e.clientY - rect.height) + 'px';
+            }
+        }
+    });
+
+    document.addEventListener('click', () => {
+        const menu = document.getElementById('customContextMenu');
+        if (menu) menu.style.display = 'none';
     });
 
     function toggleRightPanel(panel) {
@@ -2803,10 +3073,49 @@
         loader.style.opacity = '1';
     }
 
-    function updatePool(section, size) {
+    function toggleRandomization(sectionName, enabled, index) {
         if (!exams.pools) exams.pools = {};
-        exams.pools[section] = parseInt(size);
-        showToast(`Pool for ${section} set to ${size} questions`);
+        if (!exams.pools[sectionName]) exams.pools[sectionName] = { enabled: false, pickCount: 0, totalGoal: 0 };
+
+        // If it was just a number from old format, convert it
+        if (typeof exams.pools[sectionName] !== 'object') {
+            exams.pools[sectionName] = { enabled: true, pickCount: parseInt(exams.pools[sectionName]) || 0, totalGoal: 0 };
+        }
+
+        exams.pools[sectionName].enabled = enabled;
+        const configArea = document.getElementById(`randConfig_${index}`);
+        if (configArea) configArea.style.display = enabled ? 'flex' : 'none';
+
+        autoSave();
+        showToast(`Randomization ${enabled ? 'Enabled' : 'Disabled'} for ${sectionName}`);
+    }
+
+    function updatePoolMeta(sectionName, key, value) {
+        if (!exams.pools) exams.pools = {};
+        if (!exams.pools[sectionName] || typeof exams.pools[sectionName] !== 'object') {
+            exams.pools[sectionName] = { enabled: true, pickCount: 0, totalGoal: 0 };
+        }
+
+        exams.pools[sectionName][key] = parseInt(value) || 0;
+        autoSave();
+    }
+
+    function updatePool(section, size) {
+        // Legacy support
+        updatePoolMeta(section, 'pickCount', size);
+    }
+
+    function generateJoiningKey() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        const gen = (len) => Array.from({ length: len }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+        return `${gen(3)}-${gen(5)}-${gen(3)}`;
+    }
+
+    function regenJoiningKey() {
+        const newKey = generateJoiningKey();
+        document.getElementById('joiningKey').value = newKey;
+        exams.joiningKey = newKey;
+        showToast('New Joining Key generated');
     }
 
     function generateAIQuestion() {
@@ -2953,7 +3262,22 @@
 
         overlay.style.display = 'flex';
 
-        const cleanup = () => { overlay.style.display = 'none'; };
+        const cleanup = () => {
+            overlay.style.display = 'none';
+            document.removeEventListener('keydown', modalKeyHandler);
+        };
+
+        const modalKeyHandler = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                confirmBtn.click();
+            } else if (e.key === 'Escape') {
+                cleanup();
+            }
+        };
+
+        document.addEventListener('keydown', modalKeyHandler);
+
         cancelBtn.onclick = cleanup;
         confirmBtn.onclick = () => { onConfirm(); cleanup(); };
     }
@@ -2972,6 +3296,20 @@
                 }
             }
         });
+
+        // Add Enter key listener to the input
+        setTimeout(() => {
+            const input = document.getElementById('modalPromptInput');
+            if (input) {
+                input.focus();
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        document.getElementById('modalConfirm').click();
+                    }
+                });
+            }
+        }, 100);
     }
 
     // Check auth
@@ -2983,6 +3321,7 @@
     const editExamId = urlParams.get('examId');
     let exam = editExamId ? db.getExamById(editExamId) : null;
 
+    let currentStep = 1;
     let currentQuestionType = 'mcq';
     let exams = exam ? JSON.parse(JSON.stringify(exam)) : {
         title: '',
@@ -3016,11 +3355,19 @@
     };
 
     function initPage() {
-        // Step Persistence (REFRSH PROTECTION)
+        lucide.createIcons();
+        // Initialize Joining Key for new exams
+        if (!editExamId && !exams.joiningKey) {
+            exams.joiningKey = generateJoiningKey();
+            if (document.getElementById('joiningKey')) document.getElementById('joiningKey').value = exams.joiningKey;
+        }
+
         const savedStep = localStorage.getItem('exam_step_' + (editExamId || 'new'));
         if (savedStep) {
             goToStep(parseInt(savedStep), true);
             showToast(`Resuming from Step ${savedStep}`);
+        } else {
+            goToStep(1, true);
         }
 
         if (!editExamId) {
@@ -3050,6 +3397,7 @@
                         }
 
                         if (document.getElementById('sectionLockEnabled')) document.getElementById('sectionLockEnabled').checked = exams.sectionLockEnabled || false;
+                        if (document.getElementById('lockSections')) document.getElementById('lockSections').checked = exams.sectionLockEnabled || false;
                         if (document.getElementById('isPracticeTest')) {
                             document.getElementById('isPracticeTest').checked = exams.isPracticeTest || false;
                         }
@@ -3119,6 +3467,21 @@
                 if (document.getElementById('maxTabSwitches')) document.getElementById('maxTabSwitches').value = exams.security.maxTabSwitches || 3;
                 if (document.getElementById('showResults')) document.getElementById('showResults').checked = exams.security.showResults !== false;
                 if (document.getElementById('manualGrading')) document.getElementById('manualGrading').checked = exams.security.manualGrading || false;
+
+                // IP & Network
+                if (document.getElementById('ipRestrictionEnabled')) {
+                    const ipCheck = document.getElementById('ipRestrictionEnabled');
+                    ipCheck.checked = exams.security.ipRestriction || false;
+                    const ipArea = document.getElementById('ipConfigArea');
+                    if (ipArea) ipArea.style.display = ipCheck.checked ? 'flex' : 'none';
+
+                    // Sync the Step 2 toggle
+                    if (document.getElementById('requireNetworkConfig')) {
+                        document.getElementById('requireNetworkConfig').checked = ipCheck.checked;
+                    }
+                }
+                if (document.getElementById('allowedIPAddress')) document.getElementById('allowedIPAddress').value = exams.security.allowedIP || '';
+                if (document.getElementById('blockWifiSwitching')) document.getElementById('blockWifiSwitching').checked = exams.security.blockWifiSwitching || false;
 
                 // Final Validation
                 if (exams.security.finalValidation) {
@@ -3208,6 +3571,9 @@
         document.getElementById('numericContainer').style.display = (type === 'numeric' || type === 'single_integer') ? 'block' : 'none';
         document.getElementById('fileUploadContainer').style.display = type === 'file_upload' ? 'block' : 'none';
         document.getElementById('codingContainer').style.display = type === 'coding' ? 'block' : 'none';
+
+        const shuffleGrp = document.getElementById('shuffleOptionsGroup');
+        if (shuffleGrp) shuffleGrp.style.display = (type === 'mcq') ? 'block' : 'none';
 
         document.getElementById('optionsList').innerHTML = '';
         if (type === 'true_false') {
@@ -3356,7 +3722,9 @@
             marks: parseInt(document.getElementById('questionMarks').value),
             section: document.getElementById('questionSection').value || 'General',
             timer: parseInt(document.getElementById('questionTimer').value) || 0,
-            teacherNotes: document.getElementById('teacherNotes').value.trim()
+            teacherNotes: document.getElementById('teacherNotes').value.trim(),
+            difficulty: document.getElementById('questionDifficulty').value || 'medium',
+            shuffleOptions: document.getElementById('shuffleOptions')?.checked || false
         };
 
         if (currentQuestionType === 'mcq' || currentQuestionType === 'true_false' || currentQuestionType === 'assertion_reason') {
@@ -3421,34 +3789,51 @@
         const list = document.getElementById('sectionsList');
         if (!list) return;
         list.innerHTML = exams.sections.map((s, i) => `
-                <div class="q-item" style="display:flex; justify-content:space-between; align-items:center; background: #fff; border: 1px solid #eee; margin-bottom: 12px; padding: 20px 24px; border-radius: 12px; border-left: 4px solid var(--primary);">
-                    <div style="display:flex; align-items:center; gap:16px;">
-                        <div style="width:40px; height:40px; background:rgba(217, 108, 51, 0.05); color:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(217, 108, 51, 0.1);">
-                            <i class="fas fa-layer-group" style="font-size:1.1rem;"></i>
+                <div class="q-item" style="display:flex; justify-content:space-between; align-items:center; background: linear-gradient(to right, #fdfbfb 0%, #f3f4f7 100%); border: 1px solid #e0e0e0; margin-bottom: 16px; padding: 24px 32px; border-radius: 20px; border-left: 6px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div style="display:flex; align-items:center; gap:20px;">
+                        <div style="width:52px; height:52px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-radius:14px; display:flex; align-items:center; justify-content:center; border:1px solid #eee; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top:0; left:0; width:4px; height:100%; background: var(--primary);"></div>
+                            <i data-lucide="layout-template" style="width: 24px; height: 24px; color: var(--primary);"></i>
                         </div>
                         <div style="display:flex; flex-direction:column;">
-                            <span style="font-weight:700; font-size: 1rem; color: var(--text-main);">${s}</span>
-                            <span style="font-size:0.75rem; color: var(--text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">${exams.questions.filter(q => q.section === s).length} Questions</span>
+                            <span style="font-weight:800; font-size: 1.2rem; color: #1a1a1b; letter-spacing: -0.5px;">${s}</span>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+                                <span style="width:6px; height:6px; background:#2ecc71; border-radius:50%;"></span>
+                                <span style="font-size:0.8rem; color: #666; font-weight:700; text-transform:uppercase; letter-spacing:1px;">${exams.questions.filter(q => q.section === s).length} Questions</span>
+                            </div>
                         </div>
                     </div>
-                    <div style="display:flex; align-items:center; gap:24px;">
+                    <div style="display:flex; align-items:center; gap:32px;">
                         <!-- Random Question Pool Logic -->
-                        <div style="display:flex; align-items:center; gap:8px; background:#f9f9f9; padding:8px 16px; border-radius:30px; border:1px solid #eee;">
-                            <span style="font-size:0.75rem; font-weight:700; color:#666;">RANDOM POOL:</span>
-                            <div style="display:flex; align-items:center; gap:4px;">
-                                <span style="font-size:0.75rem; color:#999;">Display</span>
-                                <input type="number" id="poolSize_${i}" value="${(exams.pools && exams.pools[s]) || 0}" style="width:40px; border:none; background:transparent; font-weight:700; text-align:center;" onchange="updatePool('${s}', this.value)">
-                                <span style="font-size:0.75rem; color:#999;">questions</span>
+                        <div style="display:flex; align-items:center; gap:16px; background: rgba(255,255,255,0.6); padding: 12px 20px; border-radius: 12px; border: 1px solid #eee;">
+                            <label class="sec-toggle" style="font-size:0.8rem; font-weight:800; color:#444; display:flex; align-items:center; gap:10px; cursor:pointer; margin:0;">
+                                <input type="checkbox" id="randEnabled_${i}" ${(exams.pools && exams.pools[s] && exams.pools[s].enabled) ? 'checked' : ''} 
+                                    onchange="toggleRandomization('${s}', this.checked, ${i})" style="width:20px; height:20px;">
+                                RANDOMIZE
+                            </label>
+                            
+                            <div id="randConfig_${i}" style="display:${(exams.pools && exams.pools[s] && exams.pools[s].enabled) ? 'flex' : 'none'}; align-items:center; gap:15px; padding-left: 15px; border-left: 1px solid #ddd;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:0.7rem; color:#666; font-weight:700;">POOL:</span>
+                                    <input type="number" value="${(exams.pools && exams.pools[s] && exams.pools[s].totalGoal) || 0}" 
+                                        style="width:50px; height:32px; border-radius:6px; border:1px solid #ddd; font-weight:800; text-align:center; color:var(--primary); background:#fff;" 
+                                        onchange="updatePoolMeta('${s}', 'totalGoal', this.value)">
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:0.7rem; color:#666; font-weight:700;">PICK:</span>
+                                    <input type="number" value="${(exams.pools && exams.pools[s] && (exams.pools[s].pickCount !== undefined ? exams.pools[s].pickCount : exams.pools[s])) || 0}" 
+                                        style="width:50px; height:32px; border-radius:6px; border:1px solid #ddd; font-weight:800; text-align:center; color:var(--primary); background:#fff;" 
+                                        onchange="updatePoolMeta('${s}', 'pickCount', this.value)">
+                                </div>
                             </div>
-                            <span style="font-size:0.65rem; color:#ccc;">(0 = Show All)</span>
                         </div>
 
                         <div style="display:flex; align-items:center; gap:12px;">
-                            <button onclick="duplicateSection(${i})" class="btn-fullscreen-toggle" style="color:var(--primary); border-color:#ffe8dd; background:#fff5f0;" title="Duplicate Section">
+                            <button onclick="duplicateSection(${i})" class="btn-fullscreen-toggle" style="width:44px; height:44px; color:var(--primary); border-color:#ffe8dd; background:#fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" title="Duplicate Section">
                                 <i class="far fa-copy"></i>
                             </button>
                             ${exams.sections.length > 1 ? `
-                                <button onclick="removeSection(${i})" class="btn-fullscreen-toggle" style="color:#F04438; border-color:#FEE4E2; background:#FEF3F2;" title="Remove Section">
+                                <button onclick="removeSection(${i})" class="btn-fullscreen-toggle" style="width:44px; height:44px; color:#F04438; border-color:#FEE4E2; background:#fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" title="Remove Section">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             ` : ''}
@@ -3456,6 +3841,7 @@
                     </div>
                 </div>
             `).join('');
+        lucide.createIcons();
         document.getElementById('questionSection').innerHTML = exams.sections.map(s => `<option value="${s}">${s}</option>`).join('');
     }
 
@@ -3490,6 +3876,7 @@
     }
 
     function updateQuestionsList() {
+        lucide.createIcons();
         // Sync both sidebar and architect rail if they exist
         const sidebarList = document.getElementById('questionsList');
         const railList = document.getElementById('questionsListArchitect');
@@ -3562,6 +3949,7 @@
         const totalQ = exams.questions.length;
         const totalM = exams.questions.reduce((s, q) => s + q.marks, 0);
         if (document.getElementById('totalQuestionsCount')) document.getElementById('totalQuestionsCount').textContent = totalQ;
+        if (document.getElementById('headerQCount')) document.getElementById('headerQCount').textContent = `${totalQ} Questions`;
         if (document.getElementById('totalMarksCount')) document.getElementById('totalMarksCount').textContent = totalM;
 
         updateAnalytics();
@@ -3641,6 +4029,8 @@
         });
     }
 
+
+
     function duplicateQuestion(index) {
         const q = JSON.parse(JSON.stringify(exams.questions[index]));
         q.id = 'q_' + Date.now();
@@ -3668,16 +4058,21 @@
     function updateCorrectAnswerOptions() { }
 
     function goToStep(step, silent = false) {
-        syncState(); // Save data internally before moving
-        localStorage.setItem('exam_step_' + (editExamId || 'new'), step);
+        lucide.createIcons();
+        if (step < 1 || step > 5) return;
+        currentStep = step;
 
         document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.step-indicator').forEach(i => i.classList.remove('active'));
-        document.getElementById('step-' + step).classList.add('active');
-        document.getElementById('ind' + step).classList.add('active');
+
+        const targetStep = document.getElementById('step-' + step);
+        const targetInd = document.getElementById('ind' + step);
+        if (targetStep) targetStep.classList.add('active');
+        if (targetInd) targetInd.classList.add('active');
 
         if (!silent) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            syncState();
             showToast('Step ' + step + ' Auto-Synced');
         }
 
@@ -3685,6 +4080,68 @@
             updatePreviewList();
         }
     }
+
+    function nextStep() {
+        if (currentStep === 2) {
+            const needsNetwork = document.getElementById('requireNetworkConfig').checked;
+            if (needsNetwork) goToStep(3);
+            else goToStep(4);
+        } else if (currentStep === 4) {
+            // Validate Randomization Goals before going to Step 5
+            for (const section of exams.sections) {
+                const config = exams.pools ? exams.pools[section] : null;
+                if (config && config.enabled && config.totalGoal > 0) {
+                    const actualCount = exams.questions.filter(q => q.section === section).length;
+                    if (actualCount < config.totalGoal) {
+                        const missing = config.totalGoal - actualCount;
+                        showToast(`Section "${section}" needs ${missing} more question(s) to meet your goal of ${config.totalGoal}.`, 'error');
+                        return; // Block progression
+                    }
+                }
+            }
+            goToStep(5);
+        } else {
+            goToStep(currentStep + 1);
+        }
+    }
+
+    function prevStep() {
+        if (currentStep === 4) {
+            const needsNetwork = document.getElementById('requireNetworkConfig').checked;
+            if (needsNetwork) goToStep(3);
+            else goToStep(2);
+        } else {
+            goToStep(currentStep - 1);
+        }
+    }
+
+    function toggleIPConfig(show) {
+        const area = document.getElementById('ipConfigArea');
+        if (area) area.style.display = show ? 'flex' : 'none';
+    }
+
+    async function detectIP() {
+        try {
+            const networks = await window.proctorBridge.getNetworkInfo();
+            const ips = networks.map(n => n.address).join(', ');
+            if (ips) {
+                document.getElementById('allowedIPAddress').value = ips;
+                showToast('Detected IP: ' + ips);
+            } else {
+                showToast('Could not detect any active network IP', 'error');
+            }
+        } catch (e) {
+            console.error("IP Detection failed:", e);
+        }
+    }
+
+    // Toggle IP Config Area Visibility
+    document.addEventListener('change', (e) => {
+        if (e.target.id === 'ipRestrictionEnabled') {
+            const area = document.getElementById('ipConfigArea');
+            if (area) area.style.display = e.target.checked ? 'flex' : 'none';
+        }
+    });
 
     function updateLanguages(savedCodes = null) {
         const langs = Array.from(document.querySelectorAll('#langSelectorGrid input:checked')).map(c => c.value);
@@ -3788,9 +4245,10 @@
         const mts = document.getElementById('maxTabSwitches');
         const shr = document.getElementById('showResults');
         const mgr = document.getElementById('manualGrading');
-        const lks = document.getElementById('sectionLockEnabled');
+        const lks = document.getElementById('lockSections') || document.getElementById('sectionLockEnabled');
         const prac = document.getElementById('isPracticeTest');
-
+        
+        exams.sectionLockEnabled = lks ? lks.checked : false;
         exams.security = {
             desktopOnly: document.getElementById('desktopOnly') ? document.getElementById('desktopOnly').checked : false,
             blockCopyPaste: cp ? cp.checked : false,
@@ -3809,11 +4267,17 @@
             showResults: shr ? shr.checked : true,
             autoPublishResults: document.getElementById('autoPublishResults') ? document.getElementById('autoPublishResults').checked : true,
             manualGrading: mgr ? mgr.checked : false,
+            ipRestriction: document.getElementById('ipRestrictionEnabled') ? document.getElementById('ipRestrictionEnabled').checked : false,
+            allowedIP: document.getElementById('allowedIPAddress') ? document.getElementById('allowedIPAddress').value : '',
+            blockWifiSwitching: document.getElementById('blockWifiSwitching') ? document.getElementById('blockWifiSwitching').checked : false,
             finalValidation: {
                 points: document.getElementById('val_points') ? document.getElementById('val_points').checked : false,
                 security: document.getElementById('val_security') ? document.getElementById('val_security').checked : false
             }
         };
+
+        const jk = document.getElementById('joiningKey');
+        if (jk) exams.joiningKey = jk.value;
 
         // Theme sync
         const prime = document.getElementById('themePrimaryColor');
@@ -3990,6 +4454,19 @@
         }, 800);
     }
 
+    // --- Session Timer Logic ---
+    let sessionSeconds = 0;
+    function startSessionTimer() {
+        setInterval(() => {
+            sessionSeconds++;
+            const h = Math.floor(sessionSeconds / 3600).toString().padStart(2, '0');
+            const m = Math.floor((sessionSeconds % 3600) / 60).toString().padStart(2, '0');
+            const s = (sessionSeconds % 60).toString().padStart(2, '0');
+            const timerEl = document.getElementById('sessionTimer');
+            if (timerEl) timerEl.textContent = `${h}:${m}:${s}`;
+        }, 1000);
+    }
+
     function editQuestion(index) {
         editingQIndex = index;
         const q = exams.questions[index];
@@ -4000,6 +4477,12 @@
         document.getElementById('questionSection').value = q.section;
         document.getElementById('questionTimer').value = q.timer || 0;
         document.getElementById('teacherNotes').value = q.teacherNotes || '';
+        document.getElementById('questionDifficulty').value = q.difficulty || 'medium';
+        if (document.getElementById('shuffleOptions')) document.getElementById('shuffleOptions').checked = q.shuffleOptions || false;
+
+        // Toggle shuffle options visibility
+        const shuffleGrp = document.getElementById('shuffleOptionsGroup');
+        if (shuffleGrp) shuffleGrp.style.display = (q.type === 'mcq') ? 'block' : 'none';
 
         if (q.options) {
             document.getElementById('optionsList').innerHTML = '';
@@ -4216,16 +4699,13 @@
         window.location.href = './exam-creator.html';
     }
 
-    function updatePool(sectionName, size) {
-        if (!exams.pools) exams.pools = {};
-        exams.pools[sectionName] = parseInt(size, 10) || 0;
-        autoSave();
-        showToast('Pool updated for ' + sectionName);
-    }
+
 
     function goBack() { window.location.href = './teacher-dashboard.html'; }
     initPage();
+    startSessionTimer();
     selectQuestionType('mcq');
+    lucide.createIcons();
 </script>
 </body>
 

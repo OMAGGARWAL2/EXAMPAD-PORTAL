@@ -1054,19 +1054,31 @@
             const rawInput = document.getElementById('testIdInput').value.trim();
             const pass = document.getElementById('passcodeInput').value.trim();
 
-            if (!rawInput) return showToast('Please enter a Test ID or Link', 'error');
+            if (!rawInput) return showToast('Please enter a Test ID or Joining Key', 'error');
 
-            // Extract ID if link
-            let id = rawInput;
-            if (rawInput.includes('?')) {
-                const params = new URLSearchParams(rawInput.split('?')[1]);
-                id = params.get('testId') || params.get('id') || params.get('invite') || rawInput;
-            } else if (rawInput.includes('/')) {
-                id = rawInput.split('/').pop();
+            let exam = null;
+            
+            // 1. Try direct Joining Key match (Primary) - Supports custom keys of any format (case-sensitive)
+            exam = db.getExamByJoiningKey(rawInput);
+
+            if (!exam) {
+                // Try case-insensitive fallback for convenience
+                exam = db.getExams().find(e => e.joiningKey && String(e.joiningKey).toLowerCase() === rawInput.toLowerCase());
             }
 
-            const exam = db.getExamByTestId(id);
-            if (!exam) return showToast('Assessment not found. Check your ID.', 'error');
+            if (!exam) {
+                // 2. Try extraction if it's a link or Test ID
+                let id = rawInput;
+                if (rawInput.includes('?')) {
+                    const params = new URLSearchParams(rawInput.split('?')[1]);
+                    id = params.get('testId') || params.get('id') || params.get('invite') || rawInput;
+                } else if (rawInput.includes('/')) {
+                    id = rawInput.split('/').pop();
+                }
+                exam = db.getExamByTestId(id) || db.getExamById(id);
+            }
+
+            if (!exam) return showToast('Assessment not found. Check your ID/Key.', 'error');
 
             // Check security passcode
             if (exam.security?.passcode && exam.security.passcode !== pass) {
@@ -1078,7 +1090,7 @@
                 showToast('Access Granted. Launching session...', 'success');
                 setTimeout(() => {
                     window.location.href = `./exam-attempt.html?attemptId=${res.attempt.id}`;
-                }, 1500);
+                }, 1000);
             } else {
                 showToast(res.message, 'error');
             }

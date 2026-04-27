@@ -211,9 +211,14 @@ class ExampadDB {
         return JSON.parse(localStorage.getItem('exampad_exams')) || [];
     }
 
-    getExamById(examId) {
+    getExamById(id) {
+        const exams = JSON.parse(localStorage.getItem('exampad_exams'));
+        return exams.find(e => e.id === id || e.testId === id);
+    }
+
+    getExamByJoiningKey(key) {
         const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
-        return exams.find(e => e.id === examId);
+        return exams.find(e => e.joiningKey === key);
     }
 
     getExamByTestId(testId) {
@@ -243,41 +248,63 @@ class ExampadDB {
     startAttempt(examId, studentId) {
         const attempts = JSON.parse(localStorage.getItem('exampad_attempts'));
 
-        // Check if student already attempted
+        // Check if student already attempted - Return existing if found for seamless resume
         const existingAttempt = attempts.find(a => a.examId === examId && a.studentId === studentId);
         if (existingAttempt) {
-            return { success: false, message: 'You have already attempted this exam' };
+            return { success: false, existingAttempt, message: 'Resuming existing attempt' };
         }
 
         const id = 'attempt_' + Date.now();
         const exam = this.getExamById(examId);
 
-        // --- RANDOMIZATION LOGIC ---
-        let selectedQuestionIds = [];
-        if (exam && exam.pools && Object.keys(exam.pools).length > 0) {
-            // Group original questions by section
+        // --- RANDOMIZATION & SHUFFLING LOGIC ---
+        let selectedQuestions = [];
+        
+        const shuffleArray = (array) => {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        };
+
+        if (exam) {
+            const allQuestions = exam.questions || [];
             const sectionsMap = {};
-            exam.questions.forEach(q => {
+            allQuestions.forEach(q => {
                 const s = q.section || 'General';
                 if (!sectionsMap[s]) sectionsMap[s] = [];
                 sectionsMap[s].push(q);
             });
 
-            // For each section, pick random questions if pool size is set
-            const sections = exam.sections.length > 0 ? exam.sections : ['General'];
+            const sections = exam.sections && exam.sections.length > 0 ? exam.sections : ['General'];
+            
             sections.forEach(sName => {
                 const secPool = sectionsMap[sName] || [];
-                const poolSize = parseInt(exam.pools[sName]) || 0;
+                const poolConfig = exam.pools ? exam.pools[sName] : null;
+                const poolEnabled = poolConfig && (poolConfig.enabled === true || poolConfig.enabled === 'true');
+                const poolSize = poolEnabled ? parseInt(poolConfig.pickCount || 0) : 0;
 
-                if (poolSize > 0 && poolSize < secPool.length) {
-                    // Randomly shuffle and pick poolSize questions
-                    const shuffled = [...secPool].sort(() => 0.5 - Math.random());
-                    const picked = shuffled.slice(0, poolSize);
-                    selectedQuestionIds.push(...picked.map(q => q.id));
+                let pickedFromSection = [];
+                if (poolEnabled && poolSize > 0 && poolSize < secPool.length) {
+                    pickedFromSection = shuffleArray(secPool).slice(0, poolSize);
                 } else {
-                    // Use all questions from this section
-                    selectedQuestionIds.push(...secPool.map(q => q.id));
+                    pickedFromSection = shuffleArray(secPool); // Still shuffle order even if picking all
                 }
+
+                // Shuffle Options for MCQs if enabled
+                pickedFromSection = pickedFromSection.map(q => {
+                    if (q.type === 'mcq' && q.shuffleOptions && q.options) {
+                        return {
+                            ...q,
+                            options: shuffleArray(q.options)
+                        };
+                    }
+                    return q;
+                });
+
+                selectedQuestions.push(...pickedFromSection);
             });
         }
 
@@ -298,7 +325,8 @@ class ExampadDB {
             status: 'in-progress', // in-progress, submitted, reviewed
             score: null,
             feedback: null,
-            selectedQuestionIds: selectedQuestionIds.length > 0 ? selectedQuestionIds : null
+            selectedQuestions: selectedQuestions.length > 0 ? selectedQuestions : null,
+            selectedQuestionIds: selectedQuestions.map(q => q.id)
         };
 
         attempts.push(attempt);

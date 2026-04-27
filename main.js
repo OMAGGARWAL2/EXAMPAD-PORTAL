@@ -347,6 +347,21 @@ ipcMain.handle('take-forced-screenshot', async (event, filename) => {
     }
 });
 
+// Network Information Bridge
+const os = require('os');
+ipcMain.handle('get-network-info', async () => {
+    const interfaces = os.networkInterfaces();
+    const results = [];
+    for (const name of Object.keys(interfaces)) {
+        for (const iface of interfaces[name]) {
+            if (iface.family === 'IPv4' && !iface.internal) {
+                results.push({ name, address: iface.address });
+            }
+        }
+    }
+    return results;
+});
+
 // AI Controller Bridge
 const aiController = require('./controllers/aiController');
 ipcMain.handle('ask-ai', async (event, prompt) => {
