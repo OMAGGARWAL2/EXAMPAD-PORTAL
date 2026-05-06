@@ -7550,10 +7550,13 @@
 
         function renderTestCases(results) {
             const sidebar = document.getElementById('tcSidebar');
-            sidebar.innerHTML = '<div class="test-cases-container"></div>';
+            // Ensure container takes full height for status alignment
+            sidebar.innerHTML = '<div class="test-cases-container" style="min-height: 100%; display: flex; flex-direction: column;"></div>';
             const container = sidebar.querySelector('.test-cases-container');
 
             const visibleResults = results.filter(r => r.isSample);
+            const passedCount = visibleResults.filter(r => r.status === 'pass').length;
+            const totalCount = visibleResults.length;
 
             visibleResults.forEach((res, idx) => {
                 const wrapper = document.createElement('div');
@@ -7577,6 +7580,17 @@
                 };
                 container.appendChild(wrapper);
             });
+
+            // Add Summary at bottom
+            const summaryDiv = document.createElement('div');
+            summaryDiv.style.marginTop = 'auto';
+            summaryDiv.style.padding = '20px 16px';
+            summaryDiv.style.color = '#12B76A';
+            summaryDiv.style.fontSize = '22px';
+            summaryDiv.style.fontWeight = '500';
+            summaryDiv.style.fontFamily = "'Hind', sans-serif";
+            summaryDiv.innerHTML = `Test case passed ${passedCount}/${totalCount}`;
+            container.appendChild(summaryDiv);
 
             if (visibleResults.length > 0) showTestCaseDetail(visibleResults[0]);
         }
