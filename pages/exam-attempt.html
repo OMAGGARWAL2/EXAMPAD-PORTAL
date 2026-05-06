@@ -6254,7 +6254,7 @@
                                 <div class="tray-tab active" id="tab-testcases" onclick="switchTray('testcases')">Test cases</div>
                                 <div class="tray-tab" id="tab-sample" onclick="switchTray('sample')">Sample test cases</div>
                                 <div class="tray-tab" id="tab-console" onclick="switchTray('console')">Console</div>
-                                <div class="tray-tab" id="tab-custom" onclick="switchTray('custom')">Custom input</div>
+                                <div class="tray-tab" id="tab-custom" onclick="switchTray('custom')" style="display: none;">Custom input</div>
                                 <div style="flex:1; border-bottom: 1px solid #E5E7EB;"></div>
                                 <div style="display:flex; align-items:center; padding: 0 20px; border-bottom: 1px solid #E5E7EB;">
                                     <div onclick="closeConsole()" style="width: 28px; height: 28px; background: #DE5B2B; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; opacity: 0.8;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
@@ -6298,7 +6298,7 @@
                                 </div>
                                 <div style="display:flex; align-items:center; gap:20px;">
                                     <label id="triggerCustomInput" style="display:flex; align-items:center; gap:8px; font-size:calc(1.15rem * var(--ultra-slow-scale)); color:#101828; font-weight: 400; font-family:'Hind', sans-serif; cursor:pointer;">
-                                        <input type="checkbox" id="useCustomCheck" onchange="if(this.checked) { openConsole(); switchTray('custom'); } else { switchTray('testcases'); }" style="accent-color:#DE6834; width:18px; height:18px; cursor:pointer; border: 1px solid #999;">
+                                        <input type="checkbox" id="useCustomCheck" onchange="const ct = document.getElementById('tab-custom'); if(this.checked) { ct.style.display = 'block'; openConsole(); switchTray('custom'); } else { ct.style.display = 'none'; switchTray('testcases'); }" style="accent-color:#DE6834; width:18px; height:18px; cursor:pointer; border: 1px solid #999;">
                                             custom input
                                     </label>
                                 </div>
@@ -7271,6 +7271,7 @@
             const trayLogs = document.getElementById('trayLogs');
             const trayConsole = document.getElementById('trayConsole');
             const trayCustom = document.getElementById('trayCustom');
+            const ct = document.getElementById('tab-custom');
 
             if (traySummary) traySummary.style.display = 'none';
             if (trayLogs) trayLogs.style.display = 'none';
@@ -7283,16 +7284,21 @@
                 if (trayCustom) trayCustom.style.display = 'block';
                 const check = document.getElementById('useCustomCheck');
                 if (check && !check.checked) check.checked = true;
-                const ct = document.getElementById('tab-custom');
                 if (ct) ct.style.display = 'block';
             } else if (t === 'sample') {
                 if (trayLogs) trayLogs.style.display = 'flex';
                 const check = document.getElementById('useCustomCheck');
-                if (check && check.checked) check.checked = false;
+                if (check && check.checked) {
+                    check.checked = false;
+                    if (ct) ct.style.display = 'none';
+                }
             } else {
                 if (traySummary) traySummary.style.display = 'flex';
                 const check = document.getElementById('useCustomCheck');
-                if (check && check.checked) check.checked = false;
+                if (check && check.checked) {
+                    check.checked = false;
+                    if (ct) ct.style.display = 'none';
+                }
             }
             openConsole();
         }
