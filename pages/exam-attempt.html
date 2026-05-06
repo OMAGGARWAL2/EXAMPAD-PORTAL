@@ -105,7 +105,8 @@
         }
 
         h1,
-        .q-title {
+        .q-title,
+        .q-title-link {
             font-family: 'Hind', sans-serif;
             font-size: 22px;
             font-weight: 500;
@@ -5789,8 +5790,8 @@
                         tr.style = `background: #fff; transition: all 0.2s; ${isLocked ? 'cursor: not-allowed; opacity: 0.75;' : ''}`;
                         tr.innerHTML = `
                             <td style="padding: 20px 0; color: #101828; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${i + 1}.</td>
-                            <td style="padding: 20px 10px; color: #101828; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); white-space: normal; overflow-wrap: break-word; font-family: 'Hind', sans-serif;">
-                                <span class="q-title-link" onclick="${clickAction}" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; transition: all 0.2s;">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
+                            <td style="padding: 20px 10px; text-align: left; white-space: normal; overflow-wrap: break-word;">
+                                <span class="q-title-link" onclick="${clickAction}" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; transition: all 0.2s; display: block;">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
                             </td>
                             <td style="padding: 20px 10px; color: #475467; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${(qInfo.type || 'MCQ').charAt(0).toUpperCase() + (qInfo.type || 'MCQ').slice(1).replace('_', ' ')}</td>
                             <td style="padding: 20px 10px; color: ${statusColor}; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${status}</td>
