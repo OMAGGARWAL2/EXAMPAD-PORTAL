@@ -194,12 +194,59 @@
         @keyframes toastSlideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         #loader { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.7); display: none; justify-content: center; align-items: center; z-index: 12000; font-weight: bold; color: var(--primary); }
+
+        /* ERP Context Menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid var(--primary);
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
+            z-index: 15000;
+            display: none;
+            min-width: 180px;
+            padding: 5px 0;
+            border-radius: 2px;
+        }
+
+        .context-menu-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 11px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .context-menu-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .context-menu-divider {
+            height: 1px;
+            background: #eee;
+            margin: 5px 0;
+        }
+
+        .context-menu-item i {
+            width: 14px;
+            text-align: center;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
     <div id="loader"><i class="fas fa-spinner fa-spin"></i> Processing Matrix...</div>
 
     <div class="erp-topbar">
+        <div style="margin-right: auto; display: flex; align-items: center; gap: 10px;">
+            <span onclick="goBack()" style="cursor:pointer; display: flex; align-items: center; gap: 5px; font-weight: bold; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 3px;">
+                <i class="fas fa-arrow-left"></i> PREV
+            </span>
+            <span style="opacity: 0.7;">| Bulk Architect Tool</span>
+        </div>
         <span>Session Jan-Jun 2026</span>
         <i class="fas fa-home" style="cursor:pointer;" onclick="location.href='index.html'"></i>
         <i class="fas fa-sign-out-alt" style="cursor:pointer;"></i>
@@ -210,6 +257,7 @@
         <div class="erp-section-title">
             <div><i class="fas fa-th-list"></i> Bulk Question Architect (Institutional Matrix)</div>
             <div class="tools-bar">
+                <button class="btn" onclick="addRow()"><i class="fas fa-plus"></i> Add Row</button>
                 <button class="btn" onclick="clearTable()"><i class="fas fa-trash-alt"></i> Wipe Matrix</button>
                 <button class="btn" onclick="goBack()"><i class="fas fa-undo"></i> Discard</button>
                 <button class="btn btn-primary" onclick="validateAndSave()"><i class="fas fa-cloud-upload-alt"></i> Synchronize Questions</button>
@@ -223,15 +271,15 @@
                 <thead>
                     <tr>
                         <th style="width:40px;">#</th>
-                        <th>Title</th>
-                        <th style="width:250px;">Question Content</th>
-                        <th>Opt 1</th>
-                        <th>Opt 2</th>
-                        <th>Opt 3</th>
-                        <th>Opt 4</th>
-                        <th style="width:60px; text-align:center;">Ans</th>
-                        <th style="width:120px;">Section</th>
-                        <th style="width:50px; text-align:center;">Marks</th>
+                        <th onclick="selectColumn(0)" style="cursor:pointer;" title="Click to select column">Title</th>
+                        <th onclick="selectColumn(1)" style="cursor:pointer; width:250px;" title="Click to select column">Question Content</th>
+                        <th onclick="selectColumn(2)" style="cursor:pointer;" title="Click to select column">Opt 1</th>
+                        <th onclick="selectColumn(3)" style="cursor:pointer;" title="Click to select column">Opt 2</th>
+                        <th onclick="selectColumn(4)" style="cursor:pointer;" title="Click to select column">Opt 3</th>
+                        <th onclick="selectColumn(5)" style="cursor:pointer;" title="Click to select column">Opt 4</th>
+                        <th onclick="selectColumn(6)" style="cursor:pointer; width:60px; text-align:center;" title="Click to select column">Ans</th>
+                        <th onclick="selectColumn(7)" style="cursor:pointer; width:120px;" title="Click to select column">Section</th>
+                        <th onclick="selectColumn(8)" style="cursor:pointer; width:50px; text-align:center;" title="Click to select column">Marks</th>
                         <th style="width:70px; text-align:center;">Status</th>
                     </tr>
                 </thead>
@@ -328,7 +376,12 @@
                 }
 
                 input.addEventListener('focus', (e) => {
-                    clearSelection();
+                    const cell = e.target.closest('.cell-container');
+                    if (cell && cell.classList.contains('selected-cell')) {
+                        // Don't clear if already selected (e.g. right click)
+                    } else {
+                        clearSelection();
+                    }
                     e.target.classList.add('focused-cell');
                 });
                 input.addEventListener('blur', (e) => e.target.classList.remove('focused-cell'));
@@ -374,7 +427,7 @@
         }
 
         function startSelection(e) {
-            if (e.shiftKey) return;
+            if (e.shiftKey || e.button !== 0) return;
             isSelecting = true;
             const target = e.target.closest('.cell-container');
             if (!target) return;
@@ -741,8 +794,223 @@
                 if (prevTr && prevTr.children[c+1]) prevTr.children[c+1].querySelector('.cell-input, .cell-select').focus();
             }
         });
+
+        function selectColumn(colIndex) {
+            selectionStart = { r: 0, c: colIndex };
+            selectionEnd = { r: gridBody.children.length - 1, c: colIndex };
+            updateSelectionStyles();
+            showToast(`Column ${headers[colIndex].toUpperCase()} Selected. Right-click to fill.`);
+        }
     </script>
     <div id="customModalOverlay"></div>
     <div id="toastContainer"></div>
+
+    <!-- ERP Context Menu -->
+    <div id="gridContextMenu" class="context-menu">
+        <div class="context-menu-item" onclick="handleContextMenuAction('copy')">
+            <i class="fas fa-copy"></i> Copy <span style="margin-left:auto; color:#999; font-size:10px;">Ctrl+C</span>
+        </div>
+        <div class="context-menu-item" onclick="handleContextMenuAction('cut')">
+            <i class="fas fa-cut"></i> Cut <span style="margin-left:auto; color:#999; font-size:10px;">Ctrl+X</span>
+        </div>
+        <div class="context-menu-item" onclick="handleContextMenuAction('paste')">
+            <i class="fas fa-paste"></i> Paste <span style="margin-left:auto; color:#999; font-size:10px;">Ctrl+V</span>
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="handleContextMenuAction('setValue')" style="font-weight:bold; color: var(--primary);">
+            <i class="fas fa-edit"></i> Set Specific Value...
+        </div>
+        <div class="context-menu-item" onclick="handleContextMenuAction('moveSection')">
+            <i class="fas fa-layer-group"></i> Move to Section...
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="handleContextMenuAction('clear')">
+            <i class="fas fa-eraser"></i> Clear Selection
+        </div>
+    </div>
+
+    <script>
+        // Context Menu Logic
+        const contextMenu = document.getElementById('gridContextMenu');
+        
+        document.addEventListener('contextmenu', (e) => {
+            const cell = e.target.closest('.cell-container');
+            if (cell) {
+                e.preventDefault();
+                
+                // If the right-clicked cell is NOT part of current selection, select it
+                const row = parseInt(cell.dataset.row);
+                const col = parseInt(cell.dataset.col);
+                
+                const minR = Math.min(selectionStart.r, selectionEnd.r);
+                const maxR = Math.max(selectionStart.r, selectionEnd.r);
+                const minC = Math.min(selectionStart.c, selectionEnd.c);
+                const maxC = Math.max(selectionStart.c, selectionEnd.c);
+                
+                const isInside = (row >= minR && row <= maxR && col >= minC && col <= maxC);
+                
+                if (!isInside) {
+                    selectionStart = { r: row, c: col };
+                    selectionEnd = { r: row, c: col };
+                    updateSelectionStyles();
+                }
+
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = e.pageX + 'px';
+                contextMenu.style.top = e.pageY + 'px';
+            } else {
+                contextMenu.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+        });
+
+        async function handleContextMenuAction(action) {
+            contextMenu.style.display = 'none';
+            
+            const minR = Math.min(selectionStart.r, selectionEnd.r);
+            const maxR = Math.max(selectionStart.r, selectionEnd.r);
+            const minC = Math.min(selectionStart.c, selectionEnd.c);
+            const maxC = Math.max(selectionStart.c, selectionEnd.c);
+
+            switch(action) {
+                case 'copy':
+                    document.execCommand('copy');
+                    break;
+                case 'cut':
+                    document.execCommand('copy');
+                    clearSelectionRange();
+                    break;
+                case 'paste':
+                    // We need to focus a cell to trigger native paste or handle it manually
+                    const startCell = gridBody.children[minR].querySelectorAll('.cell-container')[minC];
+                    const input = startCell.querySelector('.cell-input');
+                    if (input) {
+                        input.focus();
+                        try {
+                            const text = await navigator.clipboard.readText();
+                            handlePaste({ preventDefault: () => {}, clipboardData: { getData: () => text }, target: input });
+                        } catch (err) {
+                            showToast("Paste failed: Browser permission denied.");
+                        }
+                    }
+                    break;
+                case 'setValue':
+                    showPromptModal('Bulk Architect Action', 'Enter the value to apply to the entire selection:', (val) => {
+                        if (val !== null) {
+                            applyValueToSelection(val);
+                        }
+                    });
+                    break;
+                case 'moveSection':
+                    showSectionPickerModal((section) => {
+                        if (section) {
+                            applySectionToSelection(section);
+                        }
+                    });
+                    break;
+                case 'clear':
+                    clearSelectionRange();
+                    break;
+            }
+        }
+
+        function clearSelectionRange() {
+            const minR = Math.min(selectionStart.r, selectionEnd.r);
+            const maxR = Math.max(selectionStart.r, selectionEnd.r);
+            const minC = Math.min(selectionStart.c, selectionEnd.c);
+            const maxC = Math.max(selectionStart.c, selectionEnd.c);
+
+            for (let r = minR; r <= maxR; r++) {
+                const tr = gridBody.children[r];
+                const containers = tr.querySelectorAll('.cell-container');
+                for (let c = minC; c <= maxC; c++) {
+                    const input = containers[c].querySelector('.cell-input');
+                    if (input) input.innerText = '';
+                }
+            }
+            validateRealtime();
+        }
+
+        function applyValueToSelection(val) {
+            const minR = Math.min(selectionStart.r, selectionEnd.r);
+            const maxR = Math.max(selectionStart.r, selectionEnd.r);
+            const minC = Math.min(selectionStart.c, selectionEnd.c);
+            const maxC = Math.max(selectionStart.c, selectionEnd.c);
+
+            for (let r = minR; r <= maxR; r++) {
+                const tr = gridBody.children[r];
+                const containers = tr.querySelectorAll('.cell-container');
+                for (let c = minC; c <= maxC; c++) {
+                    const input = containers[c].querySelector('.cell-input');
+                    const select = containers[c].querySelector('.cell-select');
+                    
+                    if (input) {
+                        input.innerText = val;
+                    } else if (select) {
+                        // Check if value exists in options, else add it if it's a section
+                        const key = select.dataset.key;
+                        if (key === 'section') {
+                            const trimmed = val.trim();
+                            if (trimmed && !exams.sections.includes(trimmed)) {
+                                exams.sections.push(trimmed);
+                                updateAllDropdowns(trimmed);
+                            }
+                            select.value = trimmed;
+                        } else {
+                            select.value = val;
+                        }
+                    }
+                }
+            }
+            validateRealtime();
+            showToast(`Applied "${val}" to architect range.`);
+        }
+
+        function applySectionToSelection(sectionName) {
+            const minR = Math.min(selectionStart.r, selectionEnd.r);
+            const maxR = Math.max(selectionStart.r, selectionEnd.r);
+            
+            for (let r = minR; r <= maxR; r++) {
+                const tr = gridBody.children[r];
+                const select = tr.querySelector('.cell-select');
+                if (select) {
+                    select.value = sectionName;
+                }
+            }
+            validateRealtime();
+            showToast(`Moved selection to section: ${sectionName}`);
+        }
+
+        function showSectionPickerModal(onConfirm) {
+            const overlay = document.getElementById('customModalOverlay');
+            const options = exams.sections.map(s => `<option value="${s}">${s}</option>`).join('');
+            
+            overlay.innerHTML = `
+                <div class="modal-card">
+                    <div class="modal-header">SELECT DESTINATION SECTION</div>
+                    <div class="modal-body">
+                        <div style="font-weight:bold; margin-bottom:10px;">Bulk Move to Section</div>
+                        <div style="margin-bottom:15px;">Choose the section for all selected questions:</div>
+                        <select id="modalSectionSelect" style="width:100%; padding:8px; border:1px solid #ccc; font-family: inherit;">
+                            ${options}
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-ghost" id="modalCancelBtn">Cancel</button>
+                        <button class="btn btn-primary" id="modalConfirmBtn">Apply Section</button>
+                    </div>
+                </div>
+            `;
+            overlay.style.display = 'flex';
+            document.getElementById('modalCancelBtn').onclick = () => { overlay.style.display = 'none'; };
+            document.getElementById('modalConfirmBtn').onclick = () => { 
+                onConfirm(document.getElementById('modalSectionSelect').value); 
+                overlay.style.display = 'none'; 
+            };
+        }
+    </script>
 </body>
 </html>

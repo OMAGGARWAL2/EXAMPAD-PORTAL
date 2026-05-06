@@ -43,8 +43,8 @@
             --primary-color: #ce866a;
             --slider-bg: #fff6f2;
             --scale: 1;
-            --header-scale: calc(1 + (var(--scale) - 1) * 0.002);
-            --ultra-slow-scale: calc(1 + (var(--scale) - 1) * 0.01);
+            --header-scale: calc(1 + (var(--scale) - 1) * 0.30);
+            --ultra-slow-scale: calc(1 + (var(--scale) - 1) * 0.12);
             --rail-width: 120px;
             --rail-font-size: 16px;
             --editor-font-size: 18px;
@@ -861,7 +861,7 @@
         .font-range {
             -webkit-appearance: none;
             appearance: none;
-            width: 140px;
+            width: 180px;
             background: transparent;
         }
 
@@ -880,7 +880,7 @@
             height: 4px;
             cursor: pointer;
             background: #D0D5DD;
-            border-radius: 2px;
+            border-radius: 0;
         }
 
         .user-block {
@@ -3720,7 +3720,7 @@
                             onmouseleave="document.getElementById('lobbyFontSizeTooltip').style.display='none'">
                             <input type="range" class="font-range" id="lobbyFontSizeSlider" min="50" max="150"
                                 value="100" oninput="updateLobbyFontSize(this.value)"
-                                style="margin: 0 12px; width: 140px;">
+                                style="margin: 0 12px; width: 180px;">
                             <div id="lobbyFontSizeTooltip" class="font-size-tooltip"
                                 style="display: none; top: -35px; left: 50%; opacity: 1;">100%</div>
                         </div>
@@ -3931,7 +3931,7 @@
                     <div class="font-sizer-wrapper" onmousemove="showFontSizeTooltip(event)"
                         onmouseleave="hideFontSizeTooltip()">
                         <input type="range" class="font-range" id="fontSizeSlider" min="50" max="150" value="100"
-                            oninput="updateFontSize(this.value)" style="margin: 0 12px; width: 140px;">
+                            oninput="updateFontSize(this.value)" style="margin: 0 12px; width: 180px;">
                         <div id="fontSizeTooltip" class="font-size-tooltip">100%</div>
                     </div>
                     <i class="fas fa-home" style="color:#DE5B2B; font-size:24px; cursor:pointer;"
@@ -5692,11 +5692,11 @@
                     }
                 };
 
-                const indicatorIcon = isLocked ? '<i class="fas fa-lock" style="font-size: 16px; opacity: 0.8;"></i>' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}" style="font-size: 16px; margin-left: 12px; opacity: 0.8;"></i>`;
+                const indicatorIcon = isLocked ? '<i class="fas fa-lock" style="font-size: calc(16px * var(--header-scale)); opacity: 0.8;"></i>' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}" style="font-size: calc(16px * var(--header-scale)); margin-left: 12px; opacity: 0.8;"></i>`;
                 const sectionTypeText = qs[0]?.q?.section_type || `Section ${sections.indexOf(sName) + 1}`;
 
                 const sectionTitleContent = isSubmitted
-                    ? `<span style="letter-spacing: 0.1px; display: flex; align-items: center; gap: 10px;">${sName} - ${sectionTypeText} <span style="background: #fff; color: ${headerColor}; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px;"><i class="fas fa-check"></i></span></span>`
+                    ? `<span style="letter-spacing: 0.1px; display: flex; align-items: center; gap: 10px;">${sName} - ${sectionTypeText} <span style="background: #fff; color: ${headerColor}; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: calc(13px * var(--header-scale));"><i class="fas fa-check"></i></span></span>`
                     : `<span style="letter-spacing: 0.1px;">${sName} - ${sectionTypeText}</span>`;
 
                 const sectionStatusContent = isSubmitted
@@ -5705,7 +5705,7 @@
 
                 header.innerHTML = `
                     ${sectionTitleContent}
-                    <div style="display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 400; font-family: 'Hind', sans-serif;">
+                    <div style="display: flex; align-items: center; gap: 12px; font-size: calc(16px * var(--header-scale)); font-weight: 400; font-family: 'Hind', sans-serif;">
                         ${sectionStatusContent}
                         ${indicatorIcon}
                     </div>
@@ -5810,7 +5810,7 @@
 
                         const sBtn = document.createElement('button');
                         // Clean Pill Style from User Solution
-                        sBtn.style = "background: #ce866a; color: #fff; border: none; padding: 12px 60px 42px 60px; border-radius: 50px; font-weight: 500; font-size: 20px; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 10px 30px rgba(206, 134, 106, 0.35); font-family: 'Hind', sans-serif; text-transform: lowercase;";
+                        sBtn.style = "background: #ce866a; color: #fff; border: none; padding: 12px 60px 42px 60px; border-radius: 50px; font-weight: 500; font-size: calc(20px * var(--dash-font-scale)); cursor: pointer; transition: all 0.25s ease; box-shadow: 0 10px 30px rgba(206, 134, 106, 0.35); font-family: 'Hind', sans-serif; text-transform: lowercase;";
                         sBtn.innerText = "submit this section";
 
                         // Hover & Click Effects (Still and Fixed)
@@ -6252,6 +6252,7 @@
                         <div class="console-drawer" id="consoleDrawer">
                             <div class="tray-tabs">
                                 <div class="tray-tab active" id="tab-testcases" onclick="switchTray('testcases')">Test cases</div>
+                                <div class="tray-tab" id="tab-sample" onclick="switchTray('sample')">Sample test cases</div>
                                 <div class="tray-tab" id="tab-console" onclick="switchTray('console')">Console</div>
                                 <div class="tray-tab" id="tab-custom" onclick="switchTray('custom')">Custom input</div>
                                 <div style="flex:1; border-bottom: 1px solid #E5E7EB;"></div>
@@ -6686,11 +6687,12 @@
                     editorInstance.setFontSize(editorSize);
                 }
 
+                // Dashboard scale (sensitivity 0.40)
+                const dScale = 1 + (scale - 1) * 0.40;
+                document.documentElement.style.setProperty('--dash-font-scale', dScale);
+
                 const dash = document.getElementById('testDashboardView');
                 if (dash && dash.style.display !== 'none') {
-                    // Dashboard increases slowly (0.06 factor)
-                    const dScale = 1 + (scale - 1) * 0.06;
-                    document.documentElement.style.setProperty('--dash-font-scale', dScale);
                     requestAnimationFrame(() => renderDashboardTable());
                 }
 
@@ -7498,8 +7500,8 @@
                 const finalStatusHtml = `<div style="color:#fff; font-family:'Hind', sans-serif; font-size:1rem; font-weight:400; line-height:1.6;">Execution Complete.\n\nSample: ${samplePassed}/${totalSamples} passed\nHidden: ${hiddenPassed}/${totalHidden} passed</div>`;
                 cText.innerHTML = finalStatusHtml;
 
-                // Tab Redirection Logic
-                if (currentTab === 'tab-sample') {
+                // Tab Redirection Logic: Default to Sample test cases if they exist
+                if (resultsToShow.length > 0) {
                     switchTray('sample');
                 } else {
                     switchTray('testcases');

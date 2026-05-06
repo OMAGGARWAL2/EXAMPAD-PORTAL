@@ -98,6 +98,26 @@ function createWindow() {
 
     mainWindow.loadFile('pages/joinvialink.html'); // Start on the Join via Link portal as default
 
+    // --- CUSTOM ZOOM CONTROLS ---
+    // Ctrl+I to Zoom In, Ctrl+D to Zoom Out
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+        if (input.control || input.meta) {
+            const key = input.key.toLowerCase();
+            if (key === 'i') {
+                const currentZoom = mainWindow.webContents.getZoomLevel();
+                mainWindow.webContents.setZoomLevel(currentZoom + 0.5);
+                event.preventDefault();
+            } else if (key === 'd') {
+                const currentZoom = mainWindow.webContents.getZoomLevel();
+                mainWindow.webContents.setZoomLevel(currentZoom - 0.5);
+                event.preventDefault();
+            } else if (key === '0') {
+                mainWindow.webContents.setZoomLevel(0);
+                event.preventDefault();
+            }
+        }
+    });
+
     mainWindow.once('ready-to-show', () => {
         mainWindow.maximize();
         mainWindow.show();
@@ -193,12 +213,15 @@ function registerSecurityShortcuts(isPractice = false) {
         'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
     ];
 
+    blockedKeys.push('Control+Esc');
+    blockedKeys.push('Super+Control+Left');
+    blockedKeys.push('Super+Control+Right');
+
     // Shortcuts that allow switching apps - only block if NOT practice
     if (!isPractice) {
         blockedKeys.push('Alt+Tab');
         blockedKeys.push('Alt+Shift+Tab');
         blockedKeys.push('Alt+Esc');
-        blockedKeys.push('Control+Esc');
         blockedKeys.push('CommandOrControl+Tab');
         blockedKeys.push('Super+D');
         blockedKeys.push('Super+Tab');
@@ -207,8 +230,6 @@ function registerSecurityShortcuts(isPractice = false) {
         blockedKeys.push('Super+A');
         blockedKeys.push('Super+S');
         blockedKeys.push('Super+Control+D');
-        blockedKeys.push('Super+Control+Left');
-        blockedKeys.push('Super+Control+Right');
     }
 
     blockedKeys.forEach(key => {

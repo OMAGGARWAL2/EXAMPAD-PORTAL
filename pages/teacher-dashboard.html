@@ -47,6 +47,13 @@
             overflow-x: hidden;
         }
 
+        @media (min-width: 1201px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+        }
+
         h1,
         h2,
         h3,
@@ -236,6 +243,12 @@
             grid-template-columns: 1fr var(--sidebar-width);
             gap: 0;
             overflow: hidden;
+        }
+
+        @media (min-width: 1201px) {
+            .dashboard-container {
+                height: calc(100vh - 72px);
+            }
         }
 
         .main-content {
