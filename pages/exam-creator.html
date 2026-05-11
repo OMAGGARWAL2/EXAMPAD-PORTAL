@@ -1811,9 +1811,14 @@
 
         <div id="step-1" class="wizard-step active">
             <div class="form-card">
-                <div class="section-title">
-                    <i data-lucide="fingerprint" style="color:var(--primary); width: 28px; height: 28px;"></i>
-                    Assessment Identity
+                <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i data-lucide="fingerprint" style="color:var(--primary); width: 28px; height: 28px;"></i>
+                        Assessment Identity
+                    </div>
+                    <button class="btn btn-ghost" onclick="showCloneModal()" style="font-size: 0.8rem; height: 32px; padding: 0 12px; border-radius: 20px;">
+                        <i class="far fa-copy"></i> Clone Existing Test
+                    </button>
                 </div>
 
                 <div class="input-group">
@@ -2669,7 +2674,12 @@
 
                 <!-- Exam Blueprint Review -->
                 <div class="form-card" style="background:transparent; border: 1px solid #eee;">
-                    <h2 class="section-title">Exam Blueprint Review</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                        <h2 class="section-title" style="margin:0;">Exam Blueprint Review</h2>
+                        <button class="btn btn-ghost" onclick="openPoolModal()" style="font-size:0.75rem; padding: 8px 16px; border:1px solid #6366f1; color:#6366f1; background:rgba(99,102,241,0.05);">
+                            <i class="fas fa-database" style="margin-right:8px;"></i> Import from Pool
+                        </button>
+                    </div>
                     <div id="previewQuestionsList"
                         style="max-height:500px; overflow-y:auto; border:1px solid #f0f0f0; border-radius:12px; background: #fff; padding: 12px;">
                         <!-- Populated dynamically -->
@@ -3149,6 +3159,7 @@
                         <div style="flex:1;">
                             <div style="font-weight: 700; font-size: 0.9rem; color: #333;">${q.heading}</div>
                             <div style="font-size: 0.7rem; color: #999; text-transform: uppercase; font-weight: 600; margin-top:2px;">${q.type} • ${q.marks} Marks</div>
+                            ${q.addedAt ? `<div style="font-size: 0.65rem; color: #bbb; margin-top: 4px; font-weight:500;"><i class="far fa-calendar-alt"></i> Stored: ${new Date(q.addedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</div>` : ''}
                         </div>
                         <button class="btn btn-run" onclick="importQuestionFromPool('${q.poolId}')" style="height: 32px; font-size: 0.75rem; padding: 0 15px; width:auto;">IMPORT</button>
                     </div>
@@ -3161,7 +3172,8 @@
             desc: 'Select a question to import into your current assessment timeline.',
             content: html,
             confirmText: 'Close',
-            onConfirm: () => { }
+            onConfirm: () => { },
+            hideCancel: true
         });
     }
 
@@ -3251,13 +3263,15 @@
     }
 
     // Custom Modal System
-    function showModal({ title, desc, content, confirmText = 'Confirm', onConfirm }) {
+    function showModal({ title, desc, content, confirmText = 'Confirm', onConfirm, hideCancel = false }) {
         const overlay = document.getElementById('customModalOverlay');
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalDesc').textContent = desc;
         document.getElementById('modalContent').innerHTML = content || '';
         const confirmBtn = document.getElementById('modalConfirm');
         const cancelBtn = document.getElementById('modalCancel');
+
+        if (cancelBtn) cancelBtn.style.display = hideCancel ? 'none' : 'inline-block';
         confirmBtn.textContent = confirmText;
 
         overlay.style.display = 'flex';
@@ -3350,12 +3364,166 @@
             passcode: '',
             entryDeadline: null,
             maxTabSwitches: 3,
-            showResults: true
         }
     };
 
+    function showCloneModal() {
+        const examsList = db.getAllExams();
+        const currentUser = auth.getCurrentUser();
+        if (!currentUser) return showToast('User session not found');
+        
+        const myExams = examsList.filter(e => e.teacherId === currentUser.id);
+
+        if (myExams.length === 0) {
+            showToast('No existing tests found to clone');
+            return;
+        }
+
+        const content = `
+            <div style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+                ${myExams.map(e => `
+                    <div style="padding: 16px; border: 1px solid #eee; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; background: #fff; transition: all 0.2s;" 
+                         onmouseenter="this.style.borderColor='var(--primary)'; this.style.background='#fdf8f5'" 
+                         onmouseleave="this.style.borderColor='#eee'; this.style.background='#fff'">
+                        <div style="flex:1;">
+                            <div style="font-weight: 700; color: #1a1a1b;">${e.title}</div>
+                            <div style="font-size: 0.75rem; color: #666; margin-top: 4px;">ID: ${e.testId} • ${e.questions.length} Questions • ${e.status.toUpperCase()}</div>
+                        </div>
+                        <button class="btn btn-run" onclick="selectExamToClone('${e.id}')" style="height: 32px; font-size: 0.75rem; padding: 0 15px; width:auto; background:var(--primary); color:#fff; border-radius: 8px; border:none; cursor:pointer;">IMPORT</button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        showModal({
+            title: 'Clone Existing Test',
+            desc: 'Select a test to copy all its questions and settings. You can modify them before publishing as a new test.',
+            content: content,
+            confirmText: 'Close',
+            onConfirm: () => {},
+            hideCancel: true
+        });
+    }
+
+    function selectExamToClone(examId) {
+        const sourceExam = db.getExamById(examId);
+        if (!sourceExam) return;
+
+        const performClone = () => {
+            const clone = JSON.parse(JSON.stringify(sourceExam));
+            
+            // Reset IDs and Status for a fresh clone
+            delete clone.id;
+            delete clone.testId;
+            delete clone.passcode;
+            clone.status = 'draft';
+            clone.title = clone.title + ' (Copy)';
+            clone.createdAt = new Date().toISOString();
+            clone.joiningKey = generateJoiningKey();
+
+            exams = clone;
+            editExamId = null; 
+            // Clear edit param from URL without refreshing
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            loadExamIntoUI();
+            
+            if (typeof closeModal === 'function') closeModal();
+            else {
+                const overlay = document.querySelector('.custom-modal-overlay') || document.getElementById('customModalOverlay');
+                if (overlay) overlay.style.display = 'none';
+            }
+            
+            showToast('Exam contents loaded! You are now working on a copy.');
+        };
+
+        if (exams.questions.length > 0 || (exams.title && exams.title !== '')) {
+            showModal({
+                title: 'Confirm Architecture Overwrite',
+                desc: 'Cloning this test will replace your current architectural progress. This action cannot be undone.',
+                content: `
+                    <div style="background: #fdf8f5; border: 1px solid #ffe8dd; padding: 20px; border-radius: 12px; display: flex; align-items: flex-start; gap: 15px; margin-top: 15px;">
+                        <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.2rem; margin-top: 2px;"></i>
+                        <div style="font-size: 0.9rem; color: #333; line-height: 1.5;">
+                            You have an active draft with <strong style="color:var(--primary)">${exams.questions.length} questions</strong>. Are you sure you want to discard your current work and import this assessment?
+                        </div>
+                    </div>
+                `,
+                confirmText: 'Overwrite and Clone',
+                onConfirm: performClone
+            });
+        } else {
+            performClone();
+        }
+    }
+
+    function loadExamIntoUI() {
+        if (document.getElementById('examTitle')) document.getElementById('examTitle').value = exams.title || '';
+        if (document.getElementById('examDescription')) document.getElementById('examDescription').value = exams.description || '';
+        if (document.getElementById('examDuration')) document.getElementById('examDuration').value = exams.duration || 60;
+        if (document.getElementById('examTotalMarks')) document.getElementById('examTotalMarks').value = exams.totalMarks || 100;
+        if (document.getElementById('negativeMarking')) document.getElementById('negativeMarking').value = exams.negativeMarking || 0;
+        if (document.getElementById('scheduleDate')) document.getElementById('scheduleDate').value = exams.scheduledDate || '';
+        if (document.getElementById('scheduleEndDate')) document.getElementById('scheduleEndDate').value = exams.scheduledEndDate || '';
+        if (document.getElementById('isUniversalTime')) document.getElementById('isUniversalTime').checked = exams.isUniversalTime || false;
+        if (document.getElementById('joiningKey')) document.getElementById('joiningKey').value = exams.joiningKey || '';
+
+        if (exams.theme) {
+            if (document.getElementById('themePrimaryColor')) document.getElementById('themePrimaryColor').value = exams.theme.primaryColor || '#D96C33';
+            if (document.getElementById('themeFont')) document.getElementById('themeFont').value = exams.theme.font || 'Outfit';
+            if (document.getElementById('themeDarkMode')) document.getElementById('themeDarkMode').checked = exams.theme.darkMode || false;
+        }
+
+        if (document.getElementById('sectionLockEnabled')) document.getElementById('sectionLockEnabled').checked = exams.sectionLockEnabled || false;
+        if (document.getElementById('lockSections')) document.getElementById('lockSections').checked = exams.sectionLockEnabled || false;
+        if (document.getElementById('isPracticeTest')) document.getElementById('isPracticeTest').checked = exams.isPracticeTest || false;
+
+        if (exams.negativeMarking > 0) {
+            if (document.getElementById('enableNegativeMarking')) document.getElementById('enableNegativeMarking').checked = true;
+            if (document.getElementById('negativeMarking')) {
+                document.getElementById('negativeMarking').disabled = false;
+                document.getElementById('negativeMarking').value = exams.negativeMarking;
+            }
+        }
+
+        if (exams.security) {
+            if (document.getElementById('blockCopyPaste')) document.getElementById('blockCopyPaste').checked = exams.security.blockCopyPaste;
+            if (document.getElementById('blockScreenshot')) document.getElementById('blockScreenshot').checked = exams.security.blockScreenshot;
+            if (document.getElementById('shuffleQuestions')) document.getElementById('shuffleQuestions').checked = exams.security.shuffleQuestions;
+            if (document.getElementById('fullScreenRequired')) document.getElementById('fullScreenRequired').checked = exams.security.fullScreenRequired;
+            if (document.getElementById('desktopOnly')) document.getElementById('desktopOnly').checked = exams.security.desktopOnly || false;
+            if (document.getElementById('webcamEnabled')) document.getElementById('webcamEnabled').checked = exams.security.webcamEnabled;
+            if (document.getElementById('micEnabled')) document.getElementById('micEnabled').checked = exams.security.micEnabled;
+            if (document.getElementById('vpnBlocked')) document.getElementById('vpnBlocked').checked = exams.security.vpnBlocked;
+            if (document.getElementById('examPasscode')) document.getElementById('examPasscode').value = exams.security.passcode || '';
+            if (document.getElementById('strictPasscode')) document.getElementById('strictPasscode').checked = exams.security.strictPasscode !== false;
+            if (document.getElementById('entryDeadline')) document.getElementById('entryDeadline').value = exams.security.entryDeadline || '';
+            if (document.getElementById('maxTabSwitches')) document.getElementById('maxTabSwitches').value = exams.security.maxTabSwitches || 3;
+            if (document.getElementById('showResults')) document.getElementById('showResults').checked = exams.security.showResults !== false;
+            if (document.getElementById('manualGrading')) document.getElementById('manualGrading').checked = exams.security.manualGrading || false;
+        }
+
+        updateSectionsList();
+        updateQuestionsList();
+        updateIdentityFieldsList();
+    }
     function initPage() {
         lucide.createIcons();
+
+        const params = new URLSearchParams(window.location.search);
+        const editId = params.get('edit');
+
+        if (editId) {
+            editExamId = editId;
+            const existing = db.getExamById(editId);
+            if (existing) {
+                exams = existing;
+            }
+        }
+
+        loadExamIntoUI();
+        hideLoader();
+
         // Initialize Joining Key for new exams
         if (!editExamId && !exams.joiningKey) {
             exams.joiningKey = generateJoiningKey();
@@ -3365,7 +3533,6 @@
         const savedStep = localStorage.getItem('exam_step_' + (editExamId || 'new'));
         if (savedStep) {
             goToStep(parseInt(savedStep), true);
-            showToast(`Resuming from Step ${savedStep}`);
         } else {
             goToStep(1, true);
         }
@@ -3380,38 +3547,7 @@
                     confirmText: 'Restore Draft',
                     onConfirm: () => {
                         exams = recovered;
-                        if (document.getElementById('examTitle')) document.getElementById('examTitle').value = exams.title || '';
-                        if (document.getElementById('examDescription')) document.getElementById('examDescription').value = exams.description || '';
-                        if (document.getElementById('examDuration')) document.getElementById('examDuration').value = exams.duration || 60;
-                        if (document.getElementById('examTotalMarks')) document.getElementById('examTotalMarks').value = exams.totalMarks || 100;
-                        if (document.getElementById('negativeMarking')) document.getElementById('negativeMarking').value = exams.negativeMarking || 0;
-                        if (document.getElementById('scheduleDate')) document.getElementById('scheduleDate').value = exams.scheduledDate || '';
-                        if (document.getElementById('scheduleEndDate')) document.getElementById('scheduleEndDate').value = exams.scheduledEndDate || '';
-                        if (document.getElementById('isUniversalTime')) document.getElementById('isUniversalTime').checked = exams.isUniversalTime || false;
-
-                        // Theme
-                        if (exams.theme) {
-                            if (document.getElementById('themePrimaryColor')) document.getElementById('themePrimaryColor').value = exams.theme.primaryColor || '#D96C33';
-                            if (document.getElementById('themeFont')) document.getElementById('themeFont').value = exams.theme.font || 'Outfit';
-                            if (document.getElementById('themeDarkMode')) document.getElementById('themeDarkMode').checked = exams.theme.darkMode || false;
-                        }
-
-                        if (document.getElementById('sectionLockEnabled')) document.getElementById('sectionLockEnabled').checked = exams.sectionLockEnabled || false;
-                        if (document.getElementById('lockSections')) document.getElementById('lockSections').checked = exams.sectionLockEnabled || false;
-                        if (document.getElementById('isPracticeTest')) {
-                            document.getElementById('isPracticeTest').checked = exams.isPracticeTest || false;
-                        }
-
-                        if (exams.negativeMarking > 0) {
-                            if (document.getElementById('enableNegativeMarking')) document.getElementById('enableNegativeMarking').checked = true;
-                            if (document.getElementById('negativeMarking')) {
-                                document.getElementById('negativeMarking').disabled = false;
-                                document.getElementById('negativeMarking').value = exams.negativeMarking;
-                            }
-                        }
-
-                        updateSectionsList();
-                        updateQuestionsList();
+                        loadExamIntoUI();
                         showToast('Draft restored successfully');
                     }
                 });
@@ -3437,73 +3573,6 @@
                 profileMenu.classList.remove('active');
             }
         };
-
-        if (exam) {
-            document.getElementById('examTitle').value = exams.title;
-            document.getElementById('examDescription').value = exams.description;
-            document.getElementById('examDuration').value = exams.duration;
-            document.getElementById('examTotalMarks').value = exams.totalMarks;
-            document.getElementById('negativeMarking').value = exams.negativeMarking || 0;
-            if (exams.scheduledDate) document.getElementById('scheduleDate').value = exams.scheduledDate;
-            if (exams.scheduledEndDate) document.getElementById('scheduleEndDate').value = exams.scheduledEndDate;
-            if (document.getElementById('isUniversalTime')) document.getElementById('isUniversalTime').checked = exams.isUniversalTime || false;
-
-            // Security & Proctoring Persistence
-            if (exams.security) {
-                if (document.getElementById('blockCopyPaste')) document.getElementById('blockCopyPaste').checked = exams.security.blockCopyPaste;
-                if (document.getElementById('blockScreenshot')) document.getElementById('blockScreenshot').checked = exams.security.blockScreenshot;
-                if (document.getElementById('shuffleQuestions')) document.getElementById('shuffleQuestions').checked = exams.security.shuffleQuestions;
-                if (document.getElementById('fullScreenRequired')) document.getElementById('fullScreenRequired').checked = exams.security.fullScreenRequired;
-                if (document.getElementById('desktopOnly')) document.getElementById('desktopOnly').checked = exams.security.desktopOnly || false;
-                if (document.getElementById('isPracticeTest')) document.getElementById('isPracticeTest').checked = exams.security.isPracticeTest || false;
-
-                // Step 4 fields
-                if (document.getElementById('webcamEnabled')) document.getElementById('webcamEnabled').checked = exams.security.webcamEnabled;
-                if (document.getElementById('micEnabled')) document.getElementById('micEnabled').checked = exams.security.micEnabled;
-                if (document.getElementById('vpnBlocked')) document.getElementById('vpnBlocked').checked = exams.security.vpnBlocked;
-                if (document.getElementById('examPasscode')) document.getElementById('examPasscode').value = exams.security.passcode || '';
-                if (document.getElementById('strictPasscode')) document.getElementById('strictPasscode').checked = exams.security.strictPasscode !== false;
-                if (document.getElementById('entryDeadline')) document.getElementById('entryDeadline').value = exams.security.entryDeadline || '';
-                if (document.getElementById('maxTabSwitches')) document.getElementById('maxTabSwitches').value = exams.security.maxTabSwitches || 3;
-                if (document.getElementById('showResults')) document.getElementById('showResults').checked = exams.security.showResults !== false;
-                if (document.getElementById('manualGrading')) document.getElementById('manualGrading').checked = exams.security.manualGrading || false;
-
-                // IP & Network
-                if (document.getElementById('ipRestrictionEnabled')) {
-                    const ipCheck = document.getElementById('ipRestrictionEnabled');
-                    ipCheck.checked = exams.security.ipRestriction || false;
-                    const ipArea = document.getElementById('ipConfigArea');
-                    if (ipArea) ipArea.style.display = ipCheck.checked ? 'flex' : 'none';
-
-                    // Sync the Step 2 toggle
-                    if (document.getElementById('requireNetworkConfig')) {
-                        document.getElementById('requireNetworkConfig').checked = ipCheck.checked;
-                    }
-                }
-                if (document.getElementById('allowedIPAddress')) document.getElementById('allowedIPAddress').value = exams.security.allowedIP || '';
-                if (document.getElementById('blockWifiSwitching')) document.getElementById('blockWifiSwitching').checked = exams.security.blockWifiSwitching || false;
-
-                // Final Validation
-                if (exams.security.finalValidation) {
-                    if (document.getElementById('val_points')) document.getElementById('val_points').checked = exams.security.finalValidation.points;
-                    if (document.getElementById('val_security')) document.getElementById('val_security').checked = exams.security.finalValidation.security;
-                }
-            }
-
-            // Theme Persistence
-            if (exams.theme) {
-                if (document.getElementById('themePrimaryColor')) document.getElementById('themePrimaryColor').value = exams.theme.primaryColor || '#D96C33';
-                if (document.getElementById('themeFont')) document.getElementById('themeFont').value = exams.theme.font || 'Outfit';
-                if (document.getElementById('themeDarkMode')) document.getElementById('themeDarkMode').checked = exams.theme.darkMode || false;
-            }
-            updateSectionsList();
-            updateQuestionsList();
-            updateIdentityFieldsList();
-            // Force Step 4 preview refresh on load if we are already on step 4
-            updatePreviewList();
-        }
-        updateSectionsList();
-        updateIdentityFieldsList();
     }
 
     function updateIdentityFieldsList() {
@@ -3881,10 +3950,11 @@
         const sidebarList = document.getElementById('questionsList');
         const railList = document.getElementById('questionsListArchitect');
 
-        if (exams.questions.length === 0) {
-            const empty = '<div style="text-align:center; padding:40px; color:#999; font-size:0.85rem; border:1px dashed #ddd; border-radius:12px; margin: 12px;">Empty Timeline</div>';
+        if (!exams.questions || exams.questions.length === 0) {
+            const empty = '<div style="text-align:center; padding:40px; color:#999; font-size:0.85rem; background:#fcfcfc; border:1px dashed #eee; border-radius:12px; margin:20px;">Empty Timeline. Architect some questions to begin.</div>';
             if (sidebarList) sidebarList.innerHTML = empty;
             if (railList) railList.innerHTML = empty;
+            updatePreviewList();
             return;
         }
 
@@ -4325,7 +4395,7 @@
 
         let html = '';
         sections.forEach((sec, sIdx) => {
-            const qs = exams.questions.filter(q => q.section === sec);
+            const qs = exams.questions.filter(q => String(q.section || 'General').toLowerCase().trim() === String(sec).toLowerCase().trim());
             if (qs.length > 0) {
                 html += `
                     <div style="background:#fcfcfc; padding:12px 20px; font-size:0.7rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center;">
@@ -4338,7 +4408,7 @@
                         <div style="display:flex; align-items:center; gap:16px;">
                             <div style="width:32px; height:32px; border:1px solid #eee; display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:700; font-size:0.8rem; background:#f9f9f9;">${i + 1}</div>
                             <div>
-                                <div style="font-weight:700; font-size:0.9rem; color:var(--text-main);">${q.heading}</div>
+                                <div style="font-weight:700; font-size:0.9rem; color:var(--text-main);">${q.heading || 'Untitled Question'}</div>
                                 <div style="font-size:0.65rem; color:var(--text-secondary); text-transform:uppercase; font-weight:600; margin-top:2px;">${q.type} • ${q.marks} Marks</div>
                             </div>
                         </div>
@@ -4350,11 +4420,23 @@
             }
         });
 
-        if (html === '') {
-            container.innerHTML = '<div style="padding:40px; text-align:center; color:#999; font-size:0.9rem; border:1px dashed #eee; border-radius:12px; margin:20px;">Questions exist but don\'t match defined sections. Check Step 2.</div>';
-        } else {
-            container.innerHTML = html;
+        if (html === '' && exams.questions.length > 0) {
+            // Fallback for orphaned questions
+            html = `<div style="background:#fff5f5; padding:12px 20px; font-size:0.7rem; font-weight:800; color:#e53e3e; text-transform:uppercase; border-bottom:1px solid #fed7d7;">Orphaned Questions (Missing Section)</div>`;
+            html += exams.questions.filter(q => !sections.some(s => s.toLowerCase().trim() === String(q.section || '').toLowerCase().trim())).map((q, i) => `
+                 <div style="padding:16px 20px; border-bottom:1px solid #f5f5f5; display:flex; justify-content:space-between; align-items:center; background:#fff;">
+                    <div style="display:flex; align-items:center; gap:16px;">
+                        <div style="width:32px; height:32px; border:1px solid #eee; display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:700; font-size:0.8rem;">?</div>
+                        <div>
+                            <div style="font-weight:700; font-size:0.9rem;">${q.heading || 'Untitled'}</div>
+                            <div style="font-size:0.65rem; color:#999;">Section: ${q.section || 'None'}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
+
+        container.innerHTML = html || '<div style="padding:40px; text-align:center; color:#999;">No questions found.</div>';
     }
 
 

@@ -44,7 +44,7 @@
             --slider-bg: #fff6f2;
             --scale: 1;
             --header-scale: calc(1 + (var(--scale) - 1) * 0.30);
-            --ultra-slow-scale: calc(1 + (var(--scale) - 1) * 0.12);
+            --ultra-slow-scale: 1;
             --rail-width: 120px;
             --rail-font-size: 16px;
             --editor-font-size: 18px;
@@ -3191,7 +3191,8 @@
             font-weight: 500 !important;
             /* Medium Inter for a lighter look */
             margin-top: 0;
-            margin-bottom: 12px;
+            margin-bottom: 28px;
+            margin-left: 0 !important;
             letter-spacing: -0.5px;
         }
 
@@ -3200,7 +3201,7 @@
             font-size: 16px;
             /* Fixed pixels */
             line-height: 1.6;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .feedback-header-content .time-took {
@@ -3856,7 +3857,7 @@
                             SESSION</span>
                     </div>
                     <div class="quiz-timer-container"
-                        style="display:flex; align-items:center; margin-left:2.5rem; color:#8d8d8d; font-family:'Hind', sans-serif; font-weight:400; font-size: calc(1.05rem * var(--header-scale)); width:auto;">
+                        style="display:flex; align-items:center; margin-left:2.5rem; color:#8d8d8d; font-family:'Hind', sans-serif; font-weight:400; font-size: calc(1.05rem * var(--ultra-slow-scale)); width:auto;">
                         <span style="margin-right: 5px;">time left :</span>
                         <span id="timerDisplay" style="font-weight: 400;">00:00:00</span>
                     </div>
@@ -3867,10 +3868,10 @@
                         <img src="../SVG/extracted/icon-tab-out.png" alt="Tab Out" width="34"
                             style="object-fit: contain;">
                         <span
-                            style="color: #8d8d8d; font-family: 'Hind', sans-serif; font-size: calc(0.85rem * var(--header-scale));">:
+                            style="color: #8d8d8d; font-family: 'Hind', sans-serif; font-size: calc(0.85rem * var(--ultra-slow-scale));">:
                         </span>
                         <span
-                            style="font-size: calc(0.85rem * var(--header-scale)); color: #ff0000; font-family: 'Hind', sans-serif;">:
+                            style="font-size: calc(0.85rem * var(--ultra-slow-scale)); color: #ff0000; font-family: 'Hind', sans-serif;">:
                             <span id="switchCountHeader" style="color: #ff0000; font-weight: 500;">0</span>
                         </span>
                     </div>
@@ -3880,10 +3881,10 @@
                         <img src="../SVG/extracted/icon-fullscreen-in.png" alt="Fullscreen In" width="34"
                             style="object-fit: contain;">
                         <span
-                            style="color: #8d8d8d; font-family: 'Hind', sans-serif; font-size: calc(0.85rem * var(--header-scale));">:
+                            style="color: #8d8d8d; font-family: 'Hind', sans-serif; font-size: calc(0.85rem * var(--ultra-slow-scale));">:
                         </span>
                         <span
-                            style="font-size: calc(0.85rem * var(--header-scale)); color: #ff0000; font-family: 'Hind', sans-serif;">:
+                            style="font-size: calc(0.85rem * var(--ultra-slow-scale)); color: #ff0000; font-family: 'Hind', sans-serif;">:
                             <span id="fsInCount" style="color: #ff0000; font-weight: 500;">0</span>
                         </span>
                     </div>
@@ -3893,10 +3894,10 @@
                         <img src="../SVG/extracted/icon-fullscreen-out.png" alt="Fullscreen Exit" width="34"
                             style="object-fit: contain;">
                         <span
-                            style="color: #8d8d8d; font-family: 'Hind', sans-serif; font-size: calc(0.85rem * var(--header-scale));">:
+                            style="color: #8d8d8d; font-family: 'Hind', sans-serif; font-size: calc(0.85rem * var(--ultra-slow-scale));">:
                         </span>
                         <span
-                            style="font-size: calc(0.85rem * var(--header-scale)); color: #ff0000; font-family: 'Hind', sans-serif;">:
+                            style="font-size: calc(0.85rem * var(--ultra-slow-scale)); color: #ff0000; font-family: 'Hind', sans-serif;">:
                             <span id="fsCount" style="color: #ff0000; font-weight: 500;">0</span>
                         </span>
                     </div>
@@ -3905,10 +3906,10 @@
                         <img src="../SVG/extracted/icon-tab-in.png" alt="Tab In" width="34"
                             style="object-fit: contain;">
                         <span
-                            style="color: #8d8d8d; font-family: 'Hind', sans-serif; font-size: calc(0.85rem * var(--header-scale));">:
+                            style="color: #8d8d8d; font-family: 'Hind', sans-serif; font-size: calc(0.85rem * var(--ultra-slow-scale));">:
                         </span>
                         <span
-                            style="font-size: calc(0.85rem * var(--header-scale)); color: #ff0000; font-family: 'Hind', sans-serif;">:
+                            style="font-size: calc(0.85rem * var(--ultra-slow-scale)); color: #ff0000; font-family: 'Hind', sans-serif;">:
                             <span id="tabInCount" style="color: #ff0000; font-weight: 500;">0</span>
                         </span>
                     </div>
@@ -3934,19 +3935,19 @@
                         </div>
                     </div>
                     <div id="wifiWarning"
-                        style="display: none; color: #344054; font-size: calc(18px * var(--header-scale)); font-weight: 500; line-height: 1.4; font-family: 'Hind', sans-serif; text-align: left; margin-left: 20px; flex-shrink: 0;">
+                        style="display: none; color: #344054; font-size: calc(18px * var(--ultra-slow-scale)); font-weight: 500; line-height: 1.4; font-family: 'Hind', sans-serif; text-align: left; margin-left: 20px; flex-shrink: 0;">
                         Your internet connectivity is slow.
                     </div>
                 </div>
 
                 <div class="font-size-control header-item" style="gap: 8px;">
                     <span
-                        style="font-size:calc(19px * var(--header-scale)); font-weight:400; color:#101828; white-space: nowrap; font-family:'Hind', sans-serif;">Font
+                        style="font-size:calc(19px * var(--ultra-slow-scale)); font-weight:400; color:#101828; white-space: nowrap; font-family:'Hind', sans-serif;">Font
                         Size</span>
                     <div class="font-sizer-wrapper" onmousemove="showFontSizeTooltip(event)"
                         onmouseleave="hideFontSizeTooltip()">
                         <input type="range" class="font-range" id="fontSizeSlider" min="50" max="150" value="100"
-                            oninput="updateFontSize(this.value)" style="margin: 0 12px; width: 160px;">
+                            oninput="updateFontSize(this.value)" style="margin: 0 12px; width: 130px;">
                         <div id="fontSizeTooltip" class="font-size-tooltip">100%</div>
                     </div>
                     <i class="fas fa-home" style="color:#DE5B2B; font-size:24px; cursor:pointer;"
@@ -3958,9 +3959,9 @@
                     <div class="attempted-box"
                         style="background: #FFF4ED; padding: 0 24px; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; flex-shrink: 0; border-left: 1px solid #FFE4D6; border-right: 1px solid #FFE4D6; width: max-content; min-width: 180px;">
                         <span
-                            style="color: #DE5B2B; font-size: calc(0.95rem * var(--header-scale)); font-weight: 700; font-family: 'Hind', sans-serif; text-transform: lowercase; line-height: 1;">attempted</span>
+                            style="color: #DE5B2B; font-size: calc(0.95rem * var(--ultra-slow-scale)); font-weight: 700; font-family: 'Hind', sans-serif; text-transform: lowercase; line-height: 1;">attempted</span>
                         <span id="attemptedCount"
-                            style="color: #DE5B2B; font-weight: 600; font-family: 'Hind', sans-serif; font-size: calc(1.15rem * var(--header-scale)); line-height: 1.2; margin-top: 4px;">0
+                            style="color: #DE5B2B; font-weight: 600; font-family: 'Hind', sans-serif; font-size: calc(1.15rem * var(--ultra-slow-scale)); line-height: 1.2; margin-top: 4px;">0
                             / 0</span>
                     </div>
 
@@ -5791,7 +5792,7 @@
                         tr.innerHTML = `
                             <td style="padding: 20px 0; color: #101828; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${i + 1}.</td>
                             <td style="padding: 20px 10px; text-align: left; white-space: normal; overflow-wrap: break-word;">
-                                <span class="q-title-link" onclick="${clickAction}" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; transition: all 0.2s; display: block;">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
+                                <span class="q-title-link" onclick="${clickAction}" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; transition: all 0.2s; display: block; font-size: calc(16px * var(--dash-font-scale));">${qInfo.heading || qInfo.title || 'Question ' + (i + 1)}</span>
                             </td>
                             <td style="padding: 20px 10px; color: #475467; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${(qInfo.type || 'MCQ').charAt(0).toUpperCase() + (qInfo.type || 'MCQ').slice(1).replace('_', ' ')}</td>
                             <td style="padding: 20px 10px; color: ${statusColor}; text-align: left; font-weight: 400; font-size: calc(16px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${status}</td>
