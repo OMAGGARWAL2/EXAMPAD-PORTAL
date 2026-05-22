@@ -12,6 +12,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../logo.jpg">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #D92D20;
@@ -1089,6 +1090,7 @@
 
                         <div class="card-actions">
                             <button class="btn-action" onclick="event.stopPropagation(); editExam('${exam.id}')" title="Edit Structure"><i class="fas fa-edit"></i></button>
+                            <button class="btn-action" onclick="event.stopPropagation(); downloadExamPDF('${exam.id}')" title="Download Test PDF"><i class="fas fa-file-pdf"></i></button>
                             <button class="btn-action" onclick="event.stopPropagation(); window.location.href='./livemonitor.html?examId=${exam.id}'" title="Live Monitor"><i class="fas fa-broadcast-tower"></i></button>
                             <button class="btn-action primary" style="background:#12B76A; color:white; border-color:#12B76A;" onclick="event.stopPropagation(); window.location.href='./exam-evaluation.html?examId=${exam.id}'">EVALUATE <i class="fas fa-clipboard-check"></i></button>
                             <button class="btn-action primary" onclick="event.stopPropagation(); openAssessment('${exam.id}')">REPORT <i class="fas fa-arrow-right"></i></button>
@@ -1119,6 +1121,112 @@
             const query = document.getElementById('listSearch').value.toLowerCase();
             const filtered = allExams.filter(e => e.title.toLowerCase().includes(query) || e.testId.toLowerCase().includes(query));
             renderExams(filtered);
+        }
+
+        function downloadExamPDF(examId) {
+            if (!window.db) return;
+            const exam = db.getExamById(examId);
+            if (!exam) return;
+            
+            const container = document.createElement('div');
+            container.style.padding = '40px';
+            container.style.fontFamily = '"Times New Roman", Times, serif';
+            container.style.color = '#000';
+            container.style.background = '#fff';
+            
+            let htmlContent = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="margin: 0; font-size: 24px; text-transform: uppercase;">Chitkara University, Punjab</h2>
+                    <h3 style="margin: 10px 0; font-size: 18px;">${exam.title || 'Examination'}</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;"><strong>Course:</strong> ${exam.course || 'B.E. Computer Science'}</td>
+                            <td style="border: 1px solid #000; padding: 8px;"><strong>Paper ID:</strong> ${exam.testId || 'N/A'}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 8px;"><strong>Max Marks:</strong> ${exam.totalMarks || 0}</td>
+                            <td style="border: 1px solid #000; padding: 8px;"><strong>Time Allowed:</strong> ${exam.duration || 0} mins</td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+
+            if(exam.questions && exam.questions.length > 0) {
+                exam.questions.forEach((q, i) => {
+                    htmlContent += `
+                    <div style="margin-bottom: 25px; page-break-inside: avoid; display: flex; justify-content: space-between;">
+                        <div style="flex: 1; padding-right: 20px;">
+                            <div style="display: flex; gap: 10px;">
+                                <strong>Q${i+1}.</strong>
+                                <div>
+                                    <div style="text-align: justify; margin-bottom: 10px;">${q.text || q.questionText || ''}</div>
+                    `;
+                    
+                    if (q.type === 'coding') {
+                        if (q.prefilledCode) {
+                            htmlContent += `
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Prefixed Code:</strong>
+                                    <pre style="background: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; white-space: pre-wrap;">${q.prefilledCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+                                </div>
+                            `;
+                        }
+                        if (q.testCases && q.testCases.length > 0) {
+                            htmlContent += `
+                                <div style="margin-bottom: 10px;">
+                                    <strong>Test Cases:</strong>
+                                    <ul style="margin: 5px 0; padding-left: 20px; font-size: 13px;">
+                            `;
+                            q.testCases.forEach((tc, idx) => {
+                                htmlContent += `<li><strong>Case ${idx+1}:</strong> Input: <code>${tc.input}</code> | Output: <code>${tc.output}</code></li>`;
+                            });
+                            htmlContent += `</ul></div>`;
+                        }
+                    } else if (q.type === 'mcq' && q.options) {
+                        htmlContent += `<ol type="A" style="margin: 5px 0; padding-left: 20px; font-size: 14px;">`;
+                        q.options.forEach((opt) => {
+                            htmlContent += `<li style="margin-bottom: 5px;">${opt}</li>`;
+                        });
+                        htmlContent += `</ol>`;
+                    }
+
+                    if (q.image || q.diag) {
+                        htmlContent += `<div style="margin-top: 10px; text-align: center;"><img src="${q.image || q.diag}" style="max-width: 80%; max-height: 200px; border: 1px solid #ddd;"></div>`;
+                    }
+
+                    htmlContent += `
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-weight: bold; width: 40px; text-align: right;">[${q.marks || 1}]</div>
+                    </div>`;
+                });
+            } else {
+                htmlContent += `<div style="text-align: center; color: #666; font-style: italic;">No questions found in this assessment.</div>`;
+            }
+
+            htmlContent += `
+                <div style="margin-top: 60px; text-align: right; font-weight: bold;">
+                    Controller of Examination<br>
+                    <span style="font-size: 12px; font-weight: normal;">(Authorized Signatory)</span>
+                </div>
+            `;
+
+            container.innerHTML = htmlContent;
+
+            const opt = {
+                margin:       15,
+                filename:     `${exam.testId || 'Exam'}_Question_Paper.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            showToast('Generating PDF, please wait...', 'info');
+
+            html2pdf().set(opt).from(container).save().then(() => {
+                showToast('PDF downloaded successfully!', 'success');
+            });
         }
 
         // --- MESSAGE SYSTEM ---

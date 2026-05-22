@@ -245,12 +245,25 @@ class ExampadDB {
     }
 
     // ===== ATTEMPT/SESSION MANAGEMENT =====
-    startAttempt(examId, studentId) {
+    startAttempt(examId, studentId, isReattempt = false) {
         const attempts = JSON.parse(localStorage.getItem('exampad_attempts'));
 
         // Check if student already attempted - Return existing if found for seamless resume
         const existingAttempt = attempts.find(a => a.examId === examId && a.studentId === studentId);
         if (existingAttempt) {
+            if (isReattempt) {
+                console.log("[RE-ATTEMPT] Resetting existing attempt for a fresh start:", existingAttempt.id);
+                existingAttempt.status = 'in-progress';
+                existingAttempt.responses = {};
+                existingAttempt.startTime = new Date().toISOString();
+                existingAttempt.endTime = null;
+                existingAttempt.score = null;
+                existingAttempt.feedback = null;
+                existingAttempt.submittedSections = [];
+                existingAttempt.tabSwitchCount = 0;
+                localStorage.setItem('exampad_attempts', JSON.stringify(attempts));
+                return { success: true, attempt: existingAttempt, message: 'Re-started existing attempt' };
+            }
             return { success: false, existingAttempt, message: 'Resuming existing attempt' };
         }
 

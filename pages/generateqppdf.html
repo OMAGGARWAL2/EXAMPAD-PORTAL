@@ -630,6 +630,7 @@
         </div>
     </template>
 
+    <script src="../js/db.js"></script>
     <script>
         const App = {
             State: {
@@ -644,7 +645,54 @@
             renderLock: false,
 
             init() {
-                this.Persistence.load() || this.Persistence.loadSample();
+                const urlParams = new URLSearchParams(window.location.search);
+                const examId = urlParams.get('examId');
+                
+                if (examId && window.db) {
+                    const exam = db.getExamById(examId);
+                    if (exam) {
+                        App.State.meta.examName = exam.title || '';
+                        App.State.meta.marks = exam.totalMarks || '';
+                        App.State.meta.time = exam.duration || '';
+                        App.State.meta.qpCode = exam.testId || '';
+                        
+                        let questions = [];
+                        if (exam.questions) {
+                            exam.questions.forEach((q, i) => {
+                                let textEn = q.text || q.questionText || '';
+                                if (q.type === 'coding') {
+                                    if (q.prefilledCode) {
+                                        textEn += '<br><br><strong>Prefixed Code:</strong><br><pre style="background:#f4f4f4;padding:10px;">' + q.prefilledCode.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
+                                    }
+                                    if (q.testCases && q.testCases.length > 0) {
+                                        textEn += '<br><strong>Test Cases:</strong><br>';
+                                        q.testCases.forEach((tc, idx) => {
+                                            textEn += `<em>Case ${idx+1}:</em> Input: <code>${tc.input}</code> | Output: <code>${tc.output}</code><br>`;
+                                        });
+                                    }
+                                } else if (q.type === 'mcq' && q.options) {
+                                    textEn += '<br><br>';
+                                    q.options.forEach((opt, idx) => {
+                                        textEn += String.fromCharCode(65 + idx) + ') ' + opt + '<br>';
+                                    });
+                                }
+                                questions.push({
+                                    type: 'question',
+                                    num: i + 1,
+                                    marks: q.marks || 1,
+                                    textEn: textEn,
+                                    textHi: '',
+                                    diag: q.image || q.diag || '',
+                                    uid: 'q' + i
+                                });
+                            });
+                        }
+                        App.State.questions = questions;
+                    }
+                } else {
+                    this.Persistence.load() || this.Persistence.loadSample();
+                }
+                
                 this.UI.syncInputsFromState();
                 this.UI.render();
                 this.Pagination.render();
