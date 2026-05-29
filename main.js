@@ -104,15 +104,15 @@ function createWindow() {
         if (input.control || input.meta) {
             const key = input.key.toLowerCase();
             if (key === 'i') {
-                const currentZoom = mainWindow.webContents.getZoomLevel();
-                mainWindow.webContents.setZoomLevel(currentZoom + 0.5);
+                const currentFactor = mainWindow.webContents.getZoomFactor();
+                if (currentFactor < 1.5) mainWindow.webContents.setZoomFactor(Math.min(1.5, currentFactor + 0.1));
                 event.preventDefault();
             } else if (key === 'd') {
-                const currentZoom = mainWindow.webContents.getZoomLevel();
-                mainWindow.webContents.setZoomLevel(currentZoom - 0.5);
+                const currentFactor = mainWindow.webContents.getZoomFactor();
+                if (currentFactor > 0.5) mainWindow.webContents.setZoomFactor(Math.max(0.5, currentFactor - 0.1));
                 event.preventDefault();
             } else if (key === '0') {
-                mainWindow.webContents.setZoomLevel(0);
+                mainWindow.webContents.setZoomFactor(1.0);
                 event.preventDefault();
             }
         }
