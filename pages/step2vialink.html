@@ -484,16 +484,114 @@
             const endTime = exam.scheduledEndDate ? new Date(exam.scheduledEndDate) : null;
 
             if (startTime && now < startTime) {
-                showWaitingScreen("The test hasn't started yet", `The test will be started on ${startTime.toLocaleString()}`);
-                return false;
+                showNotStartedOverlay(startTime);
+                // Return true so the underlying form renders but is blurred and blocked by pointer-events
+                return true;
             }
 
             if (endTime && now > endTime) {
-                showWaitingScreen("The test has already ended", `The test was scheduled until ${endTime.toLocaleString()}`);
+                showEndedOverlay(endTime);
                 return false;
             }
 
             return true;
+        }
+
+        function showEndedOverlay(endTime) {
+            const container = document.querySelector('.container');
+            Array.from(container.children).forEach(child => {
+                if (!child.classList.contains('test-info')) {
+                    child.style.filter = 'blur(8px)';
+                    child.style.pointerEvents = 'none';
+                }
+            });
+
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.display = 'flex';
+            overlay.style.flexDirection = 'column';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.zIndex = '1000';
+            overlay.style.background = 'transparent';
+
+            const pad = (n) => n.toString().padStart(2, '0');
+            const dateStr = `${pad(endTime.getDate())}/${pad(endTime.getMonth()+1)}/${endTime.getFullYear()}, ${pad(endTime.getHours())}:${pad(endTime.getMinutes())}:${pad(endTime.getSeconds())}`;
+
+            overlay.innerHTML = `
+                <div style="text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 1001;">
+                    <img src="../NEW_SCR_END_TEST.png" alt="Test Ended" style="width: 320px; height: auto; margin-bottom: 10px;">
+                    <h2 style="font-size: 2.2rem; color: #de6834; font-weight: 500; margin-bottom: 10px; font-family: 'Outfit', sans-serif;">The test has ended</h2>
+                    <p style="font-size: 1.1rem; color: #333; font-weight: 400; margin: 0; font-family: 'Roboto', sans-serif;">The test was ended on ${dateStr}</p>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function showNotStartedOverlay(startTime) {
+            const container = document.querySelector('.container');
+            Array.from(container.children).forEach(child => {
+                if (!child.classList.contains('test-info')) {
+                    child.style.filter = 'blur(8px)';
+                    child.style.pointerEvents = 'none';
+                }
+            });
+
+            let overlay = document.getElementById('notStartedOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'notStartedOverlay';
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.display = 'flex';
+                overlay.style.flexDirection = 'column';
+                overlay.style.alignItems = 'center';
+                overlay.style.justifyContent = 'center';
+                overlay.style.zIndex = '1000';
+                overlay.style.background = 'transparent';
+                document.body.appendChild(overlay);
+            }
+
+            const updateCountdown = () => {
+                const now = new Date();
+                const diff = startTime - now;
+
+                if (diff <= 0) {
+                    overlay.remove();
+                    Array.from(container.children).forEach(child => {
+                        if (!child.classList.contains('test-info')) {
+                            child.style.filter = 'none';
+                            child.style.pointerEvents = 'auto';
+                        }
+                    });
+                    if (window.startCountdownInterval) clearInterval(window.startCountdownInterval);
+                    return;
+                }
+
+                const h = Math.floor(diff / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                const pad = (n) => n.toString().padStart(2, '0');
+
+                overlay.innerHTML = `
+                    <div style="text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 1001;">
+                        <img src="../NEW_SCR_END_TEST.png" alt="Test Not Started" style="width: 320px; height: auto; margin-bottom: 10px;">
+                        <h2 style="font-size: 2.2rem; color: #de6834; font-weight: 500; margin-bottom: 10px; font-family: 'Outfit', sans-serif;">The test has not started yet</h2>
+                        <p style="font-size: 1.1rem; color: #333; font-weight: 400; margin: 0; font-family: 'Roboto', sans-serif;">Test will start in <strong style="font-size: 1.4rem;">${pad(h)}:${pad(m)}:${pad(s)}</strong></p>
+                    </div>
+                `;
+            };
+
+            updateCountdown();
+            if (window.startCountdownInterval) clearInterval(window.startCountdownInterval);
+            window.startCountdownInterval = setInterval(updateCountdown, 1000);
         }
 
         function showWaitingScreen(status, info) {
@@ -576,6 +674,12 @@
 
             // RE-CHECK TIMING ON SUBMIT
             if (!checkTestTiming(exam)) return;
+            
+            // Check if not started yet overlay is active
+            if (document.getElementById('notStartedOverlay')) {
+                showToast("Please wait for the test to start.", "error");
+                return;
+            }
 
             // Perform mock login
             let user = db.getUserByRollNo ? db.getUserByRollNo(roll) : null;

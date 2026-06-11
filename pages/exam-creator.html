@@ -2465,6 +2465,19 @@
                             </div>
                             <input type="checkbox" id="isPracticeTest" style="width:24px; height:24px;">
                         </label>
+                        
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#F4F1FA; padding:20px; border-radius:12px; border: 1.5px dashed #7b61ff; cursor: pointer;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i data-lucide="edit-3" style="color:#7b61ff; width: 24px; height: 24px;"></i>
+                                <div>
+                                    <div style="font-weight:800; font-size:1rem; color: #101828;">ALLOW CTRL+E OPERATIONS
+                                    </div>
+                                    <div style="font-size:0.8rem; color:#666; font-weight: 500;">Enable Live Edit mode for Student (Practice Only)</div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="allowCtrlE" style="width:24px; height:24px;">
+                        </label>
                     </div>
 
                     <div style="display: flex; flex-direction: column; gap: 24px;">
@@ -3570,6 +3583,7 @@
         if (document.getElementById('sectionLockEnabled')) document.getElementById('sectionLockEnabled').checked = exams.sectionLockEnabled || false;
         if (document.getElementById('lockSections')) document.getElementById('lockSections').checked = exams.sectionLockEnabled || false;
         if (document.getElementById('isPracticeTest')) document.getElementById('isPracticeTest').checked = exams.isPracticeTest || false;
+        if (document.getElementById('allowCtrlE')) document.getElementById('allowCtrlE').checked = exams.allowCtrlE || false;
 
         if (exams.negativeMarking > 0) {
             if (document.getElementById('enableNegativeMarking')) document.getElementById('enableNegativeMarking').checked = true;
@@ -4309,6 +4323,17 @@
     function goToStep(step, silent = false) {
         lucide.createIcons();
         if (step < 1 || step > 5) return;
+
+        if (currentStep === 1 && step > 1) {
+            const isUniv = document.getElementById('isUniversalTime').checked;
+            const sDate = document.getElementById('scheduleDate').value;
+            const eDate = document.getElementById('scheduleEndDate').value;
+            if (!isUniv && (!sDate || !eDate)) {
+                showToast('Start and End time are strictly required unless Universal Time Frame is enabled.');
+                return;
+            }
+        }
+
         currentStep = step;
 
         document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
@@ -4496,6 +4521,7 @@
         const mgr = document.getElementById('manualGrading');
         const lks = document.getElementById('lockSections') || document.getElementById('sectionLockEnabled');
         const prac = document.getElementById('isPracticeTest');
+        const ctrlE = document.getElementById('allowCtrlE');
         
         exams.sectionLockEnabled = lks ? lks.checked : false;
         exams.security = {
@@ -4509,6 +4535,7 @@
             vpnBlocked: vpn ? vpn.checked : false,
             lockSections: lks ? lks.checked : false,
             isPracticeTest: prac ? prac.checked : false,
+            allowCtrlE: ctrlE ? ctrlE.checked : false,
             passcode: psc ? psc.value : '',
             strictPasscode: document.getElementById('strictPasscode') ? document.getElementById('strictPasscode').checked : true,
             entryDeadline: dln ? dln.value : null,
@@ -4541,6 +4568,7 @@
         // Root level sync for easier access in engine
         exams.sectionLockEnabled = lks ? lks.checked : false;
         exams.isPracticeTest = prac ? prac.checked : false;
+        exams.allowCtrlE = ctrlE ? ctrlE.checked : false;
     }
 
     function autoSave() {
@@ -4653,6 +4681,12 @@
         syncState();
         if (exams.questions.length === 0) {
             showToast('Add at least one question before deploying');
+            return;
+        }
+
+        if (!exams.isUniversalTime && (!exams.scheduledDate || !exams.scheduledEndDate)) {
+            showToast('Start and End time are strictly required unless Universal Time Frame is enabled.');
+            goToStep(1);
             return;
         }
 

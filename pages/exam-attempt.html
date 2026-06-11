@@ -45,7 +45,7 @@
             --ultra-slow-scale: 1;
             --rail-width: 120px;
             --rail-font-size: 16px;
-            --editor-font-size: 18px;
+            --editor-font-size: 21px;
             --dash-font-scale: 1.15;
         }
 
@@ -1415,19 +1415,18 @@
         /* TOOLTIP BUBBLE */
         .global-rail-tooltip {
             position: fixed;
-            background: #000;
+            background: #333;
             color: #fff;
             padding: 8px 16px;
             border-radius: 4px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 500;
             white-space: nowrap;
             display: none;
             z-index: 100000;
             pointer-events: none;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            font-family: 'Open Sans', sans-serif;
-            text-transform: uppercase;
+            font-family: 'Hind', sans-serif;
         }
 
         .global-rail-tooltip::before {
@@ -1438,7 +1437,7 @@
             transform: translateY(-50%);
             border-top: 10px solid transparent;
             border-bottom: 10px solid transparent;
-            border-right: 10px solid #000;
+            border-right: 10px solid #333;
         }
 
         .section-lock-container {
@@ -3620,8 +3619,8 @@
             </div>
 
             <!-- Right Sign In Pane -->
-            <div
-                style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; padding-right: 40px;">
+            <div id="verifyRightPane"
+                style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; padding-right: 40px; transition: filter 0.3s;">
                 <!-- Standard Login Card -->
                 <div id="verifyLoginCard"
                     style="background: #ffffff; border-radius: 24px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.04); border: 1px solid rgba(255,255,255,0.8); display: flex; flex-direction: column;">
@@ -4711,13 +4710,17 @@
                 }
 
                 if (!currentExam) {
-                    const course = db.getCourseById(courseId);
-                    const item = course?.modules?.flatMap(m => m.items).find(it => it.id === itemId);
-                    currentExam = {
-                        id: itemId,
-                        title: item?.title || 'Practice Challenge',
-                        questions: [{ id: 'q1', type: 'coding', heading: item?.title || 'Practice', title: 'Solve this challenge to earn course progress.', code: { python: { prefix: '# Write your code here', middle: '', suffix: '' } }, languages: ['python'], marks: 10 }]
-                    };
+                    if (currentAttempt.customExam) {
+                        currentExam = currentAttempt.customExam;
+                    } else {
+                        const course = db.getCourseById(courseId);
+                        const item = course?.modules?.flatMap(m => m.items).find(it => it.id === itemId);
+                        currentExam = {
+                            id: itemId,
+                            title: item?.title || 'Practice Challenge',
+                            questions: [{ id: 'q1', type: 'coding', heading: item?.title || 'Practice', title: 'Solve this challenge to earn course progress.', code: { python: { prefix: '# Write your code here', middle: '', suffix: '' } }, languages: ['python'], marks: 10 }]
+                        };
+                    }
                 }
             } else {
                 if (!attemptId) {
@@ -4772,7 +4775,11 @@
                     setTimeout(() => window.location.replace('../index.html'), 2000);
                     return;
                 }
-                currentExam = db.getExamById(currentAttempt.examId) || db.getExamByTestId(itemId);
+                if (currentAttempt.customExam) {
+                    currentExam = currentAttempt.customExam;
+                } else {
+                    currentExam = db.getExamById(currentAttempt.examId) || db.getExamByTestId(itemId);
+                }
                 if (currentExam?.security?.isPracticeTest) isPractice = true;
 
                 if (!currentExam) {
@@ -5092,10 +5099,115 @@
             const overlay = document.getElementById('securityCheckOverlay');
             if (overlay) overlay.style.display = 'flex';
 
-            document.getElementById('securityStep1').style.display = 'none';
-            document.getElementById('securityStep3').style.display = 'none'; // Hide lobby if going back
+            document.getElementById('securityStep1').style.display = step === 1 ? 'flex' : 'none';
+            document.getElementById('securityStep3').style.display = step === 3 ? 'flex' : 'none';
+
             const step2 = document.getElementById('securityStep2');
-            if (step2) step2.style.display = 'flex';
+            if (step2) {
+                step2.style.display = step === 2 ? 'flex' : 'none';
+
+                if (step === 2 && currentExam && !currentExam.isUniversalTime) {
+                    const now = new Date();
+                    const endTime = currentExam.scheduledEndDate ? new Date(currentExam.scheduledEndDate) : null;
+                    const startTime = currentExam.scheduledDate ? new Date(currentExam.scheduledDate) : null;
+
+                    if (endTime && now > endTime) {
+                        const rightPane = document.getElementById('verifyRightPane');
+                        if (rightPane) {
+                            rightPane.style.filter = 'blur(8px)';
+                            rightPane.style.pointerEvents = 'none';
+                        }
+
+                        let endedOverlay = document.getElementById('endedTestOverlayAttempt');
+                        if (!endedOverlay) {
+                            endedOverlay = document.createElement('div');
+                            endedOverlay.id = 'endedTestOverlayAttempt';
+                            endedOverlay.style.position = 'absolute';
+                            endedOverlay.style.top = '0';
+                            endedOverlay.style.left = '0';
+                            endedOverlay.style.width = '100%';
+                            endedOverlay.style.height = '100%';
+                            endedOverlay.style.display = 'flex';
+                            endedOverlay.style.flexDirection = 'column';
+                            endedOverlay.style.alignItems = 'center';
+                            endedOverlay.style.justifyContent = 'center';
+                            endedOverlay.style.zIndex = '1000';
+                            endedOverlay.style.background = 'transparent';
+                            step2.appendChild(endedOverlay);
+                        }
+
+                        const pad = (n) => n.toString().padStart(2, '0');
+                        const dateStr = `${pad(endTime.getDate())}/${pad(endTime.getMonth() + 1)}/${endTime.getFullYear()}, ${pad(endTime.getHours())}:${pad(endTime.getMinutes())}:${pad(endTime.getSeconds())}`;
+
+                        endedOverlay.innerHTML = `
+                            <div style="text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 1001;">
+                                <img src="../NEW_SCR_END_TEST.png" alt="Test Ended" style="width: 320px; height: auto; margin-bottom: 10px;">
+                                <h2 style="font-size: 2.2rem; color: #de6834; font-weight: 500; margin-bottom: 10px; font-family: 'Outfit', sans-serif;">The test has ended</h2>
+                                <p style="font-size: 1.1rem; color: #333; font-weight: 400; margin: 0; font-family: 'Roboto', sans-serif;">The test was ended on ${dateStr}</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    if (startTime && now < startTime) {
+                        const rightPane = document.getElementById('verifyRightPane');
+                        if (rightPane) {
+                            rightPane.style.filter = 'blur(8px)';
+                            rightPane.style.pointerEvents = 'none';
+                        }
+
+                        let notStartedOverlay = document.getElementById('notStartedTestOverlayAttempt');
+                        if (!notStartedOverlay) {
+                            notStartedOverlay = document.createElement('div');
+                            notStartedOverlay.id = 'notStartedTestOverlayAttempt';
+                            notStartedOverlay.style.position = 'absolute';
+                            notStartedOverlay.style.top = '0';
+                            notStartedOverlay.style.left = '0';
+                            notStartedOverlay.style.width = '100%';
+                            notStartedOverlay.style.height = '100%';
+                            notStartedOverlay.style.display = 'flex';
+                            notStartedOverlay.style.flexDirection = 'column';
+                            notStartedOverlay.style.alignItems = 'center';
+                            notStartedOverlay.style.justifyContent = 'center';
+                            notStartedOverlay.style.zIndex = '1000';
+                            notStartedOverlay.style.background = 'transparent';
+                            step2.appendChild(notStartedOverlay);
+                        }
+
+                        const updateCountdown = () => {
+                            const currentTime = new Date();
+                            const diff = startTime - currentTime;
+
+                            if (diff <= 0) {
+                                notStartedOverlay.remove();
+                                if (rightPane) {
+                                    rightPane.style.filter = 'none';
+                                    rightPane.style.pointerEvents = 'auto';
+                                }
+                                if (window.startCountdownIntervalAttempt) clearInterval(window.startCountdownIntervalAttempt);
+                                return;
+                            }
+
+                            const h = Math.floor(diff / (1000 * 60 * 60));
+                            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                            const s = Math.floor((diff % (1000 * 60)) / 1000);
+                            const pad = (n) => n.toString().padStart(2, '0');
+
+                            notStartedOverlay.innerHTML = `
+                                <div style="text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 1001;">
+                                    <img src="../NEW_SCR_END_TEST.png" alt="Test Not Started" style="width: 320px; height: auto; margin-bottom: 10px;">
+                                    <h2 style="font-size: 2.2rem; color: #de6834; font-weight: 500; margin-bottom: 10px; font-family: 'Outfit', sans-serif;">The test has not started yet</h2>
+                                    <p style="font-size: 1.1rem; color: #333; font-weight: 400; margin: 0; font-family: 'Roboto', sans-serif;">Test will start in <strong style="font-size: 1.4rem;">${pad(h)}:${pad(m)}:${pad(s)}</strong></p>
+                                </div>
+                            `;
+                        };
+
+                        updateCountdown();
+                        if (window.startCountdownIntervalAttempt) clearInterval(window.startCountdownIntervalAttempt);
+                        window.startCountdownIntervalAttempt = setInterval(updateCountdown, 1000);
+                    }
+                }
+            }
 
             // Handle Kiosk Mode based on isVialink mode
             if (window.proctorBridge) {
@@ -5542,7 +5654,7 @@
                 const isFuture = !isSub && !isActive;
 
                 // Lock all non-active sections (either submitted or future if locking is enabled)
-                const isLocked = isSub || (currentExam.sectionLockEnabled && isFuture);
+                const isLocked = isSub || currentExam.allSectionsLocked || (currentExam.sectionLockEnabled && isFuture);
 
                 // Create segment container
                 const segmentWrap = document.createElement('div');
@@ -5558,6 +5670,7 @@
                 const sectionIndex = sections.indexOf(sName);
                 const sectionLetter = String.fromCharCode(65 + (sectionIndex >= 0 ? sectionIndex : 0));
                 secLabel.textContent = `Sec - ${sectionLetter}`;
+                secLabel.dataset.sectionName = sName;
 
                 segmentWrap.appendChild(secLabel);
 
@@ -5572,6 +5685,9 @@
                 qs.forEach(({ q, idx }, secQIdx) => {
                     const node = document.createElement('a');
                     node.href = "javascript:void(0)";
+                    node.classList.add('rail-node');
+                    node.dataset.qidx = idx;
+                    node.dataset.sectionName = sName;
                     if (idx === currentQuestionIndex && document.getElementById('questionView').style.display !== 'none') {
                         node.classList.add('active');
                     }
@@ -5747,7 +5863,7 @@
                 const qs = secMap[sName];
                 const isSubmitted = currentAttempt.submittedSections.includes(sName);
                 const isActive = (sName === activeSection);
-                const isLocked = !isSubmitted && (currentExam.sectionLockEnabled && !isActive);
+                const isLocked = !isSubmitted && (currentExam.allSectionsLocked || (currentExam.sectionLockEnabled && !isActive));
                 const isCollapsed = isLocked ? true : (collapsedSections[sName] !== undefined ? collapsedSections[sName] : (isSubmitted ? true : false));
 
                 const subCount = qs.filter(item => currentAttempt.responses[item.q.id]?.submitted).length;
@@ -5778,9 +5894,10 @@
                     header.style = `background: ${headerColor}; color: ${textColor}; height: 96px; padding: 0 46px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; font-size: calc(28px * var(--header-scale)); font-family: 'Hind', sans-serif; cursor: pointer; border-radius: 4px 4px 0 0; border: none; transition: all 0.2s;`;
                 }
 
-                header.onclick = () => {
+                header.onclick = (e) => {
+                    if (typeof ctrlEModeActive !== 'undefined' && ctrlEModeActive && e.target.classList.contains('edit-section-name')) return;
                     if (isLocked) {
-                        showToast("Please complete previous section first", 'error');
+                        showToast(currentExam.allSectionsLocked ? "All sections are locked" : "Please complete previous section first", 'error');
                     } else {
                         collapsedSections[sName] = !collapsedSections[sName];
                         renderDashboardTable();
@@ -5790,11 +5907,12 @@
                 const indicatorIcon = isLocked ? '' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}" style="font-size: calc(18px * var(--header-scale)); margin-left: 12px; opacity: 0.8;"></i>`;
                 const sectionTypeText = qs[0]?.q?.section_type || `Section ${sections.indexOf(sName) + 1}`;
 
-                let sectionTitleContent = `<span style="letter-spacing: 0.1px;">${sName} - ${sectionTypeText}</span>`;
+                const editableSName = `<span class="edit-section-name" data-section="${sName}">${sName}</span>`;
+                let sectionTitleContent = `<span style="letter-spacing: 0.1px;">${editableSName} - ${sectionTypeText}</span>`;
                 if (isSubmitted) {
-                    sectionTitleContent = `<span style="letter-spacing: 0.1px; display: flex; align-items: center; gap: 12px;">${sName} - ${sectionTypeText} <span style="background: #fff; color: ${headerColor}; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: calc(14px * var(--header-scale));"><i class="fas fa-check"></i></span></span>`;
+                    sectionTitleContent = `<span style="letter-spacing: 0.1px; display: flex; align-items: center; gap: 12px;">${editableSName} - ${sectionTypeText} <span style="background: #fff; color: ${headerColor}; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: calc(14px * var(--header-scale));"><i class="fas fa-check"></i></span></span>`;
                 } else if (isLocked) {
-                    sectionTitleContent = `<span style="letter-spacing: 0.1px; font-size: calc(28px * var(--header-scale)); display: flex; align-items: center; gap: 8px;"><b style="color: #222; font-weight: 700;">${sName}</b> <span style="color: #555; font-weight: 400;">- ${sectionTypeText}</span> <i class="fas fa-lock" style="color: #555; font-size: calc(20px * var(--header-scale)); margin-left: 6px;"></i></span>`;
+                    sectionTitleContent = `<span style="letter-spacing: 0.1px; font-size: calc(28px * var(--header-scale)); display: flex; align-items: center; gap: 8px;"><b style="color: #222; font-weight: 700;">${editableSName}</b> <span style="color: #555; font-weight: 400;">- ${sectionTypeText}</span> <i class="fas fa-lock" style="color: #555; font-size: calc(20px * var(--header-scale)); margin-left: 6px;"></i></span>`;
                 }
 
                 let sectionStatusContent = `<span style="opacity: 0.9;">${subCount}/${qs.length} Questions</span>`;
@@ -6035,6 +6153,11 @@
                 showDashboard();
                 return;
             }
+            if (currentExam.allSectionsLocked) {
+                showHighFidelityBanner("Exam Paused: All sections are currently locked.", "lock");
+                showDashboard();
+                return;
+            }
             if (currentExam.sectionLockEnabled && sName !== active) {
                 showHighFidelityBanner("Section Locked: Please submit previous section first to attempt further.", "lock");
                 showDashboard();
@@ -6126,10 +6249,10 @@
                         opts = type === 'true_false' ? ["True", "False"] : ["Option A", "Option B", "Option C", "Option D"];
                     }
 
-                    opts.forEach(opt => {
+                    opts.forEach((opt, optIndex) => {
                         const div = document.createElement('div');
                         div.className = `mcq-option ${existingValue === opt ? 'selected' : ''}`;
-                        div.innerHTML = `<div class="mcq-circle"></div><span>${opt}</span>`;
+                        div.innerHTML = `<div class="mcq-circle"></div><span class="mcq-option-text" data-optidx="${optIndex}">${opt}</span>`;
                         div.onclick = () => {
                             saveResponse(q.id, opt);
                             contentArea.querySelectorAll('.mcq-option').forEach(o => o.classList.remove('selected'));
@@ -8759,6 +8882,251 @@
                 }
             };
         };
+
+        // --- CTRL+E Live Edit Mode ---
+        let ctrlEModeActive = false;
+        let copiedQuestionData = null;
+        let contextMenuTargetQIdx = null;
+        let contextMenuTargetSection = null;
+
+        document.addEventListener('contextmenu', (e) => {
+            if (!ctrlEModeActive) return;
+            const railNode = e.target.closest('.rail-node');
+            const secLabel = e.target.closest('.segment-title-container');
+
+            if (railNode || secLabel) {
+                e.preventDefault();
+                contextMenuTargetQIdx = railNode ? parseInt(railNode.dataset.qidx) : null;
+                contextMenuTargetSection = secLabel ? secLabel.dataset.sectionName : (railNode ? railNode.dataset.sectionName : null);
+
+                if (contextMenuTargetQIdx !== null) {
+                    copiedQuestionData = JSON.parse(JSON.stringify(currentExam.questions[contextMenuTargetQIdx]));
+                    copiedQuestionData.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                    showToast("Question Selected for Copy (Press Ctrl+C)");
+                } else if (secLabel) {
+                    showToast("Section Selected for Paste (Press Ctrl+V)");
+                }
+            }
+        });
+
+        document.addEventListener('mousedown', (e) => {
+            if (!ctrlEModeActive || e.button !== 0) return;
+            const railNode = e.target.closest('.rail-node');
+            const secLabel = e.target.closest('.segment-title-container');
+
+            if (railNode || secLabel) {
+                contextMenuTargetQIdx = railNode ? parseInt(railNode.dataset.qidx) : null;
+                contextMenuTargetSection = secLabel ? secLabel.dataset.sectionName : (railNode ? railNode.dataset.sectionName : null);
+
+                if (contextMenuTargetQIdx !== null) {
+                    copiedQuestionData = JSON.parse(JSON.stringify(currentExam.questions[contextMenuTargetQIdx]));
+                    copiedQuestionData.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                    showToast("Question Selected for Copy (Press Ctrl+C)");
+                } else if (secLabel) {
+                    showToast("Section Selected for Paste (Press Ctrl+V)");
+                }
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (ctrlEModeActive && e.ctrlKey && e.key.toLowerCase() === 'c') {
+                if (contextMenuTargetQIdx !== null) {
+                    copiedQuestionData = JSON.parse(JSON.stringify(currentExam.questions[contextMenuTargetQIdx]));
+                    copiedQuestionData.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                    showToast("Question Copied to Clipboard");
+                    e.preventDefault();
+                    return;
+                }
+            } else if (ctrlEModeActive && e.ctrlKey && e.key.toLowerCase() === 'v') {
+                if (copiedQuestionData && contextMenuTargetSection) {
+                    const newQ = JSON.parse(JSON.stringify(copiedQuestionData));
+                    newQ.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                    newQ.section = contextMenuTargetSection;
+
+                    let lastIdx = -1;
+                    currentExam.questions.forEach((q, idx) => {
+                        if ((q.section || "Section A") === contextMenuTargetSection) lastIdx = idx;
+                    });
+
+                    if (lastIdx !== -1) currentExam.questions.splice(lastIdx + 1, 0, newQ);
+                    else currentExam.questions.push(newQ);
+
+                    showToast("Question Pasted into " + contextMenuTargetSection);
+                    renderQuestionRail();
+                    renderDashboardTable();
+
+                    currentAttempt.customExam = currentExam;
+                    if (isPractice) db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+                    else db.updateAttempt(attemptId, { customExam: currentExam });
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            if (e.ctrlKey && e.key.toLowerCase() === 'e') {
+                if (currentExam && (isPractice || currentExam.security?.isPracticeTest) && (currentExam.allowCtrlE || currentExam.security?.allowCtrlE)) {
+                    e.preventDefault();
+                    ctrlEModeActive = !ctrlEModeActive;
+                    showToast(ctrlEModeActive ? "Live Edit Mode Enabled" : "Live Edit Mode Disabled", 'success');
+
+                    const editableIds = ['testTag', 'userName', 'userId', 'qHeadingText', 'qContent'];
+                    const sectionSpans = document.querySelectorAll('.edit-section-name');
+                    const mcqOptions = document.querySelectorAll('.mcq-option-text');
+
+                    if (ctrlEModeActive) {
+                        editableIds.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) {
+                                el.contentEditable = "true";
+                                el.style.border = "1px dashed #de6834";
+                                el.style.padding = "2px";
+                                el.style.outline = "none";
+                            }
+                        });
+                        sectionSpans.forEach(el => {
+                            el.contentEditable = "true";
+                            el.style.border = "1px dashed #de6834";
+                            el.style.padding = "2px";
+                            el.style.outline = "none";
+                        });
+                        mcqOptions.forEach(el => {
+                            el.contentEditable = "true";
+                            el.style.border = "1px dashed #de6834";
+                            el.style.padding = "2px";
+                            el.style.outline = "none";
+                        });
+
+                        const tDisplay = document.getElementById('timerDisplay');
+                        if (tDisplay) {
+                            tDisplay.style.border = "1px dashed #de6834";
+                            tDisplay.style.padding = "2px";
+                            tDisplay.style.cursor = "pointer";
+                        }
+                    } else {
+                        // Extract and save values
+                        const newTitle = document.getElementById('testTag') ? document.getElementById('testTag').innerText.trim() : null;
+                        const newUName = document.getElementById('userName') ? document.getElementById('userName').innerText.trim() : null;
+                        const newUId = document.getElementById('userId') ? document.getElementById('userId').innerText.trim() : null;
+                        const newQTitle = document.getElementById('qHeadingText') ? document.getElementById('qHeadingText').innerText.trim() : null;
+                        const newQContent = document.getElementById('qContent') ? document.getElementById('qContent').innerText.trim() : null;
+
+                        if (newTitle) currentExam.title = newTitle;
+                        if (newUName && user) {
+                            user.name = newUName;
+                            const verifyUName = document.getElementById('verifyUserName');
+                            if (verifyUName) verifyUName.textContent = user.name;
+                            const lobbyUName = document.getElementById('lobbyStudentName');
+                            if (lobbyUName) lobbyUName.textContent = user.name.toUpperCase();
+                        }
+                        if (newUId) {
+                            if (user) user.rollNo = newUId;
+                            if (currentAttempt) currentAttempt.studentRollNo = newUId;
+                            const verifyRoll = document.getElementById('verifyRollNo');
+                            if (verifyRoll) verifyRoll.textContent = newUId;
+                            const lobbyRoll = document.getElementById('lobbyStudentId');
+                            if (lobbyRoll) lobbyRoll.textContent = newUId;
+                        }
+                        if (currentExam.questions[currentQuestionIndex]) {
+                            if (newQTitle) currentExam.questions[currentQuestionIndex].heading = newQTitle;
+                            if (newQContent) currentExam.questions[currentQuestionIndex].title = newQContent;
+
+                            // Save MCQ options
+                            const qType = (currentExam.questions[currentQuestionIndex].type || 'mcq').toLowerCase();
+                            if (qType === 'mcq' || qType === 'true_false' || qType === 'assertion_reason') {
+                                if (!currentExam.questions[currentQuestionIndex].options) currentExam.questions[currentQuestionIndex].options = [];
+                                mcqOptions.forEach(el => {
+                                    const optIdx = parseInt(el.getAttribute('data-optidx'));
+                                    if (!isNaN(optIdx)) {
+                                        currentExam.questions[currentQuestionIndex].options[optIdx] = el.innerText.trim();
+                                    }
+                                });
+                            }
+                        }
+
+                        sectionSpans.forEach(el => {
+                            const oldSection = el.getAttribute('data-section');
+                            const newSection = el.innerText.trim();
+                            if (oldSection !== newSection && newSection) {
+                                currentExam.questions.forEach(q => {
+                                    if ((q.section || "Section A") === oldSection) q.section = newSection;
+                                });
+                                if (currentAttempt.submittedSections) {
+                                    const idx = currentAttempt.submittedSections.indexOf(oldSection);
+                                    if (idx !== -1) currentAttempt.submittedSections[idx] = newSection;
+                                }
+                                if (collapsedSections[oldSection] !== undefined) {
+                                    collapsedSections[newSection] = collapsedSections[oldSection];
+                                    delete collapsedSections[oldSection];
+                                }
+                            }
+                        });
+
+                        editableIds.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) {
+                                el.contentEditable = "false";
+                                el.style.border = "none";
+                                el.style.padding = "0";
+                            }
+                        });
+                        mcqOptions.forEach(el => {
+                            el.contentEditable = "false";
+                            el.style.border = "none";
+                            el.style.padding = "0";
+                        });
+
+                        const tDisplay = document.getElementById('timerDisplay');
+                        if (tDisplay) {
+                            tDisplay.style.border = "none";
+                            tDisplay.style.padding = "0";
+                            tDisplay.style.cursor = "default";
+                        }
+
+                        // Persist
+                        currentAttempt.customExam = currentExam;
+                        if (isPractice) {
+                            db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+                        } else {
+                            db.updateAttempt(attemptId, { customExam: currentExam });
+                        }
+
+                        renderDashboardTable();
+                        renderQuestionRail();
+                        loadQuestion(currentQuestionIndex); // Refresh UI for question title
+                    }
+                }
+            } else if (e.ctrlKey && e.key.toLowerCase() === 'l' && ctrlEModeActive) {
+                e.preventDefault();
+                if (currentExam) {
+                    currentExam.allSectionsLocked = !currentExam.allSectionsLocked;
+                    showToast(currentExam.allSectionsLocked ? "All sections Locked" : "All sections Unlocked", 'success');
+                    currentAttempt.customExam = currentExam;
+                    if (isPractice) db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+                    else db.updateAttempt(attemptId, { customExam: currentExam });
+                    renderDashboardTable();
+                    renderQuestionRail();
+                }
+            }
+        });
+
+        // Timer click listener for Live Edit
+        document.addEventListener('click', (e) => {
+            if (ctrlEModeActive && e.target && (e.target.id === 'timerDisplay' || e.target.closest('#timerDisplay'))) {
+                const newTime = prompt("Enter new time in seconds:", timeRemaining);
+                if (newTime && !isNaN(parseInt(newTime))) {
+                    timeRemaining = parseInt(newTime);
+                    if (currentAttempt) {
+                        currentAttempt.timeLeft = timeRemaining;
+                        if (isPractice) db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+                        else if (attemptId) db.updateAttempt(attemptId, { timeLeft: timeRemaining });
+                    }
+                    const h = Math.floor(timeRemaining / 3600);
+                    const m = Math.floor((timeRemaining % 3600) / 60);
+                    const s = timeRemaining % 60;
+                    document.getElementById('timerDisplay').textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                }
+            }
+        });
     </script>
 </body>
 
