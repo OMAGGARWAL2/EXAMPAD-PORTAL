@@ -2692,57 +2692,68 @@
                 isRecordingWebcam = true;
                 recordedChunks = [];
 
-                if (window.currentWebcamStream) {
+                if (window.currentWebcamStream || window.currentScreenStream) {
                     const video = document.getElementById('webcamPreview');
                     const boardContainer = document.getElementById('whiteboardContainer');
                     const boardCanvas = document.getElementById('recordWhiteboard');
-                    
+
                     compositeCanvas = document.createElement('canvas');
-                    compositeCanvas.width = 1280;
-                    compositeCanvas.height = 720;
+                    compositeCanvas.width = 1920;
+                    compositeCanvas.height = 1080;
                     compositeCtx = compositeCanvas.getContext('2d');
-                    
+
                     function drawComposite() {
                         if (!isRecordingWebcam) return;
                         compositeCtx.fillStyle = '#000';
-                        compositeCtx.fillRect(0, 0, 1280, 720);
-                        
+                        compositeCtx.fillRect(0, 0, 1920, 1080);
+
                         const isSplit = boardContainer && boardContainer.style.display !== 'none';
-                        const vWidth = isSplit ? 640 : 1280;
-                        
+                        const vWidth = isSplit ? 960 : 1920;
+                        const vHeight = 1080;
+
                         // Draw Video
                         compositeCtx.save();
-                        compositeCtx.translate(vWidth, 0);
-                        compositeCtx.scale(-1, 1);
+                        if (!window.currentScreenStream) {
+                            // Mirror webcam
+                            compositeCtx.translate(vWidth, 0);
+                            compositeCtx.scale(-1, 1);
+                        }
                         if (video.style.filter && video.style.filter !== 'none') {
                             compositeCtx.filter = video.style.filter;
                         }
-                        const vAspect = (video.videoWidth && video.videoHeight) ? (video.videoWidth / video.videoHeight) : (isSplit ? 1 : 16/9);
-                        let dw = vWidth, dh = 720;
-                        if (vAspect > vWidth/720) {
-                            dw = 720 * vAspect;
-                            compositeCtx.drawImage(video, (vWidth - dw)/2, 0, dw, dh);
-                        } else {
-                            dh = vWidth / vAspect;
-                            compositeCtx.drawImage(video, 0, (720 - dh)/2, dw, dh);
+                        
+                        if (video.videoWidth && video.videoHeight) {
+                            const vAspect = video.videoWidth / video.videoHeight;
+                            let dw = vWidth, dh = vHeight;
+                            if (vAspect > vWidth / vHeight) {
+                                dw = vHeight * vAspect;
+                                compositeCtx.drawImage(video, (vWidth - dw) / 2, 0, dw, dh);
+                            } else {
+                                dh = vWidth / vAspect;
+                                compositeCtx.drawImage(video, 0, (vHeight - dh) / 2, dw, dh);
+                            }
                         }
                         compositeCtx.restore();
-                        
+
                         // Draw Whiteboard
                         if (isSplit && boardCanvas) {
                             compositeCtx.fillStyle = '#fff';
-                            compositeCtx.fillRect(640, 0, 640, 720);
-                            compositeCtx.drawImage(boardCanvas, 640, 0, 640, 720);
+                            compositeCtx.fillRect(960, 0, 960, 1080);
+                            compositeCtx.drawImage(boardCanvas, 960, 0, 960, 1080);
                         }
-                        
+
                         compositeRaf = requestAnimationFrame(drawComposite);
                     }
                     drawComposite();
-                    
+
                     const canvasStream = compositeCanvas.captureStream(30);
-                    const audioTracks = window.currentWebcamStream.getAudioTracks();
-                    if (audioTracks.length > 0) {
-                        canvasStream.addTrack(audioTracks[0]);
+                    
+                    if (window.currentWebcamStream) {
+                        const audioTracks = window.currentWebcamStream.getAudioTracks();
+                        if (audioTracks.length > 0) canvasStream.addTrack(audioTracks[0]);
+                    } else if (window.currentScreenStream) {
+                        const audioTracks = window.currentScreenStream.getAudioTracks();
+                        if (audioTracks.length > 0) canvasStream.addTrack(audioTracks[0]);
                     }
 
                     mediaRecorder = new MediaRecorder(canvasStream);
@@ -2752,7 +2763,7 @@
                     mediaRecorder.start();
                 }
 
-                btn.innerHTML = '<i class="fas fa-stop"></i> STOP';
+                btn.innerHTML = '<i class="fas fa-stop"></i> STOP RECORDING';
                 btn.style.background = '#444';
                 showToast("Recording started...");
             } else {
@@ -2761,36 +2772,45 @@
                 if (mediaRecorder && mediaRecorder.state !== "inactive") {
                     mediaRecorder.stop();
                 }
-                btn.innerHTML = '<i class="fas fa-circle"></i> REC';
+                btn.innerHTML = '<i class="fas fa-circle"></i> START RECORDING';
                 btn.style.background = '#ef4444';
                 showToast("Recording stopped. Click Save.");
             }
         };
 
+        window.currentScreenStream = null;
         window.stopWebcam = function () {
             if (window.currentWebcamStream) {
                 window.currentWebcamStream.getTracks().forEach(track => track.stop());
                 window.currentWebcamStream = null;
+            }
+            if (window.currentScreenStream) {
+                window.currentScreenStream.getTracks().forEach(track => track.stop());
+                window.currentScreenStream = null;
             }
             isRecordingWebcam = false;
         };
 
         let isDrawingOnWebcam = false;
         let webcamCtx = null;
+        let recordWbColor = '#ef4444';
+        let recordWbSize = 3;
+        let recordWbMode = 'brush';
+
+        window.setRecordWbColor = function (c) { recordWbColor = c; };
+        window.setRecordWbSize = function (s) { recordWbSize = s; };
+        window.setRecordWbMode = function (m) { recordWbMode = m; };
 
         window.initWhiteboard = function () {
             const canvas = document.getElementById('recordWhiteboard');
             if (!canvas) return;
             webcamCtx = canvas.getContext('2d');
 
-            // Resize to fit container exactly
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
 
             webcamCtx.fillStyle = '#fff';
             webcamCtx.fillRect(0, 0, canvas.width, canvas.height);
-            webcamCtx.strokeStyle = '#ef4444';
-            webcamCtx.lineWidth = 3;
             webcamCtx.lineCap = 'round';
 
             canvas.onmousedown = (e) => {
@@ -2800,6 +2820,8 @@
             };
             canvas.onmousemove = (e) => {
                 if (isDrawingOnWebcam) {
+                    webcamCtx.strokeStyle = recordWbMode === 'eraser' ? '#fff' : recordWbColor;
+                    webcamCtx.lineWidth = recordWbMode === 'eraser' ? recordWbSize * 5 : recordWbSize;
                     webcamCtx.lineTo(e.offsetX, e.offsetY);
                     webcamCtx.stroke();
                 }
@@ -2815,7 +2837,7 @@
             if (boardContainer.style.display === 'none') {
                 boardContainer.style.display = 'block';
                 videoContainer.style.width = '50%';
-                setTimeout(window.initWhiteboard, 300); // allow transition to finish
+                setTimeout(window.initWhiteboard, 300);
             } else {
                 boardContainer.style.display = 'none';
                 videoContainer.style.width = '100%';
@@ -2829,30 +2851,72 @@
             }
         };
 
+        window.toggleRecordScreenShare = async function () {
+            const video = document.getElementById('webcamPreview');
+            const btn = document.getElementById('btnScreenShare');
+            
+            if (window.currentScreenStream) {
+                window.currentScreenStream.getTracks().forEach(t => t.stop());
+                window.currentScreenStream = null;
+                video.srcObject = window.currentWebcamStream;
+                video.style.transform = 'scaleX(-1)';
+                btn.innerHTML = '<i class="fas fa-desktop"></i> Screen Share';
+                btn.style.background = '#2563eb';
+            } else {
+                try {
+                    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                    window.currentScreenStream = stream;
+                    video.srcObject = stream;
+                    video.style.transform = 'none'; // dont mirror screen
+                    btn.innerHTML = '<i class="fas fa-video"></i> Switch to Camera';
+                    btn.style.background = '#4b5563';
+                    
+                    stream.getVideoTracks()[0].onended = () => {
+                        window.currentScreenStream = null;
+                        video.srcObject = window.currentWebcamStream;
+                        video.style.transform = 'scaleX(-1)';
+                        btn.innerHTML = '<i class="fas fa-desktop"></i> Screen Share';
+                        btn.style.background = '#2563eb';
+                    };
+                } catch (err) {
+                    console.error('Screen share error:', err);
+                }
+            }
+        };
+
         function handleVideoRecord() {
             showModal({
                 isLarge: true,
-                title: "Record Video & Whiteboard",
-                desc: "Record your screen, webcam, and annotate on the whiteboard side-by-side.",
+                title: "Record Content & Whiteboard",
+                desc: "Record your screen, webcam, and annotate side-by-side in high definition.",
                 body: `
-                    <div style="position: relative; border-radius: 8px; overflow: hidden; background: #000; display: flex; flex-direction: column; flex: 1;">
-                        <div style="display: flex; flex: 1; width: 100%;">
-                            <div id="webcamContainer" style="width: 100%; height: 100%; transition: width 0.3s; background: #000;">
-                                <video id="webcamPreview" autoplay muted style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); transition: filter 0.3s;"></video>
+                    <div style="position: relative; border-radius: 12px; overflow: hidden; background: #000; display: flex; flex-direction: column; flex: 1; border: 1px solid #333;">
+                        <div style="display: flex; flex: 1; width: 100%; min-height: 0;">
+                            <div id="webcamContainer" style="width: 100%; height: 100%; transition: width 0.3s; background: #000; display: flex; align-items: center; justify-content: center;">
+                                <video id="webcamPreview" autoplay muted style="width: 100%; height: 100%; object-fit: contain; transform: scaleX(-1); transition: filter 0.3s;"></video>
                             </div>
                             <div id="whiteboardContainer" style="width: 50%; height: 100%; display: none; background: #fff; position: relative;">
                                 <canvas id="recordWhiteboard" style="width: 100%; height: 100%; cursor: crosshair;"></canvas>
-                                <button onclick="clearWhiteboard()" style="position: absolute; bottom: 8px; right: 8px; background: #eee; border: 1px solid #ccc; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fas fa-trash"></i> Clear</button>
+                                <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 40px; display: flex; gap: 16px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
+                                    <input type="color" onchange="setRecordWbColor(this.value)" value="#ef4444" style="width:28px; height:28px; border:none; border-radius:50%; cursor:pointer; padding:0; background:none;" title="Brush Color">
+                                    <input type="range" onchange="setRecordWbSize(this.value)" min="1" max="20" value="3" style="width:100px; accent-color: #DE6834;" title="Brush Size">
+                                    <button onclick="setRecordWbMode('brush')" style="background:transparent; color:#fff; border:none; cursor:pointer; font-size:1.1rem; padding:4px;" title="Brush"><i class="fas fa-paint-brush"></i></button>
+                                    <button onclick="setRecordWbMode('eraser')" style="background:transparent; color:#ccc; border:none; cursor:pointer; font-size:1.1rem; padding:4px;" title="Eraser"><i class="fas fa-eraser"></i></button>
+                                    <div style="width:1px; height:20px; background:#444;"></div>
+                                    <button onclick="clearWhiteboard()" style="background:transparent; color:#ef4444; border:none; cursor:pointer; font-size:1.1rem; padding:4px;" title="Clear Board"><i class="fas fa-trash"></i></button>
+                                </div>
                             </div>
                         </div>
-                        <div style="padding: 12px; background: #111; display: flex; gap: 12px; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; gap: 8px;">
-                                <button onclick="setWebcamFilter('none')" style="background:#333; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.8rem; cursor:pointer;">Normal</button>
-                                <button onclick="setWebcamFilter('grayscale(100%)')" style="background:#333; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.8rem; cursor:pointer;">Grayscale</button>
-                                <button onclick="setWebcamFilter('sepia(100%)')" style="background:#333; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.8rem; cursor:pointer;">Sepia</button>
-                                <button onclick="toggleWhiteboard()" style="background:#DE6834; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.8rem; cursor:pointer; margin-left: 12px;"><i class="fas fa-chalkboard"></i> Split Whiteboard</button>
+                        <div style="padding: 16px 24px; background: #111; display: flex; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid #222;">
+                            <div style="display: flex; gap: 12px;">
+                                <button onclick="setWebcamFilter('none')" style="background:#2a2a2a; color:#fff; border:1px solid #444; padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight: 500; cursor:pointer;">Normal</button>
+                                <button onclick="setWebcamFilter('grayscale(100%)')" style="background:#2a2a2a; color:#fff; border:1px solid #444; padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight: 500; cursor:pointer;">Grayscale</button>
+                                <button onclick="setWebcamFilter('sepia(100%)')" style="background:#2a2a2a; color:#fff; border:1px solid #444; padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight: 500; cursor:pointer;">Sepia</button>
+                                <div style="width:1px; height:24px; background:#444; margin:0 4px;"></div>
+                                <button onclick="toggleRecordScreenShare()" id="btnScreenShare" style="background:#2563eb; color:#fff; border:none; padding:6px 16px; border-radius:6px; font-size:0.85rem; font-weight: 600; cursor:pointer; display: flex; align-items: center; gap: 8px;"><i class="fas fa-desktop"></i> Screen Share</button>
+                                <button onclick="toggleWhiteboard()" id="btnWbToggle" style="background:#DE6834; color:#fff; border:none; padding:6px 16px; border-radius:6px; font-size:0.85rem; font-weight: 600; cursor:pointer; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chalkboard"></i> Split Whiteboard</button>
                             </div>
-                            <button id="recordBtn" onclick="toggleRecording()" style="background: #ef4444; color: #fff; border: none; padding: 6px 16px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="fas fa-circle"></i> REC</button>
+                            <button id="recordBtn" onclick="toggleRecording()" style="background: #ef4444; color: #fff; border: none; padding: 10px 24px; border-radius: 30px; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);"><i class="fas fa-circle"></i> START RECORDING</button>
                         </div>
                     </div>
                 `,
