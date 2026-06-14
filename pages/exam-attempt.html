@@ -1102,13 +1102,18 @@
             background: #d1d5db;
         }
 
-        /* Specific Hover-only for Rail Area */
+        /* Specific Hover-only for Rail Area - Changed to always visible */
+        .rail-scroll-area::-webkit-scrollbar {
+            width: 4px;
+        }
+
         .rail-scroll-area::-webkit-scrollbar-thumb {
-            background: transparent;
+            background: #e5e7eb;
+            border-radius: 10px;
         }
 
         .rail-scroll-area:hover::-webkit-scrollbar-thumb {
-            background: #e5e7eb;
+            background: #d1d5db;
         }
 
         .nav-rail.collapsed {
@@ -1419,7 +1424,7 @@
             color: #fff;
             padding: 8px 16px;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 500;
             white-space: nowrap;
             display: none;
@@ -1438,6 +1443,16 @@
             border-top: 10px solid transparent;
             border-bottom: 10px solid transparent;
             border-right: 10px solid #333;
+        }
+
+        .global-rail-tooltip.tooltip-bottom::before {
+            left: 50%;
+            top: -10px;
+            transform: translateX(-50%);
+            border-top: none;
+            border-bottom: 10px solid #333;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
         }
 
         .section-lock-container {
@@ -1583,7 +1598,7 @@
         }
 
         .pane-left {
-            width: 550px;
+            width: 40%;
             flex-shrink: 0;
             background: #ffffff !important;
             display: flex;
@@ -3837,7 +3852,8 @@
                 <!-- HEADER LEFT -->
                 <div class="header-left header-item" style="gap: 1.5rem;">
                     <button class="logo-btn"
-                        style="background: transparent; border:none; padding:0; cursor:default; display:flex; align-items:center; justify-content:center; border-radius: 2px; flex-shrink: 0; height: 100%;">
+                        style="background: transparent; border:none; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center; border-radius: 2px; flex-shrink: 0; height: 100%;"
+                        onclick="if(document.getElementById('testDashboardView').style.display !== 'block') showDashboard();">
                         <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" alt="Logo" height="54">
                     </button>
                     <div
@@ -3866,7 +3882,8 @@
                 <div class="header-center header-item" id="proctoringStatsHeader" style="gap: 12px; margin-right: 1px;">
                     <!-- Fullscreen IN (Arrows In) -->
                     <div class="stat-indicator" style="display: flex; align-items: center; gap: 2px;"
-                        title="Full Screen In">
+                        onmouseenter="showGlobalTooltip(this, 'Full Screen In', 'bottom')"
+                        onmouseleave="hideGlobalTooltip()">
                         <img src="../SVG/extracted/icon-fullscreen-in.png" alt="Fullscreen In" width="34"
                             style="object-fit: contain;">
                         <span
@@ -3878,7 +3895,8 @@
                     </div>
                     <!-- Fullscreen OUT (Arrows Out) -->
                     <div class="stat-indicator" style="display: flex; align-items: center; gap: 2px;"
-                        title="Full Screen Exit">
+                        onmouseenter="showGlobalTooltip(this, 'Full Screen Exit', 'bottom')"
+                        onmouseleave="hideGlobalTooltip()">
                         <img src="../SVG/extracted/icon-fullscreen-out.png" alt="Fullscreen Exit" width="34"
                             style="object-fit: contain;">
                         <span
@@ -3889,7 +3907,8 @@
                         </span>
                     </div>
                     <!-- Tab OUT (Circular Arrow Out) -->
-                    <div class="stat-indicator" style="display: flex; align-items: center; gap: 2px;" title="Tab Out">
+                    <div class="stat-indicator" style="display: flex; align-items: center; gap: 2px;"
+                        onmouseenter="showGlobalTooltip(this, 'Tab Out', 'bottom')" onmouseleave="hideGlobalTooltip()">
                         <img src="../SVG/extracted/icon-tab-out.png" alt="Tab Out" width="34"
                             style="object-fit: contain;">
                         <span
@@ -3900,7 +3919,8 @@
                         </span>
                     </div>
                     <!-- Tab IN (Circular Arrow In) -->
-                    <div class="stat-indicator" style="display: flex; align-items: center; gap: 2px;" title="Tab In">
+                    <div class="stat-indicator" style="display: flex; align-items: center; gap: 2px;"
+                        onmouseenter="showGlobalTooltip(this, 'Tab In', 'bottom')" onmouseleave="hideGlobalTooltip()">
                         <img src="../SVG/extracted/icon-tab-in.png" alt="Tab In" width="34"
                             style="object-fit: contain;">
                         <span
@@ -3971,12 +3991,12 @@
                         <div class="profile-menu" id="profileMenu"
                             style="position: absolute; top: calc(100% + 12px); right: 0; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 999999; display: none; background: #fff; min-width: 200px; font-family: 'Hind', sans-serif; overflow: hidden; animation: menuFadeIn 0.2s ease-out;">
                             <div class="profile-menu-item" onclick="location.reload()"
-                                style="padding: 14px 20px; font-weight: 500; font-size: 15px; color: #344054; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.2s;"
+                                style="padding: 14px 20px; font-weight: 500; font-size: 18px; color: #344054; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.2s;"
                                 onmouseover="this.style.background='#FFF4ED'; this.style.color='#DE5B2B'"
                                 onmouseout="this.style.background='#fff'; this.style.color='#344054'">
                                 <i class="fas fa-redo"
-                                    style="color: #DE5B2B; font-size: 15px; width: 24px; text-align: center;"></i>
-                                <span style="font-family: 'Hind', sans-serif;">Refresh</span>
+                                    style="color: #DE5B2B; font-size: 18px; width: 24px; text-align: center;"></i>
+                                <span style="font-family: 'Hind', sans-serif; font-size: 18px;">Refresh</span>
                             </div>
                         </div>
 
@@ -5596,7 +5616,7 @@
             }
         }
 
-        function showGlobalTooltip(el, text) {
+        function showGlobalTooltip(el, text, position = 'right') {
             let tooltip = document.getElementById('globalTooltip');
             if (!tooltip) {
                 tooltip = document.createElement('div');
@@ -5608,11 +5628,17 @@
             tooltip.style.display = 'block';
 
             const rect = el.getBoundingClientRect();
-            tooltip.style.left = (rect.right + 12) + 'px';
-
-            // Wait for display:block to compute actual height, then center it vertically
             const tooltipRect = tooltip.getBoundingClientRect();
-            tooltip.style.top = (rect.top + (rect.height / 2) - (tooltipRect.height / 2)) + 'px';
+
+            if (position === 'bottom') {
+                tooltip.classList.add('tooltip-bottom');
+                tooltip.style.left = (rect.left + (rect.width / 2) - (tooltipRect.width / 2)) + 'px';
+                tooltip.style.top = (rect.bottom + 12) + 'px';
+            } else {
+                tooltip.classList.remove('tooltip-bottom');
+                tooltip.style.left = (rect.right + 12) + 'px';
+                tooltip.style.top = (rect.top + (rect.height / 2) - (tooltipRect.height / 2)) + 'px';
+            }
         }
 
         function hideGlobalTooltip() {
@@ -7083,6 +7109,7 @@
             }
         }
 
+        let wifiBannerHiddenUntil = 0;
         function updateWifiStat() {
             const wifiIcon = document.getElementById('wifiIcon');
             const wifiErrorIcon = document.getElementById('wifiErrorIcon');
@@ -7131,7 +7158,7 @@
                 const qv = document.getElementById('questionView');
                 const isExamActive = (dash && dash.style.display === 'block') || (qv && qv.style.display === 'flex');
 
-                if (showWarning && isExamActive) {
+                if (showWarning && isExamActive && Date.now() > wifiBannerHiddenUntil) {
                     if (wifiWarning) {
                         wifiWarning.innerHTML = msg;
                         wifiWarning.style.display = 'block';
@@ -7180,6 +7207,18 @@
         }
         updateWifiStat();
         setInterval(updateWifiStat, 5000);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === ',') {
+                e.preventDefault();
+                if (typeof isPractice !== 'undefined' && isPractice) {
+                    wifiBannerHiddenUntil = Date.now() + 5 * 60 * 1000; // 5 minutes
+                    updateWifiStat();
+                    showToast("Wifi warning hidden for 5 minutes.");
+                }
+            }
+        });
+
         let screenshotCounter = 0;
         function captureSecurityEvidence() {
             screenshotCounter++;
@@ -8928,6 +8967,41 @@
             }
         });
 
+        function forceSaveCustomExam() {
+            try {
+                if (currentExam) {
+                    let exDB = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+                    let exIdx = exDB.findIndex(e => e.id === currentExam.id || e.testId === currentExam.id || e.id === currentExam.testId);
+                    if (exIdx !== -1) {
+                        exDB[exIdx] = currentExam;
+                        localStorage.setItem('exampad_exams', JSON.stringify(exDB));
+                    }
+                }
+
+                // Blanket update to ALL possible attempt locations to prevent load/save mismatch
+                if (typeof attemptId !== 'undefined' && attemptId) {
+                    let attDB = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+                    let aIdx = attDB.findIndex(a => a.id === attemptId);
+                    if (aIdx !== -1) {
+                        attDB[aIdx].customExam = currentExam;
+                        attDB[aIdx].selectedQuestionIds = currentExam.questions.map(q => q.id);
+                        attDB[aIdx].selectedQuestions = currentExam.questions;
+                        localStorage.setItem('exampad_attempts', JSON.stringify(attDB));
+                    }
+                }
+
+                // Also always save to practice session just in case it loads from there
+                let pId = (typeof itemId !== 'undefined' && itemId) ? itemId : 'standing_practice';
+                let pracDB = JSON.parse(localStorage.getItem('exampad_practice_sessions')) || {};
+                pracDB[pId] = currentAttempt;
+                localStorage.setItem('exampad_practice_sessions', JSON.stringify(pracDB));
+
+                questions = currentExam.questions;
+            } catch (err) {
+                console.error("Save Custom Exam failed:", err);
+            }
+        }
+
         document.addEventListener('keydown', function (e) {
             if (ctrlEModeActive && e.ctrlKey && e.key.toLowerCase() === 'c') {
                 if (contextMenuTargetQIdx !== null) {
@@ -8956,8 +9030,9 @@
                     renderDashboardTable();
 
                     currentAttempt.customExam = currentExam;
-                    if (isPractice) db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
-                    else db.updateAttempt(attemptId, { customExam: currentExam });
+                    currentAttempt.selectedQuestionIds = currentExam.questions.map(q => q.id);
+                    currentAttempt.selectedQuestions = currentExam.questions;
+                    forceSaveCustomExam();
                     e.preventDefault();
                     return;
                 }
@@ -9084,10 +9159,12 @@
 
                         // Persist
                         currentAttempt.customExam = currentExam;
-                        if (isPractice) {
-                            db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
-                        } else {
-                            db.updateAttempt(attemptId, { customExam: currentExam });
+                        currentAttempt.selectedQuestionIds = currentExam.questions.map(q => q.id);
+                        currentAttempt.selectedQuestions = currentExam.questions;
+                        forceSaveCustomExam();
+
+                        if (user && user.id) {
+                            db.updateUser(user.id, { name: user.name, rollNo: user.rollNo });
                         }
 
                         renderDashboardTable();
@@ -9098,11 +9175,12 @@
             } else if (e.ctrlKey && e.key.toLowerCase() === 'l' && ctrlEModeActive) {
                 e.preventDefault();
                 if (currentExam) {
-                    currentExam.allSectionsLocked = !currentExam.allSectionsLocked;
-                    showToast(currentExam.allSectionsLocked ? "All sections Locked" : "All sections Unlocked", 'success');
+                    currentExam.sectionLockEnabled = !currentExam.sectionLockEnabled;
+                    showToast(currentExam.sectionLockEnabled ? "Other sections Locked" : "All sections Unlocked", 'success');
                     currentAttempt.customExam = currentExam;
-                    if (isPractice) db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
-                    else db.updateAttempt(attemptId, { customExam: currentExam });
+                    currentAttempt.selectedQuestionIds = currentExam.questions.map(q => q.id);
+                    currentAttempt.selectedQuestions = currentExam.questions;
+                    forceSaveCustomExam();
                     renderDashboardTable();
                     renderQuestionRail();
                 }

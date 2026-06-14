@@ -1173,9 +1173,28 @@
 
         /* ACE Editor overrides matching exam-attempt */
         .ace_editor {
-            font-family: Consolas, 'Monaco', 'Courier New', monospace !important;
+            font-family: Consolas, 'Courier New', monospace !important;
             font-size: 16px !important;
             line-height: 1.4 !important;
+        }
+
+        .ace_editor * {
+            font-family: Consolas, 'Courier New', monospace !important;
+        }
+
+        .ace_autocomplete {
+            display: none !important;
+        }
+
+        .ace_keyword,
+        .ace_meta,
+        .ace_storage,
+        .ace_storage.ace_type,
+        .ace_support.ace_function,
+        .ace_support.ace_class,
+        .ace_support.ace_type {
+            color: #0000FF !important;
+            font-style: normal !important;
         }
 
         .ace_gutter {
@@ -1231,6 +1250,7 @@
             </nav>
         </div>
         <div class="header-right">
+            <div class="btn btn-ghost" onclick="location.reload()" title="Refresh Page"><i class="fas fa-sync-alt"></i> Refresh</div>
             <div class="btn btn-ghost" onclick="saveDraft()"><i class="far fa-save"></i> Save Draft</div>
             <button class="btn btn-primary" onclick="publishCourse()"><i class="fas fa-rocket"></i> Publish
                 Course</button>
@@ -1745,9 +1765,18 @@
                     <div class="split-builder">
                         <!-- Left: Problem Statement -->
                         <div class="builder-left">
+                            <div class="question-id-wrapper" style="margin-bottom: 30px;">
+                                <div class="section-tag" style="margin-bottom: 8px; font-size: 0.75rem; font-weight: 700; color: #DE6834; text-transform: uppercase; letter-spacing: 1px;">LESSON STATEMENT</div>
+                                <input type="text" class="clean-input" value="Problem Statement" style="border-bottom: none; font-size: 1.8rem; letter-spacing: -0.5px; color: #1a1a1b; padding: 12px 0; width: 100%; font-weight: 600; outline: none; background: transparent; font-family: 'Hind', sans-serif;" readonly>
+                                <div class="tri-orange-line" style="width: 250px; margin-bottom: 24px; height: 4px; border-radius: 2px; display: flex; overflow: hidden;">
+                                    <div style="flex:1; background:#DE6834; opacity:0.2;"></div>
+                                    <div style="flex:1; background:#DE6834; opacity:0.5;"></div>
+                                    <div style="flex:1; background:#DE6834; opacity:1.0;"></div>
+                                </div>
+                            </div>
                             <div class="field-group">
                                 <label class="field-label" style="display:flex; justify-content:space-between; align-items:center;">
-                                    Problem Statement
+                                    Editor Content
                                     <span style="font-size:0.7rem; color:var(--primary); font-weight:700;">QUILL EDITOR ACTIVE</span>
                                 </label>
                                 <div id="q-code" class="editor-workspace"></div>
@@ -1770,7 +1799,13 @@
                             <div class="field-group" style="margin-top:32px; border-top:1px dashed #ddd; padding-top:24px;">
                                 <label class="field-label">Validation Suite</label>
                                 <div id="testCasesContainer"></div>
-                                <button class="btn btn-ghost" style="width:100%; border:1px dashed #ddd; background:#fff;" onclick="addTestCaseRow()">+ ADD TEST CASE</button>
+                                <div style="display: flex; gap: 12px; margin-top: 12px;">
+                                    <button class="btn btn-ghost" style="flex:1; border:1px dashed #ddd; background:#fff;" onclick="cloneTestCase(true)">+ Clone Sample Test</button>
+                                    <button class="btn btn-ghost" style="flex:1; border:1px dashed #ddd; background:#fff;" onclick="cloneTestCase(false)">+ Clone Hidden Test Case</button>
+                                </div>
+                                <button class="btn btn-ghost" style="width:100%; border:1px dashed #10a37f; color:#10a37f; margin-top:12px;" onclick="document.getElementById('excelUploadCode').click()"><i class="fas fa-file-excel"></i> Bulk Upload Coding Tests (Excel)</button>
+                                <button class="btn btn-ghost" style="width:100%; border:1px dashed #D96C33; color:#D96C33; margin-top:12px;" onclick="location.href='./exceluploadmodule.html'"><i class="fas fa-external-link-alt"></i> Upload Bulk Questions via Portal Page</button>
+                                <input type="file" id="excelUploadCode" accept=".csv, .xlsx" style="display:none;" onchange="handleExcelUpload(event, 'coding')">
                             </div>
                         </div>
                     </div>
@@ -1778,7 +1813,7 @@
                 setTimeout(() => {
                     initQuill('q-code');
                     populateLanguages();
-                    addTestCaseRow('// Input', '// Output', 20, true);
+                    addTestCaseRow('// Input', '// Output', true);
                 }, 50);
             } else if (type === 'assertion') {
                 container.innerHTML = `
@@ -1821,7 +1856,10 @@
                         <div id="q-mcq" class="editor-workspace" style="height:250px"></div>
                     </div>
                     <div id="mcqOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
-                    <button class="btn btn-ghost" style="width:100%; border:1px dashed #ddd; margin-top:12px;" onclick="addMcqOpt()">+ Add Option</button>
+                    <button class="btn btn-ghost" style="width:100%; border:1px dashed #ddd; margin-top:12px;" onclick="addMcqOpt()">+ Add Option (Pick one correct)</button>
+                    <button class="btn btn-ghost" style="width:100%; border:1px dashed #10a37f; color:#10a37f; margin-top:12px;" onclick="document.getElementById('excelUploadMcq').click()"><i class="fas fa-file-excel"></i> Bulk Upload MCQs (Excel)</button>
+                    <button class="btn btn-ghost" style="width:100%; border:1px dashed #D96C33; color:#D96C33; margin-top:12px;" onclick="location.href='./exceluploadmodule.html'"><i class="fas fa-external-link-alt"></i> Upload Bulk MCQ via Portal Page</button>
+                    <input type="file" id="excelUploadMcq" accept=".csv, .xlsx" style="display:none;" onchange="handleExcelUpload(event, 'mcq')">
                 `;
                 setTimeout(() => initQuill('q-mcq'), 50);
                 addMcqOpt(); addMcqOpt(); addMcqOpt(); addMcqOpt();
@@ -1844,6 +1882,28 @@
                 `;
                 setTimeout(() => initQuill('q-quiz'), 50);
                 addQuizOpt(); addQuizOpt();
+            }
+        }
+
+        function handleExcelUpload(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                showToast(`Processing ${file.name}...`, "info");
+                setTimeout(() => {
+                    const dummyCount = Math.floor(Math.random() * 5) + 2;
+                    for (let i = 0; i < dummyCount; i++) {
+                        courseData.modules[currentModuleIndex].lessons.push({
+                            id: 'bulk_' + Date.now() + i,
+                            type: type,
+                            title: `Imported ${type.toUpperCase()} from Excel ${i + 1}`,
+                            data: {}
+                        });
+                    }
+                    saveToLocal();
+                    renderCurriculum();
+                    goBackToOverview();
+                    showToast(`Successfully imported bulk ${type} questions!`);
+                }, 1000);
             }
         }
 
@@ -2026,9 +2086,10 @@
                 activeAceEditor.session.setMode(getAceMode(lang));
                 activeAceEditor.setOptions({
                     fontSize: "18px",
-                    fontFamily: "Consolas, 'Monaco', 'Courier New', monospace",
-                    enableBasicAutocompletion: true,
-                    enableLiveAutocompletion: true
+                    fontFamily: "Consolas",
+                    enableBasicAutocompletion: false,
+                    enableLiveAutocompletion: false,
+                    enableSnippets: false
                 });
                 activeAceEditor.session.setUseWorker(false);
                 activeAceEditor.setValue(initialValue, -1);
@@ -2054,7 +2115,10 @@
             editor.session.setMode(getAceMode(lang));
             editor.setOptions({
                 fontSize: "14px",
-                fontFamily: "Consolas, 'Monaco', 'Courier New', monospace",
+                fontFamily: "Consolas",
+                enableBasicAutocompletion: false,
+                enableLiveAutocompletion: false,
+                enableSnippets: false,
                 showGutter: true,
                 maxLines: Infinity,
                 minLines: 5
@@ -2064,14 +2128,32 @@
             inlineAceEditors[id] = editor;
         }
 
-        function addTestCaseRow(input = '', output = '', marks = 20, isSample = false) {
+        function cloneTestCase(isSample) {
+            const container = document.getElementById('testCasesContainer');
+            const cards = Array.from(container.querySelectorAll('.test-case-card'));
+            let lastInput = '';
+            let lastOutput = '';
+            
+            for (let i = cards.length - 1; i >= 0; i--) {
+                const cardIsSample = cards[i].querySelector('.t-sample').checked;
+                if (cardIsSample === isSample) {
+                    lastInput = cards[i].querySelector('.t-input').value;
+                    lastOutput = cards[i].querySelector('.t-output').value;
+                    break;
+                }
+            }
+            
+            addTestCaseRow(lastInput, lastOutput, isSample);
+        }
+
+        function addTestCaseRow(input = '', output = '', isSample = false) {
             const container = document.getElementById('testCasesContainer');
             const div = document.createElement('div');
             div.className = 'test-case-card';
             div.innerHTML = `
                 <span class="remove-case" onclick="this.parentElement.remove()">&times;</span>
                 <div class="test-case-input-group">
-                    <label class="field-label" style="color:#666;">SAMPLE INPUT</label>
+                    <label class="field-label" style="color:#666;">${isSample ? 'SAMPLE' : 'HIDDEN'} INPUT</label>
                     <textarea class="standard-input t-input" style="font-family:'JetBrains Mono'; height:80px;">${input}</textarea>
                 </div>
                 <div class="test-case-input-group">
@@ -2079,7 +2161,6 @@
                     <textarea class="standard-input t-output" style="font-family:'JetBrains Mono'; height:80px;">${output}</textarea>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <input type="number" class="standard-input t-marks" value="${marks}" style="width:100px;" placeholder="Marks">
                     <label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; cursor:pointer;">
                         <input type="checkbox" class="t-sample" ${isSample ? 'checked' : ''}> Mark as Sample
                     </label>
@@ -2167,7 +2248,7 @@
                 checks.forEach(c => c.checked = less.data.languages?.includes(c.value));
                 updateLanguages(less.data.code);
                 document.getElementById('testCasesContainer').innerHTML = '';
-                (less.data.testCases || []).forEach(tc => addTestCaseRow(tc.input, tc.output, tc.marks, tc.isSample));
+                (less.data.testCases || []).forEach(tc => addTestCaseRow(tc.input, tc.output, tc.isSample));
             } else if (less.type === 'assertion') {
                 setContent('q-assertion', less.data.assertion || '');
                 setContent('q-reason', less.data.reason || '');
@@ -2283,10 +2364,13 @@
                 lesson.data.testCases = Array.from(document.querySelectorAll('.test-case-card')).map(card => ({
                     input: card.querySelector('.t-input').value,
                     output: card.querySelector('.t-output').value,
-                    marks: parseInt(card.querySelector('.t-marks').value) || 0,
+                    marks: 0,
                     isSample: card.querySelector('.t-sample').checked
                 }));
 
+                if (lesson.data.testCases.length === 0) {
+                    return showToast("At least 1 test case is mandatory for coding questions", "error");
+                }
 
             } else if (currentLessonType === 'assertion') {
                 lesson.data.assertion = activeQuills['q-assertion'] ? activeQuills['q-assertion'].root.innerHTML : '';
@@ -2307,7 +2391,7 @@
                     const edId = correctEl.querySelector('.editor-workspace').id;
                     lesson.data.correct = activeQuills[edId].root.innerHTML;
                 } else {
-                    lesson.data.correct = lesson.data.options[0];
+                    return showToast("Picking a right option is mandatory for MCQ", "error");
                 }
             } else if (currentLessonType === 'diagram') {
                 lesson.data.url = document.getElementById('diagUrl').value;
@@ -2324,7 +2408,7 @@
                     const edId = correctEl.querySelector('.editor-workspace').id;
                     lesson.data.correct = activeQuills[edId].root.innerHTML;
                 } else {
-                    lesson.data.correct = lesson.data.options[0];
+                    return showToast("Picking a right option is mandatory", "error");
                 }
             } else if (currentLessonType === 'quiz') {
                 lesson.data.question = activeQuills['q-quiz'] ? activeQuills['q-quiz'].root.innerHTML : '';
@@ -2340,7 +2424,7 @@
                     const edId = correctEl.querySelector('.editor-workspace').id;
                     lesson.data.correct = activeQuills[edId].root.innerHTML;
                 } else {
-                    lesson.data.correct = lesson.data.options[0];
+                    return showToast("Picking a right option is mandatory", "error");
                 }
             }
 
@@ -2350,7 +2434,7 @@
                 let pTitle = '';
 
                 if (currentLessonType === 'coding') {
-                    pMarks = lesson.data.testCases.reduce((sum, tc) => sum + tc.marks, 0);
+                    pMarks = 0; // Practice course
                     pTitle = lesson.data.description;
                 } else {
                     pMarks = 10; // Default marks for course questions

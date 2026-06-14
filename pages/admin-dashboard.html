@@ -785,7 +785,7 @@
             <div class="profile-bubble" onclick="handleLogout()">
                 <div class="user-info">
                     <div class="user-name" id="userName">OM AGGARWAL</div>
-                    <div class="user-role" style="color: var(--primary);">PROFESSOR</div>
+                    <div class="user-role" style="color: var(--primary);">SUPER ADMIN</div>
                 </div>
                 <div class="avatar" id="userInitial" style="background: #E66A35;">O</div>
             </div>
@@ -1007,22 +1007,22 @@
     <script src="../js/auth.js"></script>
 
     <script>
-        if (!auth.isLoggedIn() || !auth.isTeacher()) {
-            window.location.replace('./login.html?role=teacher');
+        if (!auth.isLoggedIn() || !auth.isSuperAdmin()) {
+            window.location.replace('./login.html?role=superadmin');
         }
 
         const user = auth.getCurrentUser();
         let allExams = [];
 
         function init() {
-            document.getElementById('userName').textContent = user.name || 'INSTRUCTOR';
+            document.getElementById('userName').textContent = user.name || 'SUPER ADMIN';
             document.getElementById('userInitial').textContent = (user.name || 'T').charAt(0).toUpperCase();
 
             loadData();
         }
 
         function loadData() {
-            allExams = db.getTeacherExams(user.id).filter(e => e.status !== 'expired');
+            allExams = db.getAllExams().filter(e => e.status !== 'expired');
             renderExams(allExams);
             document.getElementById('examCount').textContent = `(${allExams.length})`;
 
@@ -1398,7 +1398,7 @@
         }
 
         async function handleLogout() {
-            const ok = await showConfirm('Sign Out?', 'Are you sure you want to exit the Instructor Portal? Unsaved changes in any active creator sessions may be lost.', 'Log Out', 'danger');
+            const ok = await showConfirm('Sign Out?', 'Are you sure you want to exit the Admin Portal? Unsaved changes in any active creator sessions may be lost.', 'Log Out', 'danger');
             if (ok) {
                 auth.logout();
                 location.href = '../index.html';

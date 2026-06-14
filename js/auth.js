@@ -225,6 +225,7 @@ class Auth {
 
     isTeacher() { return this.getCurrentRole() === 'teacher'; }
     isStudent() { return this.getCurrentRole() === 'student'; }
+    isSuperAdmin() { return this.getCurrentRole() === 'superadmin'; }
 }
 
 const auth = new Auth();

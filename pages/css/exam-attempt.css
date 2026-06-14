@@ -421,13 +421,18 @@
                 background: #d1d5db;
             }
 
-            /* Specific Hover-only for Rail Area */
+            /* Specific Hover-only for Rail Area - Changed to always visible */
+            .rail-scroll-area::-webkit-scrollbar {
+                width: 4px;
+            }
+
             .rail-scroll-area::-webkit-scrollbar-thumb {
-                background: transparent;
+                background: #e5e7eb;
+                border-radius: 10px;
             }
 
             .rail-scroll-area:hover::-webkit-scrollbar-thumb {
-                background: #e5e7eb;
+                background: #d1d5db;
             }
 
             .nav-rail.collapsed {
@@ -567,7 +572,7 @@
                 color: #fff;
                 padding: 8px 16px;
                 border-radius: 4px;
-                font-size: 16px;
+                font-size: 18px;
                 font-weight: 700;
                 white-space: nowrap;
                 display: none;
@@ -587,6 +592,16 @@
                 border-top: 10px solid transparent;
                 border-bottom: 10px solid transparent;
                 border-right: 10px solid #000;
+            }
+
+            .global-rail-tooltip.tooltip-bottom::before {
+                left: 50%;
+                top: -10px;
+                transform: translateX(-50%);
+                border-top: none;
+                border-bottom: 10px solid #000;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
             }
 
             .section-lock-container {
@@ -876,7 +891,8 @@
             .mcq-circle {
                 width: 24px;
                 height: 24px;
-                background: #FFEBE1; /* Matches the solid pale orange in the screenshot */
+                background: #FFEBE1;
+                /* Matches the solid pale orange in the screenshot */
                 border: none;
                 border-radius: 50%;
                 display: flex;
@@ -885,7 +901,7 @@
                 flex-shrink: 0;
                 transition: all 0.2s;
             }
-            
+
             .mcq-option.selected .mcq-circle {
                 background: #FFEBE1;
             }

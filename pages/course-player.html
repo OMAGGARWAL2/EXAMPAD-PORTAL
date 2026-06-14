@@ -7,7 +7,7 @@
     <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Hind:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Hind:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,7 +29,7 @@
             --box-bg: #f8f9fa;
             --border: #e9ecef;
             --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --header-height: 53px;
+            --header-height: 68px;
             --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
@@ -52,7 +52,7 @@
 
         /* Fixed Top Header */
         header {
-            height: 53px;
+            height: 78px;
             background: #fff;
             border-bottom: 1px solid #EAEAEA;
             display: flex;
@@ -64,9 +64,11 @@
 
         .tri-orange-line {
             display: flex;
-            margin: 16px 0 24px 0;
-            height: 6px;
-            width: 150px;
+            height: 8px !important;
+            width: 290px !important;
+            border-radius: 0px;
+            overflow: hidden;
+            margin: 12px 0 24px 0;
         }
 
         .tri-orange-line div:nth-child(1) {
@@ -125,14 +127,14 @@
         }
 
         .plus-tool {
-            width: 44px;
+            width: 64px;
             height: 100%;
             background: #FFF4ED;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
-            font-size: 20px;
+            font-size: 26px;
             cursor: pointer;
         }
 
@@ -149,31 +151,32 @@
         }
 
         .profile-name {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #111;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
             text-transform: uppercase;
             font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
         }
 
         .profile-role {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--primary);
             text-transform: uppercase;
         }
 
         .profile-avatar {
-            width: 34px;
-            height: 34px;
-            background: #DE6834;
+            width: 46px;
+            height: 46px;
+            background: transparent;
             color: #fff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 1rem;
+            font-weight: 700;
+            font-size: 1.4rem;
         }
 
         /* HIGH FIDELITY IDE ARCHITECTURE (FROM EXAM ATTEMPT) */
@@ -183,27 +186,25 @@
             flex-direction: column !important;
             width: 100% !important;
             flex: 1 !important;
-            height: auto !important;
-            overflow-y: auto !important;
-            /* STABLE SCROLL */
+            min-height: 0 !important;
+            overflow-y: scroll !important;
             background: #fff !important;
             position: relative !important;
-            padding-bottom: 64px !important;
-            /* BREATHING ROOM ABOVE BAR */
         }
 
         .editor-gap {
             background: #fff !important;
             flex-shrink: 0 !important;
             position: relative !important;
-            min-height: 12px !important;
-            background: linear-gradient(to right, #f5f5f5 48px, #fff 48px) !important;
+            min-height: 1px !important;
+            background: linear-gradient(to right, #f9f9f9 48px, #fff 48px) !important;
         }
 
         .editor-gap::after {
             content: '' !important;
             position: absolute !important;
             left: 47px !important;
+            /* Matches the single Sidebar's border position */
             width: 1px !important;
             height: 100% !important;
             background: #e1e1e1 !important;
@@ -215,39 +216,71 @@
             flex-shrink: 0;
             width: 100%;
             position: relative;
-            background-color: #f5f5f5 !important;
-            height: 120px !important;
-            /* STRICT FIXED HEIGHT */
         }
 
         .editor-main {
             flex: 1;
-            /* Expandable Middle */
+            /* This grows */
             width: 100%;
             position: relative;
-            min-height: 400px !important;
+        }
+
+        body .ace_editor,
+        body .ace_editor * {
+            font-family: Consolas, 'Courier New', monospace !important;
+        }
+
+        body .ace_editor {
+            font-size: var(--editor-font-size, 18px) !important;
+            line-height: 1.4 !important;
+        }
+
+        .ace_text-input {
+            opacity: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        body .ace_gutter {
+            background: #f9f9f9 !important;
+            /* 🔥 REAL SIDEBAR */
+            color: #444 !important;
+            border-right: 1px solid #f0f0f0 !important;
+            width: 48px !important;
+        }
+
+        body .ace_scroller {
+            /* Using auto to allow Ace internal calculation */
+            left: auto;
+        }
+
+        body .ace_content {
             background: #fff !important;
         }
 
-        .editor-head .ace_editor,
-        .editor-main .ace_editor,
-        .editor-tail .ace_editor {
+        body #editorHead,
+        body #editorHead .ace_content,
+        body #editorTail,
+        body #editorTail .ace_content,
+        body #editorHead .ace_scroller,
+        body #editorTail .ace_scroller,
+        body #editorHead .ace_gutter,
+        body #editorTail .ace_gutter {
+            background-color: rgba(0, 0, 0, 0.003) !important;
+        }
+
+        body .editor-head .ace_editor,
+        body .editor-main .ace_editor,
+        body .editor-tail .ace_editor {
+            overflow: visible;
+        }
+
+        .ace_active-line {
             background: transparent !important;
-            font-family: Consolas, 'Monaco', 'Courier New', monospace !important;
-            font-size: 18px !important;
-            /* FIXED TO PREVENT DRIFT */
-            line-height: 1.4 !important;
-            letter-spacing: 0 !important;
-            /* CRITICAL FOR CURSOR ALIGNMENT */
         }
 
-        .ace_gutter {
-            width: 48px !important;
-            background: #f5f5f5 !important;
-            border-right: 1px solid #e1e1e1 !important;
-        }
-
-        .ace_active-line,
         .ace_gutter-active-line {
             background: transparent !important;
         }
@@ -257,13 +290,30 @@
             opacity: 1 !important;
         }
 
+        .readonly-code {
+            background: rgba(0, 0, 0, 0.003) !important;
+            color: #777 !important;
+            line-height: 1.1 !important;
+        }
+
+        #editorHead .ace_line,
+        #editorTail .ace_line {
+            line-height: 1.1 !important;
+            height: 18px !important;
+            /* Forces thinner lines */
+        }
+
+        .ace_autocomplete,
+        .ace_autocomplete * {
+            font-family: Consolas, 'Courier New', monospace !important;
+        }
+
         .ace_autocomplete {
             z-index: 999999999 !important;
             border: 1px solid #D1D5DB !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
             background: #ffffff !important;
             border-radius: 4px !important;
-            font-family: Consolas, 'Monaco', 'Courier New', monospace !important;
             font-size: 18px !important;
             padding: 0 !important;
         }
@@ -341,29 +391,29 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            padding: 8px 12px;
+            padding: 12px 16px;
             cursor: pointer;
             transition: all 0.2s;
             position: relative;
             color: #101828;
             border-radius: 8px;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .mcq-option span {
             font-family: 'Hind', sans-serif;
-            font-size: 1.15rem;
+            font-size: 1.4rem;
             font-weight: 400;
             color: #344054;
         }
 
         .mcq-option:hover {
-            background: #F9FAFB;
+            /* no background */
         }
 
         .mcq-circle {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             background: #FFEBE1;
             display: flex;
@@ -374,13 +424,13 @@
         }
 
         .mcq-option.selected {
-            background: #F9FAFB;
+            /* no background */
         }
 
         .mcq-option.selected .mcq-circle::after {
             content: '';
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             background: #DE5B2B;
             border-radius: 50%;
             animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -397,7 +447,7 @@
         }
 
         .mcq-heading {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 500;
             color: #101828;
             margin-bottom: 24px;
@@ -406,7 +456,7 @@
 
         .mcq-clear {
             margin-top: 32px;
-            font-size: 1.15rem;
+            font-size: 1.3rem;
             font-weight: 600;
             color: #DE5B2B !important;
             cursor: pointer;
@@ -426,16 +476,16 @@
 
         /* EXAM ATTEMPT TERMINAL DNA */
         .console-drawer {
-            position: relative;
             background: #fff;
             overflow: hidden;
             display: none;
             border-top: 1px solid #E5E7EB;
             flex-direction: column;
+            flex-shrink: 0;
             z-index: 1000;
-            width: 100%;
             height: 0;
             transition: height 0s !important;
+            box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05);
         }
 
         .console-drawer.open {
@@ -445,37 +495,44 @@
         }
 
         .tray-tabs {
-            height: 54px;
+            height: 52px;
+            border-bottom: 1px solid #E5E7EB;
             display: flex;
-            align-items: flex-end;
-            padding: 0 16px;
-            background: #FFFFFF;
-            border-bottom: 2px solid #E5E7EB;
+            background: #FFF4ED;
+            padding-left: 12px;
+            padding-top: 10px;
             flex-shrink: 0;
             z-index: 101;
         }
 
         .tray-tab {
-            padding: 14px 24px;
-            font-size: 1.05rem;
-            color: #667085;
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
             font-weight: 500;
+            font-size: 1.15rem;
+            color: #71717A;
             cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
+            border: 1px solid transparent;
+            border-bottom: none;
             font-family: 'Hind', sans-serif;
             transition: all 0.2s;
-        }
-
-        .tray-tab.active {
-            color: #DE5B2B;
-            border-bottom-color: #DE5B2B;
-            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+            margin-right: 4px;
         }
 
         .tray-tab:hover:not(.active) {
-            color: #101828;
-            background: #F9FAFB;
+            color: #111827;
+        }
+
+        .tray-tab.active {
+            background: #fff;
+            color: #111827;
+            font-weight: 600;
+            border: 1px solid #e9ecef;
+            border-bottom: 2px solid #fff;
+            margin-bottom: -1px;
+            z-index: 100;
         }
 
         .tray-content {
@@ -602,6 +659,68 @@
             font-family: 'Hind', sans-serif;
         }
 
+        /* BOOKMARK MODAL */
+        .bookmark-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 15vh;
+            z-index: 20000;
+            background: transparent;
+        }
+
+        .bookmark-modal {
+            background: #fff;
+            padding: 32px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            width: 420px;
+        }
+
+        .bookmark-modal p {
+            font-size: 1.15rem;
+            color: #444;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        .bookmark-modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .bookmark-btn-yes {
+            background: #DE6834;
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 8px 36px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .bookmark-btn-no {
+            background: #EBD1C5;
+            color: #333;
+            border: none;
+            border-radius: 24px;
+            padding: 8px 36px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+        }
+
         .report-title {
             font-size: 1.5rem;
             font-weight: 600;
@@ -709,12 +828,11 @@
         .course-sidebar {
             position: absolute;
             left: 53px;
-            top: 53px;
+            top: 78px;
             bottom: 0;
-            width: 320px;
+            width: 400px;
             background: #fff;
             border-right: 1px solid #E0E0E0;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
             z-index: 90;
             display: flex;
             flex-direction: column;
@@ -735,7 +853,7 @@
         }
 
         .pane-question {
-            width: 450px;
+            width: 40%;
             min-width: 300px;
             display: flex;
             flex-direction: column;
@@ -774,9 +892,9 @@
         /* HIGH-FIDELITY QUESTION PANE CLONE */
         .q-tabs {
             display: flex;
-            background: #fff !important;
+            background: #ffffff !important;
             border-bottom: 2px solid #EAECF0;
-            height: 64px;
+            height: 44px;
             padding: 0;
             flex-shrink: 0;
         }
@@ -786,12 +904,12 @@
             height: 100%;
             display: flex;
             align-items: center;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 500;
             color: #667085;
             cursor: pointer;
             position: relative;
-            background: #fff !important;
+            background: #ffffff !important;
             font-family: 'Hind', sans-serif;
             transition: all 0.2s;
         }
@@ -821,7 +939,7 @@
             overflow-y: auto;
             background: #fff;
             font-family: 'Hind', sans-serif !important;
-            font-size: 1.125rem !important;
+            font-size: 1.40rem !important;
             font-weight: 400 !important;
             line-height: 1.6 !important;
             color: #343a40 !important;
@@ -879,7 +997,7 @@
 
         .prob-title {
             font-family: 'Hind', sans-serif !important;
-            font-size: 28px !important;
+            font-size: 34px !important;
             font-weight: 600 !important;
             color: #111111 !important;
             letter-spacing: 0px !important;
@@ -903,8 +1021,8 @@
             background-color: #ebebeb !important;
             border-radius: 4px !important;
             padding: 10px !important;
-            font-family: SFMono-Regular, Consolas, monospace !important;
-            font-size: 0.8125rem !important;
+            font-family: Consolas !important;
+            font-size: 1.25rem !important;
             line-height: 1.5 !important;
             color: #333 !important;
             margin: 1.25em 0 !important;
@@ -956,11 +1074,13 @@
         }
 
         .course-title {
-            font-size: 0.95rem;
-            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 26px;
+            font-style: normal;
             color: #222;
             word-break: break-word;
-            line-height: 1.4;
             margin-bottom: 12px;
             display: block;
         }
@@ -989,6 +1109,12 @@
             flex: 1;
             overflow-y: auto;
             padding: 8px 0;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .sidebar-list::-webkit-scrollbar {
+            display: none;
         }
 
         .sidebar-item {
@@ -1134,23 +1260,23 @@
             cursor: pointer;
         }
 
-        /* STEALTH SCROLLBARS (MATCH EXAM ATTEMPT) */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+        /* Professional Global Scrollbar Overrides */
+        *::-webkit-scrollbar {
+            width: 8px;
+            height: 4px;
         }
 
-        ::-webkit-scrollbar-track {
+        *::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #e2e8f0;
+        *::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.08);
             border-radius: 10px;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #cbd5e1;
+        *::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.15);
         }
 
         .ace_scrollbar {
@@ -1163,8 +1289,17 @@
             border-radius: 10px !important;
         }
 
-        .readonly-editor {
-            pointer-events: none;
+        .readonly-editor,
+        #editorHead,
+        #editorTail {
+            cursor: not-allowed !important;
+        }
+
+        .readonly-editor *,
+        #editorHead *,
+        #editorTail * {
+            cursor: not-allowed !important;
+            pointer-events: none !important;
         }
 
         .editor-main {
@@ -1225,56 +1360,106 @@
         }
 
         #trayConsole {
-            flex: 1;
             background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
+            color: #e8e8e8;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace !important;
             overflow-y: auto;
-            white-space: pre-wrap;
+            font-size: 1rem;
+            line-height: 1.6;
+            width: 100%;
         }
 
         .tc-sidebar {
-            width: 200px;
-            border-right: 1px solid #eee;
-            overflow-y: auto;
-            padding: 12px;
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #EAECF0;
             display: flex;
             flex-direction: column;
-            gap: 8px;
         }
 
-        .tc-item {
-            padding: 10px 14px;
-            border-radius: 6px;
-            border: 1px solid #eee;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
+        .test-case-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            width: 100%;
+            padding: 4px 8px;
         }
 
-        .tc-item.active {
-            background: #FFF4ED;
-            color: var(--primary);
-            border-color: var(--primary-soft);
+        .test-case-item i {
+            width: 20px;
+            display: flex;
+            justify-content: center;
+            font-size: 18px;
         }
 
-        .tc-content {
+        .test-case-item button {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            text-align: left;
+            font-weight: 500;
+            font-family: 'Hind', sans-serif;
+            font-size: 18px;
+            color: #DE5B2B;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
             flex: 1;
-            overflow-y: auto;
-            padding: 20px;
         }
 
-        .tc-label {
-            font-size: 0.75rem;
+        .test-case-item button:hover {
+            opacity: 0.8;
+        }
+
+        .test-case-item.active button {
+            color: #DE5B2B;
             font-weight: 700;
-            color: #999;
-            margin-bottom: 6px;
-            text-transform: uppercase;
+        }
+
+        .test-case-details-container {
+            padding: 24px;
+            font-family: 'Hind', sans-serif;
+        }
+
+        .test-case-details-container h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #101828;
+            margin-bottom: 8px;
+            font-family: 'Hind', sans-serif;
+        }
+
+        .test-case-details-container pre {
+            background: #ebebeb;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: SFMono-Regular, Consolas, monospace;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+            border: none;
+            margin-bottom: 40px;
+        }
+
+        .test-case-details-container pre.success {
+            color: #027A48;
+            background: #ECFDF3;
+            border-color: #ABEFC6;
+        }
+
+        .test-case-details-container pre.error {
+            color: #B42318;
+            background: #FEF3F2;
+            border-color: #FEE4E2;
+        }
+
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #999;
+        margin-bottom: 6px;
+        text-transform: uppercase;
         }
 
         .tc-val {
@@ -1431,78 +1616,73 @@
             font-size: calc(16px * var(--scale));
             /* REMOVED TRANSITION TO PREVENT CURSOR DRIFT DURING SCALING */
         }
+
+        .pane-question,
+        .q-body-wrapper,
+        .q-body,
+        .q-footer {
+            background: #ffffff !important;
+        }
     </style>
 </head>
 
 <body>
 
     <header>
-        <div class="header-left-icons">
-            <div class="chitkara-logo-red" onclick="location.href='./student-dashboard.html'"
-                style="background: transparent;">
-                <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" style="height: 28px;">
+        <div class="header-left-icons" style="gap: 110px;">
+            <div class="chitkara-logo-red" onclick="location.reload()"
+                style="background: transparent; width: auto; height: auto;">
+                <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" style="height: 44px; border-radius: 6px;">
             </div>
-            <img src="../Testpad_pra_files_files/folder-2.svg" id="widgetDashboard"
-                style="height: 24px; cursor: pointer;">
+            <img src="../Testpad_pra_files_files/menu-1.svg" id="widgetDashboard"
+                style="height: 32px; cursor: pointer;">
             <img src="../Testpad_pra_files_files/statistics.svg" id="widgetAttempts"
-                style="height: 22px; cursor: pointer;">
+                style="height: 32px; cursor: pointer;">
         </div>
 
         <div class="header-right-tools">
-            <div id="reportBtn" onclick="toggleReportModal()"
-                style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #667085; font-weight: 500; font-size: 0.95rem; margin-right: 12px; font-family: 'Hind', sans-serif;"
-                onmouseover="this.style.color='#DE5B2B'" onmouseout="this.style.color='#667085'">
-                <i class="fas fa-exclamation-circle" style="font-size: 1.1rem;"></i>
-                <span>Report a problem</span>
-            </div>
 
-            <div class="font-sizer-container">
-                <span style="font-size: 1.15rem; font-weight: 400;">Font</span>
-                <input type="range" min="80" max="140" value="100" class="font-slider"
-                    oninput="updateFontSize(this.value)">
-            </div>
+
 
             <div class="plus-tool" id="plusBtn">
                 <i class="fas fa-plus"></i>
             </div>
 
             <div class="header-icon" id="gridBtn"
-                style="width: 44px; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;">
-                <i class="fas fa-th" style="color: #444;"></i>
+                style="width: 52px; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;">
+                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png"
+                    style="width: 36px; height: 36px; opacity: 0.75; transition: all 0.2s;"
+                    onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
             </div>
-            <div class="profile-area">
+            <div class="profile-area" id="profileBtn">
                 <div class="profile-info">
                     <div class="profile-name">OM AGGARWAL</div>
                     <div class="profile-role">STUDENT</div>
                 </div>
-                <div class="profile-avatar">O</div>
+                <div class="profile-avatar" style="width: 52px; height: 52px;"><img src="../Testpad_pra_files_files/portrait_placeholder_circle.png" style="width:100%; height:100%;"></div>
+            </div>
+        </div>
+
+        <!-- Profile Popover -->
+        <div class="popover profile-popover" id="profileMenu" style="top: 74px; right: 24px; width: 220px; padding: 8px 0; border-radius: 8px; border: 1px solid #EAECF0;">
+            <div class="profile-item" style="display: flex; align-items: center; gap: 16px; padding: 12px 24px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+                <img src="../Testpad_pra_files_files/password.svg" style="width: 24px; height: 24px;">
+                <span style="font-size: 1.15rem; color: #666; font-weight: 400; font-family: 'Hind', sans-serif;">Settings</span>
+            </div>
+            <div class="profile-item" onclick="auth.logout()" style="display: flex; align-items: center; gap: 16px; padding: 12px 24px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+                <img src="../Testpad_pra_files_files/logout.svg" style="width: 24px; height: 24px;">
+                <span style="font-size: 1.15rem; color: #666; font-weight: 400; font-family: 'Hind', sans-serif;">Logout</span>
             </div>
         </div>
 
         <!-- Plus Popover -->
         <div class="popover plus-popover" id="plusMenu">
             <div class="plus-item">
-                <div class="plus-icon-dots">
-                    <div style="display: flex; gap: 4px;">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>
-                    <div style="margin-left: 5px;">
-                        <div class="dot"></div>
-                    </div>
-                </div>
+                <img src="../Testpad_pra_files_files/playground.svg" style="width: 28px; height: 28px;">
                 <span class="plus-item-text">Playground</span>
             </div>
             <div class="plus-item">
-                <div class="plus-icon-dots">
-                    <div style="display: flex; gap: 4px;">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>
-                    <div style="margin-left: 5px;">
-                        <div class="dot"></div>
-                    </div>
-                </div>
+                <img src="../Testpad_pra_files_files/playground.svg" style="width: 28px; height: 28px;">
                 <span class="plus-item-text">Python Notebook</span>
             </div>
         </div>
@@ -1511,15 +1691,18 @@
         <div class="popover grid-popover" id="gridMenu">
             <div class="grid-items">
                 <div class="grid-item" onclick="location.href='./student-dashboard.html'">
-                    <i class="far fa-file-alt"></i>
+                    <img src="../Testpad_pra_files_files/quiz.svg"
+                        style="width: 48px; height: 48px; margin-bottom: 4px;">
                     <span>Test</span>
                 </div>
                 <div class="grid-item" onclick="location.href='./student-dashboard.html'">
-                    <i class="far fa-folder-open"></i>
+                    <img src="../Testpad_pra_files_files/folder-2.svg"
+                        style="width: 48px; height: 48px; margin-bottom: 4px;">
                     <span>Courses</span>
                 </div>
                 <div class="grid-item" onclick="location.href='./mybookmarks.html'">
-                    <i class="far fa-bookmark"></i>
+                    <img src="../Testpad_pra_files_files/iconmonstr-star-3.svg"
+                        style="width: 48px; height: 48px; margin-bottom: 4px;">
                     <span>Bookmarks</span>
                 </div>
             </div>
@@ -1530,22 +1713,13 @@
         <!-- Nav Rail -->
         <div class="nav-rail">
             <div class="rail-toggle" onclick="toggleSidebar()" style="margin-top: 8px;">
-                <i class="fas fa-bars"></i>
+                <img src="../Testpad_pra_files_files/noun_menu_4002423.svg" style="width: 26px; height: 26px;">
             </div>
         </div>
 
         <!-- Sidebar (Hidden by default, slider) -->
         <div class="course-sidebar" id="courseSidebar">
-            <div class="sidebar-header">
-                <span class="course-title" id="playerCourseTitle" style="cursor: pointer;"
-                    onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='inherit'">Course
-                    Content</span>
-                <div class="module-nav" onclick="toggleModules()">
-                    <i class="fas fa-layer-group" style="color:var(--primary);"></i>
-                    <span id="playerModuleName">Loading...</span>
-                    <i class="fas fa-chevron-down" style="font-size:0.7rem; color:#999;"></i>
-                </div>
-            </div>
+            <!-- Removed redundant sidebar-header as it's now rendered dynamically -->
             <div class="sidebar-list" id="lessonList">
                 <!-- Lessons populated here -->
             </div>
@@ -1553,32 +1727,32 @@
 
         <div class="player-workspace" id="playerWorkspace">
             <!-- Left Pane: Question -->
-            <div class="pane-question" id="paneQuestion" style="background: #fff;">
-                <div class="q-tabs">
-                    <div class="q-tab active">Question</div>
-                    <div class="q-tab">Attempts</div>
+            <div class="pane-question" id="paneQuestion" style="background: #ffffff !important;">
+                <div class="q-tabs" style="background: #ffffff !important;">
+                    <div class="q-tab active" style="background: #ffffff !important;">Question</div>
+                    <div class="q-tab" style="background: #ffffff !important;">Attempts</div>
                 </div>
-                <div class="q-body-wrapper" style="flex: 1; overflow-y: auto; padding: 32px 40px; background: #fff;">
+                <div class="q-body-wrapper"
+                    style="flex: 1; overflow-y: auto; padding: 32px 40px; background: #ffffff !important;">
                     <div
-                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                        <h2 class="prob-title" id="qTitle">
+                        style="display: flex; justify-content: flex-start; align-items: center; gap: 16px; margin-bottom: 8px;">
+                        <h2 class="prob-title" id="qTitle" style="margin: 0; line-height: 1.2;">
                             Problem Statement</h2>
                         <i class="far fa-bookmark" id="qBookmarkBtn" onclick="toggleBookState()"
-                            style="color: #DE5B2B; font-size: 1.5rem; cursor: pointer; padding: 4px;"></i>
+                            style="color: #DE5B2B; font-size: 1.5rem; cursor: pointer;"></i>
                     </div>
 
-                    <div class="tri-orange-line"
-                        style="margin: 0 0 24px 0; height: 12px; width: 260px; border-radius: 0;">
-                        <div style="flex: 1; background: #DE6834; opacity: 0.2;"></div>
-                        <div style="flex: 1; background: #DE6834; opacity: 0.5;"></div>
-                        <div style="flex: 1; background: #DE6834; opacity: 1.0;"></div>
+                    <div class="tri-orange-line">
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
 
                     <div class="q-body" id="qDesc">
                         Loading...
                     </div>
                 </div>
-                <div id="qAttemptsPane" style="display:none; flex:1; overflow:auto; background:#fff;">
+                <div id="qAttemptsPane" style="display:none; flex:1; overflow:auto; background:#ffffff !important;">
                     <!-- Attempts populated by JS -->
                 </div>
                 <div class="q-footer">
@@ -1647,27 +1821,29 @@
                     </div>
 
                     <!-- 1. EDITOR SECTION -->
-                    <div id="codingFrame" class="code-editor-container editor-section">
-                        <div id="editorHead" class="editor-head"></div>
-                        <div class="editor-gap"></div>
-                        <div id="editorMain" class="editor-main"></div>
-                        <div class="editor-gap"></div>
-                        <div id="editorTail" class="editor-tail"></div>
+                    <div id="codingFrame" class="code-editor-container editor-section"
+                        style="flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: #fff;">
+                        <div id="editorHead" class="editor-head" style="flex: none;"></div>
+                        <div class="editor-gap" style="height: 12px; flex-shrink: 0;"></div>
+                        <div id="editorMain" class="editor-main" style="flex: none;"></div>
+                        <div class="editor-gap" style="height: 320px; flex-shrink: 0;"></div>
+                        <div id="editorTail" class="editor-tail" style="flex: none;"></div>
                     </div>
 
-                    <!-- VERTICAL RESIZER HANDLE -->
-                    <div id="interactionResizer"
-                        style="height: 10px; cursor: ns-resize; background: #F2F4F7; display: none; align-items: center; justify-content: center; position: relative; z-index: 10001; flex-shrink: 0; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
-                        <div style="width: 36px; height: 4px; background: #D1D5DB; border-radius: 2px;"></div>
-                    </div>
-
-                    <!-- 2. CONSOLE DRAWER (NOW FLEX SIBLING) -->
+                    <!-- 2. CONSOLE DRAWER (NOW ABSOLUTE OVERLAY) -->
                     <div class="console-drawer" id="consoleDrawer">
+                        <!-- VERTICAL RESIZER HANDLE -->
+                        <div id="interactionResizer"
+                            style="height: 10px; cursor: ns-resize; background: #F2F4F7; display: none; align-items: center; justify-content: center; position: relative; z-index: 10001; flex-shrink: 0; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
+                            <div style="width: 36px; height: 4px; background: #D1D5DB; border-radius: 2px;"></div>
+                        </div>
                         <div class="tray-tabs">
                             <div class="tray-tab active" id="tab-testcases" onclick="switchTray('testcases')">Test cases
                             </div>
+                            <div class="tray-tab" id="tab-sample" onclick="switchTray('sample')">Sample test cases</div>
                             <div class="tray-tab" id="tab-console" onclick="switchTray('console')">Console</div>
-                            <div class="tray-tab" id="tab-custom" onclick="switchTray('custom')">Custom input</div>
+                            <div class="tray-tab" id="tab-custom" onclick="switchTray('custom')" style="display: none;">
+                                Custom input</div>
                             <div style="flex:1; border-bottom: 1px solid #E5E7EB;"></div>
                             <div
                                 style="display:flex; align-items:center; padding: 0 20px; border-bottom: 1px solid #E5E7EB;">
@@ -1678,45 +1854,77 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="trayViewport" style="flex: 1; overflow: hidden; display: flex; background: #fff;">
+                        <div id="trayViewport"
+                            style="flex: 1; overflow: hidden; display: flex; background: transparent;">
                             <div class="tray-content" id="traySummary"
-                                style="display:flex; padding:40px 60px; flex:1; background:#fff; overflow:auto;">
+                                style="display:none; padding:40px 60px; flex:1; background:transparent; overflow:auto;">
                                 <div id="testCasesSummaryContent"
                                     style="width:100%; color:#101828; font-family:'Hind', sans-serif; font-size:1.15rem;">
                                     <div
                                         style="font-family:'Hind', sans-serif; display:flex; flex-direction:column; gap:32px;">
                                         <div style="display:flex; align-items:center; gap:24px;">
                                             <div
-                                                style="background:#FFF4ED; padding:8px 24px; border-radius:4px; color:#DE5B2B; font-weight:700; font-size:1.15rem; border:1px solid #FEE4D2;">
-                                                Test Cases</div>
-                                            <div style="font-size:1.15rem; color:#101828; font-weight:500;">Run or
-                                                Submit to see results.</div>
+                                                style="background:#F9FAFB; padding:8px 24px; border-radius:4px; color:#DE5B2B; font-weight:600; font-size:1.15rem; border:none;">
+                                                Hidden Test Cases</div>
+                                            <div style="font-size:1.15rem; color:#101828; font-weight:500;">0 passed, 0
+                                                failed</div>
+                                        </div>
+                                        <div
+                                            style="background:#FFE9DF; border:none; padding:24px 32px; color:#475467; font-size:1.1rem; font-weight:400; line-height:1.6; border-radius:8px;">
+                                            Submit your code to see results. Test cases for this question are hidden and
+                                            can not be seen by the candidate.
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="tray-content" id="trayLogs" style="display:none; flex:1;">
-                                <div id="tcSidebar" class="tc-sidebar"
-                                    style="width: 260px; border-right: 1px solid #F2F4F7; overflow-y: auto;"></div>
+                                <div id="tcSidebar"
+                                    style="width: 260px; border-right: 1px solid #E5E7EB; overflow-y: auto;"></div>
                                 <div id="tcDetailPane" id="tcContent" style="flex: 1; overflow-y: auto;"></div>
                             </div>
                             <div class="tray-content" id="trayConsole" style="display:none; flex:1;">
                                 <div id="consoleOutputText"
-                                    style="padding:16px; font-family: 'JetBrains Mono', monospace; font-size: 14px; white-space: pre-wrap; color: #e8e8e8; background: #1e1e1e; flex: 1; overflow: auto;">
+                                    style="padding:16px; font-family: 'JetBrains Mono', monospace; font-size: 14px; white-space: pre-wrap;">
                                 </div>
                             </div>
                             <div class="tray-content" id="trayCustom"
-                                style="display:none; padding:16px; flex:1; background:#fff; overflow:hidden;">
+                                style="display:none; padding:16px; flex:1; background:transparent; overflow:hidden;">
+                                <style>
+                                    #customInputField:focus {
+                                        border-color: #DE5B2B !important;
+                                        outline: 1px solid #DE5B2B !important;
+                                    }
+
+                                    @keyframes customSpin {
+                                        0% {
+                                            transform: rotate(0deg);
+                                        }
+
+                                        100% {
+                                            transform: rotate(360deg);
+                                        }
+                                    }
+
+                                    .custom-spinner {
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                        width: 20px;
+                                        height: 20px;
+                                        border: 3px solid #FFF;
+                                        border-top: 3px solid #DE5B2B;
+                                        border-radius: 50%;
+                                        animation: customSpin 1s linear infinite;
+                                    }
+                                </style>
                                 <textarea id="customInputField"
-                                    style="width:100%; height:100%; border:1px solid #E5E7EB; border-radius:10px; padding:20px; font-family:'JetBrains Mono', monospace; font-size: 15px; font-weight:500; resize:none; outline:none; color:#101828;"
-                                    placeholder="enter a custom input"></textarea>
+                                    style="width:100%; height:120px; border:1px solid #E5E7EB; border-radius:2px; padding:20px; font-family:'Hind', sans-serif; font-size: 18px; font-weight:400; resize:none; outline:none; color:#000;"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <!-- 3. CONSOLE BAR (PINNED BOTTOM LIFTED) -->
                     <div class="console-bar"
-                        style="height: 68px; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 24px 8px 24px; background: #FFF; border-top: 1px solid #F2F4F7; position: relative; z-index: 9999; box-shadow: 0 -1px 3px rgba(0,0,0,0.02);">
+                        style="height: 68px; flex-shrink: 0; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 24px 8px 24px; background: #FFF; border-top: 1px solid #F2F4F7; position: relative; z-index: 9999; box-shadow: 0 -1px 3px rgba(0,0,0,0.02);">
                         <div style="display:flex; gap:28px; align-items:center;">
                             <div class="console-btn-wrap" onclick="toggleConsole()"
                                 style="border: 1px solid #DE5B2B; border-radius: 4px; padding: 7px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; background: #FFF;">
@@ -1727,7 +1935,7 @@
                             </div>
                             <div style="display:flex; align-items:center; gap:20px;">
                                 <label id="triggerCustomInput"
-                                    style="display:flex; align-items:center; gap:8px; font-size:1.15rem; color:#101828; font-weight: 400; font-family:'Hind', sans-serif; cursor:pointer;">
+                                    style="display:flex; align-items:center; gap:8px; font-size:1.15rem; color:#101828; font-weight: 600; font-family:'Hind', sans-serif; cursor:pointer;">
                                     <input type="checkbox" id="useCustomCheck"
                                         onchange="if(this.checked) { openConsole(); switchTray('custom'); } else { switchTray('testcases'); }"
                                         style="accent-color:#DE6834; width:18px; height:18px; cursor:pointer; border: 1px solid #999;">
@@ -1741,7 +1949,7 @@
                                 title="Reset code" onmouseover="this.style.color='#DE5B2B'"
                                 onmouseout="this.style.color='#71717a'"></i>
                             <button id="runButton" onclick="runCode()"
-                                style="background: #fff; color: #101828; border: 1px solid #D1D5DB; padding: 8px 32px; border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 1.05rem; font-family: 'Hind', sans-serif; transition: all 0.2s;">run
+                                style="background: #fff; color: #DE5B2B; border: 1px solid #DE5B2B; padding: 8px 32px; border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 1.05rem; font-family: 'Hind', sans-serif; transition: all 0.2s;">run
                                 code</button>
                             <button id="submitButton" onclick="submitCode()"
                                 style="background: #DE5B2B; color: #FFF; font-weight: 500; cursor: pointer; font-family: 'Hind', sans-serif; font-size: 1.05rem; padding: 8px 36px; border-radius: 4px; border: none; transition: all 0.2s;">submit</button>
@@ -1755,6 +1963,18 @@
 
     <script src="../js/db.js"></script>
     <script src="../js/auth.js"></script>
+
+    <!-- BOOKMARK CONFIRMATION MODAL -->
+    <div class="bookmark-modal-overlay" id="bookmarkModalOverlay">
+        <div class="bookmark-modal">
+            <p>do you really want to remove this from favourites?</p>
+            <div class="bookmark-modal-actions">
+                <button class="bookmark-btn-yes" onclick="confirmRemoveBookmark()">Yes</button>
+                <button class="bookmark-btn-no" onclick="closeBookmarkModal()">No</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="reportModalOverlay" onclick="if(event.target === this) toggleReportModal()">
         <div class="report-modal">
             <h2 class="report-title">How do you like the content?</h2>
@@ -1787,6 +2007,7 @@
         const courseId = params.get('courseId');
         let mIdx = parseInt(params.get('moduleIndex')) || 0;
         let lIdx = parseInt(params.get('lessonIndex')) || 0;
+        let sidebarMIdx = mIdx;
         const user = auth.getCurrentUser();
         let courseData = null;
 
@@ -1797,7 +2018,6 @@
             courseData = db.getCourseById(courseId);
             if (!courseData) return location.href = './student-dashboard.html';
 
-            document.getElementById('playerCourseTitle').textContent = courseData.title;
             renderSidebar();
             loadLesson(mIdx, lIdx);
 
@@ -1806,19 +2026,42 @@
                 e.stopPropagation();
                 const m = document.getElementById('plusMenu');
                 const g = document.getElementById('gridMenu');
-                g.style.display = 'none';
+                const p = document.getElementById('profileMenu');
+                if (g) g.style.display = 'none';
+                if (p) p.style.display = 'none';
                 m.style.display = m.style.display === 'block' ? 'none' : 'block';
             };
             document.getElementById('gridBtn').onclick = (e) => {
                 e.stopPropagation();
                 const m = document.getElementById('plusMenu');
                 const g = document.getElementById('gridMenu');
-                m.style.display = 'none';
+                const p = document.getElementById('profileMenu');
+                if (m) m.style.display = 'none';
+                if (p) p.style.display = 'none';
                 g.style.display = g.style.display === 'block' ? 'none' : 'block';
             };
-            document.addEventListener('click', () => {
-                document.getElementById('plusMenu').style.display = 'none';
-                document.getElementById('gridMenu').style.display = 'none';
+            document.getElementById('profileBtn').onclick = (e) => {
+                e.stopPropagation();
+                const m = document.getElementById('plusMenu');
+                const g = document.getElementById('gridMenu');
+                const p = document.getElementById('profileMenu');
+                if (m) m.style.display = 'none';
+                if (g) g.style.display = 'none';
+                p.style.display = p.style.display === 'block' ? 'none' : 'block';
+            };
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#plusBtn') && !e.target.closest('#plusMenu')) {
+                    const plusMenu = document.getElementById('plusMenu');
+                    if (plusMenu) plusMenu.style.display = 'none';
+                }
+                if (!e.target.closest('#gridBtn') && !e.target.closest('#gridMenu')) {
+                    const gridMenu = document.getElementById('gridMenu');
+                    if (gridMenu) gridMenu.style.display = 'none';
+                }
+                if (!e.target.closest('#profileBtn') && !e.target.closest('#profileMenu')) {
+                    const profileMenu = document.getElementById('profileMenu');
+                    if (profileMenu) profileMenu.style.display = 'none';
+                }
             });
 
             // Set Header Widget Redirects
@@ -1826,7 +2069,6 @@
                 location.href = `./course-dashboard.html?courseId=${courseId}`;
             };
             document.getElementById('widgetDashboard').onclick = toDashboard;
-            document.getElementById('playerCourseTitle').onclick = toDashboard;
 
             document.getElementById('widgetAttempts').onclick = () => {
                 location.href = `./course-attempts.html?courseId=${courseId}`;
@@ -1837,59 +2079,76 @@
             const sidebar = document.getElementById('lessonList');
             if (!sidebar) return;
 
-            // Updated Sidebar Header & Module Nav
-            const mod = courseData.modules[mIdx];
-            sidebar.innerHTML = `
-                <div style="padding: 24px 20px; font-family: 'Hind', sans-serif;">
-                    <div style="font-size: 1.1rem; color: #333; line-height: 1.5; margin-bottom: 32px; font-weight: 500;">
-                        ${courseData.title}
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; padding: 16px 0;">
-                        <i class="fas fa-caret-left" onclick="goPrevMod()" style="color: #DE5B2B; cursor: pointer; font-size: 1.2rem;"></i>
-                        <span style="font-weight: 600; color: #DE5B2B; font-size: 1.15rem; text-transform: none;">${mod.title}</span>
-                        <i class="fas fa-caret-right" onclick="goNextMod()" style="color: #DE5B2B; cursor: pointer; font-size: 1.2rem;"></i>
-                    </div>
+            const mod = courseData.modules[sidebarMIdx];
 
-                    <div class="lesson-items">
-                        ${mod.lessons.map((less, idx) => {
-                const isSelected = idx === lIdx;
-                const isDone = db.getCourseProgress(courseId, user.id)?.completedItems.includes(less.id);
-                return `
-                                <div class="sidebar-lesson-item" onclick="loadLesson(${mIdx}, ${idx})" style="padding: 16px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; position: relative;">
-                                    <div style="display: flex; align-items: center; gap: 20px;">
-                                        <span style="font-size: 1.2rem; color: ${isSelected ? '#DE5B2B' : '#333'}; font-weight: 500; width: 24px;">${idx + 1}</span>
-                                        <div style="flex: 1;">
-                                            <div style="font-size: 0.85rem; color: #999; margin-bottom: 4px; text-transform: capitalize;">${less.type}</div>
-                                            <div style="font-size: 1.15rem; color: ${isSelected ? '#DE5B2B' : '#333'}; font-weight: 500;">${less.title}</div>
-                                        </div>
-                                        ${isDone ? '<i class="fas fa-check" style="color: black; font-size: 1.1rem;"></i>' : ''}
+            let lessonsHTML = '';
+            if (!mod.lessons || mod.lessons.length === 0) {
+                lessonsHTML = `<div style="padding: 40px 0; text-align: center; color: #888; font-size: 1.3rem; font-weight: 500;">no data available in this module</div>`;
+            } else {
+                lessonsHTML = mod.lessons.map((less, idx) => {
+                    const isSelected = (sidebarMIdx === mIdx && idx === lIdx);
+                    const isDone = db.getCourseProgress(courseId, user.id)?.completedItems.includes(less.id);
+                    return `
+                        <div class="sidebar-lesson-item" onclick="loadLesson(${sidebarMIdx}, ${idx})" style="padding: 16px 0; border-bottom: 1px solid #EAEAEA; cursor: pointer; position: relative;">
+                            <div style="display: flex; align-items: center; gap: 20px;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.95rem; color: #888; margin-bottom: 4px; text-transform: capitalize; padding-left: 28px;">${less.type}</div>
+                                    <div style="display: flex; align-items: center; gap: 14px;">
+                                        <span style="font-size: 1.25rem; color: ${isSelected ? '#DE6834' : '#333'}; font-weight: 400; width: 14px; text-align: right; display: inline-block;">${idx + 1}</span>
+                                        <span style="font-size: 1.2rem; color: ${isSelected ? '#DE6834' : '#333'}; font-weight: 400;">${less.title}</span>
                                     </div>
                                 </div>
-                            `;
-            }).join('')}
+                                ${isDone ? '<i class="fas fa-check" style="color: #555; font-size: 1.3rem; margin-right: 8px;"></i>' : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            sidebar.innerHTML = `
+                <div style="display: flex; flex-direction: column; height: 100%; font-family: 'Hind', sans-serif;">
+                    
+                    <div style="padding: 24px 20px; background: #fafafa; border-bottom: 1px solid #f0f0f0;">
+                        <div class="course-title" style="cursor: pointer; margin-bottom: 0;" onclick="location.href='./course-dashboard.html?courseId=${courseId}'" onmouseover="this.style.color='#DE5B2B'" onmouseout="this.style.color='#222'">
+                            ${courseData.title}
+                        </div>
                     </div>
-                </div>
-                
-                <div style="margin-top: auto; padding: 24px 20px; border-top: 1px solid #f0f0f0;">
-                    <div id="sOverallPerc" style="text-align: center; color: #DE5B2B; font-weight: 600; font-size: 1.2rem; margin-bottom: 12px;">0% covered</div>
-                    <div style="height: 10px; background: #FFF4ED; border-radius: 5px; overflow: hidden;">
-                        <div id="sOverallFill" style="height: 100%; background: #DE5B2B; width: 0%; transition: width 0.5s;"></div>
+                    
+                    <div style="padding: 0 20px;">
+                        <div style="display: flex; align-items: center; margin: 16px 0; padding: 12px 0;">
+                            <i class="fas fa-caret-left" onclick="goPrevMod()" style="color: #DE6834; cursor: pointer; font-size: 1.3rem; margin-right: 12px;"></i>
+                            <span style="font-family: 'Montserrat', sans-serif; font-weight: 600; color: #DE6834; font-size: 1.25rem; text-transform: none; flex: 1; text-align: left;">${mod.title}</span>
+                            <i class="fas fa-caret-right" onclick="goNextMod()" style="color: #DE6834; cursor: pointer; font-size: 1.3rem; margin-left: 12px;"></i>
+                        </div>
+
+                        <div class="lesson-items" style="border-top: 1px solid #f4f4f4;">
+                            ${lessonsHTML}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: auto; padding: 24px 20px;">
+                        <div id="sOverallPerc" style="text-align: center; color: #DE6834; font-weight: 500; font-size: 1.25rem; margin-bottom: 8px;">0% covered</div>
+                        <div style="height: 6px; background: #FFF4ED; border-radius: 0px; overflow: hidden;">
+                            <div id="sOverallFill" style="height: 100%; background: #DE6834; width: 0%; transition: width 0.5s;"></div>
+                        </div>
                     </div>
                 </div>
             `;
             updateGlobalProgress();
         }
 
-        function goNextMod() { if (mIdx < courseData.modules.length - 1) loadLesson(mIdx + 1, 0); }
-        function goPrevMod() { if (mIdx > 0) loadLesson(mIdx - 1, 0); }
+        function goNextMod() { if (sidebarMIdx < courseData.modules.length - 1) { sidebarMIdx++; renderSidebar(); } }
+        function goPrevMod() { if (sidebarMIdx > 0) { sidebarMIdx--; renderSidebar(); } }
 
         function loadLesson(moduleIdx, lessonIdx) {
             mIdx = moduleIdx;
             lIdx = lessonIdx;
+            sidebarMIdx = mIdx;
+
+            const sidebar = document.getElementById('courseSidebar');
+            if (sidebar) sidebar.classList.remove('open');
 
             const less = courseData.modules[mIdx].lessons[lIdx];
-            document.getElementById('playerModuleName').textContent = courseData.modules[mIdx].title;
 
             // Render specific lesson UI
             const qTitle = document.getElementById('qTitle');
@@ -1914,13 +2173,25 @@
                     el.style.color = "#111";
                 });
                 qDesc.querySelectorAll('pre, .ql-syntax').forEach(el => {
-                    el.style.fontFamily = "Consolas, 'Monaco', 'Courier New', monospace";
-                    el.style.background = "#F2F4F7";
-                    el.style.padding = "24px";
+                    el.style.fontFamily = "Consolas";
+                    el.style.background = "#ebebeb";
+                    el.style.padding = "16px";
                     el.style.borderRadius = "8px";
-                    el.style.fontSize = "1.05rem";
+                    el.style.fontSize = "1.25rem";
                 });
-                qDesc.style.fontSize = "1.2rem"; /* INCREASED QUESTION FONT SIZE */
+
+                // Strip inline grey background colors from pasted text to ensure pure white
+                qDesc.style.background = "#fff";
+                qDesc.querySelectorAll("*").forEach(el => {
+                    if (
+                        el.tagName !== "PRE" &&
+                        el.tagName !== "CODE"
+                    ) {
+                        el.style.background = "transparent";
+                    }
+                });
+
+                qDesc.style.fontSize = "1.5rem"; /* INCREASED QUESTION FONT SIZE */
                 qDesc.style.lineHeight = "1.8";
             }
 
@@ -1948,8 +2219,11 @@
                 }
             }
 
+            if (!['mcq', 'quiz', 'assertion', 'diagram', 'coding', 'drawing'].includes(less.type)) {
+                db.updateCourseProgress(courseId, user.id, less.id);
+                updateGlobalProgress();
+            }
             renderSidebar();
-            db.updateCourseProgress(courseId, user.id, less.id);
         }
 
         function toggleSidebar() {
@@ -2014,15 +2288,73 @@
             return str.toString().trim().replace(/\r\n/g, "\n");
         }
 
+        const CompilerConfig = {
+            judge0Enabled: true,
+            judge0Endpoints: ["https://ce.judge0.com", "https://judge0-ce.p.rapidapi.com"],
+            pistonEnabled: true,
+            pistonEndpoints: ["https://emkc.org/api/v2/piston/execute", "https://piston.p.rapidapi.com/execute"],
+            glotEnabled: true,
+            glotEndpoint: "https://glot.io/api/run"
+        };
+
         async function executeRunner({ language, code, stdin }) {
             const lang = language.toLowerCase();
-            try {
-                if (lang === 'javascript' || lang === 'js') return await runJavaScript(code, stdin);
-                if (lang === 'python') return await runPython(code, stdin);
-                return await runWithPiston("https://emkc.org/api/v2/piston/execute", code, stdin, lang);
-            } catch (e) {
-                return { success: false, error: e.message };
+
+            // 1. Browser Native (Unlimited)
+            if (lang === 'javascript' || lang === 'js') {
+                return await runJavaScript(code, stdin);
             }
+            if (lang === 'python' || lang === 'python3') {
+                return await runPython(code, stdin);
+            }
+
+            // 2. Judge0 Fallback Pool
+            if (CompilerConfig.judge0Enabled) {
+                for (let url of CompilerConfig.judge0Endpoints) {
+                    try {
+                        const result = await runWithJudge0(url, code, stdin, lang);
+                        if (result.success) return result;
+
+                        const err = (result.error || "").toLowerCase();
+                        if (err.includes("limit") || err.includes("busy") || err.includes("network") || err.includes("dispatch")) {
+                            continue; // Try next server
+                        }
+                        return result; // Serious error (compilation/runtime), return to user
+                    } catch (e) {
+                        // Continue to next endpoint
+                    }
+                }
+            }
+
+            // 3. Piston Fallback
+            if (CompilerConfig.pistonEnabled) {
+                for (let url of CompilerConfig.pistonEndpoints) {
+                    try {
+                        const result = await runWithPiston(url, code, stdin, lang);
+                        if (result.success) return result;
+
+                        const err = (result.error || "").toLowerCase();
+                        if (err.includes("limit") || err.includes("busy") || err.includes("network")) {
+                            continue;
+                        }
+                        return result;
+                    } catch (e) {
+                        continue;
+                    }
+                }
+            }
+
+            // 4. Glot.io Last Resort
+            if (CompilerConfig.glotEnabled) {
+                try {
+                    const res = await runWithGlot(code, stdin, lang);
+                    return { success: true, stdout: res };
+                } catch (e) {
+                    // Fall through to final error
+                }
+            }
+
+            return { success: false, error: "All execution servers are currently busy or not configured. Please try again in a few seconds." };
         }
 
         async function runJavaScript(code, input) {
@@ -2086,19 +2418,80 @@
             }
         }
 
-        async function runWithPiston(url, code, input, lang) {
-            const map = { 'java': 'java', 'c': 'c', 'cpp': 'cpp', 'c++': 'cpp' };
-            const plang = map[lang] || lang;
-            const vmap = { 'java': '15.0.2', 'c': '10.2.0', 'cpp': '10.2.0' };
+        async function runWithJudge0(url, code, input, originalLang) {
             try {
-                const res = await fetch(url, {
-                    method: 'POST', body: JSON.stringify({ language: plang, version: vmap[plang] || '*', files: [{ content: code }], stdin: input })
+                const map = { 'javascript': 93, 'python3': 71, 'python': 71, 'java': 62, 'c': 50, 'c++': 54, 'cpp': 54, 'csharp': 51, 'php': 68, 'ruby': 72, 'sql': 82, 'mysql': 82 };
+                const id = map[originalLang];
+                if (!id) throw new Error("Unsupported Judge0 ID");
+
+                const res = await fetch(`${url}/submissions?base64_encoded=false`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ source_code: code, stdin: input || '', language_id: id })
                 });
+
+                if (!res.ok) {
+                    if (res.status === 429) throw new Error("API Limit Reached");
+                    throw new Error("Judge0 API failed to dispatch job.");
+                }
                 const data = await res.json();
-                return { success: !data.run.stderr, stdout: data.run.stdout, error: data.run.stderr };
+
+                let attempts = 0;
+                while (attempts < 20) {
+                    await new Promise(r => setTimeout(r, 1000));
+                    const poll = await fetch(`${url}/submissions/${data.token}?base64_encoded=false`);
+                    const result = await poll.json();
+
+                    if (result.status && result.status.id >= 3) {
+                        if (result.status.id === 3) return { success: true, stdout: result.stdout || "" };
+                        if (result.status.id === 6) return { success: false, error: result.compile_output || "Compilation Error" };
+                        return { success: false, error: result.stderr || result.message || "Execution Error" };
+                    }
+                    attempts++;
+                }
+                throw new Error("Timeout waiting for remote compilation.");
             } catch (e) {
-                return { success: false, error: "Compiler API Error" };
+                return { success: false, error: e.message };
             }
+        }
+
+        async function runWithPiston(url, code, input, originalLang) {
+            try {
+                const map = { 'java': 'java', 'c': 'c', 'c++': 'cpp', 'cpp': 'cpp', 'csharp': 'csharp', 'php': 'php', 'ruby': 'ruby', 'sql': 'sql', 'mysql': 'sql' };
+                const pistonLang = map[originalLang];
+                if (!pistonLang) return { success: false, error: "Language unsupported" };
+
+                const vmap = { 'java': '15.0.2', 'c': '10.2.0', 'cpp': '10.2.0', 'csharp': '5.0.201', 'php': '8.0.3', 'ruby': '3.0.1', 'sql': '3.35.5' };
+
+                const response = await fetch(url, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ language: pistonLang, version: vmap[pistonLang] || 'latest', files: [{ content: code }], stdin: input || '' })
+                });
+
+                if (!response.ok) throw new Error(`Network error ${response.status}`);
+                const result = await response.json();
+
+                if (result.run) {
+                    if (result.run.stderr) return { success: false, error: result.run.stderr };
+                    return { success: true, stdout: result.run.stdout || "" };
+                } else if (result.compile?.stderr) {
+                    return { success: false, error: result.compile.stderr };
+                }
+                return { success: false, error: "Execution terminated unexpectedly" };
+            } catch (e) {
+                return { success: false, error: e.message };
+            }
+        }
+
+        async function runWithGlot(code, input, originalLang) {
+            const map = { 'c': 'c', 'cpp': 'cpp', 'java': 'java', 'python': 'python', 'javascript': 'javascript' };
+            const glotLang = map[originalLang] || 'c';
+            const res = await fetch(`${CompilerConfig.glotEndpoint}/${glotLang}/latest`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ files: [{ name: "main", content: code }], stdin: input || "" })
+            });
+            const data = await res.json();
+            return data.stdout || data.stderr || data.error || "Execution error.";
         }
 
         function initPlayerAce(lang, less) {
@@ -2110,45 +2503,80 @@
             let middle = (saved && saved.value) ? saved.value : (qCode.middle || '').replace(/↔/g, '').trim();
             let suffix = (qCode.suffix || '').replace(/↔/g, '').trimStart();
 
-            const commonOptions = {
-                theme: "ace/theme/textmate",
-                mode: `ace/mode/${aceLang}`,
-                fontSize: 18, /* ABSOLUTE FIXED */
-                fontFamily: "Consolas, 'Monaco', 'Courier New', monospace",
-                showPrintMargin: false,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                readOnly: false,
-                showLineNumbers: true,
-                wrap: false,
-                autoScrollEditorIntoView: false,
-                maxLines: 3000 /* LIMIT TO PREVENT ACE COLLAPSE */
-            };
+            const currentScaleVal = document.getElementById('fontSlider')?.value || 100;
+            const currentEScale = 1 + (((currentScaleVal / 100) - 1) * 0.12);
+            const currentEditorSize = (18 * currentEScale).toFixed(2) + "px";
 
             const hEd = ace.edit("editorHead");
-            hEd.setOptions(commonOptions);
+            hEd.setTheme("ace/theme/chrome");
+            hEd.session.setMode(`ace/mode/${aceLang}`);
             hEd.setValue(prefix, -1);
             hEd.setReadOnly(true);
-            hEd.container.style.background = "#f5f5f5";
-            const hLines = hEd.getSession().getLength();
-            hEd.container.style.height = (hLines * 1.4 * 18 + 10) + "px";
+            hEd.renderer.setShowGutter(true);
+            hEd.setOptions({
+                maxLines: Infinity,
+                highlightActiveLine: false,
+                showPrintMargin: false,
+                showLineNumbers: true,
+                fontFamily: "Consolas",
+                fontSize: currentEditorSize
+            });
+            hEd.container.style.lineHeight = "1.4";
+            hEd.resize();
 
             const mEd = ace.edit("editorMain");
-            mEd.setOptions(commonOptions);
+            mEd.setTheme("ace/theme/chrome");
+            mEd.session.setMode(`ace/mode/${aceLang}`);
+            mEd.setValue(middle, -1);
             mEd.setOptions({
+                fontSize: currentEditorSize,
+                fontFamily: "Consolas",
                 enableBasicAutocompletion: true,
                 enableLiveAutocompletion: true,
-                minLines: 15
+                enableSnippets: true,
+                showPrintMargin: false,
+                highlightActiveLine: false,
+                tabSize: 4,
+                useSoftTabs: true,
+                minLines: 15,
+                maxLines: Infinity
             });
-            mEd.setValue(middle, -1);
+
+            // Ensure Enter selects the suggestion if popup is open
+            mEd.commands.addCommand({
+                name: "insertSuggestion",
+                bindKey: "Enter",
+                exec: function (editor) {
+                    if (editor.completer && editor.completer.activated) {
+                        editor.completer.insertMatch();
+                    } else {
+                        return false; // Let default Enter behavior take over
+                    }
+                },
+                readOnly: false
+            });
+            mEd.resize();
 
             const tEd = ace.edit("editorTail");
-            tEd.setOptions(commonOptions);
+            tEd.setTheme("ace/theme/chrome");
+            tEd.session.setMode(`ace/mode/${aceLang}`);
             tEd.setValue(suffix, -1);
             tEd.setReadOnly(true);
-            tEd.container.style.background = "#f5f5f5";
-            const tLines = tEd.getSession().getLength();
-            tEd.container.style.height = (tLines * 1.4 * 18 + 10) + "px";
+            tEd.renderer.setShowGutter(true);
+            tEd.setOptions({
+                maxLines: Infinity,
+                highlightActiveLine: false,
+                showPrintMargin: false,
+                showLineNumbers: true,
+                fontFamily: "Consolas",
+                fontSize: currentEditorSize
+            });
+            tEd.container.style.lineHeight = "1.4";
+            tEd.resize();
+
+            // Apply transparent grey background to readonly sections
+            hEd.container.style.background = "rgba(0, 0, 0, 0.003)";
+            tEd.container.style.background = "rgba(0, 0, 0, 0.003)";
 
             window.mainEditor = mEd;
             window.editors = { hEd, mEd, tEd };
@@ -2162,10 +2590,8 @@
             }, 50);
 
             const updateLineSync = () => {
-                const headLines = hEd.session.getLength();
-                const mainLines = mEd.session.getLength();
-                mEd.setOption("firstLineNumber", headLines + 1);
-                tEd.setOption("firstLineNumber", headLines + mainLines + 1);
+                // Numbering for the main editor starts from 1 as requested.
+                mEd.setOption("firstLineNumber", 1);
             };
 
             mEd.getSession().on('change', () => {
@@ -2260,7 +2686,7 @@
                 if (trayCustom) trayCustom.style.display = 'block';
                 const check = document.getElementById('useCustomCheck');
                 if (check && !check.checked) check.checked = true;
-            } else if (t === 'testcases') {
+            } else if (t === 'sample') {
                 if (trayLogs) trayLogs.style.display = 'flex';
                 const check = document.getElementById('useCustomCheck');
                 if (check && check.checked) check.checked = false;
@@ -2336,144 +2762,324 @@
             initPlayerAce(lang, less);
         }
 
-        async function submitCode() {
-            const less = courseData.modules[mIdx].lessons[lIdx];
-            const lang = document.getElementById('langSelector').value;
-            const code = buildExecutableCode(less, lang);
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
 
-            switchTray('testcases');
-            const loaderHtml = `
-                <div style="display:flex; align-items:center; padding:10px;">
-                    <div class="run-loader">
-                        <div class="run-dot"></div><div class="run-dot"></div><div class="run-dot"></div><div class="run-dot"></div>
+        function showSubmissionResultModal(passed, total, compileError = null) {
+            const existing = document.getElementById('submissionModal');
+            if (existing) existing.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'submissionModal';
+            modal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.15); display:flex; align-items:flex-start; justify-content:center; z-index:90000; font-family:'Hind', sans-serif; padding-top: 180px;";
+
+            const content = document.createElement('div');
+            content.style = "background:#fff; width:460px; padding:44px 36px; border-radius:12px; text-align:center; box-shadow:0 12px 48px rgba(0,0,0,0.12); position:relative; animation: modalSlideDown 0.3s ease-out; border: 1px solid #E5E7EB;";
+
+            const allPassed = (passed === total && total > 0);
+            const iconColor = allPassed ? '#32C373' : '#F04438';
+            const iconClass = allPassed ? 'fa-check' : 'fa-times';
+
+            content.innerHTML = `
+                <div style="width:48px; height:48px; border:2.5px solid ${iconColor}; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+                    <i class="fas ${iconClass}" style="color:${iconColor}; font-size:20px;"></i>
+                </div>
+                <h2 style="font-size:18px; color:#181D27; margin-bottom:12px; font-weight:500; line-height:1.4; font-family:'Hind', sans-serif;">Submission success! do you want to proceed to next lesson?</h2>
+                
+                <div style="margin: 8px 0;">
+                    <div style="background:#fffcfb; border:1px solid #FFE4D6; border-radius:6px; padding:8px 24px; color:#DE5B2B; font-size:16px; display:inline-block; font-weight:600; font-family:'Hind', sans-serif;">
+                        ${passed} Passed, ${total - passed} Failed
                     </div>
-                    <span style="color:#DE5B2B; font-weight:500; margin-left:12px;">Evaluating Test Cases...</span>
+                </div>
+
+                ${compileError ? `<div style="color:#111; font-size:16px; margin-top:10px; font-weight:600; font-family:'Hind', sans-serif; padding: 0 10px; line-height: 1.5;">${compileError}</div>` : ''}
+
+                <div style="display:flex; justify-content:center; gap:20px; margin-top:36px; align-items:center;">
+                    <button id="stayModalBtn" style="padding:10px 42px; border-radius:50px; border:1px solid #e5e7eb; background:#fff; color:#374151; font-weight:500; cursor:pointer; font-size:14px; transition: all 0.2s; font-family:'Hind', sans-serif;">stay</button>
+                    <button id="nextModalBtn" style="padding:10px 32px; border-radius:50px; border:none; background:#DE5B2B; color:#fff; font-weight:500; cursor:pointer; font-size:16px; transition: all 0.2s; font-family:'Hind', sans-serif; box-shadow: 0 4px 12px rgba(222, 91, 43, 0.25);">next lesson</button>
                 </div>
             `;
-            document.getElementById('tcSidebar').innerHTML = loaderHtml;
-            document.getElementById('testCasesSummaryContent').innerHTML = loaderHtml;
 
-            const testCases = less.data.testCases || [];
-            let results = [];
-            let passedCount = 0;
+            modal.appendChild(content);
+            document.body.appendChild(modal);
 
-            for (let i = 0; i < testCases.length; i++) {
-                const tc = testCases[i];
-                const runRes = await executeRunner({ language: lang, code, stdin: tc.input });
-                const expected = normalizeOutput(tc.output || '');
-                const actual = normalizeOutput(runRes.stdout || '');
-                const isCorrect = runRes.success && (expected === actual || (actual.includes(expected)));
-                if (isCorrect) passedCount++;
-                results.push({ ...tc, status: isCorrect ? 'pass' : 'fail', actual: runRes.stdout, error: runRes.error });
-            }
-
-            // Show Summary
-            const summaryContent = document.getElementById('testCasesSummaryContent');
-            if (summaryContent) {
-                summaryContent.innerHTML = `
-                    <div style="padding:24px; background:#fff; border-radius:12px;">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid #EAECF0;">
-                            <div>
-                                <h3 style="font-size:1.25rem; font-weight:700; color:#101828; margin-bottom:4px;">Submission Result</h3>
-                                <p style="color:#667085; font-size:0.95rem;">Successfully evaluated all test cases.</p>
-                            </div>
-                            <div style="display:flex; gap:12px;">
-                                <div style="background:#ECFDF3; border:1px solid #ABEFC6; padding:8px 16px; border-radius:8px; display:flex; align-items:center; gap:8px;">
-                                    <i class="fas fa-check-circle" style="color:#067647;"></i>
-                                    <span style="color:#067647; font-weight:700; font-size:1.1rem;">${passedCount} Passed</span>
-                                </div>
-                                <div style="background:#FFF1F0; border:1px solid #FEE4E2; padding:8px 16px; border-radius:8px; display:flex; align-items:center; gap:8px;">
-                                    <i class="fas fa-times-circle" style="color:#B42318;"></i>
-                                    <span style="color:#B42318; font-weight:700; font-size:1.1rem;">${results.length - passedCount} Failed</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="color:#475467; font-size:1rem; line-height:1.6;">
-                            Your code was evaluated against <b>${results.length}</b> test cases. Select a specific test case from the left sidebar to view detailed input/output logs.
-                        </div>
-                    </div>
-                `;
-            }
-
-            const tcSidebar = document.getElementById('tcSidebar');
-            if (tcSidebar) {
-                tcSidebar.innerHTML = results.map((res, i) => `
-                    <div class="tc-item ${i === 0 ? 'active' : ''}" onclick="showTCCase(${i}, ${JSON.stringify(results).replace(/"/g, '&quot;')})">
-                        <i class="${res.status === 'pass' ? 'fas fa-check-circle tc-icon-pass' : 'fas fa-times-circle tc-icon-fail'}"></i>
-                        <span>Test Case ${i + 1}</span>
-                    </div>
-                `).join('');
-                if (results.length > 0) showTCCase(0, results);
-            }
-
-            // Switch to summary view first
-            document.getElementById('trayLogs').style.display = 'flex';
-            document.getElementById('traySummary').style.display = 'flex';
-            document.getElementById('tab-testcases').classList.add('active');
-
-            db.updateCourseProgress(courseId, user.id, less.id);
-            renderSidebar();
+            document.getElementById('stayModalBtn').onclick = () => modal.remove();
+            document.getElementById('nextModalBtn').onclick = () => {
+                modal.remove();
+                nextLesson();
+            };
         }
 
-        function showTCCase(idx, allResults) {
-            document.querySelectorAll('.tc-item').forEach((it, i) => it.classList.toggle('active', i === idx));
-            const detailPane = document.getElementById('tcContent');
-            const res = allResults[idx];
-            if (detailPane) {
-                detailPane.innerHTML = `
-                    <div style="padding:24px;">
-                        <div style="margin-bottom:20px;">
-                            <div style="color:#667085; font-size:14px; font-weight:600; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Input</div>
-                            <div style="background:#F9FAFB; border:1px solid #EAECF0; padding:16px; border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:14px; color:#101828; white-space:pre-wrap;">${res.input || 'N/A'}</div>
-                        </div>
-                        <div style="margin-bottom:20px;">
-                            <div style="color:#667085; font-size:14px; font-weight:600; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Expected Output</div>
-                            <div style="background:#F9FAFB; border:1px solid #EAECF0; padding:16px; border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:14px; color:#101828; white-space:pre-wrap;">${res.output}</div>
-                        </div>
-                        <div>
-                            <div style="color:#667085; font-size:14px; font-weight:600; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Actual Output</div>
-                            <div style="background:${res.status === 'pass' ? '#F6FEF9' : '#FFF6F6'}; border:1px solid ${res.status === 'pass' ? '#D1FADF' : '#FDA29B'}; padding:16px; border-radius:8px; font-family:'JetBrains Mono', monospace; font-size:14px; color:${res.status === 'pass' ? '#027A48' : '#D92D20'}; white-space:pre-wrap;">${res.error || res.actual || 'No output'}</div>
-                        </div>
-                    </div>
-                `;
+        async function submitCode() {
+            const subBtn = document.getElementById('submitButton');
+            if (subBtn) {
+                subBtn.innerHTML = '<div class="custom-spinner" style="width:16px; height:16px; border-width:2px; border-color:rgba(255,255,255,0.4); border-top-color:#FFF; margin-right:6px;"></div> submitting';
+                subBtn.disabled = true;
+                subBtn.style.opacity = '0.8';
+                subBtn.style.cursor = 'not-allowed';
+            }
+            await runCode(true);
+            if (subBtn) {
+                subBtn.innerText = 'submit';
+                subBtn.disabled = false;
+                subBtn.style.opacity = '1';
+                subBtn.style.cursor = 'pointer';
             }
         }
 
-        async function runCode() {
+        function renderTestCases(results) {
+            const sidebar = document.getElementById('tcSidebar');
+            if (!sidebar) return;
+            sidebar.innerHTML = '<div class="test-cases-container" style="min-height: 100%; display: flex; flex-direction: column;"></div>';
+            const container = sidebar.querySelector('.test-cases-container');
+
+            const passedCount = results.filter(r => r.status === 'pass').length;
+            const totalCount = results.length;
+
+            results.forEach((res, idx) => {
+                const wrapper = document.createElement('div');
+                const statusClass = res.status || 'pending';
+                wrapper.className = 'test-case-item' + (idx === 0 ? ' active' : '');
+
+                const labelName = `Test case ${idx + 1}`;
+                const iconClass = statusClass === 'pass' ? 'fa-check' : (statusClass === 'fail' ? 'fa-xmark' : 'fa-exclamation-triangle');
+                const iconColor = statusClass === 'pass' ? '#12B76A' : (statusClass === 'fail' ? '#F04438' : '#F79009');
+
+                wrapper.innerHTML = `
+                    <i class="fas ${iconClass}" style="color: ${iconColor};"></i>
+                    <button>${labelName}</button>
+                `;
+
+                const btn = wrapper.querySelector('button');
+                btn.onclick = () => {
+                    container.querySelectorAll('.test-case-item').forEach(el => el.classList.remove('active'));
+                    wrapper.classList.add('active');
+                    showTestCaseDetail(res);
+                };
+                container.appendChild(wrapper);
+            });
+
+            const summaryDiv = document.createElement('div');
+            summaryDiv.style.padding = '20px 16px';
+            const statusColor = passedCount === 0 ? '#F04438' : '#12B76A';
+            summaryDiv.style.color = statusColor;
+            summaryDiv.style.fontSize = '22px';
+            summaryDiv.style.fontWeight = '500';
+            summaryDiv.style.fontFamily = "'Hind', sans-serif";
+            summaryDiv.innerHTML = `Test case passed ${passedCount}/${totalCount}`;
+            container.appendChild(summaryDiv);
+
+            if (results.length > 0) showTestCaseDetail(results[0]);
+        }
+
+        function showTestCaseDetail(res) {
+            const detail = document.getElementById('tcDetailPane') || document.getElementById('tcContent');
+            if (!detail) return;
+            const statusClass = res.status === 'pass' ? 'success' : 'error';
+
+            detail.innerHTML = `
+                <div class="test-case-details-container">
+                    <h4>Input</h4>
+                    <pre>${escapeHtml(res.input || '(No input)')}</pre>
+                    
+                    <h4>Expected Output</h4>
+                    <pre>${escapeHtml(res.output || '(No output)')}</pre>
+                    
+                    <h4>Your Output</h4>
+                    <pre class="${statusClass}">${escapeHtml(res.actual || '(No output)')}</pre>
+                </div>
+            `;
+        }
+
+        async function runCode(isSubmit = false) {
             const less = courseData.modules[mIdx].lessons[lIdx];
             const lang = document.getElementById('langSelector').value;
             const code = buildExecutableCode(less, lang);
-            const customInput = document.getElementById('customInputField').value;
             const runBtn = document.getElementById('runButton');
 
+            const useCustom = document.getElementById('useCustomCheck')?.checked;
+            const customVal = document.getElementById('customInputField')?.value || '';
+
             if (runBtn) {
+                runBtn.innerHTML = '<div class="custom-spinner" style="width:16px; height:16px; border-width:2px; border-color:#E5E7EB; border-top-color:#DE5B2B; margin-right:6px;"></div> run code';
                 runBtn.disabled = true;
-                runBtn.innerHTML = 'running...';
+                runBtn.style.opacity = '0.8';
+                runBtn.style.cursor = 'not-allowed';
             }
 
-            switchTray('console');
-            const cText = document.getElementById('consoleOutputText');
-            cText.innerHTML = `<div style="padding:10px; font-family:'Consolas', monospace; color:#DE5B2B; font-weight:600;">. . .</div>`;
+            if (useCustom) {
+                switchTray('console');
+                const cText = document.getElementById('consoleOutputText');
+                cText.innerHTML = `
+                    <div style="display:flex; align-items:center; padding:10px; gap: 8px;">
+                        <div class="custom-spinner" style="border-color: rgba(255,255,255,0.2); border-top-color: #DE5B2B;"></div>
+                        <span class="running-text" style="color:#fff;">Running code...</span>
+                    </div>
+                `;
 
-            // Step-wise simulation like exam-attempt
-            await new Promise(r => setTimeout(r, 600));
-            cText.innerHTML += `<div style="padding:0 10px 10px 10px; font-family:'Hind', sans-serif; color:#DE5B2B; font-weight:600;">Running test cases...</div>`;
+                const result = await executeRunner({ language: lang, code, stdin: customVal });
+                if (result.success) {
+                    cText.innerHTML = `<div style="padding:0; line-height:1.6; white-space:pre-wrap; font-family:'Open Sans', sans-serif; font-size:1rem; font-weight:400; color:#fff;">${escapeHtml(result.stdout) || 'Process exited with no output.'}</div>`;
+                } else {
+                    switchTray('console');
+                    cText.innerHTML = `<div style="white-space:pre-wrap; font-family:'Open Sans', sans-serif; font-size:1rem; font-weight:400; color:#fff;">${escapeHtml(result.error)}</div>`;
+                }
 
-            await new Promise(r => setTimeout(r, 800));
+                openConsole();
 
-            const result = await executeRunner({ language: lang, code, stdin: customInput });
-
-            if (result.success) {
-                cText.innerHTML = `<div style="padding:10px; font-family:'Consolas', monospace; color:#101828; white-space:pre-wrap;">${result.stdout || 'Process exited with no output.'}</div>`;
-                cText.innerHTML += `<div style="padding:10px; font-family:'Hind', sans-serif; color:#039855; font-weight:700;">All sample test cases passed.</div>`;
+                if (runBtn) {
+                    runBtn.innerText = 'run code';
+                    runBtn.disabled = false;
+                    runBtn.style.opacity = '1';
+                    runBtn.style.cursor = 'pointer';
+                }
             } else {
-                cText.innerHTML = `<div style="padding:10px; font-family:'Consolas', monospace; color:#F04438; white-space:pre-wrap;">${result.error || 'Execution Error'}</div>`;
-                cText.innerHTML += `<div style="padding:10px; font-family:'Hind', sans-serif; color:#F04438; font-weight:700;">Test case failed.</div>`;
-            }
+                const sidebar = document.getElementById('tcSidebar');
+                const detail = document.getElementById('tcDetailPane') || document.getElementById('tcContent');
+                const summaryContent = document.getElementById('testCasesSummaryContent');
+                const cText = document.getElementById('consoleOutputText');
 
-            if (runBtn) {
-                runBtn.disabled = false;
-                runBtn.innerHTML = 'run code';
+                const loaderHtml = `
+                    <div style="width:100%; color:#101828; font-family:'Hind', sans-serif; font-size:1.15rem;">
+                        <div style="font-family:'Hind', sans-serif; display:flex; flex-direction:column; gap:32px;">
+                            <div style="display:flex; align-items:center; gap:24px;">
+                                <div style="background:#F9FAFB; padding:8px 24px; border-radius:4px; color:#DE5B2B; font-weight:600; font-size:1.15rem; border:none; display: flex; align-items: center; gap: 10px;">
+                                    <div class="custom-spinner" style="border-color:#FFF; border-top-color:#DE5B2B;"></div> Hidden Test Cases
+                                </div>
+                            </div>
+                            <div style="background:#FFE9DF; border:none; padding:24px 32px; color:#475467; font-size:1.1rem; font-weight:400; line-height:1.6; border-radius:8px;">
+                                Test cases for this question are hidden and can not be seen by the candidate.
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                if (sidebar) sidebar.innerHTML = `
+                    <div style="display:flex; flex-direction:column; padding:20px; align-items:center; gap: 10px;">
+                        <div class="custom-spinner" style="width:24px; height:24px; border-color:#E5E7EB; border-top-color:#DE5B2B;"></div>
+                        <div style="color:#666; font-size:0.9rem;">Initializing...</div>
+                    </div>
+                `;
+                if (detail) detail.innerHTML = `
+                    <div style="display:flex; align-items:center; justify-content:center; height:100%; gap: 10px;">
+                        <div class="custom-spinner" style="width:24px; height:24px; border-color:#E5E7EB; border-top-color:#DE5B2B;"></div>
+                        <span class="running-text">Evaluating Test Cases...</span>
+                    </div>
+                `;
+                if (summaryContent) summaryContent.innerHTML = loaderHtml;
+                if (cText) cText.innerHTML = `
+                    <div style="display:flex; align-items:center; padding:10px; gap:8px;">
+                        <div class="custom-spinner" style="border-color:rgba(255,255,255,0.2); border-top-color:#DE5B2B;"></div>
+                        <span class="running-text" style="color:#fff;">Running all test cases...</span>
+                    </div>
+                `;
+
+                switchTray('testcases');
+
+                const testCases = less.data.testCases || [];
+                let results = [];
+                let errorOccurred = false;
+
+                if (testCases.length === 0) {
+                    if (sidebar) sidebar.innerHTML = '<div style="color:#D92D20; font-weight:500;">No relevant test cases found.</div>';
+                    if (runBtn) {
+                        runBtn.innerText = 'run code';
+                        runBtn.disabled = false;
+                        runBtn.style.opacity = '1';
+                        runBtn.style.cursor = 'pointer';
+                    }
+                    return;
+                }
+
+                for (let i = 0; i < testCases.length; i++) {
+                    const tc = testCases[i];
+                    const runRes = await executeRunner({ language: lang, code, stdin: tc.input });
+
+                    if (!runRes.success) {
+                        switchTray('console');
+                        if (cText) cText.innerHTML = `<div style="color:#fff; white-space:pre-wrap; font-family:'Open Sans', sans-serif; font-size:18px; font-weight:400;">${escapeHtml(runRes.error || runRes.stdout || 'Unknown Runtime Error')}</div>`;
+                        if (sidebar) sidebar.innerHTML = '<div style="color:#f04438; font-size:1.1rem; padding:12px; font-weight:600;">Runtime Error Detect...</div>';
+                        errorOccurred = true;
+                        break;
+                    }
+
+                    const expected = normalizeOutput(tc.output || '');
+                    const actual = normalizeOutput(runRes.stdout || '');
+                    const isCorrect = (expected === actual || actual.includes(expected));
+                    results.push({ ...tc, status: isCorrect ? 'pass' : 'fail', actual: runRes.stdout, error: runRes.error });
+                }
+
+                if (errorOccurred) {
+                    if (runBtn) {
+                        runBtn.innerText = 'run code';
+                        runBtn.disabled = false;
+                        runBtn.style.opacity = '1';
+                        runBtn.style.cursor = 'pointer';
+                    }
+                    saveAttemptHistory(less.id, 'coding', 'error', 0, testCases.length, code, lang, results);
+                    openConsole();
+                    return;
+                }
+
+                const sampleRes = results.filter(r => r.isSample);
+                const hiddenRes = results.filter(r => !r.isSample);
+
+                const samplePassed = sampleRes.filter(r => r.status === 'pass').length;
+                const hiddenPassed = hiddenRes.filter(r => r.status === 'pass').length;
+                const totalSamples = sampleRes.length;
+                const totalHidden = hiddenRes.length;
+
+                const attemptStatus = errorOccurred ? 'error' : (hiddenPassed === totalHidden ? 'success' : 'failed');
+                saveAttemptHistory(less.id, 'coding', attemptStatus, hiddenPassed, totalHidden, code, lang, results);
+
+                renderTestCases(sampleRes.length > 0 ? sampleRes : results);
+
+                const summaryHtml = `
+                    <div style="font-family:'Hind', sans-serif; display:flex; flex-direction:column; gap:32px;">
+                        <div style="display:flex; align-items:center; gap:24px;">
+                            <div style="background:#F9FAFB; padding:8px 24px; border-radius:4px; color:#DE5B2B; font-weight:600; font-size:1.15rem; border:none;">Hidden Test Cases</div>
+                            <div style="font-size:1.15rem; color:#101828; font-weight:500;">
+                                ${hiddenPassed} passed, ${totalHidden - hiddenPassed} failed
+                            </div>
+                        </div>
+                        
+                        <div style="background:#FFE9DF; border:none; border-radius:8px; padding:24px 32px; color:#475467; font-size:1.1rem; font-weight:400; line-height:1.6;">
+                            Test cases for this question are hidden and can not be seen by the candidate.
+                        </div>
+                    </div>
+                `;
+
+                if (summaryContent) summaryContent.innerHTML = summaryHtml;
+
+                const finalStatusHtml = `<div style="color:#fff; font-family:'Hind', sans-serif; font-size:1rem; font-weight:400; line-height:1.6;">Execution Complete.\n\nSample: ${samplePassed}/${totalSamples} passed\nHidden: ${hiddenPassed}/${totalHidden} passed</div>`;
+                if (cText) cText.innerHTML = finalStatusHtml;
+
+                openConsole();
+
+                if (runBtn) {
+                    runBtn.innerText = 'run code';
+                    runBtn.disabled = false;
+                    runBtn.style.opacity = '1';
+                    runBtn.style.cursor = 'pointer';
+                }
+
+                if (isSubmit) {
+                    let firstError = results.find(r => r.status === 'fail')?.error || null;
+                    showSubmissionResultModal(hiddenPassed, totalHidden, (firstError ? 'Compile error' : null));
+
+                    if (hiddenPassed === totalHidden && samplePassed === totalSamples && (totalHidden > 0 || totalSamples > 0)) {
+                        db.updateCourseProgress(courseId, user.id, less.id);
+                        db.savePracticeSession(less.id, null); // Clear saved session on success for fresh reattempts
+                        renderSidebar();
+                    }
+                }
             }
         }
 
@@ -2715,43 +3321,38 @@
                             ${(less.data.options || ['Option A', 'Option B', 'Option C', 'Option D']).map(v => `
                                 <div class="mcq-option" onclick="selectOpt(this, '${encodeURIComponent(v)}')">
                                     <div class="mcq-circle"></div>
-                                    <span>${v}</span>
+                                    <span class="opt-val">${v}</span>
                                 </div>
                             `).join('')}
                         </div>
                         
-                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 40px; margin-top: 24px;">
+                        <div style="display: flex; justify-content: flex-start; margin-top: 24px; margin-bottom: 40px;">
                             <div class="mcq-clear" onclick="clearSelection()">Clear selection</div>
-                            <button class="btn-run" onclick="checkAnswer()" style="padding: 12px 64px; background: #DE5B2B; color: #fff; border: none; border-radius: 6px; font-weight: 600; font-size: 1.1rem; cursor: pointer; font-family: 'Hind', sans-serif;">submit</button>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button class="btn-run" onclick="checkAnswer()" style="padding: 12px 48px; background: #DE6834; color: #fff; border: none; border-radius: 6px; font-weight: 500; font-size: 1.2rem; cursor: pointer; font-family: 'Hind', sans-serif;">submit</button>
                         </div>
                     </div>
                 </div>
             `;
 
-            // Restore previous answer
-            const saved = db.getPracticeSession(less.id);
-            if (saved && saved.value) {
-                const options = document.querySelectorAll('.mcq-option');
-                options.forEach(opt => {
-                    const span = opt.querySelector('span');
-                    if (span && span.innerHTML === saved.value) {
-                        opt.classList.add('selected');
-                        currentSelectedVal = saved.value;
-                        if (saved.submitted) checkAnswer();
-                    }
-                });
-            }
+            // Previous answer restoration removed to allow fresh reattempts every time
+            // you open the question.
         }
 
         function clearSelection() {
-            if (document.querySelector('.correct-reveal')) return;
-            document.querySelectorAll('.mcq-option').forEach(r => r.classList.remove('selected'));
+            document.querySelectorAll('.mcq-option').forEach(r => {
+                r.classList.remove('selected', 'correct-reveal', 'incorrect-reveal');
+                const addedText = r.querySelector('.reveal-text');
+                if (addedText) addedText.remove();
+            });
             currentSelectedVal = '';
+            // Remove previous error flags from UI if needed
         }
 
         let currentSelectedVal = '';
         function selectOpt(el, val) {
-            if (document.querySelector('.correct-reveal')) return;
+            if (document.querySelector('.reveal-text')) return; // Locked after submit unless cleared
             document.querySelectorAll('.mcq-option').forEach(r => r.classList.remove('selected'));
             el.classList.add('selected');
             currentSelectedVal = decodeURIComponent(val);
@@ -2759,22 +3360,42 @@
 
         function checkAnswer() {
             const selected = document.querySelector('.mcq-option.selected');
-            if (!selected) return alert("Select an option");
+            if (!selected) return showToast("Select an option");
+
+            if (document.querySelector('.reveal-text')) return;
 
             const less = courseData.modules[mIdx].lessons[lIdx];
             const correctVal = less.data.correct;
 
             const options = document.querySelectorAll('.mcq-option');
             options.forEach(opt => {
-                const span = opt.querySelector('span');
+                const span = opt.querySelector('.opt-val');
                 const val = span ? span.innerHTML : '';
-                if (val === correctVal) opt.classList.add('correct-reveal');
-                else if (opt === selected && val !== correctVal) opt.classList.add('incorrect-reveal');
+                if (val === correctVal) {
+                    opt.classList.add('correct-reveal');
+                    opt.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #22c55e; font-size: 1.2rem; font-weight: 600; margin-left: 12px; display: flex; align-items: center; gap: 6px;"><i class="fas fa-check" style="font-size: 1.4rem;"></i> correct answer</span>`);
+                }
+                else if (opt === selected && val !== correctVal) {
+                    opt.classList.add('incorrect-reveal');
+                    opt.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #ef4444; font-size: 1.2rem; font-weight: 600; margin-left: 12px; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times" style="font-size: 1.4rem;"></i> your answer</span>`);
+                }
             });
 
-            db.updateCourseProgress(courseId, user.id, less.id);
+            const isCorrect = currentSelectedVal === correctVal;
+
+            if (isCorrect) {
+                db.updateCourseProgress(courseId, user.id, less.id);
+            } else {
+                if (db.removeCourseProgressItem) {
+                    db.removeCourseProgressItem(courseId, user.id, less.id);
+                }
+            }
+
             db.savePracticeSession(less.id, { value: currentSelectedVal, submitted: true, studentId: user.id });
+            saveAttemptHistory(less.id, 'mcq', isCorrect ? 'success' : 'failed', isCorrect ? 1 : 0, 1, currentSelectedVal, 'mcq', null);
+
             updateGlobalProgress();
+            renderSidebar();
         }
 
         // --- Font Sizing Logic (Dampened for "Very Slow" growth) ---
@@ -2788,12 +3409,12 @@
             // CRITICAL: Force Ace to recalculate measurements after scale change to prevent cursor drift
             requestAnimationFrame(() => {
                 if (window.allCodingEditors) {
-                    const baseSize = 18;
-                    const newScaleForEditor = 1 + (rawScale - 1) * 0.3;
-                    const newSize = Math.round(baseSize * newScaleForEditor);
+                    const eScale = 1 + (rawScale - 1) * 0.12;
+                    const editorSize = (18 * eScale).toFixed(2) + "px";
+                    document.documentElement.style.setProperty('--editor-font-size', editorSize);
 
                     window.allCodingEditors.forEach(ed => {
-                        ed.setFontSize(newSize);
+                        ed.setFontSize(editorSize);
                         ed.resize(true); // Force deep resize
                     });
                 }
@@ -2802,8 +3423,14 @@
 
         function updateGlobalProgress() {
             const progress = db.getCourseProgress(courseId, user.id);
-            const total = courseData.modules.reduce((acc, m) => acc + m.lessons.length, 0);
-            const count = progress ? progress.completedItems.length : 0;
+            const currentModule = courseData.modules[mIdx];
+            const total = currentModule ? currentModule.lessons.length : 0;
+
+            let count = 0;
+            if (progress && progress.completedItems && currentModule) {
+                count = currentModule.lessons.filter(less => progress.completedItems.includes(less.id)).length;
+            }
+
             const perc = total > 0 ? Math.round((count / total) * 100) : 0;
 
             document.getElementById('sOverallPerc').textContent = `${perc}% covered`;
@@ -2832,11 +3459,35 @@
                     document.getElementById('qAttemptsPane').style.display = 'none';
                 } else {
                     document.querySelector('.q-body-wrapper').style.display = 'none';
+                    window.currentAttemptFilter = 'all';
                     renderLessonAttempts();
                     document.getElementById('qAttemptsPane').style.display = 'block';
                 }
             };
         });
+
+        function getAttemptHistory(lessonId) {
+            const history = localStorage.getItem('exampad_attempts_' + lessonId);
+            return history ? JSON.parse(history) : [];
+        }
+
+        function saveAttemptHistory(lessonId, type, status, passed, total, code, lang, results) {
+            const history = getAttemptHistory(lessonId);
+            history.unshift({
+                id: Date.now(),
+                date: new Date().toISOString(),
+                type: type,
+                status: status,
+                passed: passed,
+                total: total,
+                code: code,
+                lang: lang,
+                results: results
+            });
+            localStorage.setItem('exampad_attempts_' + lessonId, JSON.stringify(history));
+        }
+
+        let pendingBookmarkIndex = -1;
 
         function toggleBookState() {
             const less = courseData.modules[mIdx].lessons[lIdx];
@@ -2845,9 +3496,9 @@
 
             const bBtn = document.getElementById('qBookmarkBtn');
             if (idx > -1) {
-                bookmarks.splice(idx, 1);
-                bBtn.className = 'far fa-bookmark';
-                showToast("Bookmark removed", "info");
+                // Show confirmation modal
+                pendingBookmarkIndex = idx;
+                document.getElementById('bookmarkModalOverlay').style.display = 'flex';
             } else {
                 bookmarks.push({
                     lessonId: less.id,
@@ -2858,17 +3509,52 @@
                     timestamp: new Date().toISOString()
                 });
                 bBtn.className = 'fas fa-bookmark';
-                showToast("Question Bookmarked!");
+                // Silently add, no toast
+                db.saveBookmarks(user.id, bookmarks);
             }
-            db.saveBookmarks(user.id, bookmarks);
+        }
+
+        function confirmRemoveBookmark() {
+            if (pendingBookmarkIndex > -1) {
+                const bookmarks = db.getBookmarks(user.id) || [];
+                bookmarks.splice(pendingBookmarkIndex, 1);
+                db.saveBookmarks(user.id, bookmarks);
+                document.getElementById('qBookmarkBtn').className = 'far fa-bookmark';
+            }
+            closeBookmarkModal();
+        }
+
+        function closeBookmarkModal() {
+            pendingBookmarkIndex = -1;
+            document.getElementById('bookmarkModalOverlay').style.display = 'none';
+        }
+
+        function setAttemptFilter(filter) {
+            window.currentAttemptFilter = filter;
+            renderLessonAttempts();
         }
 
         function renderLessonAttempts() {
             const less = courseData.modules[mIdx].lessons[lIdx];
             const pane = document.getElementById('qAttemptsPane');
-            const saved = db.getPracticeSession(less.id);
+            const attempts = getAttemptHistory(less.id);
 
-            if (!saved) {
+            const filter = window.currentAttemptFilter || 'all';
+
+            const filteredAttempts = attempts.filter(a => {
+                if (filter === 'all') return true;
+                if (filter === 'failed') return a.status === 'failed';
+                if (filter === 'successful') return a.status === 'success';
+                if (filter === 'error') return a.status === 'error';
+                return true;
+            });
+
+            const countAll = attempts.length;
+            const countFailed = attempts.filter(a => a.status === 'failed').length;
+            const countSuccess = attempts.filter(a => a.status === 'success').length;
+            const countError = attempts.filter(a => a.status === 'error').length;
+
+            if (attempts.length === 0) {
                 pane.innerHTML = `
                     <div style="padding:40px; text-align:center; color:#667085; font-family:'Hind', sans-serif;">
                         <i class="fas fa-history" style="font-size:3rem; color:#F2F4F7; margin-bottom:20px; display:block;"></i>
@@ -2879,29 +3565,46 @@
                 return;
             }
 
+            const getCircle = (active) => active ? `<div style="width: 20px; height: 20px; border-radius: 50%; border: 6px solid #475467; background: #fff;"></div>` : `<div style="width: 20px; height: 20px; border-radius: 50%; border: 1px solid #D1D5DB; background: #fff;"></div>`;
+
+            let rowsHtml = filteredAttempts.map(a => {
+                const dateObj = new Date(a.date);
+                const dateStr = dateObj.toLocaleDateString('en-GB') + ' |<br>' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const tcStr = a.type === 'mcq' ? 'N/A' : (a.status === 'error' ? 'N/A' : `${a.passed} / ${a.total}`);
+                const statusText = a.status;
+
+                return `
+                    <tr style="border-bottom: 1px solid #F9FAFB;">
+                        <td style="padding: 24px 0; font-size: 1.15rem; color: #101828; line-height:1.4;">${dateStr}</td>
+                        <td style="padding: 24px 0; font-size: 1.15rem; color: #DE5B2B; font-weight: 500;">${tcStr}</td>
+                        <td style="padding: 24px 0; font-size: 1.15rem; color: #DE5B2B; font-weight: 500; cursor: pointer; text-decoration: underline;" onclick="openAttemptDetails(${a.id})">${statusText}</td>
+                    </tr>
+                `;
+            }).join('');
+
             pane.innerHTML = `
                 <div style="padding: 24px 32px; font-family: 'Hind', sans-serif;">
                     
                     <!-- Filters Section -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; align-items: center;">
                         <div style="display:flex; gap:32px;">
-                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                <div style="width: 28px; height: 28px; border-radius: 50%; border: 6px solid #F2F4F7; background: #667085;"></div>
-                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">ALL (1)</span>
+                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; ${filter !== 'all' ? 'opacity:0.4;' : ''}" onclick="setAttemptFilter('all')">
+                                ${getCircle(filter === 'all')}
+                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">ALL (${countAll})</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; opacity: 0.4;">
-                                <div style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #D1D5DB; background: #fff;"></div>
-                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Failed (0)</span>
+                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; ${filter !== 'failed' ? 'opacity:0.4;' : ''}" onclick="setAttemptFilter('failed')">
+                                ${getCircle(filter === 'failed')}
+                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Failed (${countFailed})</span>
                             </div>
                         </div>
                         <div style="display:flex; gap:32px;">
-                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; opacity: 0.4;">
-                                <div style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #D1D5DB; background: #fff;"></div>
-                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Successful (1)</span>
+                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; ${filter !== 'successful' ? 'opacity:0.4;' : ''}" onclick="setAttemptFilter('successful')">
+                                ${getCircle(filter === 'successful')}
+                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Successful (${countSuccess})</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; opacity: 0.4;">
-                                <div style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #D1D5DB; background: #fff;"></div>
-                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Compile error (0)</span>
+                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; ${filter !== 'error' ? 'opacity:0.4;' : ''}" onclick="setAttemptFilter('error')">
+                                ${getCircle(filter === 'error')}
+                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Compile error (${countError})</span>
                             </div>
                         </div>
                     </div>
@@ -2916,20 +3619,39 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr style="border-bottom: 1px solid #F9FAFB;">
-                                <td style="padding: 24px 0; font-size: 1.15rem; color: #101828; line-height:1.4;">${new Date().toLocaleDateString()} |<br>${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                                <td style="padding: 24px 0; font-size: 1.15rem; color: #DE5B2B; font-weight: 600;">4 / 4</td>
-                                <td style="padding: 24px 0; font-size: 1.15rem; color: #DE5B2B; font-weight: 500;">success</td>
-                            </tr>
+                            ${rowsHtml}
                         </tbody>
                     </table>
 
-                    <!-- View Code Hint -->
-                    <div style="margin-top: 40px; padding: 20px; background: #F9FAFB; border-radius: 12px;">
-                        <div style="font-weight: 600; color: #101828; margin-bottom: 8px;">Previous Submission Code</div>
-                        <div style="font-family: 'Consolas', monospace; font-size: 14px; color: #475467; background: #fff; border: 1px solid #EAECF0; padding: 16px; border-radius: 8px; max-height: 200px; overflow: auto; white-space: pre;">${saved.value || 'No code saved'}</div>
-                    </div>
+                </div>
+            `;
+        }
 
+        function openAttemptDetails(attemptId) {
+            const less = courseData.modules[mIdx].lessons[lIdx];
+            const attempts = getAttemptHistory(less.id);
+            const a = attempts.find(x => x.id === attemptId);
+            if (!a) return;
+
+            const pane = document.getElementById('qAttemptsPane');
+
+            const dateObj = new Date(a.date);
+            const dateStr = dateObj.toLocaleDateString('en-GB') + ' | ' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            pane.innerHTML = `
+                <div style="padding: 24px 32px; font-family: 'Hind', sans-serif;">
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; cursor: pointer;" onclick="renderLessonAttempts()">
+                        <i class="fas fa-arrow-left" style="color: #DE5B2B; font-size: 1.2rem;"></i>
+                        <span style="font-size: 1.2rem; font-weight: 600; color: #101828;">Back to Attempts</span>
+                    </div>
+                    
+                    <div style="font-size: 1.15rem; color: #667085; margin-bottom: 24px;">Attempted on: ${dateStr}</div>
+                    <div style="font-size: 1.15rem; color: #101828; font-weight: 600; margin-bottom: 8px;">Status: <span style="color: #DE5B2B;">${a.status}</span></div>
+                    
+                    <div style="margin-top: 20px; padding: 20px; background: #F9FAFB; border-radius: 12px;">
+                        <div style="font-weight: 600; color: #101828; margin-bottom: 8px;">Submitted Code / Response</div>
+                        <div style="font-family: 'Consolas'; font-size: 14px; color: #475467; background: #fff; border: 1px solid #EAECF0; padding: 16px; border-radius: 8px; max-height: 400px; overflow: auto; white-space: pre-wrap; word-break: break-word;">${a.code || 'No response available'}</div>
+                    </div>
                 </div>
             `;
         }

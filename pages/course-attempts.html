@@ -7,7 +7,7 @@
     <title>Exampad | Practice Attempts</title>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Hind:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,12 +25,13 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Hind', sans-serif;
         }
 
         body {
             background: var(--bg);
             color: var(--text-main);
+            font-family: 'Hind', sans-serif;
         }
 
         header {
@@ -159,19 +160,20 @@
         }
 
         .attempts-table th {
-            background: #fcfcfc;
+            background: #fff;
             text-align: left;
             padding: 16px 24px;
-            border-bottom: 2px solid var(--border);
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #333;
+            border-bottom: 1px solid var(--border);
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #222;
         }
 
         .attempts-table td {
-            padding: 16px 24px;
+            padding: 20px 24px;
             border-bottom: 1px solid #f0f0f0;
             vertical-align: middle;
+            font-size: 1.05rem;
         }
 
         .attempts-table tr:last-child td {
@@ -180,24 +182,24 @@
 
         .q-name {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             align-items: flex-start;
         }
 
         .q-index {
-            color: #999;
-            width: 20px;
+            color: #444;
+            width: 24px;
         }
 
         .q-title {
-            font-weight: 600;
-            color: #444;
+            font-weight: 400;
+            color: #333;
         }
 
         .type-badge {
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: #666;
+            font-weight: 400;
+            font-size: 1.05rem;
+            color: #444;
         }
 
         .status-cell {
@@ -261,8 +263,8 @@
 
     <header>
         <div class="nav-left">
-            <div class="logo" onclick="location.href='./student-dashboard.html'">
-                <i class="fas fa-chart-line"></i> EXAMPAD
+            <div class="logo-box" onclick="location.href='./student-dashboard.html'" style="cursor: pointer;">
+                <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" style="height: 32px;">
             </div>
             <div class="nav-tabs">
                 <div class="nav-tab" onclick="goBack()">Learning Content</div>
@@ -317,6 +319,13 @@
 
         function init() {
             const courses = db.getAllCourses();
+            if (!courses || courses.length === 0) return;
+
+            // Default to the first course if courseId is not in the URL
+            if (!courseId) {
+                courseId = courses[0].id;
+            }
+
             const select = document.getElementById('courseSelect');
             select.innerHTML = courses.map(c => `
                 <option value="${c.id}" ${c.id === courseId ? 'selected' : ''}>${c.title}</option>
@@ -334,33 +343,118 @@
             const course = db.getCourseById(courseId);
             if (!course) return;
 
-            const progress = db.getCourseProgress(courseId, user.id);
-            const allItems = course.modules.flatMap(m => m.items);
-
-            // Only show items of type 'coding' or 'quiz' as assignments
-            const assignments = allItems.filter(it => it.type === 'coding' || it.type === 'quiz');
-
+            const allLessons = course.modules.flatMap(m => m.lessons || []).filter(l => l.type === 'coding' || l.type === 'mcq');
+            
             const body = document.getElementById('attemptsBody');
-            body.innerHTML = assignments.map((asgn, i) => {
-                const isSub = progress?.completedItems.includes(asgn.id);
+            
+            if (allLessons.length === 0) {
+                body.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 40px; color:#888;">No lessons found for this course.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = allLessons.map((less, i) => {
+                const historyStr = localStorage.getItem('exampad_attempts_' + less.id);
+                let history = [];
+                if (historyStr) {
+                    try { history = JSON.parse(historyStr); } catch(e) {}
+                }
+
+                let typeLabel = 'Coding';
+                if (less.type === 'mcq') typeLabel = 'MCQ';
+
+                const isSubmitted = history.length > 0;
+                const statusLabel = isSubmitted ? 'Submitted' : 'Not Submitted';
+                
+                let detailsHTML = '';
+                if (isSubmitted) {
+                    const allCount = history.length;
+                    const successCount = history.filter(h => h.status === 'success').length;
+                    const failCount = history.filter(h => h.status === 'failed').length;
+                    const errCount = history.filter(h => h.status === 'error').length;
+
+                    detailsHTML = `
+                        <tr id="details-${less.id}" style="display: none; background: #fff; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                            <td colspan="3" style="padding: 24px 40px; border-bottom: 1px solid #f0f0f0;">
+                                <div style="display: flex; gap: 24px; align-items: center; justify-content: center; margin-bottom: 24px; font-size: 0.95rem; color: #888;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="filter-${less.id}" checked> ALL (${allCount})
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="filter-${less.id}"> ${less.type === 'mcq' ? 'Incorrect' : 'Failed'} (${failCount})
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="filter-${less.id}"> ${less.type === 'mcq' ? 'Correct' : 'Successful'} (${successCount})
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="radio" name="filter-${less.id}"> Compile error (${errCount})
+                                    </label>
+                                </div>
+                                
+                                <table style="width: 100%; border-collapse: collapse; text-align: center;">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding-bottom: 16px; font-weight: 600; font-size: 1.15rem; color: #111; text-align: center; background: none; border: none;">Attempts</th>
+                                            <th style="padding-bottom: 16px; font-weight: 600; font-size: 1.15rem; color: #111; text-align: center; background: none; border: none;">Test cases</th>
+                                            <th style="padding-bottom: 16px; font-weight: 600; font-size: 1.15rem; color: #111; text-align: center; background: none; border: none;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${history.map(att => {
+                                            const d = new Date(att.date);
+                                            const dateStr = d.toLocaleDateString('en-GB') + ' | ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                                            
+                                            let statColor = '#555';
+                                            let displayStatus = att.status;
+                                            
+                                            if (att.status === 'success') {
+                                                statColor = '#027A48';
+                                                if (att.type === 'mcq') displayStatus = 'correct';
+                                            } else if (att.status === 'failed') {
+                                                statColor = '#B42318';
+                                                if (att.type === 'mcq') displayStatus = 'incorrect';
+                                            } else if (att.status === 'error') {
+                                                statColor = '#DE6834';
+                                            }
+
+                                            let tcases = 'N/A';
+                                            if (att.type === 'coding' && att.status !== 'error') {
+                                                tcases = att.passed + '/' + att.total;
+                                            }
+
+                                            return `
+                                                <tr>
+                                                    <td style="padding: 16px 0; color: #333; font-size: 1.05rem; border: none;">${dateStr}</td>
+                                                    <td style="padding: 16px 0; color: #333; font-size: 1.05rem; border: none;">${tcases}</td>
+                                                    <td style="padding: 16px 0; color: ${statColor}; font-size: 1.05rem; border: none;">${displayStatus}</td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    `;
+                }
+
                 return `
-                    <tr>
+                    <tr style="cursor: pointer; transition: background 0.2s;" onclick="const el = document.getElementById('details-${less.id}'); if(el) el.style.display = el.style.display === 'none' ? 'table-row' : 'none';" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='transparent'">
                         <td>
                             <div class="q-name">
                                 <span class="q-index">${i + 1}.</span>
-                                <span class="q-title">${asgn.title}</span>
+                                <span class="q-title">${less.title}</span>
                             </div>
                         </td>
-                        <td><span class="type-badge">${asgn.type.toUpperCase()}</span></td>
+                        <td><span class="type-badge">${typeLabel}</span></td>
                         <td>
-                            <div class="status-cell">
-                                <span class="status-text ${isSub ? 'submitted' : 'not-submitted'}">
-                                    ${isSub ? 'Submitted' : 'Not Submitted'}
+                            <div class="status-cell" style="justify-content: flex-start; gap: 12px;">
+                                <span class="status-text" style="font-weight: 400; color: #333;">
+                                    ${statusLabel}
                                 </span>
-                                <i class="fas fa-chevron-down status-chevron"></i>
+                                ${isSubmitted ? '<i class="fas fa-caret-down" style="color: #DE6834; font-size: 1rem;"></i>' : ''}
                             </div>
                         </td>
                     </tr>
+                    ${detailsHTML}
                 `;
             }).join('');
         }

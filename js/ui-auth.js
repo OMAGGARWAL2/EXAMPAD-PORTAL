@@ -50,7 +50,9 @@ async function handleForgot(e) {
         const suffix = testCode ? `?testId=${testCode}` : '';
 
         setTimeout(() => {
-            const target = res.user.role === 'teacher' ? './teacher-dashboard.html' : `./student-dashboard.html${suffix}`;
+            let target = `./student-dashboard.html${suffix}`;
+            if (res.user.role === 'teacher') target = './teacher-dashboard.html';
+            else if (res.user.role === 'superadmin') target = './admin-dashboard.html';
             window.location.assign(target);
         }, 1000);
     } else {
@@ -270,7 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const suffix = testCode ? `?testId=${testCode}` : '';
 
                 setTimeout(() => {
-                    const target = res.user.role === 'teacher' ? './teacher-dashboard.html' : `./student-dashboard.html${suffix}`;
+                    let target = `./student-dashboard.html${suffix}`;
+                    if (res.user.role === 'teacher') target = './teacher-dashboard.html';
+                    else if (res.user.role === 'superadmin') target = './admin-dashboard.html';
                     window.location.assign(target);
                 }, 1000);
             } else {
@@ -324,7 +328,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const suffix = invite ? `?invite=${invite}` : '';
 
                 setTimeout(() => {
-                    const target = role === 'teacher' ? './teacher-dashboard.html' : `./student-dashboard.html${suffix}`;
+                    let target = `./student-dashboard.html${suffix}`;
+                    if (role === 'teacher') target = './teacher-dashboard.html';
+                    else if (role === 'superadmin') target = './admin-dashboard.html';
                     window.location.assign(target);
                 }, 1200);
             } else {

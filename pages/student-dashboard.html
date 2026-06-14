@@ -184,7 +184,7 @@
         .profile-name {
             display: block;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 1.15rem;
             text-transform: uppercase;
             color: #444;
         }
@@ -804,15 +804,18 @@
         </div>
         <div class="header-right">
             <div class="plus-btn" title="Quick Join" onclick="focusJoinField()"><i class="fas fa-plus"></i></div>
-            <div class="grid-icon" title="Menu" onclick="showToast('More features coming soon!', 'info')"><i
-                    class="fas fa-th"></i></div>
+            <div class="grid-icon" title="Menu" onclick="showToast('More features coming soon!', 'info')">
+                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png" style="width: 26px; height: 26px; opacity: 0.75; transition: all 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
+            </div>
             <div class="profile-container">
                 <div class="profile-stack" id="profileToggle" onclick="toggleMenu()">
                     <div class="profile-text text-sm">
                         <span class="profile-name" id="userName">Om Aggarwal</span>
                         <span class="profile-role">Student</span>
                     </div>
-                    <div class="avatar-circle" id="userInitial">O</div>
+                    <div class="avatar-circle" id="userInitial" style="background: transparent; color: inherit; font-size: inherit; font-weight: normal; border: none; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <img src="../LINUX_TEST_CHITKARA_files/user-icon.3d6e2547.svg" style="width: 100%; height: 100%; border-radius: 50%;">
+                    </div>
                 </div>
                 <!-- Profile Dropdown -->
                 <div class="profile-menu" id="profileMenu">
@@ -1000,7 +1003,7 @@
         function init() {
             // Update UI with user info
             document.getElementById('userName').textContent = user.name;
-            document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+            // document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
 
             // Direct Invite Handling
             const params = new URLSearchParams(window.location.search);
@@ -1104,7 +1107,7 @@
 
         function loadDashboard() {
             // LOAD EXAMS
-            const exams = db.getAllExams().filter(e => e.status === 'published' || e.status === 'live');
+            const exams = db.getAllExams().filter(e => e.status === 'published' || e.status === 'live' || e.status === 'ended');
             const attempts = db.getStudentAttempts(user.id);
 
             allExams = exams.map(exam => {
@@ -1122,14 +1125,21 @@
                         status = 'in-progress';
                     }
                 }
-                return { ...exam, progress, status, attemptId: attempt?.id, resultsPublished: exam.resultsPublished || false };
+                return { ...exam, examStatus: exam.status, progress, status, attemptId: attempt?.id, resultsPublished: exam.resultsPublished || false };
             });
 
             renderExams(allExams);
 
             // LOAD COURSES
             const courses = db.getAllCourses ? db.getAllCourses() : [];
-            renderCourses(courses);
+            const processedCourses = courses.map(c => {
+                const progressObj = db.getCourseProgress ? db.getCourseProgress(c.id, user.id) : null;
+                const total = c.modules ? c.modules.reduce((acc, m) => acc + (m.lessons ? m.lessons.length : 0), 0) : 0;
+                const count = progressObj ? (progressObj.completedItems ? progressObj.completedItems.length : 0) : 0;
+                const progressPerc = total > 0 ? Math.round((count / total) * 100) : 0;
+                return { ...c, progress: progressPerc };
+            });
+            renderCourses(processedCourses);
         }
 
         function renderCourses(courses) {
@@ -1185,12 +1195,13 @@
 
             grid.innerHTML = examsToRender.map(e => {
                 let statusText = e.status === 'completed' ? 'Submitted' : (e.status === 'in-progress' ? 'Ongoing' : 'Available');
+                if (e.examStatus === 'ended' && e.status !== 'completed') statusText = 'Ended';
                 let isResultPublished = e.resultsPublished || e.security?.showResults;
-                let actionBtn = e.status === 'completed' ? (isResultPublished ? 'VIEW SCORE' : 'RESULT PENDING') : (e.status === 'in-progress' ? 'Resume' : 'Start Exam');
-                let actionColor = isResultPublished ? '#12B76A' : (e.status === 'completed' ? '#94a3b8' : '');
+                let actionBtn = e.status === 'completed' ? (isResultPublished ? 'VIEW SCORE' : 'RESULT PENDING') : (e.examStatus === 'ended' ? 'TEST ENDED' : (e.status === 'in-progress' ? 'Resume' : 'Start Exam'));
+                let actionColor = isResultPublished ? '#12B76A' : (e.status === 'completed' ? '#94a3b8' : (e.examStatus === 'ended' ? '#ef4444' : ''));
 
                 return `
-                <div class="exam-card" onclick="handleCardClick('${e.id}', '${e.attemptId}', '${e.status}', ${isResultPublished})">
+                <div class="exam-card" onclick="handleCardClick('${e.id}', '${e.attemptId}', '${e.status}', ${isResultPublished}, '${e.examStatus}')">
                     <div class="card-icon-area">
                         <i class="fas ${e.status === 'completed' ? 'fa-check-double' : 'fa-laptop-code'}"></i>
                     </div>
@@ -1253,13 +1264,17 @@
             renderExams(filtered);
         }
 
-        function handleCardClick(examId, attemptId, status, isPublished) {
+        function handleCardClick(examId, attemptId, status, isPublished, examStatus) {
             if (status === 'completed') {
                 if (isPublished) location.href = `./student-results.html?attemptId=${attemptId}`;
                 else showToast("The instructor hasn't published the result for this test yet.", "info");
             }
-            else if (status === 'in-progress') location.href = `./exam-attempt.html?attemptId=${attemptId}`;
+            else if (status === 'in-progress') {
+                if (examStatus === 'ended') showToast("This test has already ended.", "error");
+                else location.href = `./exam-attempt.html?attemptId=${attemptId}`;
+            }
             else {
+                if (examStatus === 'ended') return showToast("This test has already ended.", "error");
                 // Quick start new attempt
                 const res = db.startAttempt(examId, user.id);
                 if (res.success) location.href = `./exam-attempt.html?attemptId=${res.attempt.id}`;

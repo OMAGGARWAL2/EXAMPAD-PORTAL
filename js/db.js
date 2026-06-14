@@ -493,6 +493,17 @@ class ExampadDB {
         return progresses.find(p => p.courseId === courseId && p.studentId === studentId);
     }
 
+    removeCourseProgressItem(courseId, studentId, itemId) {
+        const progresses = JSON.parse(localStorage.getItem('exampad_course_progress')) || [];
+        let pIndex = progresses.findIndex(p => p.courseId === courseId && p.studentId === studentId);
+        
+        if (pIndex !== -1) {
+            progresses[pIndex].completedItems = progresses[pIndex].completedItems.filter(id => id !== itemId);
+            progresses[pIndex].lastActivity = new Date().toISOString();
+            localStorage.setItem('exampad_course_progress', JSON.stringify(progresses));
+        }
+    }
+
     updateCourseProgress(courseId, studentId, itemId, status = 'completed') {
         const progresses = JSON.parse(localStorage.getItem('exampad_course_progress')) || [];
         let pIndex = progresses.findIndex(p => p.courseId === courseId && p.studentId === studentId);
