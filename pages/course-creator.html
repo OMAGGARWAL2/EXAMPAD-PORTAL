@@ -2890,7 +2890,7 @@
                 title: "Record Content & Whiteboard",
                 desc: "Record your screen, webcam, and annotate side-by-side in high definition.",
                 body: `
-                    <div style="position: relative; border-radius: 12px; overflow: hidden; background: #000; display: flex; flex-direction: column; flex: 1; border: 1px solid #333;">
+                    <div style="position: relative; border-radius: 12px; overflow: hidden; background: #000; display: flex; flex-direction: column; flex: 1; border: 1px solid #333; min-height: 0;">
                         <div style="display: flex; flex: 1; width: 100%; min-height: 0;">
                             <div id="webcamContainer" style="width: 100%; height: 100%; transition: width 0.3s; background: #000; display: flex; align-items: center; justify-content: center;">
                                 <video id="webcamPreview" autoplay muted style="width: 100%; height: 100%; object-fit: contain; transform: scaleX(-1); transition: filter 0.3s;"></video>
@@ -3800,6 +3800,8 @@
                 document.getElementById('modalBody').style.flex = '1';
                 document.getElementById('modalBody').style.display = 'flex';
                 document.getElementById('modalBody').style.flexDirection = 'column';
+                document.getElementById('modalBody').style.minHeight = '0';
+                document.getElementById('modalBody').style.overflow = 'hidden';
             } else {
                 content.style.width = '450px';
                 content.style.maxWidth = 'none';
@@ -3807,6 +3809,8 @@
                 content.style.display = 'block';
                 document.getElementById('modalBody').style.flex = 'none';
                 document.getElementById('modalBody').style.display = 'block';
+                document.getElementById('modalBody').style.minHeight = 'auto';
+                document.getElementById('modalBody').style.overflow = 'visible';
             }
 
             document.getElementById('modalOverlay').classList.add('active');
