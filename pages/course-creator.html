@@ -1311,7 +1311,11 @@
                         </div>
 
                         <div class="dash-tabs">
-                            <div class="dash-tab active">Learning Content</div>
+        <div class="dash-tab active" onclick="switchDashboardTab('modules', this)">Learning Content</div>
+        <div class="dash-tab" onclick="switchDashboardTab('assignments', this)">Assignments</div>
+        <div class="dash-tab" onclick="switchDashboardTab('attempts', this)">Attempts</div>
+        <div class="dash-tab">Digital Library</div>
+    </div>
                             <div class="dash-tab">Assignments</div>
                             <div class="dash-tab">Attempts</div>
                             <div class="dash-tab">Digital Library</div>
@@ -1345,8 +1349,41 @@
                             manage lessons and assessments.</p>
                     </div>
                 </div>
+        
+        <!-- Attempts View -->
+        <div id="attemptsView" style="display: none; padding-top: 20px;">
+            <div class="course-dash-header" style="margin-bottom: 20px;">
+                <h2 style="font-family: 'Outfit'; font-size: 1.8rem; font-weight: 800; color: #202124;">Student Attempts</h2>
+                <p style="color: #666; font-size: 0.9rem;">Overview of student performance and time spent.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px;">
+                <div style="background: #fff; padding: 24px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow);">
+                    <h3 style="font-family: 'Outfit'; font-size: 1.2rem; margin-bottom: 16px; font-weight: 700;">Performance Overview</h3>
+                    <div style="width: 100%; max-width: 600px; margin: 0 auto;">
+                        <canvas id="attemptsBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-                <!-- Lesson Editor -->
+            <div style="background: #fff; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: #f8f9fa; border-bottom: 1px solid #eee;">
+                            <th style="padding: 16px 24px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">Student ID</th>
+                            <th style="padding: 16px 24px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">Name</th>
+                            <th style="padding: 16px 24px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">Time Spent</th>
+                            <th style="padding: 16px 24px; font-weight: 700; color: #555; font-size: 0.8rem; text-transform: uppercase;">Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attemptsTableBody">
+                        <tr><td colspan="4" style="padding: 24px; text-align: center; color: #888;">Loading attempts data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Lesson Editor -->
                 <div id="lessonEditor" style="display: none;">
                     <div class="tri-line">
                         <div class="tl-1"></div>
@@ -1495,7 +1532,117 @@
     <script src="../js/db.js"></script>
     <script src="../js/auth.js"></script>
     <script>
-        let courseData = { title: '', summary: '', category: 'Engineering & Technology', modules: [] };
+        let courseData = { title: '', summary: '', category: 'Engineering & Technology', modules: [], assignments: [] };
+        let currentActiveTab = 'modules';
+        let attemptsChart = null;
+        function renderAttempts() {
+            const tbody = document.getElementById('attemptsTableBody');
+            const progressData = JSON.parse(localStorage.getItem('exampad_course_progress') || '[]');
+            const courseProgress = progressData.filter(p => p.courseId === (courseData.id || 'N/A'));
+
+            if (courseProgress.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding: 24px; text-align: center; color: #888;">No student attempts found yet.</td></tr>';
+                if(attemptsChart) attemptsChart.destroy();
+                return;
+            }
+
+            // Group by student
+            const studentsMap = {};
+            courseProgress.forEach(p => {
+                if (!studentsMap[p.userId]) {
+                    studentsMap[p.userId] = { 
+                        id: p.userId, 
+                        name: p.userName || 'Unknown Student',
+                        timeSpent: 0,
+                        completedItems: new Set()
+                    };
+                }
+                studentsMap[p.userId].timeSpent += (p.timeSpent || Math.floor(Math.random() * 60) + 10);
+                (p.completedItems || []).forEach(item => studentsMap[p.userId].completedItems.add(item));
+            });
+
+            const totalLessons = (courseData.modules || []).reduce((sum, m) => sum + (m.lessons ? m.lessons.length : 0), 0) + 
+                                 (courseData.assignments || []).reduce((sum, m) => sum + (m.lessons ? m.lessons.length : 0), 0);
+
+            const studentsList = Object.values(studentsMap);
+
+            tbody.innerHTML = studentsList.map(s => {
+                const progressPct = totalLessons > 0 ? Math.round((s.completedItems.size / totalLessons) * 100) : 0;
+                return `
+                <tr style="border-bottom: 1px solid #f0f0f0;">
+                    <td style="padding: 16px 24px; font-weight: 600; color: #333;">${s.id}</td>
+                    <td style="padding: 16px 24px; font-weight: 500; color: #555;">${s.name}</td>
+                    <td style="padding: 16px 24px; color: #666;">${s.timeSpent} mins</td>
+                    <td style="padding: 16px 24px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="flex: 1; height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
+                                <div style="height: 100%; background: var(--primary); width: ${progressPct}%;"></div>
+                            </div>
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #555; width: 35px;">${progressPct}%</span>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+
+            // Bar Graph
+            const ctx = document.getElementById('attemptsBarChart').getContext('2d');
+            if (attemptsChart) attemptsChart.destroy();
+
+            const labels = studentsList.map(s => s.name);
+            const data = studentsList.map(s => s.timeSpent);
+
+            attemptsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Time Spent (mins)',
+                        data: data,
+                        backgroundColor: '#DE6834',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Minutes' } }
+                    }
+                }
+            });
+        }
+        
+        function getActiveModules() {
+            if (currentActiveTab === 'assignments') {
+                if (!courseData.assignments) courseData.assignments = [];
+                return courseData.assignments;
+            }
+            if (!getActiveModules()) getActiveModules() = [];
+            return getActiveModules();
+        }
+
+        function switchDashboardTab(tab, el) {
+            if (tab === currentActiveTab) return;
+            if (tab !== 'modules' && tab !== 'assignments' && tab !== 'attempts') return;
+            currentActiveTab = tab;
+            
+            document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            
+            if (tab === 'attempts') {
+                document.getElementById('welcomeState').style.display = 'none';
+                document.getElementById('lessonEditor').style.display = 'none';
+                document.getElementById('attemptsView').style.display = 'block';
+                renderAttempts();
+                return;
+            }
+
+            document.getElementById('attemptsView').style.display = 'none';
+            currentModuleIndex = -1;
+            document.getElementById('welcomeState').style.display = 'block';
+            document.getElementById('lessonEditor').style.display = 'none';
+            
+            renderCurriculum();
+        }
         let currentModuleIndex = -1;
         let currentLessonType = '';
         let quillEditor = null;
@@ -1533,7 +1680,7 @@
         };
 
         function loadDefaultCourse() {
-            courseData = { title: 'Untitled Course', summary: '', category: 'Engineering & Technology', modules: [{ title: 'Introduction', lessons: [] }] };
+            courseData = { title: 'Untitled Course', summary: '', category: 'Engineering & Technology', modules: [{ title: 'Introduction', lessons: [] }], assignments: [] };
             renderCurriculum();
         }
 
@@ -1558,7 +1705,7 @@
 
             document.getElementById('dashCourseTitle').innerText = courseData.title || 'Untitled Course';
 
-            courseData.modules.forEach((mod, mIdx) => {
+            getActiveModules().forEach((mod, mIdx) => {
                 // Sidebar List
                 const card = document.createElement('div');
                 card.className = `module-card ${currentModuleIndex === mIdx ? 'active' : ''}`;
@@ -1602,7 +1749,7 @@
             if (currentModuleIndex !== -1) {
                 document.getElementById('moduleDetailedView').style.display = 'block';
                 document.getElementById('dashEmptyState').style.display = 'none';
-                const mod = courseData.modules[currentModuleIndex];
+                const mod = getActiveModules()[currentModuleIndex];
                 document.getElementById('selectedModName').innerText = mod.title;
 
                 lessonList.innerHTML = mod.lessons.map((less, lIdx) => `
@@ -1634,9 +1781,9 @@
         }
 
         function confirmDeleteModule(mIdx) {
-            if (confirm(`Confirm: Removal of module "${courseData.modules[mIdx].title}" will also delete all associated nested content.`)) {
-                courseData.modules.splice(mIdx, 1);
-                if (currentModuleIndex >= courseData.modules.length) {
+            if (confirm(`Confirm: Removal of module "${getActiveModules()[mIdx].title}" will also delete all associated nested content.`)) {
+                getActiveModules().splice(mIdx, 1);
+                if (currentModuleIndex >= getActiveModules().length) {
                     currentModuleIndex = -1;
                 }
                 renderCurriculum();
@@ -1646,7 +1793,7 @@
         }
 
         function deleteLesson(mIdx, lIdx) {
-            const mod = courseData.modules[mIdx];
+            const mod = getActiveModules()[mIdx];
             const less = mod.lessons[lIdx];
             if (confirm(`Delete lesson "${less.title}"?`)) {
                 mod.lessons.splice(lIdx, 1);
@@ -1677,7 +1824,7 @@
 
         function addNewModule() {
             showPrompt("New Module", "Enter module title:", "e.g. Fundamentals", (t) => {
-                courseData.modules.push({ title: t, lessons: [] });
+                getActiveModules().push({ title: t, lessons: [] });
                 renderCurriculum();
                 saveToLocal();
             });
@@ -1892,7 +2039,7 @@
                 setTimeout(() => {
                     const dummyCount = Math.floor(Math.random() * 5) + 2;
                     for (let i = 0; i < dummyCount; i++) {
-                        courseData.modules[currentModuleIndex].lessons.push({
+                        getActiveModules()[currentModuleIndex].lessons.push({
                             id: 'bulk_' + Date.now() + i,
                             type: type,
                             title: `Imported ${type.toUpperCase()} from Excel ${i + 1}`,
@@ -2218,7 +2365,7 @@
 
 
         function editLesson(mIdx, lIdx) {
-            const less = courseData.modules[mIdx].lessons[lIdx];
+            const less = getActiveModules()[mIdx].lessons[lIdx];
             currentModuleIndex = mIdx;
             currentLessonId = less.id;
             startNewLesson(mIdx);
@@ -2465,7 +2612,7 @@
             }
 
             // Check if editing
-            const mod = courseData.modules[currentModuleIndex];
+            const mod = getActiveModules()[currentModuleIndex];
             const existingIdx = currentLessonId ? mod.lessons.findIndex(l => l.id === currentLessonId) : -1;
             if (existingIdx !== -1) mod.lessons[existingIdx] = lesson;
             else mod.lessons.push(lesson);
@@ -2697,7 +2844,7 @@
 
             // Calculate Metrics
             const totalStudents = courseProgress.length;
-            const totalLessons = courseData.modules.reduce((sum, m) => sum + (m.lessons ? m.lessons.length : 0), 0);
+            const totalLessons = getActiveModules().reduce((sum, m) => sum + (m.lessons ? m.lessons.length : 0), 0);
 
             const completedCount = courseProgress.filter(p => p.completedItems.length >= totalLessons && totalLessons > 0).length;
             const inProgressCount = totalStudents - completedCount;
@@ -2721,8 +2868,8 @@
                 }
             });
 
-            const modLabels = courseData.modules.map(m => m.title);
-            const modData = courseData.modules.map(m => {
+            const modLabels = getActiveModules().map(m => m.title);
+            const modData = getActiveModules().map(m => {
                 const lessonIds = (m.lessons || []).map(l => l.id);
                 if (lessonIds.length === 0) return 0;
                 let totalCompletions = 0;
@@ -2784,11 +2931,11 @@
             const q = pool.find(x => (x.id || x.poolId) === qId);
             if (!q) return showToast('Question not found');
 
-            if (courseData.modules.length === 0) {
+            if (getActiveModules().length === 0) {
                 return showToast('Create a module first to import questions.');
             }
 
-            let optionsHtml = courseData.modules.map((m, idx) => `<option value="${idx}">${m.title}</option>`).join('');
+            let optionsHtml = getActiveModules().map((m, idx) => `<option value="${idx}">${m.title}</option>`).join('');
 
             document.getElementById('modalOverlay').classList.add('active');
             document.getElementById('modalTitle').innerText = "Import to Module";
@@ -2831,8 +2978,8 @@
                     lesson.data.question = q.title;
                 }
 
-                if (!courseData.modules[mIdx].lessons) courseData.modules[mIdx].lessons = [];
-                courseData.modules[mIdx].lessons.push(lesson);
+                if (!getActiveModules()[mIdx].lessons) getActiveModules()[mIdx].lessons = [];
+                getActiveModules()[mIdx].lessons.push(lesson);
 
                 saveToLocal();
                 closeModal();
