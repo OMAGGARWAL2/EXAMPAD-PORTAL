@@ -1112,7 +1112,7 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        
+
         .sidebar-list::-webkit-scrollbar {
             display: none;
         }
@@ -1659,19 +1659,28 @@
                     <div class="profile-name">OM AGGARWAL</div>
                     <div class="profile-role">STUDENT</div>
                 </div>
-                <div class="profile-avatar" style="width: 52px; height: 52px;"><img src="../Testpad_pra_files_files/portrait_placeholder_circle.png" style="width:100%; height:100%;"></div>
+                <div class="profile-avatar" style="width: 52px; height: 52px;"><img
+                        src="../Testpad_pra_files_files/portrait_placeholder_circle.png"
+                        style="width:100%; height:100%;"></div>
             </div>
         </div>
 
         <!-- Profile Popover -->
-        <div class="popover profile-popover" id="profileMenu" style="top: 74px; right: 24px; width: 220px; padding: 8px 0; border-radius: 8px; border: 1px solid #EAECF0;">
-            <div class="profile-item" style="display: flex; align-items: center; gap: 16px; padding: 12px 24px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+        <div class="popover profile-popover" id="profileMenu"
+            style="top: 74px; right: 24px; width: 220px; padding: 8px 0; border-radius: 8px; border: 1px solid #EAECF0;">
+            <div class="profile-item"
+                style="display: flex; align-items: center; gap: 16px; padding: 12px 24px; cursor: pointer; transition: background 0.2s;"
+                onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
                 <img src="../Testpad_pra_files_files/password.svg" style="width: 24px; height: 24px;">
-                <span style="font-size: 1.15rem; color: #666; font-weight: 400; font-family: 'Hind', sans-serif;">Settings</span>
+                <span
+                    style="font-size: 1.15rem; color: #666; font-weight: 400; font-family: 'Hind', sans-serif;">Settings</span>
             </div>
-            <div class="profile-item" onclick="auth.logout()" style="display: flex; align-items: center; gap: 16px; padding: 12px 24px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+            <div class="profile-item" onclick="auth.logout()"
+                style="display: flex; align-items: center; gap: 16px; padding: 12px 24px; cursor: pointer; transition: background 0.2s;"
+                onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
                 <img src="../Testpad_pra_files_files/logout.svg" style="width: 24px; height: 24px;">
-                <span style="font-size: 1.15rem; color: #666; font-weight: 400; font-family: 'Hind', sans-serif;">Logout</span>
+                <span
+                    style="font-size: 1.15rem; color: #666; font-weight: 400; font-family: 'Hind', sans-serif;">Logout</span>
             </div>
         </div>
 
@@ -1962,6 +1971,7 @@
     </div>
 
     <script src="../js/db.js"></script>
+    <script src="../js/video-db.js"></script>
     <script src="../js/auth.js"></script>
 
     <!-- BOOKMARK CONFIRMATION MODAL -->
@@ -2198,6 +2208,16 @@
             const codingUI = document.getElementById('codingUI');
             const playerBody = document.getElementById('playerBody');
 
+            const qPane = document.getElementById('paneQuestion');
+            const resizer = document.getElementById('splitResizer');
+            if (['video', 'tutorial', 'reading'].includes(less.type)) {
+                if (qPane) qPane.style.display = 'none';
+                if (resizer) resizer.style.display = 'none';
+            } else {
+                if (qPane) qPane.style.display = 'flex';
+                if (resizer) resizer.style.display = 'block';
+            }
+
             if (less.type === 'coding') {
                 if (codingUI) codingUI.style.display = 'flex';
                 if (playerBody) playerBody.style.display = 'none';
@@ -2213,9 +2233,40 @@
                     renderMCQ(less);
                 } else if (less.type === 'drawing') {
                     renderDrawing(less);
+                } else if (less.type === 'video') {
+                    renderVideo(less);
                 } else {
                     // Standard article/reading lesson
-                    playerBody.innerHTML = `<div class="hindi-font-readability">${less.data.content || less.data.body || 'Lesson content goes here.'}</div>`;
+                    playerBody.innerHTML = `
+                        <div style="max-width: 1050px; margin: 0 auto; padding-bottom: 40px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <h2 class="prob-title" style="margin: 0; line-height: 1.2; font-size: 1.8rem; font-weight: 700; color: #111;">
+                                    ${less.title}</h2>
+                                <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="downloadCoursePDF()">
+                                    <span style="font-size: 1rem; color: #333; font-weight: 500; font-family: 'Inter', sans-serif;">Download as PDF</span>
+                                    <div style="width: 32px; height: 32px; background: #DE6834; border-radius: 6px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 0.9rem;">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tri-orange-line" style="margin-bottom: 32px;">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            <div class="hindi-font-readability" style="font-size: 1.15rem; line-height: 1.8; color: #333;">${less.data.content || less.data.body || 'Lesson content goes here.'}</div>
+                            
+                            <div class="q-footer" style="margin-top: 60px; border-top: 1px solid #EAEAEA; padding-top: 20px; background: transparent;">
+                                <div class="q-nav-btn" onclick="prevLesson()">
+                                    <i class="fas fa-caret-left"></i> previous
+                                </div>
+                                <div style="color:#DE6834; font-weight:500; font-size:1.15rem; cursor:pointer;" onclick="toggleReportModal()">Report a problem</div>
+                                <div class="q-nav-btn" onclick="nextLesson()">
+                                    next <i class="fas fa-caret-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }
             }
 
@@ -3295,6 +3346,169 @@
             showToast("Drawing Submitted Successfully!");
         }
 
+        async function renderVideo(less) {
+            const body = document.getElementById('playerBody');
+            if (!body) return;
+            const url = less.data.url || '';
+            const isIDB = url.startsWith('[IDB_VIDEO]:');
+            const isLocal = url.startsWith('[LOCAL_FILE]:') || url.startsWith('[RECORDED_VIDEO]:');
+
+            let videoHtml = '';
+            if (isIDB || isLocal) {
+                let fileSrc = '';
+                let videoLabel = '';
+
+                if (isIDB) {
+                    body.innerHTML = `<div style="padding:40px; text-align:center;"><i class="fas fa-spinner fa-spin" style="font-size:2rem; color:#DE6834;"></i><p style="margin-top:16px; font-family:'Inter', sans-serif;">Loading video from local database...</p></div>`;
+                    const videoId = url.replace(/^\[IDB_VIDEO\]:\s*/, '');
+                    try {
+                        const blob = await window.VideoDB.getVideo(videoId);
+                        if (blob) {
+                            fileSrc = URL.createObjectURL(blob);
+                            videoLabel = 'Local Database Video';
+                        } else {
+                            throw new Error("Video not found in IDB");
+                        }
+                    } catch (e) {
+                        fileSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                        videoLabel = 'Error loading video (Mock Fallback)';
+                    }
+                } else {
+                    let realUrl = url.replace(/^\[(LOCAL_FILE|RECORDED_VIDEO)\]:\s*/, '');
+                    const isRecordingMock = realUrl.startsWith('recording_');
+                    fileSrc = isRecordingMock ? 'https://www.w3schools.com/html/mov_bbb.mp4' :
+                        (realUrl.includes(':') || realUrl.startsWith('/') ? `file:///${realUrl.replace(/\\/g, '/').replace(/^file:\/\/\//, '')}` : realUrl);
+                    videoLabel = isRecordingMock ? 'Simulated Recording: ' + realUrl : 'Local File: ' + realUrl.split('\\').pop().split('/').pop();
+                }
+
+                // Custom HTML5 video player with forward/back controls for uploaded/recorded videos
+                videoHtml = `
+                    <div style="background:#000; border-radius:12px; overflow:hidden; position:relative;">
+                        <video id="customVideoPlayer" src="${fileSrc}" style="width:100%; display:block; max-height:500px;" controls>
+                            <source src="${fileSrc}" type="video/mp4">
+                        </video>
+                        <div style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); color:#fff; padding:4px 8px; border-radius:4px; font-size:0.8rem;">
+                            ${videoLabel}
+                        </div>
+                        <div style="padding: 12px 24px; background: #111; color: #fff; display: flex; gap: 20px; justify-content: center; align-items: center;">
+                            <button onclick="document.getElementById('customVideoPlayer').currentTime -= 10" style="background:transparent; border:none; color:#fff; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; gap:6px;"><i class="fas fa-undo"></i> 10s</button>
+                            <button onclick="document.getElementById('customVideoPlayer').currentTime += 10" style="background:transparent; border:none; color:#fff; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; gap:6px;">10s <i class="fas fa-redo"></i></button>
+                            <div style="margin-left:auto; display:flex; gap:16px; align-items:center;">
+                                <i class="fas fa-closed-captioning" style="font-size:1.4rem; cursor:pointer; opacity:0.8; transition:0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" onclick="showToast('Captions toggled')"></i>
+                                <select style="background:#333; color:#fff; border:1px solid #444; border-radius:6px; padding:6px 12px; font-size:0.95rem; outline:none; cursor:pointer;">
+                                    <option>1080p (HD)</option>
+                                    <option selected>720p (Auto)</option>
+                                    <option>480p</option>
+                                    <option>360p</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                // Extract video ID and embed
+                const ytId = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+                videoHtml = `
+                    <div style="position:relative; padding-bottom:56.25%; height:0; border-radius:12px; overflow:hidden; background: #000; cursor: pointer; border: 1px solid #eaeaea;" onclick="window.open('https://www.youtube.com/watch?v=${ytId}', '_blank')">
+                        <img src="https://img.youtube.com/vi/${ytId}/maxresdefault.jpg" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; opacity: 0.85;" onerror="this.src='https://img.youtube.com/vi/${ytId}/hqdefault.jpg'">
+                        <div style="position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; z-index: 2;">
+                            <div style="width: 68px; height: 48px; background: #FF0000; border-radius: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(255,0,0,0.4); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <i class="fas fa-play" style="color: #fff; font-size: 1.4rem; margin-left: 4px;"></i>
+                            </div>
+                            <span style="color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8); background: rgba(0,0,0,0.7); padding: 6px 16px; border-radius: 20px; display: flex; align-items: center; gap: 8px;">
+                                Watch on YouTube <i class="fas fa-external-link-alt" style="font-size: 0.85rem;"></i>
+                            </span>
+                        </div>
+                    </div>`;
+            } else {
+                videoHtml = `
+                    <div style="background:#000; border-radius:12px; overflow:hidden; position:relative;">
+                        <video id="customVideoPlayer" src="${url}" style="width:100%; display:block; max-height:500px;" controls></video>
+                        <div style="padding: 12px 24px; background: #111; color: #fff; display: flex; gap: 20px; justify-content: center; align-items: center;">
+                            <button onclick="document.getElementById('customVideoPlayer').currentTime -= 10" style="background:transparent; border:none; color:#fff; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; gap:6px;"><i class="fas fa-undo"></i> 10s</button>
+                            <button onclick="document.getElementById('customVideoPlayer').currentTime += 10" style="background:transparent; border:none; color:#fff; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; gap:6px;">10s <i class="fas fa-redo"></i></button>
+                            <div style="margin-left:auto; display:flex; gap:16px; align-items:center;">
+                                <i class="fas fa-closed-captioning" style="font-size:1.4rem; cursor:pointer; opacity:0.8; transition:0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" onclick="showToast('Captions toggled')"></i>
+                                <select style="background:#333; color:#fff; border:1px solid #444; border-radius:6px; padding:6px 12px; font-size:0.95rem; outline:none; cursor:pointer;">
+                                    <option>1080p (HD)</option>
+                                    <option selected>720p (Auto)</option>
+                                    <option>480p</option>
+                                    <option>360p</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            body.innerHTML = `
+                <div style="max-width: 1050px; margin: 0 auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h2 class="prob-title" style="margin: 0; line-height: 1.2; font-size: 1.8rem; font-weight: 700; color: #111;">
+                            ${less.title}</h2>
+                    </div>
+                    <div id="videoWarningContainer" style="display:none; padding:12px 16px; border-left:4px solid #F04438; border-radius:4px; font-weight:600; font-family:'Inter', sans-serif; margin-bottom:16px;"></div>
+                    <div class="tri-orange-line" style="margin-bottom: 32px;">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    ${videoHtml}
+                    <div class="hindi-font-readability" style="margin-top: 32px; font-size: 1.15rem; line-height: 1.6; color: #333;">${less.data.notes || ''}</div>
+                    
+                    <div class="q-footer" style="margin-top: 60px; border-top: 1px solid #EAEAEA; padding-top: 20px; background: transparent;">
+                        <div class="q-nav-btn" onclick="prevLesson()">
+                            <i class="fas fa-caret-left"></i> previous
+                        </div>
+                        <div style="color:#DE6834; font-weight:500; font-size:1.15rem; cursor:pointer;" onclick="toggleReportModal()">Report a problem</div>
+                        <div class="q-nav-btn" onclick="nextLesson()">
+                            next <i class="fas fa-caret-right"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Tracker Logic
+            const vidPlayer = document.getElementById('customVideoPlayer');
+            if (vidPlayer) {
+                let skipCount = 0;
+                let lastTime = 0;
+
+                vidPlayer.addEventListener('timeupdate', () => {
+                    if (!vidPlayer.seeking) {
+                        lastTime = vidPlayer.currentTime;
+                    }
+                });
+
+                vidPlayer.addEventListener('seeked', () => {
+                    const delta = vidPlayer.currentTime - lastTime;
+                    if (delta > 2) {
+                        skipCount++;
+                        const warnBox = document.getElementById('videoWarningContainer');
+                        if (warnBox) {
+                            if (skipCount >= 2) {
+                                warnBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Donot watch video with skips as it may lead to learning gaps.';
+                                warnBox.style.background = '#FEF3F2';
+                                warnBox.style.color = '#B42318';
+                                warnBox.style.borderLeftColor = '#F04438';
+                                warnBox.style.display = 'block';
+                            } else {
+                                warnBox.innerHTML = '<i class="fas fa-info-circle"></i> Kindly watch properly for enhanced learning.';
+                                warnBox.style.background = '#ECFDF3';
+                                warnBox.style.color = '#027A48';
+                                warnBox.style.borderLeftColor = '#12B76A';
+                                warnBox.style.display = 'block';
+                                setTimeout(() => {
+                                    if (skipCount < 2) warnBox.style.display = 'none';
+                                }, 4000);
+                            }
+                        }
+                    }
+                    lastTime = vidPlayer.currentTime;
+                });
+            }
+        }
+
         function renderMCQ(less) {
             const body = document.getElementById('playerBody');
             if (!body) return;
@@ -3312,14 +3526,14 @@
             }
 
             body.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 900px; margin: 0 auto; padding-top: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 1050px; margin: 0 auto; padding-top: 20px;">
                     <div class="mcq-interaction">
                         <h3 class="mcq-heading">Choose any one</h3>
                         <div class="mcq-divider" style="width: 100%; height: 1px; background: #eee; margin-bottom: 32px;"></div>
                         
                         <div class="mcq-options-list" id="optList">
                             ${(less.data.options || ['Option A', 'Option B', 'Option C', 'Option D']).map(v => `
-                                <div class="mcq-option" onclick="selectOpt(this, '${encodeURIComponent(v)}')">
+                                <div class="mcq-option" onclick="selectOpt(this, '${encodeURIComponent(v)}')" data-val="${encodeURIComponent(v)}">
                                     <div class="mcq-circle"></div>
                                     <span class="opt-val">${v}</span>
                                 </div>
@@ -3369,8 +3583,8 @@
 
             const options = document.querySelectorAll('.mcq-option');
             options.forEach(opt => {
-                const span = opt.querySelector('.opt-val');
-                const val = span ? span.innerHTML : '';
+                const encodedVal = opt.getAttribute('data-val');
+                const val = encodedVal ? decodeURIComponent(encodedVal) : '';
                 if (val === correctVal) {
                     opt.classList.add('correct-reveal');
                     opt.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #22c55e; font-size: 1.2rem; font-weight: 600; margin-left: 12px; display: flex; align-items: center; gap: 6px;"><i class="fas fa-check" style="font-size: 1.4rem;"></i> correct answer</span>`);
@@ -3700,10 +3914,8 @@
                     window.allCodingEditors.forEach(ed => ed.resize());
                 }
             }, 50);
-
             showToast(isHidden ? "Restored View" : "Fullscreen Mode Active");
         }
-
         init();
     </script>
 </body>
