@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXAMPAD</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
@@ -791,11 +791,11 @@
 
     <header class="site-header">
         <div class="header-left">
-            <div class="logo-box" onclick="location.reload()">
+            <div class="logo-box" onclick="window.location.href='./student-dashboard.html'">
                 <div class="logo-icon">
-                    <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="Chitkara">
+                    <img src="../icon.png" alt="TESTPAD">
                 </div>
-                <div style="font-weight: 800; font-size: 1.2rem; color: #333;">EXAMPAD</div>
+                <div style="font-weight: 800; font-size: 1.2rem; color: #333;">TESTPAD</div>
             </div>
             <nav class="nav-icons">
                 <i class="far fa-file-alt" title="Assessment List" onclick="scrollToExams()"></i>
@@ -805,7 +805,9 @@
         <div class="header-right">
             <div class="plus-btn" title="Quick Join" onclick="focusJoinField()"><i class="fas fa-plus"></i></div>
             <div class="grid-icon" title="Menu" onclick="showToast('More features coming soon!', 'info')">
-                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png" style="width: 26px; height: 26px; opacity: 0.75; transition: all 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
+                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png"
+                    style="width: 26px; height: 26px; opacity: 0.75; transition: all 0.2s;"
+                    onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
             </div>
             <div class="profile-container">
                 <div class="profile-stack" id="profileToggle" onclick="toggleMenu()">
@@ -813,23 +815,28 @@
                         <span class="profile-name" id="userName">Om Aggarwal</span>
                         <span class="profile-role">Student</span>
                     </div>
-                    <div class="avatar-circle" id="userInitial" style="background: transparent; color: inherit; font-size: inherit; font-weight: normal; border: none; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
-                        <img src="../LINUX_TEST_CHITKARA_files/user-icon.3d6e2547.svg" style="width: 100%; height: 100%; border-radius: 50%;">
+                    <div class="avatar-circle" id="userInitial"
+                        style="background: transparent; color: inherit; font-size: inherit; font-weight: normal; border: none; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <img src="../LINUX_TEST_CHITKARA_files/user-icon.3d6e2547.svg"
+                            style="width: 100%; height: 100%; border-radius: 50%;">
                     </div>
                 </div>
                 <!-- Profile Dropdown -->
                 <div class="profile-menu" id="profileMenu">
                     <div class="menu-item" onclick="location.href='./profile.html'">
-                        <i class="fas fa-user-circle"></i>
+                        <img src="../TESTPAD_WEBSITE__files/portrait_placeholder_circle.png"
+                            style="width: 16px; height: 16px; margin-right: 8px;">
                         <span>My Profile</span>
                     </div>
                     <div class="menu-item" onclick="location.href='./preferences.html'">
-                        <i class="fas fa-cog"></i>
+                        <img src="../TESTPAD_WEBSITE__files/password.svg"
+                            style="width: 16px; height: 16px; margin-right: 8px;">
                         <span>Preferences</span>
                     </div>
                     <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
                     <div class="menu-item logout" onclick="handleLogout()">
-                        <i class="fas fa-sign-out-alt"></i>
+                        <img src="../TESTPAD_WEBSITE__files/logout.svg"
+                            style="width: 16px; height: 16px; margin-right: 8px;">
                         <span>Logout</span>
                     </div>
                 </div>
@@ -873,6 +880,18 @@
                 <div style="text-align:center; color:#999; padding:60px;">
                     <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:15px;"></i>
                     <p>Fetching your assessments...</p>
+                </div>
+            </div>
+
+            <div class="panel-header" id="assignedCompetitiveSection" style="margin-top: 60px;">
+                <h2 class="panel-title" style="color: #026AA2;">Assigned Competitive Exams <span
+                        id="competitiveExamCount">(0)</span></h2>
+            </div>
+
+            <div class="exam-grid" id="competitiveExamGrid">
+                <div style="text-align:center; color:#999; padding:60px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:15px;"></i>
+                    <p>Fetching your competitive assessments...</p>
                 </div>
             </div>
 
@@ -1007,8 +1026,8 @@
 
             // Direct Invite Handling
             const params = new URLSearchParams(window.location.search);
-            const inviteId = params.get('invite') || params.get('testId') || params.get('id') || sessionStorage.getItem('pending_test_id');
-            const passcode = params.get('passcode') || sessionStorage.getItem('pending_passcode');
+            const inviteId = params.get('invite') || params.get('testId') || params.get('id');
+            const passcode = params.get('passcode');
 
             if (inviteId) {
                 document.getElementById('testIdInput').value = inviteId;
@@ -1019,10 +1038,13 @@
                 sessionStorage.removeItem('pending_passcode');
 
                 // Auto-join if both present or if no passcode required
-                const exam = db.getExamByTestId(inviteId);
+                const exam = db.getExamByTestId(inviteId) || db.getExamByJoiningKey(inviteId);
                 const passRequired = exam?.security?.passcode;
                 if (exam && (!passRequired || (passRequired && passcode))) {
                     setTimeout(() => handleJoin(), 1200);
+                } else if (exam && passRequired && !passcode) {
+                    showToast('This assessment requires a security passcode.', 'info');
+                    document.getElementById('passcodeInput').focus();
                 }
             }
 
@@ -1060,7 +1082,7 @@
             if (!rawInput) return showToast('Please enter a Test ID or Joining Key', 'error');
 
             let exam = null;
-            
+
             // 1. Try direct Joining Key match (Primary) - Supports custom keys of any format (case-sensitive)
             exam = db.getExamByJoiningKey(rawInput);
 
@@ -1088,11 +1110,25 @@
                 return showToast('❌ Incorrect security passcode', 'error');
             }
 
-            const res = db.startAttempt(exam.id, user.id);
+            let res = db.startAttempt(exam.id, user.id);
+            
+            // Allow resuming or re-attempting if an attempt already exists
+            if (!res.success && res.existingAttempt) {
+                if (res.existingAttempt.status === 'submitted' || res.existingAttempt.status === 'reviewed') {
+                    // Start a fresh re-attempt
+                    res = db.startAttempt(exam.id, user.id, true);
+                } else {
+                    // Resume in-progress attempt
+                    res.success = true;
+                    res.attempt = res.existingAttempt;
+                }
+            }
+
             if (res.success) {
                 showToast('Access Granted. Launching session...', 'success');
                 setTimeout(() => {
-                    window.location.href = `./exam-attempt.html?attemptId=${res.attempt.id}`;
+                    const dest = exam.isCompetitive ? './comexam-attempt.html' : './exam-attempt.html';
+                    window.location.href = `${dest}?attemptId=${res.attempt.id}`;
                 }, 1000);
             } else {
                 showToast(res.message, 'error');
@@ -1110,28 +1146,41 @@
             const exams = db.getAllExams().filter(e => e.status === 'published' || e.status === 'live' || e.status === 'ended');
             const attempts = db.getStudentAttempts(user.id);
 
+            const allAttemptsRaw = JSON.parse(localStorage.getItem('TESTPAD_attempts')) || [];
+
             allExams = exams.map(exam => {
-                const attempt = attempts.find(a => a.examId === exam.id);
+                let attempt = [...attempts].reverse().find(a => a.examId === exam.id);
+                
+                // Recover orphaned completed competitive attempts
+                if (exam.isCompetitive && (!attempt || attempt.status !== 'completed')) {
+                    const orphan = [...allAttemptsRaw].reverse().find(a => a.examId === exam.id && a.status === 'completed' && (a.studentId === user.id || a.rollNo === user.rollNo || a.studentName === user.name));
+                    if (orphan) attempt = orphan;
+                }
+
                 let progress = 0;
                 let status = 'pending';
 
                 if (attempt) {
-                    if (attempt.status === 'submitted' || attempt.status === 'reviewed') {
+                    if (attempt.status === 'submitted' || attempt.status === 'reviewed' || attempt.status === 'completed') {
                         progress = 100;
                         status = 'completed';
                     }
                     else if (attempt.status === 'started' || attempt.status === 'ongoing' || attempt.status === 'in-progress') {
-                        progress = 45;
+                        progress = 0;
                         status = 'in-progress';
                     }
                 }
-                return { ...exam, examStatus: exam.status, progress, status, attemptId: attempt?.id, resultsPublished: exam.resultsPublished || false };
+                return { ...exam, examStatus: exam.status, progress, status, attemptId: attempt?.id || attempt?.attemptId, resultsPublished: exam.resultsPublished || false, isCompetitive: exam.isCompetitive || false };
             });
 
-            renderExams(allExams);
+            const regularExams = allExams.filter(e => !e.isCompetitive);
+            const competitiveExams = allExams.filter(e => e.isCompetitive);
+
+            renderExams(regularExams, 'examGrid', 'examCount');
+            renderExams(competitiveExams, 'competitiveExamGrid', 'competitiveExamCount');
 
             // LOAD COURSES
-            const courses = db.getAllCourses ? db.getAllCourses() : [];
+            const courses = db.getAllCourses ? db.getAllCourses().filter(c => c.status !== 'draft' && c.status !== 'expired') : [];
             const processedCourses = courses.map(c => {
                 const progressObj = db.getCourseProgress ? db.getCourseProgress(c.id, user.id) : null;
                 const total = c.modules ? c.modules.reduce((acc, m) => acc + (m.lessons ? m.lessons.length : 0), 0) : 0;
@@ -1183,27 +1232,35 @@
             `).join('');
         }
 
-        function renderExams(examsToRender) {
-            const grid = document.getElementById('examGrid');
-            const countSpan = document.getElementById('examCount');
+        function renderExams(examsToRender, containerId = 'examGrid', countId = 'examCount') {
+            const grid = document.getElementById(containerId);
+            const countSpan = document.getElementById(countId);
             countSpan.textContent = `(${examsToRender.length})`;
 
             if (examsToRender.length === 0) {
-                grid.innerHTML = `<div style="text-align:center; padding:50px; color:#999;">No assessments assigned at this time.</div>`;
+                if (containerId === 'competitiveExamGrid') {
+                    grid.innerHTML = `<div style="text-align:center; padding:50px; color:#999;"><i class="fas fa-medal" style="font-size:2rem; margin-bottom:15px; opacity:0.5;"></i><br>No competitive assessments assigned at this time.</div>`;
+                } else {
+                    grid.innerHTML = `<div style="text-align:center; padding:50px; color:#999;">No assessments assigned at this time.</div>`;
+                }
                 return;
             }
 
             grid.innerHTML = examsToRender.map(e => {
                 let statusText = e.status === 'completed' ? 'Submitted' : (e.status === 'in-progress' ? 'Ongoing' : 'Available');
                 if (e.examStatus === 'ended' && e.status !== 'completed') statusText = 'Ended';
-                let isResultPublished = e.resultsPublished || e.security?.showResults;
+                let isResultPublished = e.resultsPublished || e.security?.showResults || e.security?.autoPublishResults || e.isCompetitive;
                 let actionBtn = e.status === 'completed' ? (isResultPublished ? 'VIEW SCORE' : 'RESULT PENDING') : (e.examStatus === 'ended' ? 'TEST ENDED' : (e.status === 'in-progress' ? 'Resume' : 'Start Exam'));
                 let actionColor = isResultPublished ? '#12B76A' : (e.status === 'completed' ? '#94a3b8' : (e.examStatus === 'ended' ? '#ef4444' : ''));
 
+                // Blue styling for competitive exams
+                let iconAreaStyle = e.isCompetitive ? 'background: #eff6ff; color: #3b82f6;' : '';
+                let iconClass = e.status === 'completed' ? 'fa-check-double' : (e.isCompetitive ? 'fa-trophy' : 'fa-laptop-code');
+
                 return `
-                <div class="exam-card" onclick="handleCardClick('${e.id}', '${e.attemptId}', '${e.status}', ${isResultPublished}, '${e.examStatus}')">
-                    <div class="card-icon-area">
-                        <i class="fas ${e.status === 'completed' ? 'fa-check-double' : 'fa-laptop-code'}"></i>
+                <div class="exam-card" onclick="handleCardClick('${e.id}', '${e.attemptId}', '${e.status}', ${isResultPublished}, '${e.examStatus}', ${e.isCompetitive})">
+                    <div class="card-icon-area" style="${iconAreaStyle}">
+                        <i class="fas ${iconClass}"></i>
                     </div>
                     <div class="card-left">
                         <h4 class="card-code-title">
@@ -1225,7 +1282,7 @@
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button class="btn-card-action">
+                        <button class="btn-card-action" onclick="openAnalytics(event, '${e.attemptId}', '${e.status}', ${isResultPublished}, ${e.isCompetitive})">
                             <i class="fas fa-chart-line"></i> Analytics
                         </button>
                         <button class="btn-card-action primary" style="${actionColor ? 'background:' + actionColor + '; border-color:' + actionColor + ';' : ''}">
@@ -1257,29 +1314,50 @@
 
         function filterExams() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allExams.filter(e =>
-                e.title.toLowerCase().includes(query) ||
-                e.testId.toLowerCase().includes(query)
-            );
-            renderExams(filtered);
+            const filteredRegular = allExams.filter(e => !e.isCompetitive && (e.title.toLowerCase().includes(query) || e.testId.toLowerCase().includes(query)));
+            const filteredCompetitive = allExams.filter(e => e.isCompetitive && (e.title.toLowerCase().includes(query) || e.testId.toLowerCase().includes(query)));
+
+            renderExams(filteredRegular, 'examGrid', 'examCount');
+            renderExams(filteredCompetitive, 'competitiveExamGrid', 'competitiveExamCount');
         }
 
-        function handleCardClick(examId, attemptId, status, isPublished, examStatus) {
+        function handleCardClick(examId, attemptId, status, isPublished, examStatus, isCompetitive) {
             if (status === 'completed') {
-                if (isPublished) location.href = `./student-results.html?attemptId=${attemptId}`;
+                if (isPublished) {
+                    location.href = isCompetitive ? `./competetiveanalyzerstudents.html?attemptId=${attemptId}` : `./student-results.html?attemptId=${attemptId}`;
+                }
                 else showToast("The instructor hasn't published the result for this test yet.", "info");
             }
             else if (status === 'in-progress') {
                 if (examStatus === 'ended') showToast("This test has already ended.", "error");
-                else location.href = `./exam-attempt.html?attemptId=${attemptId}`;
+                else location.href = isCompetitive ? `./comexam-attempt.html?attemptId=${attemptId}` : `./exam-attempt.html?attemptId=${attemptId}`;
             }
             else {
                 if (examStatus === 'ended') return showToast("This test has already ended.", "error");
                 // Quick start new attempt
                 const res = db.startAttempt(examId, user.id);
-                if (res.success) location.href = `./exam-attempt.html?attemptId=${res.attempt.id}`;
+                if (res.success) {
+                    location.href = isCompetitive ? `./comexam-attempt.html?attemptId=${res.attempt.id}` : `./exam-attempt.html?attemptId=${res.attempt.id}`;
+                }
                 else showToast(res.message, 'error');
             }
+        }
+
+        function openAnalytics(event, attemptId, status, isPublished, isCompetitive) {
+            event.stopPropagation();
+            if (!isCompetitive) {
+                showToast("Detailed analytics are available for competitive exams only.", "info");
+                return;
+            }
+            if (status !== 'completed') {
+                showToast("You must complete the exam to view analytics.", "error");
+                return;
+            }
+            if (!isPublished) {
+                showToast("Analytics are not published yet.", "info");
+                return;
+            }
+            location.href = `./competetiveanalyzerstudents.html?attemptId=${attemptId}`;
         }
 
         // --- WEB MESSAGE SYSTEM ---

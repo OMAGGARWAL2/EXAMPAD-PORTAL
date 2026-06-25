@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics | EXAMPAD</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@500&display=swap"
@@ -781,7 +781,7 @@
             }
 
             body.innerHTML = attempts.map(a => {
-                const user = db.getUserById(a.studentId) || { name: 'Guest Candidate', email: 'no-email@exampad.com' };
+                const user = db.getUserById(a.studentId) || { name: 'Guest Candidate', email: 'no-email@TESTPAD.com' };
                 const grade = calculateGrade(a, exam);
                 const scoreColor = grade >= 80 ? 'var(--accent-green)' : (grade >= 40 ? 'var(--text-primary)' : 'var(--accent-red)');
                 const statusCls = a.status === 'submitted' ? 'submitted' : 'progress';
@@ -868,7 +868,7 @@
             const htmlContent = `
                 <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px;">
                     <div style="margin-bottom: 30px; text-align: left;">
-                        <h1 style="color: #111827; font-size: 24px; margin: 0; font-weight: 800; letter-spacing: -1px;">EXAMPAD</h1>
+                        <h1 style="color: #111827; font-size: 24px; margin: 0; font-weight: 800; letter-spacing: -1px;">TESTPAD</h1>
                         <p style="color: #6B7280; font-size: 13px; margin: 4px 0 0;">Assessment Audit Office</p>
                     </div>
 
@@ -917,7 +917,7 @@
                     </div>
 
                     <div style="border-top: 1px solid #E5E7EB; padding-top: 24px; text-align: center;">
-                        <p style="margin: 0; font-size: 12px; color: #9CA3AF;">&copy; 2026 EXAMPAD. All rights reserved.<br>This is a system-generated audit report.</p>
+                        <p style="margin: 0; font-size: 12px; color: #9CA3AF;">&copy; 2026 TESTPAD. All rights reserved.<br>This is a system-generated audit report.</p>
                     </div>
                 </div>
             `;
@@ -1045,7 +1045,7 @@
             if (type === 'pdf') {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
-                doc.text("EXAMPAD Audit Report", 14, 20);
+                doc.text("TESTPAD Audit Report", 14, 20);
                 doc.autoTable({ head: [headers], body: data, startY: 30 });
                 doc.save(`Audit_${examId}.pdf`);
             } else if (type === 'excel') {

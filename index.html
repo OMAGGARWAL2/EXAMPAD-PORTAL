@@ -663,15 +663,15 @@
 
         function handleQuickStart() {
             try {
-                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
                 const student = users.reverse().find(u => u.role === 'student');
                 if (!student) {
                     alert("No student accounts found. Please log in manually.");
                     return;
                 }
 
-                const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
-                const attempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+                const exams = JSON.parse(localStorage.getItem('TESTPAD_exams')) || [];
+                const attempts = JSON.parse(localStorage.getItem('TESTPAD_attempts')) || [];
                 
                 // Find latest exam that is NOT submitted or reviewed
                 const latestExam = exams.reverse().find(e => {

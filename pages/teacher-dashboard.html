@@ -759,17 +759,22 @@
                 <div class="logo-square">
                     <img src="../TESTPAD_WEBSITE__files/chitkara.png" alt="CHITKARA">
                 </div>
-                <div class="logo-text">EXAMPAD</div>
+                <div class="logo-text">TESTPAD</div>
             </div>
             <div class="header-nav">
                 <button class="nav-icon-btn active" title="Dashboard"
-                    onclick="location.href='./teacher-dashboard.html'"><i class="fas fa-th-large"></i></button>
-                <button class="nav-icon-btn" title="Assessments" onclick="scrollToAssessments()"><i
-                        class="fas fa-file-alt"></i></button>
-                <button class="nav-icon-btn" title="Question Pool" onclick="location.href='./questionpool.html'"><i
-                        class="fas fa-layer-group"></i></button>
-                <button class="nav-icon-btn" title="Analytics" onclick="location.href='./livemonitor.html'"><i
-                        class="fas fa-chart-bar"></i></button>
+                    onclick="location.href='./teacher-dashboard.html'">
+                    <img src="../TESTPAD_WEBSITE__files/menu-1.svg" style="width: 20px; height: 20px;">
+                </button>
+                <button class="nav-icon-btn" title="Assessments" onclick="scrollToAssessments()">
+                    <img src="../TESTPAD_WEBSITE__files/quiz.svg" style="width: 20px; height: 20px;">
+                </button>
+                <button class="nav-icon-btn" title="Question Pool" onclick="location.href='./questionpool.html'">
+                    <img src="../TESTPAD_WEBSITE__files/folder-2.svg" style="width: 20px; height: 20px;">
+                </button>
+                <button class="nav-icon-btn" title="Analytics" onclick="location.href='./livemonitor.html'">
+                    <img src="../TESTPAD_WEBSITE__files/playground-normal.svg" style="width: 20px; height: 20px;">
+                </button>
             </div>
         </div>
 
@@ -781,13 +786,51 @@
             <button class="plus-btn" onclick="createNewExam()" title="Launch New Assessment">
                 <i class="fas fa-plus"></i>
             </button>
-            <button class="grid-btn" onclick="showToast('View mode updated', 'info')"><i class="fas fa-th"></i></button>
-            <div class="profile-bubble" onclick="handleLogout()">
-                <div class="user-info">
-                    <div class="user-name" id="userName">OM AGGARWAL</div>
-                    <div class="user-role" style="color: var(--primary);">PROFESSOR</div>
+            <button class="grid-btn" onclick="showToast('View mode updated', 'info')"
+                style="display: flex; align-items: center; justify-content: center;">
+                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png"
+                    style="width: 24px; height: 24px; opacity: 0.75; transition: all 0.2s;"
+                    onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
+            </button>
+            <div class="profile-container" style="position: relative; margin-left: 10px;">
+                <div class="profile-bubble" id="profileToggle" onclick="toggleMenu()"
+                    style="cursor: pointer; display: flex; align-items: center; gap: 12px; background: #fff; padding: 6px 12px; border-radius: 30px; border: 1px solid #eee;">
+                    <div class="user-info" style="text-align: right;">
+                        <div class="user-name" id="userName" style="font-size: 0.9rem; font-weight: 700;">OM AGGARWAL
+                        </div>
+                        <div class="user-role" style="color: var(--primary); font-size: 0.75rem; font-weight: 600;">
+                            PROFESSOR</div>
+                    </div>
+                    <div class="avatar" id="userInitial"
+                        style="background: transparent; border: none; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <img src="../TESTPAD_WEBSITE__files/portrait_placeholder_circle.png"
+                            style="width: 100%; height: 100%; border-radius: 50%;">
+                    </div>
                 </div>
-                <div class="avatar" id="userInitial" style="background: #E66A35;">O</div>
+
+                <div class="profile-menu" id="profileMenu"
+                    style="display: none; position: absolute; right: 0; top: calc(100% + 10px); background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 220px; z-index: 1000; overflow: hidden; border: 1px solid #eee;">
+                    <div class="menu-item" onclick="location.href='./profile.html'"
+                        style="padding: 12px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;"
+                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+                        <img src="../TESTPAD_WEBSITE__files/portrait_placeholder_circle.png"
+                            style="width: 20px; height: 20px;">
+                        <span style="font-size: 0.95rem; font-weight: 500; color: #475467;">My Profile</span>
+                    </div>
+                    <div class="menu-item" onclick="location.href='./preferences.html'"
+                        style="padding: 12px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;"
+                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+                        <img src="../TESTPAD_WEBSITE__files/password.svg" style="width: 20px; height: 20px;">
+                        <span style="font-size: 0.95rem; font-weight: 500; color: #475467;">Settings</span>
+                    </div>
+                    <div style="border-top: 1px solid #f0f0f0; margin: 4px 0;"></div>
+                    <div class="menu-item logout" onclick="handleLogout()"
+                        style="padding: 12px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;"
+                        onmouseover="this.style.background='#fff5f5'" onmouseout="this.style.background='transparent'">
+                        <img src="../TESTPAD_WEBSITE__files/logout.svg" style="width: 20px; height: 20px;">
+                        <span style="font-size: 0.95rem; font-weight: 500; color: #d32f2f;">Logout</span>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -797,8 +840,10 @@
             <div class="content-header">
                 <h2 class="section-title">Assessments <span id="examCount">(0)</span></h2>
                 <div class="bulk-actions" style="margin-left: auto; margin-right: 20px; display: flex; gap: 8px;">
-                    <button class="btn-action primary" style="background:#d32f2f;" onclick="endAllExams()"><i class="fas fa-stop-circle"></i> END ALL</button>
-                    <button class="btn-action primary" style="background:#FF8A00;" onclick="expireAllExams()"><i class="fas fa-calendar-times"></i> EXPIRE ALL</button>
+                    <button class="btn-action primary" style="background:#d32f2f;" onclick="endAllExams()"><i
+                            class="fas fa-stop-circle"></i> END ALL</button>
+                    <button class="btn-action primary" style="background:#FF8A00;" onclick="expireAllExams()"><i
+                            class="fas fa-calendar-times"></i> EXPIRE ALL</button>
                 </div>
                 <div class="search-container">
                     <i class="fas fa-search"></i>
@@ -817,9 +862,14 @@
 
             <div class="content-header" style="margin-top: 60px;">
                 <h2 class="section-title">My Courses <span id="courseCount">(0)</span></h2>
-                <button class="btn-action primary" onclick="location.href='./course-creator.html'">
-                    <i class="fas fa-plus"></i> NEW COURSE
-                </button>
+                <div class="bulk-actions" style="margin-left: auto; display: flex; gap: 8px;">
+                    <button class="btn-action primary" style="background:#d32f2f;" onclick="expireAllCourses()">
+                        <i class="fas fa-calendar-times"></i> EXPIRE ALL
+                    </button>
+                    <button class="btn-action primary" onclick="location.href='./course-creator.html'">
+                        <i class="fas fa-plus"></i> NEW COURSE
+                    </button>
+                </div>
             </div>
 
             <div class="assessments-grid" id="coursesList">
@@ -827,6 +877,25 @@
                     <i class="fas fa-spinner fa-spin"
                         style="font-size: 2rem; color: var(--primary); margin-bottom: 20px;"></i>
                     <p style="color: #667085;">Loading curriculum data...</p>
+                </div>
+            </div>
+
+            <div class="content-header" style="margin-top: 60px;">
+                <h2 class="section-title">My Competitive Exams <span id="competitiveExamCount">(0)</span></h2>
+                <div class="bulk-actions" style="margin-left: auto; display: flex; gap: 8px;">
+                    <button class="btn-action primary" style="background:#2563eb;"
+                        onclick="location.href='./comexam-creator.html'">
+                        <i class="fas fa-trophy"></i> CREATE COMPETITIVE EXAM
+                    </button>
+                </div>
+            </div>
+
+            <div class="assessments-grid" id="competitiveExamsList">
+                <div style="text-align: center; padding: 60px; color: var(--secondary);">
+                    <i class="fas fa-medal" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                    <p>No competitive exams designed yet.</p>
+                    <button onclick="location.href='./comexam-creator.html'" class="btn-action primary"
+                        style="background:#2563eb; margin-top: 20px; height: 44px;">CREATE COMPETITIVE EXAM</button>
                 </div>
             </div>
         </main>
@@ -1023,10 +1092,13 @@
 
         function loadData() {
             allExams = db.getTeacherExams(user.id).filter(e => e.status !== 'expired');
-            renderExams(allExams);
-            document.getElementById('examCount').textContent = `(${allExams.length})`;
+            const regularExams = allExams.filter(e => !e.isCompetitive);
+            const competitiveExams = allExams.filter(e => e.isCompetitive);
 
-            const courses = db.getTeacherCourses ? db.getTeacherCourses(user.id) : [];
+            renderExams(regularExams, 'examsList', 'examCount');
+            renderExams(competitiveExams, 'competitiveExamsList', 'competitiveExamCount');
+
+            const courses = db.getTeacherCourses ? db.getTeacherCourses(user.id).filter(c => c.status !== 'expired') : [];
             renderCourses(courses);
             document.getElementById('courseCount').textContent = `(${courses.length})`;
         }
@@ -1067,6 +1139,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
+                            <button class="btn-action light-orange" onclick="event.stopPropagation(); expireCourse('${c.id}')" title="Expire Course"><i class="fas fa-calendar-times"></i></button>
                             <button class="btn-action" title="View Students" onclick="event.stopPropagation();"><i class="fas fa-user-friends"></i></button>
                             <button class="btn-action primary" style="background:${isDraft ? '#D96C33' : '#12B76A'};" onclick="event.stopPropagation(); location.href='./course-creator.html?id=${c.id}'">
                                 ${isDraft ? 'CONTINUE DESIGN' : 'EDIT CURRICULUM'}
@@ -1077,16 +1150,27 @@
             }).join('');
         }
 
-        function renderExams(exams) {
-            const container = document.getElementById('examsList');
+        function renderExams(exams, containerId = 'examsList', countId = 'examCount') {
+            const container = document.getElementById(containerId);
+            document.getElementById(countId).textContent = `(${exams.length})`;
             if (exams.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 60px; color: var(--secondary);">
-                        <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
-                        <p>No assessments found in your repository.</p>
-                        <button onclick="createNewExam()" class="btn-action primary" style="margin-top: 20px; height: 44px;">LAUNCH NEW ASSESSMENT</button>
-                    </div>
-                `;
+                if (containerId === 'competitiveExamsList') {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px; color: var(--secondary);">
+                            <i class="fas fa-medal" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                            <p>No competitive exams designed yet.</p>
+                            <button onclick="location.href='./comexam-creator.html'" class="btn-action primary" style="background:#2563eb; margin-top: 20px; height: 44px;">CREATE COMPETITIVE EXAM</button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px; color: var(--secondary);">
+                            <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                            <p>No assessments found in your repository.</p>
+                            <button onclick="createNewExam()" class="btn-action primary" style="margin-top: 20px; height: 44px;">LAUNCH NEW ASSESSMENT</button>
+                        </div>
+                    `;
+                }
                 return;
             }
 
@@ -1105,17 +1189,12 @@
                 const marks = exam.totalMarks || 0;
                 const sectionsCount = exam.sections ? exam.sections.length : 0;
 
-                let questionsCount = 0;
-                if (exam.sections) {
-                    exam.sections.forEach(sec => questionsCount += (sec.questions ? sec.questions.length : 0));
-                } else if (exam.questions) {
-                    questionsCount = exam.questions.length;
-                }
+                let questionsCount = exam.questions ? exam.questions.length : 0;
 
                 return `
                     <div class="assessment-card" onclick="openAssessment('${exam.id}')">
-                        <div class="card-icon-area">
-                            <i class="fas fa-scroll"></i>
+                        <div class="card-icon-area" style="${exam.isCompetitive ? 'background:#eff6ff; color:#2563eb;' : ''}">
+                            <i class="fas ${exam.isCompetitive ? 'fa-trophy' : 'fa-scroll'}"></i>
                         </div>
                         <div class="card-body" style="min-width: 280px; flex: 1;">
                             <div class="card-title">${exam.title} <span style="font-family:'JetBrains Mono'; color:var(--primary); font-size:0.75rem; font-weight:800; background:var(--primary-soft); padding:2px 6px; border-radius:4px; margin-left:8px; border: 1px solid #FDA29B;">#${exam.testId}</span></div>
@@ -1164,8 +1243,11 @@
                             <button class="btn-action" onclick="event.stopPropagation(); window.location.href='./livemonitor.html?examId=${exam.id}'" title="Live Monitor"><i class="fas fa-broadcast-tower"></i></button>
                             <button class="btn-action light-orange" onclick="event.stopPropagation(); expireExam('${exam.id}')" title="Expire Test (Remove from student dashboards)"><i class="fas fa-calendar-times"></i> EXPIRE</button>
                             <button class="btn-action light-orange" onclick="event.stopPropagation(); endExam('${exam.id}')" title="End Test Right Now"><i class="fas fa-stop-circle"></i> END TEST</button>
-                            <button class="btn-action light-orange" onclick="event.stopPropagation(); window.location.href='./exam-evaluation.html?examId=${exam.id}'">EVALUATE <i class="fas fa-clipboard-check"></i></button>
-                            <button class="btn-action light-orange" onclick="event.stopPropagation(); openAssessment('${exam.id}')">REPORT <i class="fas fa-arrow-right"></i></button>
+                            ${exam.isCompetitive ? 
+                                `<button class="btn-action primary" style="background:#2563eb;" onclick="event.stopPropagation(); window.location.href='./competetiveresults.html?examId=${exam.id}'">VIEW RESULTS <i class="fas fa-poll"></i></button>` :
+                                `<button class="btn-action light-orange" onclick="event.stopPropagation(); window.location.href='./exam-evaluation.html?examId=${exam.id}'">EVALUATE <i class="fas fa-clipboard-check"></i></button>
+                                 <button class="btn-action light-orange" onclick="event.stopPropagation(); openAssessment('${exam.id}')">REPORT <i class="fas fa-arrow-right"></i></button>`
+                            }
                         </div>
                     </div>
                 `;
@@ -1177,6 +1259,19 @@
             document.getElementById('assessmentsSection').scrollIntoView({ behavior: 'smooth' });
         }
 
+        function toggleMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function (event) {
+            const menu = document.getElementById('profileMenu');
+            const toggle = document.getElementById('profileToggle');
+            if (menu && toggle && !toggle.contains(event.target) && !menu.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        }
+
         function createNewExam() {
             location.href = './exam-creator.html';
         }
@@ -1186,7 +1281,12 @@
         }
 
         function editExam(id) {
-            location.href = `./exam-creator.html?id=${id}`;
+            const exam = allExams.find(e => e.id === id);
+            if (exam && exam.isCompetitive) {
+                location.href = `./comexam-creator.html?edit=${id}`;
+            } else {
+                location.href = `./exam-creator.html?edit=${id}`;
+            }
         }
 
         async function expireExam(id) {
@@ -1194,6 +1294,29 @@
             if (ok) {
                 db.updateExam(id, { status: 'expired' });
                 showToast('Assessment expired.', 'success');
+                loadData();
+            }
+        }
+
+        async function expireCourse(id) {
+            const ok = await showConfirm('Expire Course?', 'This will permanently remove the course from your dashboard and all student dashboards. It will only be visible to Superadmins.', 'Expire Course', 'light-orange');
+            if (ok) {
+                if (window.db && window.db.updateCourse) {
+                    window.db.updateCourse(id, { status: 'expired' });
+                }
+                showToast('Course expired successfully.', 'success');
+                loadData();
+            }
+        }
+
+        async function expireAllCourses() {
+            const ok = await showConfirm('Expire ALL Courses?', 'This will permanently remove ALL courses from your dashboard and all student dashboards. This cannot be undone.', 'Expire All', 'danger');
+            if (ok) {
+                const courses = db.getTeacherCourses ? db.getTeacherCourses(user.id).filter(c => c.status !== 'expired') : [];
+                courses.forEach(c => {
+                    db.updateCourse(c.id, { status: 'expired' });
+                });
+                showToast(`Successfully expired ${courses.length} courses.`, 'success');
                 loadData();
             }
         }
@@ -1249,8 +1372,10 @@
 
         function filterAssessments() {
             const query = document.getElementById('listSearch').value.toLowerCase();
-            const filtered = allExams.filter(e => e.title.toLowerCase().includes(query) || e.testId.toLowerCase().includes(query));
-            renderExams(filtered);
+            const filteredRegular = allExams.filter(e => !e.isCompetitive && (e.title.toLowerCase().includes(query) || e.testId.toLowerCase().includes(query)));
+            const filteredCompetitive = allExams.filter(e => e.isCompetitive && (e.title.toLowerCase().includes(query) || e.testId.toLowerCase().includes(query)));
+            renderExams(filteredRegular, 'examsList', 'examCount');
+            renderExams(filteredCompetitive, 'competitiveExamsList', 'competitiveExamCount');
         }
 
         function downloadExamPDF(examId) {

@@ -1,17 +1,17 @@
 ﻿const fs = require('fs');
-let dbPath = 'c:/Users/omagg/OneDrive/Desktop/C - 01/EXAMPAD/js/db.js';
+let dbPath = 'c:/Users/omagg/OneDrive/Desktop/C - 01/TESTPAD/js/db.js';
 let file = fs.readFileSync(dbPath, 'utf8');
 
 if (!file.includes('removeCourseProgressItem')) {
     const fn = 
     removeCourseProgressItem(courseId, studentId, itemId) {
-        const progresses = JSON.parse(localStorage.getItem('exampad_course_progress')) || [];
+        const progresses = JSON.parse(localStorage.getItem('TESTPAD_course_progress')) || [];
         let pIndex = progresses.findIndex(p => p.courseId === courseId && p.studentId === studentId);
         
         if (pIndex !== -1) {
             progresses[pIndex].completedItems = progresses[pIndex].completedItems.filter(id => id !== itemId);
             progresses[pIndex].lastActivity = new Date().toISOString();
-            localStorage.setItem('exampad_course_progress', JSON.stringify(progresses));
+            localStorage.setItem('TESTPAD_course_progress', JSON.stringify(progresses));
         }
     },
 ;

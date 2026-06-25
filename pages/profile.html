@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad | My Profile</title>
+    <title>TESTPAD</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -286,7 +286,7 @@
 
 <body>
     <nav class="top-nav">
-        <a href="./student-dashboard.html" class="logo">EXAMPAD</a>
+        <a href="./student-dashboard.html" class="logo">TESTPAD</a>
         <div class="nav-links">
             <a href="./student-dashboard.html" class="nav-link">Dashboard</a>
             <a href="./preferences.html" class="nav-link">Preferences</a>
@@ -306,7 +306,7 @@
                     <input type="file" id="picInput" style="display:none" accept="image/*" onchange="previewPic(this)">
                 </div>
                 <h3 id="sideName" style="font-family:'Outfit';">Student Name</h3>
-                <p id="sideEmail" style="font-size:0.85rem; color:var(--text-muted);">student@exampad.edu</p>
+                <p id="sideEmail" style="font-size:0.85rem; color:var(--text-muted);">student@TESTPAD.edu</p>
             </div>
 
             <div class="sidebar-stats">
@@ -405,7 +405,7 @@
             document.getElementById('fullName').value = user.name;
             document.getElementById('rollNo').value = user.rollNo || user.id.toUpperCase();
 
-            const email = user.email || (user.name.toLowerCase().replace(/\s/g, '.') + '@exampad.edu');
+            const email = user.email || (user.name.toLowerCase().replace(/\s/g, '.') + '@TESTPAD.edu');
             document.getElementById('email').value = email;
             document.getElementById('sideEmail').textContent = email;
 

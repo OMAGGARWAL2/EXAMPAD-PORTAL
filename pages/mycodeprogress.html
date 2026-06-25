@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Resource Planning | EXAMPAD Progress</title>
+    <title>TESTPAD</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
@@ -532,7 +532,7 @@
         <main class="content-scroll">
             <div id="breadcrumb"
                 style="background:#fff; border:1px solid var(--erp-border); padding:8px 12px; font-weight:700; margin-bottom:10px; font-size:12px; letter-spacing: 1px;">
-                EXAMPAD / CODEPROGRESS / OPERATIONAL LOGS
+                TESTPAD / CODEPROGRESS / OPERATIONAL LOGS
             </div>
 
             <div id="tab0" class="tab-content active">
@@ -718,7 +718,7 @@
         // ERP Tab Switcher
         function switchTab(index) {
             const tabs = ['OPERATIONAL LOGS', 'PERFORMANCE ANALYTICS', 'SUCCESS MATRIX', 'AUDIT TRAIL'];
-            document.getElementById('breadcrumb').textContent = `EXAMPAD / CODEPROGRESS / ${tabs[index]}`;
+            document.getElementById('breadcrumb').textContent = `TESTPAD / CODEPROGRESS / ${tabs[index]}`;
 
             document.querySelectorAll('.tab').forEach((t, i) => {
                 t.classList.toggle('active', i === index);

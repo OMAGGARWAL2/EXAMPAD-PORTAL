@@ -2155,6 +2155,12 @@
             lIdx = lessonIdx;
             sidebarMIdx = mIdx;
 
+            // Update URL to persist state on refresh
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('moduleIndex', moduleIdx);
+            urlParams.set('lessonIndex', lessonIdx);
+            window.history.replaceState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
+
             const sidebar = document.getElementById('courseSidebar');
             if (sidebar) sidebar.classList.remove('open');
 
@@ -2576,6 +2582,13 @@
             hEd.resize();
 
             const mEd = ace.edit("editorMain");
+
+            // CRITICAL FIX: Remove previous listener BEFORE setting value to prevent cross-contamination
+            if (window.mEdChangeHandler) {
+                mEd.getSession().off('change', window.mEdChangeHandler);
+                window.mEdChangeHandler = null;
+            }
+
             mEd.setTheme("ace/theme/chrome");
             mEd.session.setMode(`ace/mode/${aceLang}`);
             mEd.setValue(middle, -1);
@@ -2645,10 +2658,11 @@
                 mEd.setOption("firstLineNumber", 1);
             };
 
-            mEd.getSession().on('change', () => {
+            window.mEdChangeHandler = () => {
                 db.savePracticeSession(less.id, { value: mEd.getValue(), studentId: user.id });
                 updateLineSync();
-            });
+            };
+            mEd.getSession().on('change', window.mEdChangeHandler);
 
             setTimeout(() => {
                 updateLineSync();
@@ -3681,7 +3695,7 @@
         });
 
         function getAttemptHistory(lessonId) {
-            const history = localStorage.getItem('exampad_attempts_' + lessonId);
+            const history = localStorage.getItem('TESTPAD_attempts_' + lessonId);
             return history ? JSON.parse(history) : [];
         }
 
@@ -3698,7 +3712,7 @@
                 lang: lang,
                 results: results
             });
-            localStorage.setItem('exampad_attempts_' + lessonId, JSON.stringify(history));
+            localStorage.setItem('TESTPAD_attempts_' + lessonId, JSON.stringify(history));
         }
 
         let pendingBookmarkIndex = -1;

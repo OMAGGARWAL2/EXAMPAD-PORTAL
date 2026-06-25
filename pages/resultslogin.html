@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Portal | Institutional Login</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap"
@@ -154,7 +154,7 @@
         <button class="btn-login" onclick="performLogin()">Access Records</button>
 
         <div class="footer-note">
-            <p>© 2026 EXAMPAD RE-EXAMINATION DEPARTMENT</p>
+            <p>© 2026 TESTPAD RE-EXAMINATION DEPARTMENT</p>
             <p style="margin-top: 4px;">Secure Gateway | Academic Integrity First</p>
         </div>
     </div>
@@ -178,7 +178,7 @@
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+            const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
             const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() || (u.rollNo && u.rollNo.toLowerCase() === email.toLowerCase()));
 
             if (user && user.role === 'student') {

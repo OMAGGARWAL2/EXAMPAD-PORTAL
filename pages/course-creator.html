@@ -23,6 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- DB Access -->
     <script src="../js/db.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
     <style>
         :root {
@@ -1304,7 +1305,7 @@
                 <div class="logo-sq">
                     <img src="../TESTPAD_WEBSITE__files/chitkara.png" alt="Chitkara">
                 </div>
-                <div class="brand-text">EXAMPAD <span class="brand-sub">COURSE ARCHITECT</span></div>
+                <div class="brand-text">TESTPAD<span class="brand-sub">COURSE ARCHITECT</span></div>
             </div>
             <nav class="nav-tabs" style="display:flex; gap:32px; height:64px; margin-left:40px;">
                 <div class="nav-tab active"
@@ -1727,16 +1728,23 @@
         }
 
         function deleteLibraryItem(idx) {
-            if (confirm("Remove this resource?")) {
-                courseData.library.splice(idx, 1);
-                saveToLocal();
-                renderLibrary();
-            }
+            showModal({
+                title: "Remove Resource",
+                desc: "Are you sure you want to remove this resource?",
+                body: "",
+                confirmText: "Remove",
+                onConfirm: () => {
+                    courseData.library.splice(idx, 1);
+                    saveToLocal();
+                    renderLibrary();
+                    closeModal();
+                }
+            });
         }
 
         function renderAttempts() {
             const tbody = document.getElementById('attemptsTableBody');
-            const progressData = JSON.parse(localStorage.getItem('exampad_course_progress') || '[]');
+            const progressData = JSON.parse(localStorage.getItem('TESTPAD_course_progress') || '[]');
             const courseProgress = progressData.filter(p => p.courseId === (courseData.id || 'N/A'));
 
             if (courseProgress.length === 0) {
@@ -1983,26 +1991,40 @@
         }
 
         function confirmDeleteModule(mIdx) {
-            if (confirm(`Confirm: Removal of module "${getActiveModules()[mIdx].title}" will also delete all associated nested content.`)) {
-                getActiveModules().splice(mIdx, 1);
-                if (currentModuleIndex >= getActiveModules().length) {
-                    currentModuleIndex = -1;
+            showModal({
+                title: "Confirm Deletion",
+                desc: `Removal of module "${getActiveModules()[mIdx].title}" will also delete all associated nested content.`,
+                body: "",
+                confirmText: "Delete",
+                onConfirm: () => {
+                    getActiveModules().splice(mIdx, 1);
+                    if (currentModuleIndex >= getActiveModules().length) {
+                        currentModuleIndex = -1;
+                    }
+                    renderCurriculum();
+                    saveToLocal();
+                    showToast("Module archived.");
+                    closeModal();
                 }
-                renderCurriculum();
-                saveToLocal();
-                showToast("Module archived.");
-            }
+            });
         }
 
         function deleteLesson(mIdx, lIdx) {
             const mod = getActiveModules()[mIdx];
             const less = mod.lessons[lIdx];
-            if (confirm(`Delete lesson "${less.title}"?`)) {
-                mod.lessons.splice(lIdx, 1);
-                saveToLocal();
-                renderCurriculum();
-                showToast("Lesson deleted");
-            }
+            showModal({
+                title: "Delete Lesson",
+                desc: `Are you sure you want to delete lesson "${less.title}"?`,
+                body: "",
+                confirmText: "Delete",
+                onConfirm: () => {
+                    mod.lessons.splice(lIdx, 1);
+                    saveToLocal();
+                    renderCurriculum();
+                    showToast("Lesson deleted");
+                    closeModal();
+                }
+            });
         }
 
         function getIcon(t) {
@@ -2707,22 +2729,26 @@
                         compositeCtx.fillStyle = '#000';
                         compositeCtx.fillRect(0, 0, 1920, 1080);
 
-                        const isSplit = boardContainer && boardContainer.style.display !== 'none';
-                        const vWidth = isSplit ? 960 : 1920;
+                        const mainContainer = document.getElementById('recordingMainContainer');
+                        const webcamContainer = document.getElementById('webcamContainer');
+                        const isSplit = document.getElementById('whiteboardContainer') && document.getElementById('whiteboardContainer').style.display !== 'none';
+
+                        let splitRatio = (isSplit && webcamContainer && mainContainer && mainContainer.offsetWidth > 0)
+                            ? (webcamContainer.offsetWidth / mainContainer.offsetWidth)
+                            : (isSplit ? 0.5 : 1);
+
+                        const vWidth = isSplit ? (1920 * splitRatio) : 1920;
                         const vHeight = 1080;
 
                         // Draw Video
                         compositeCtx.save();
-                        if (!window.currentScreenStream) {
-                            // Mirror webcam
-                            compositeCtx.translate(vWidth, 0);
-                            compositeCtx.scale(-1, 1);
-                        }
+                        compositeCtx.translate(vWidth, 0);
+                        compositeCtx.scale(-1, 1);
                         if (video.style.filter && video.style.filter !== 'none') {
                             compositeCtx.filter = video.style.filter;
                         }
-                        
-                        if (video.videoWidth && video.videoHeight) {
+
+                        if (video.videoWidth && video.videoHeight && vWidth > 0) {
                             const vAspect = video.videoWidth / video.videoHeight;
                             let dw = vWidth, dh = vHeight;
                             if (vAspect > vWidth / vHeight) {
@@ -2735,11 +2761,28 @@
                         }
                         compositeCtx.restore();
 
-                        // Draw Whiteboard
-                        if (isSplit && boardCanvas) {
+                        // Draw Whiteboard or Screen Share
+                        if (isSplit && vWidth < 1920) {
+                            const rightWidth = 1920 - vWidth;
                             compositeCtx.fillStyle = '#fff';
-                            compositeCtx.fillRect(960, 0, 960, 1080);
-                            compositeCtx.drawImage(boardCanvas, 960, 0, 960, 1080);
+                            compositeCtx.fillRect(vWidth, 0, rightWidth, 1080);
+
+                            const ssVideo = document.getElementById('screenSharePreview');
+                            if (ssVideo && ssVideo.style.display !== 'none' && window.currentScreenStream) {
+                                if (ssVideo.videoWidth && ssVideo.videoHeight) {
+                                    const svAspect = ssVideo.videoWidth / ssVideo.videoHeight;
+                                    let dw = rightWidth, dh = 1080;
+                                    if (svAspect > rightWidth / 1080) {
+                                        dw = 1080 * svAspect;
+                                        compositeCtx.drawImage(ssVideo, vWidth + (rightWidth - dw) / 2, 0, dw, dh);
+                                    } else {
+                                        dh = rightWidth / svAspect;
+                                        compositeCtx.drawImage(ssVideo, vWidth, (1080 - dh) / 2, dw, dh);
+                                    }
+                                }
+                            } else if (boardCanvas && boardCanvas.style.display !== 'none') {
+                                compositeCtx.drawImage(boardCanvas, vWidth, 0, rightWidth, 1080);
+                            }
                         }
 
                         compositeRaf = requestAnimationFrame(drawComposite);
@@ -2747,7 +2790,7 @@
                     drawComposite();
 
                     const canvasStream = compositeCanvas.captureStream(30);
-                    
+
                     if (window.currentWebcamStream) {
                         const audioTracks = window.currentWebcamStream.getAudioTracks();
                         if (audioTracks.length > 0) canvasStream.addTrack(audioTracks[0]);
@@ -2796,10 +2839,42 @@
         let recordWbColor = '#ef4444';
         let recordWbSize = 3;
         let recordWbMode = 'brush';
+        let wbHistory = [];
+        let wbHistoryStep = -1;
 
         window.setRecordWbColor = function (c) { recordWbColor = c; };
         window.setRecordWbSize = function (s) { recordWbSize = s; };
         window.setRecordWbMode = function (m) { recordWbMode = m; };
+
+        function saveWbState() {
+            if (!webcamCtx) return;
+            const canvas = document.getElementById('recordWhiteboard');
+            wbHistoryStep++;
+            if (wbHistoryStep < wbHistory.length) {
+                wbHistory.length = wbHistoryStep;
+            }
+            wbHistory.push(webcamCtx.getImageData(0, 0, canvas.width, canvas.height));
+        }
+
+        window.undoWb = function () {
+            if (wbHistoryStep > 0) {
+                wbHistoryStep--;
+                webcamCtx.putImageData(wbHistory[wbHistoryStep], 0, 0);
+            } else if (wbHistoryStep === 0) {
+                wbHistoryStep--;
+                webcamCtx.fillStyle = '#fff';
+                webcamCtx.fillRect(0, 0, webcamCtx.canvas.width, webcamCtx.canvas.height);
+            }
+        };
+
+        window.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'z') {
+                const canvas = document.getElementById('recordWhiteboard');
+                if (canvas && canvas.offsetParent !== null) {
+                    window.undoWb();
+                }
+            }
+        });
 
         window.initWhiteboard = function () {
             const canvas = document.getElementById('recordWhiteboard');
@@ -2812,34 +2887,167 @@
             webcamCtx.fillStyle = '#fff';
             webcamCtx.fillRect(0, 0, canvas.width, canvas.height);
             webcamCtx.lineCap = 'round';
+            webcamCtx.lineJoin = 'round';
+
+            wbHistory = [];
+            wbHistoryStep = -1;
+
+            let lastPoint = null;
 
             canvas.onmousedown = (e) => {
                 isDrawingOnWebcam = true;
+                const rect = canvas.getBoundingClientRect();
+                lastPoint = { x: e.clientX - rect.left, y: e.clientY - rect.top };
                 webcamCtx.beginPath();
-                webcamCtx.moveTo(e.offsetX, e.offsetY);
+                webcamCtx.moveTo(lastPoint.x, lastPoint.y);
             };
             canvas.onmousemove = (e) => {
-                if (isDrawingOnWebcam) {
+                if (isDrawingOnWebcam && lastPoint) {
+                    const rect = canvas.getBoundingClientRect();
+                    const currentPoint = { x: e.clientX - rect.left, y: e.clientY - rect.top };
                     webcamCtx.strokeStyle = recordWbMode === 'eraser' ? '#fff' : recordWbColor;
                     webcamCtx.lineWidth = recordWbMode === 'eraser' ? recordWbSize * 5 : recordWbSize;
-                    webcamCtx.lineTo(e.offsetX, e.offsetY);
+
+                    const midPoint = {
+                        x: lastPoint.x + (currentPoint.x - lastPoint.x) / 2,
+                        y: lastPoint.y + (currentPoint.y - lastPoint.y) / 2
+                    };
+                    webcamCtx.quadraticCurveTo(lastPoint.x, lastPoint.y, midPoint.x, midPoint.y);
                     webcamCtx.stroke();
+                    lastPoint = currentPoint;
                 }
             };
-            canvas.onmouseup = () => isDrawingOnWebcam = false;
-            canvas.onmouseout = () => isDrawingOnWebcam = false;
+            canvas.onmouseup = () => {
+                isDrawingOnWebcam = false;
+                if (lastPoint) {
+                    webcamCtx.lineTo(lastPoint.x, lastPoint.y);
+                    webcamCtx.stroke();
+                }
+                lastPoint = null;
+                saveWbState();
+            };
+            canvas.onmouseout = () => {
+                if (isDrawingOnWebcam) {
+                    isDrawingOnWebcam = false;
+                    lastPoint = null;
+                    saveWbState();
+                }
+            };
+
+            window.addEventListener('paste', window.handleCanvasPaste);
+        };
+
+        window.handleCanvasPaste = function (e) {
+            const canvas = document.getElementById('recordWhiteboard');
+            if (!canvas || canvas.offsetParent === null) return;
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let index in items) {
+                const item = items[index];
+                if (item.kind === 'file') {
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const img = new Image();
+                        img.onload = function () {
+                            const x = (canvas.width - img.width) / 2;
+                            const y = (canvas.height - img.height) / 2;
+                            webcamCtx.drawImage(img, x > 0 ? x : 0, y > 0 ? y : 0);
+                            saveWbState();
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            }
+        };
+
+        window.handleWhiteboardImageUpload = function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const canvas = document.getElementById('recordWhiteboard');
+            if (file.type === 'application/pdf') {
+                if (typeof pdfjsLib === 'undefined') {
+                    showToast('PDF.js is required to open PDFs.', 'error');
+                    return;
+                }
+                const fileReader = new FileReader();
+                fileReader.onload = function () {
+                    const typedarray = new Uint8Array(this.result);
+                    pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                        pdf.getPage(1).then(page => {
+                            const viewport = page.getViewport({ scale: 3.0 });
+                            const tempCanvas = document.createElement('canvas');
+                            const tempCtx = tempCanvas.getContext('2d');
+                            tempCanvas.height = viewport.height;
+                            tempCanvas.width = viewport.width;
+                            page.render({ canvasContext: tempCtx, viewport: viewport }).promise.then(() => {
+                                webcamCtx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+                                saveWbState();
+                            });
+                        });
+                    });
+                };
+                fileReader.readAsArrayBuffer(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const img = new Image();
+                    img.onload = function () {
+                        webcamCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        saveWbState();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.toggleWhiteboardFullscreen = function () {
+            const webcamCont = document.getElementById('webcamContainer');
+            const resizer = document.getElementById('splitResizer');
+            const boardCont = document.getElementById('whiteboardContainer');
+            const btn = document.getElementById('btnHideVideo');
+
+            if (webcamCont.style.width === '0px') {
+                webcamCont.style.width = '50%';
+                boardCont.style.width = '50%';
+                if (resizer) resizer.style.display = 'block';
+                if (btn) btn.innerHTML = '<i class="fas fa-video-slash"></i> Hide Video';
+            } else {
+                webcamCont.style.width = '0px';
+                boardCont.style.width = '100%';
+                if (resizer) resizer.style.display = 'none';
+                if (btn) btn.innerHTML = '<i class="fas fa-video"></i> Show Video';
+            }
+            setTimeout(() => {
+                if (webcamCtx) {
+                    const canvas = document.getElementById('recordWhiteboard');
+                    const imgData = webcamCtx.getImageData(0, 0, canvas.width, canvas.height);
+                    canvas.width = canvas.parentElement.clientWidth;
+                    canvas.height = canvas.parentElement.clientHeight;
+                    webcamCtx.fillStyle = '#fff';
+                    webcamCtx.fillRect(0, 0, canvas.width, canvas.height);
+                    webcamCtx.putImageData(imgData, 0, 0);
+                    webcamCtx.lineCap = 'round';
+                    webcamCtx.lineJoin = 'round';
+                }
+            }, 150);
         };
 
         window.toggleWhiteboard = function () {
             const videoContainer = document.getElementById('webcamContainer');
             const boardContainer = document.getElementById('whiteboardContainer');
+            const resizer = document.getElementById('splitResizer');
 
             if (boardContainer.style.display === 'none') {
                 boardContainer.style.display = 'block';
+                if (resizer) resizer.style.display = 'block';
                 videoContainer.style.width = '50%';
+                boardContainer.style.width = '50%';
                 setTimeout(window.initWhiteboard, 300);
             } else {
                 boardContainer.style.display = 'none';
+                if (resizer) resizer.style.display = 'none';
                 videoContainer.style.width = '100%';
             }
         };
@@ -2848,38 +3056,83 @@
             if (webcamCtx) {
                 webcamCtx.fillStyle = '#fff';
                 webcamCtx.fillRect(0, 0, webcamCtx.canvas.width, webcamCtx.canvas.height);
+                saveWbState();
             }
         };
 
         window.toggleRecordScreenShare = async function () {
-            const video = document.getElementById('webcamPreview');
             const btn = document.getElementById('btnScreenShare');
-            
+            const boardContainer = document.getElementById('whiteboardContainer');
+            const boardCanvas = document.getElementById('recordWhiteboard');
+            let ssVideo = document.getElementById('screenSharePreview');
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+                showModal({
+                    title: "Not Supported",
+                    desc: "Screen sharing is not supported in this browser.",
+                    body: "<div style='padding:16px; text-align:center; color:#555;'>Please ensure you are running on localhost or HTTPS, and using a desktop browser.</div>",
+                    confirmText: "Close",
+                    onConfirm: () => closeModal()
+                });
+                return;
+            }
+
             if (window.currentScreenStream) {
                 window.currentScreenStream.getTracks().forEach(t => t.stop());
                 window.currentScreenStream = null;
-                video.srcObject = window.currentWebcamStream;
-                video.style.transform = 'scaleX(-1)';
+                ssVideo.style.display = 'none';
+                boardCanvas.style.display = 'block';
                 btn.innerHTML = '<i class="fas fa-desktop"></i> Screen Share';
-                btn.style.background = '#2563eb';
+                btn.style.background = '#333';
             } else {
                 try {
-                    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                    // Start screen share (without forcing audio to prevent silent rejection on some devices)
+                    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
                     window.currentScreenStream = stream;
-                    video.srcObject = stream;
-                    video.style.transform = 'none'; // dont mirror screen
-                    btn.innerHTML = '<i class="fas fa-video"></i> Switch to Camera';
-                    btn.style.background = '#4b5563';
+                    ssVideo.srcObject = stream;
                     
+                    // Explicitly play it just in case
+                    try { await ssVideo.play(); } catch(e) {}
+
+                    if (boardContainer && boardContainer.style.display === 'none') {
+                        toggleWhiteboard();
+                    }
+
+                    boardCanvas.style.display = 'none';
+                    ssVideo.style.display = 'block';
+
+                    btn.innerHTML = '<i class="fas fa-times"></i> Stop Share';
+                    btn.style.background = '#ef4444';
+
                     stream.getVideoTracks()[0].onended = () => {
                         window.currentScreenStream = null;
-                        video.srcObject = window.currentWebcamStream;
-                        video.style.transform = 'scaleX(-1)';
+                        ssVideo.style.display = 'none';
+                        boardCanvas.style.display = 'block';
                         btn.innerHTML = '<i class="fas fa-desktop"></i> Screen Share';
-                        btn.style.background = '#2563eb';
+                        btn.style.background = '#333';
                     };
                 } catch (err) {
                     console.error('Screen share error:', err);
+                    showModal({
+                        title: "Screen Share Permission Required",
+                        desc: "Your browser needs permission to share the screen.",
+                        body: `<div style='padding:16px; text-align:left; color:#555; line-height: 1.6;'>
+                                <strong>How to grant permission:</strong>
+                                <ol style='margin-top: 8px; margin-left: 20px;'>
+                                    <li>When you click "Screen Share", your browser will show a prompt.</li>
+                                    <li>Select the tab, window, or entire screen you want to share.</li>
+                                    <li>Click the <strong>"Allow"</strong> or <strong>"Share"</strong> button in the browser prompt.</li>
+                                </ol>
+                                <div style='margin-top: 12px; font-size: 0.9em; color: #ef4444;'>
+                                    Error Details: ${err.message}
+                                </div>
+                                <div style='margin-top: 12px; font-size: 0.9em;'>
+                                    <em>Note: If you accidentally blocked it, click the 🔒 lock icon in your browser's address bar to allow screen sharing.</em>
+                                </div>
+                               </div>`,
+                        confirmText: "Got it",
+                        onConfirm: () => closeModal()
+                    });
                 }
             }
         };
@@ -2890,33 +3143,44 @@
                 title: "Record Content & Whiteboard",
                 desc: "Record your screen, webcam, and annotate side-by-side in high definition.",
                 body: `
-                    <div style="position: relative; border-radius: 12px; overflow: hidden; background: #000; display: flex; flex-direction: column; flex: 1; border: 1px solid #333; min-height: 0;">
-                        <div style="display: flex; flex: 1; width: 100%; min-height: 0;">
-                            <div id="webcamContainer" style="width: 100%; height: 100%; transition: width 0.3s; background: #000; display: flex; align-items: center; justify-content: center;">
+                    <div style="font-family: 'Hind', sans-serif; position: relative; border-radius: 12px; overflow: hidden; background: #000; display: flex; flex-direction: column; flex: 1; border: 1px solid #333; min-height: 0;">
+                        <div id="recordingMainContainer" style="display: flex; flex: 1; width: 100%; min-height: 0;">
+                            <div id="webcamContainer" style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; position: relative; transition: width 0.1s;">
                                 <video id="webcamPreview" autoplay muted style="width: 100%; height: 100%; object-fit: contain; transform: scaleX(-1); transition: filter 0.3s;"></video>
                             </div>
-                            <div id="whiteboardContainer" style="width: 50%; height: 100%; display: none; background: #fff; position: relative;">
+                            <div id="splitResizer" style="width: 6px; background: #333; cursor: col-resize; z-index: 10; display: none; border-left: 1px solid #444; border-right: 1px solid #444;"></div>
+                            <div id="whiteboardContainer" style="width: 50%; height: 100%; display: none; background: #fff; position: relative; overflow: hidden; transition: width 0.1s;">
+                                <video id="screenSharePreview" autoplay muted style="width: 100%; height: 100%; object-fit: contain; display: none;"></video>
                                 <canvas id="recordWhiteboard" style="width: 100%; height: 100%; cursor: crosshair;"></canvas>
-                                <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 40px; display: flex; gap: 16px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
-                                    <input type="color" onchange="setRecordWbColor(this.value)" value="#ef4444" style="width:28px; height:28px; border:none; border-radius:50%; cursor:pointer; padding:0; background:none;" title="Brush Color">
+                                
+                                <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 8px;">
+                                    <button onclick="document.getElementById('wbImageUpload').click()" style="background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-family: 'Hind', sans-serif;"><i class="fas fa-image"></i> Insert Image/PDF</button>
+                                    <input type="file" id="wbImageUpload" accept="image/*,application/pdf" style="display:none;" onchange="handleWhiteboardImageUpload(event)">
+                                </div>
+                                <div style="position: absolute; top: 10px; left: 10px; display: flex; gap: 8px;">
+                                    <button onclick="clearWhiteboard()" style="background: rgba(239, 68, 68, 0.8); color: #fff; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-family: 'Hind', sans-serif; font-weight: 600;"><i class="fas fa-sync-alt"></i> Refresh Board</button>
+                                    <button onclick="undoWb()" style="background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-family: 'Hind', sans-serif; font-weight: 600;"><i class="fas fa-undo"></i> Undo</button>
+                                </div>
+
+                                <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 24px; border-radius: 40px; display: flex; gap: 16px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
+                                    <input type="color" onchange="setRecordWbColor(this.value)" value="#ef4444" style="width:32px; height:32px; border:none; border-radius:50%; cursor:pointer; padding:0; background:none;" title="Brush Color">
                                     <input type="range" onchange="setRecordWbSize(this.value)" min="1" max="20" value="3" style="width:100px; accent-color: #DE6834;" title="Brush Size">
-                                    <button onclick="setRecordWbMode('brush')" style="background:transparent; color:#fff; border:none; cursor:pointer; font-size:1.1rem; padding:4px;" title="Brush"><i class="fas fa-paint-brush"></i></button>
-                                    <button onclick="setRecordWbMode('eraser')" style="background:transparent; color:#ccc; border:none; cursor:pointer; font-size:1.1rem; padding:4px;" title="Eraser"><i class="fas fa-eraser"></i></button>
-                                    <div style="width:1px; height:20px; background:#444;"></div>
-                                    <button onclick="clearWhiteboard()" style="background:transparent; color:#ef4444; border:none; cursor:pointer; font-size:1.1rem; padding:4px;" title="Clear Board"><i class="fas fa-trash"></i></button>
+                                    <button onclick="setRecordWbMode('brush')" style="background:transparent; color:#fff; border:none; cursor:pointer; font-size:1.2rem; padding:4px;" title="Brush"><i class="fas fa-paint-brush"></i></button>
+                                    <button onclick="setRecordWbMode('eraser')" style="background:transparent; color:#ccc; border:none; cursor:pointer; font-size:1.2rem; padding:4px;" title="Eraser"><i class="fas fa-eraser"></i></button>
                                 </div>
                             </div>
                         </div>
-                        <div style="padding: 16px 24px; background: #111; display: flex; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid #222;">
+                        <div style="padding: 16px 24px; background: #1a1a1a; display: flex; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid #333; font-family: 'Hind', sans-serif;">
                             <div style="display: flex; gap: 12px;">
-                                <button onclick="setWebcamFilter('none')" style="background:#2a2a2a; color:#fff; border:1px solid #444; padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight: 500; cursor:pointer;">Normal</button>
-                                <button onclick="setWebcamFilter('grayscale(100%)')" style="background:#2a2a2a; color:#fff; border:1px solid #444; padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight: 500; cursor:pointer;">Grayscale</button>
-                                <button onclick="setWebcamFilter('sepia(100%)')" style="background:#2a2a2a; color:#fff; border:1px solid #444; padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight: 500; cursor:pointer;">Sepia</button>
-                                <div style="width:1px; height:24px; background:#444; margin:0 4px;"></div>
-                                <button onclick="toggleRecordScreenShare()" id="btnScreenShare" style="background:#2563eb; color:#fff; border:none; padding:6px 16px; border-radius:6px; font-size:0.85rem; font-weight: 600; cursor:pointer; display: flex; align-items: center; gap: 8px;"><i class="fas fa-desktop"></i> Screen Share</button>
-                                <button onclick="toggleWhiteboard()" id="btnWbToggle" style="background:#DE6834; color:#fff; border:none; padding:6px 16px; border-radius:6px; font-size:0.85rem; font-weight: 600; cursor:pointer; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chalkboard"></i> Split Whiteboard</button>
+                                <button onclick="setWebcamFilter('none')" style="background:#333; color:#fff; border:1px solid #444; padding:8px 16px; border-radius:8px; font-size:0.9rem; font-weight: 600; cursor:pointer; transition: 0.2s;">Normal</button>
+                                <button onclick="setWebcamFilter('grayscale(100%)')" style="background:#333; color:#fff; border:1px solid #444; padding:8px 16px; border-radius:8px; font-size:0.9rem; font-weight: 600; cursor:pointer; transition: 0.2s;">Grayscale</button>
+                                <button onclick="setWebcamFilter('sepia(100%)')" style="background:#333; color:#fff; border:1px solid #444; padding:8px 16px; border-radius:8px; font-size:0.9rem; font-weight: 600; cursor:pointer; transition: 0.2s;">Sepia</button>
+                                <div style="width:1px; height:24px; background:#444; margin:0 4px; align-self: center;"></div>
+                                <button onclick="toggleRecordScreenShare()" id="btnScreenShare" style="background:#333; color:#fff; border:1px solid #444; padding:8px 18px; border-radius:8px; font-size:0.9rem; font-weight: 600; cursor:pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;"><i class="fas fa-desktop"></i> Screen Share</button>
+                                <button onclick="toggleWhiteboard()" id="btnWbToggle" style="background:#333; color:#fff; border:1px solid #444; padding:8px 18px; border-radius:8px; font-size:0.9rem; font-weight: 600; cursor:pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;"><i class="fas fa-chalkboard"></i> Toggle Whiteboard</button>
+                                <button onclick="toggleWhiteboardFullscreen()" id="btnHideVideo" style="background:#333; color:#fff; border:1px solid #444; padding:8px 18px; border-radius:8px; font-size:0.9rem; font-weight: 600; cursor:pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;"><i class="fas fa-video-slash"></i> Hide Video</button>
                             </div>
-                            <button id="recordBtn" onclick="toggleRecording()" style="background: #ef4444; color: #fff; border: none; padding: 10px 24px; border-radius: 30px; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);"><i class="fas fa-circle"></i> START RECORDING</button>
+                            <button id="recordBtn" onclick="toggleRecording()" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; border: none; padding: 12px 28px; border-radius: 30px; font-weight: 700; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4); text-transform: uppercase; font-family: 'Hind', sans-serif;"><i class="fas fa-circle" style="font-size: 0.9rem;"></i> START RECORDING</button>
                         </div>
                     </div>
                 `,
@@ -2950,6 +3214,51 @@
             });
 
             setTimeout(() => {
+                const resizer = document.getElementById('splitResizer');
+                const mainCont = document.getElementById('recordingMainContainer');
+                const webcamCont = document.getElementById('webcamContainer');
+                const boardCont = document.getElementById('whiteboardContainer');
+                let isResizing = false;
+
+                if (resizer) {
+                    resizer.addEventListener('mousedown', (e) => {
+                        isResizing = true;
+                        document.body.style.cursor = 'col-resize';
+                        e.preventDefault();
+                    });
+
+                    document.addEventListener('mousemove', (e) => {
+                        if (!isResizing) return;
+                        const containerOffsetLeft = mainCont.getBoundingClientRect().left;
+                        let pointerRelativeXpos = e.clientX - containerOffsetLeft;
+
+                        const minWidth = 100;
+                        if (pointerRelativeXpos < minWidth) pointerRelativeXpos = minWidth;
+                        if (pointerRelativeXpos > mainCont.offsetWidth - minWidth) pointerRelativeXpos = mainCont.offsetWidth - minWidth;
+
+                        webcamCont.style.width = pointerRelativeXpos + 'px';
+                        boardCont.style.width = (mainCont.offsetWidth - pointerRelativeXpos - resizer.offsetWidth) + 'px';
+                    });
+
+                    document.addEventListener('mouseup', () => {
+                        if (isResizing) {
+                            isResizing = false;
+                            document.body.style.cursor = 'default';
+                            if (webcamCtx) {
+                                const canvas = document.getElementById('recordWhiteboard');
+                                const imgData = webcamCtx.getImageData(0, 0, canvas.width, canvas.height);
+                                canvas.width = canvas.parentElement.clientWidth;
+                                canvas.height = canvas.parentElement.clientHeight;
+                                webcamCtx.fillStyle = '#fff';
+                                webcamCtx.fillRect(0, 0, canvas.width, canvas.height);
+                                webcamCtx.putImageData(imgData, 0, 0);
+                                webcamCtx.lineCap = 'round';
+                                webcamCtx.lineJoin = 'round';
+                            }
+                        }
+                    });
+                }
+
                 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                         .then(stream => {
@@ -3694,6 +4003,7 @@
 
                 const poolQ = {
                     id: 'q_' + Date.now(),
+                    source: 'course',
                     type: currentLessonType,
                     heading: title,
                     title: pTitle,
@@ -3962,7 +4272,7 @@
             if (existingMsg) existingMsg.remove();
 
             // Fetch real progress
-            const progressData = JSON.parse(localStorage.getItem('exampad_course_progress') || '[]');
+            const progressData = JSON.parse(localStorage.getItem('TESTPAD_course_progress') || '[]');
             const courseProgress = progressData.filter(p => p.courseId === (courseData.id || 'N/A'));
 
             if (courseProgress.length === 0) {
@@ -4061,7 +4371,10 @@
                     <td style="padding: 16px; font-weight: 600; font-family: monospace; color: #666;">${(q.id || q.poolId || '').substring(0, 8)}</td>
                     <td style="padding: 16px;"><span style="background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">${q.type}</span></td>
                     <td style="padding: 16px;">
-                        <div style="font-weight: 600; color: #111;">${q.heading || 'Untitled'}</div>
+                        <div style="font-weight: 600; color: #111;">
+                            ${q.source === 'course' ? '<span style="color: #2563eb; font-weight: bold; margin-right: 6px;" title="Course">C</span>' : (q.source === 'exam' ? '<span style="color: #d97706; font-weight: bold; margin-right: 6px;" title="Exam">E</span>' : '')}
+                            ${q.heading || 'Untitled'}
+                        </div>
                         <div style="font-size: 0.8rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;">${(q.title || '').replace(/<[^>]+>/g, '')}</div>
                     </td>
                     <td style="padding: 16px; font-weight: 600; color: #059669;">${q.marks} pts</td>

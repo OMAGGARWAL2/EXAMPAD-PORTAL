@@ -1,5 +1,5 @@
 /**
- * EXAMPAD MAIN PROCESS
+ * TESTPAD MAIN PROCESS
  * Environment: Node.js (Electron Main)
  * Role: Desktop Controller / Secure Server
  */
@@ -22,10 +22,10 @@ let appInFullscreen = false;
 // --- DEEP LINKING SUPPORT ---
 if (process.defaultApp) {
     if (process.argv.length >= 2) {
-        app.setAsDefaultProtocolClient('exampad', process.execPath, [path.resolve(process.argv[1])]);
+        app.setAsDefaultProtocolClient('TESTPAD', process.execPath, [path.resolve(process.argv[1])]);
     }
 } else {
-    app.setAsDefaultProtocolClient('exampad');
+    app.setAsDefaultProtocolClient('TESTPAD');
 }
 
 const gotTheLock = app.requestSingleInstanceLock();
@@ -41,7 +41,7 @@ if (!gotTheLock) {
 
             // Handle the URL from the command line (for Windows)
             const url = commandLine.pop();
-            if (url && url.startsWith('exampad://')) {
+            if (url && url.startsWith('TESTPAD://')) {
                 handleIncomingURL(url);
             }
         }
@@ -53,7 +53,7 @@ if (!gotTheLock) {
         registerSecurityShortcuts();
 
         // Check if app was opened via protocol (on startup)
-        const url = process.argv.find(arg => arg.startsWith('exampad://'));
+        const url = process.argv.find(arg => arg.startsWith('TESTPAD://'));
         if (url) {
             setTimeout(() => handleIncomingURL(url), 1500);
         }
@@ -82,7 +82,7 @@ function createWindow() {
         width: 1400,
         height: 900,
         backgroundColor: '#f4f5f7',
-        title: "EXAMPAD COMMAND CENTER",
+        title: "TESTPAD COMMAND CENTER",
         icon: path.join(__dirname, 'icon.png'), // Official Chitkara Logo (Resized)
         frame: false, // Ensure no title bar or taskbar for premium "Command Center" feel
         webPreferences: {

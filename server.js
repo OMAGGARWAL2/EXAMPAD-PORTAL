@@ -1,5 +1,5 @@
 /**
- * EXAMPAD BACKEND SERVER
+ * TESTPAD BACKEND SERVER
  * Architecture: Client-Server
  * Platform: Node.js + Express
  */
@@ -48,5 +48,5 @@ app.use((err, req, res, next) => {
 module.exports = app;
 
 app.listen(PORT, () => {
-    console.log(`EXAMPAD Backend System operational on port ${PORT}`);
+    console.log(`TESTPAD Backend System operational on port ${PORT}`);
 });

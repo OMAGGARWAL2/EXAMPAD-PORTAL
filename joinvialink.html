@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExamPad - Portal</title>
+    <title>TESTPAD</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Hind:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -387,15 +387,15 @@
         // --- QUICK START FEATURE ---
         function handleQuickStart() {
             try {
-                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
                 const student = users.reverse().find(u => u.role === 'student');
                 if (!student) {
                     alert("No student accounts found. Please log in manually.");
                     return;
                 }
 
-                const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
-                const attempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+                const exams = JSON.parse(localStorage.getItem('TESTPAD_exams')) || [];
+                const attempts = JSON.parse(localStorage.getItem('TESTPAD_attempts')) || [];
 
                 const latestExam = exams.reverse().find(e => {
                     const hasFinished = attempts.some(a => a.examId === e.id && a.studentId === student.id && (a.status === 'submitted' || a.status === 'reviewed'));
@@ -444,7 +444,7 @@
             const dropdown = document.getElementById('reattemptDropdown');
             dropdown.innerHTML = '';
 
-            const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+            const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
             const student = [...users].reverse().find(u => u.role === 'student');
 
             if (!student) {
@@ -457,8 +457,8 @@
             header.innerHTML = `<span>Recent Tests</span><span style="color:#de6834; font-weight:700;">${escapeHtml(student.name)}</span>`;
             dropdown.appendChild(header);
 
-            const allAttempts = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
-            const allExams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+            const allAttempts = JSON.parse(localStorage.getItem('TESTPAD_attempts')) || [];
+            const allExams = JSON.parse(localStorage.getItem('TESTPAD_exams')) || [];
 
             const studentAttempts = allAttempts.filter(a => a && a.studentId === student.id);
             studentAttempts.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));

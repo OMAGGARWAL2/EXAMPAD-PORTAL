@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXAMPAD</title>
+    <title>TESTPAD</title>
     <!-- ERP Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap"
@@ -726,7 +726,7 @@
                         style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <div class="inst-name-text">
-                    <span class="inst-name-top">EXAMPAD ENTERPRISE PORTAL</span>
+                    <span class="inst-name-top">TESTPAD ENTERPRISE PORTAL</span>
                 </div>
             </div>
             <div class="header-actions">
@@ -920,7 +920,7 @@
     </footer>
 
     <script>
-        const DB_NAME = 'EXAMPAD_OSM_PERSISTENCE';
+        const DB_NAME = 'TESTPAD_OSM_PERSISTENCE';
         let _db = null;
         let currentArchive = null;
         let cPg = 1, tPg = 1, zoom = 1.0;
@@ -1050,8 +1050,8 @@
 
         function selectSubject(res) {
             currentArchive = res;
-            localStorage.setItem('exampad_last_roll', res.roll);
-            localStorage.setItem('exampad_last_exam', res.exam);
+            localStorage.setItem('TESTPAD_last_roll', res.roll);
+            localStorage.setItem('TESTPAD_last_exam', res.exam);
             showResultUI();
         }
 
@@ -1066,7 +1066,7 @@
             document.getElementById('maxScore').textContent = currentArchive.max;
 
             // Check Attendance
-            const attn = JSON.parse(localStorage.getItem('exampad_attendance') || '{}');
+            const attn = JSON.parse(localStorage.getItem('TESTPAD_attendance') || '{}');
             const isAbsent = attn[currentArchive.roll] === 'A';
 
             const perc = (currentArchive.total / currentArchive.max) * 100;
@@ -1260,7 +1260,7 @@
         }
 
         function logTx(ref, desc, amt, type) {
-            const txs = JSON.parse(localStorage.getItem('exampad_tx_history') || '[]');
+            const txs = JSON.parse(localStorage.getItem('TESTPAD_tx_history') || '[]');
             txs.push({
                 ref, desc, amt,
                 roll: currentArchive.roll,
@@ -1269,7 +1269,7 @@
                 date: new Date().toLocaleString(),
                 status: 'PAID'
             });
-            localStorage.setItem('exampad_tx_history', JSON.stringify(txs));
+            localStorage.setItem('TESTPAD_tx_history', JSON.stringify(txs));
         }
 
         function switchTab(t) {
@@ -1282,7 +1282,7 @@
 
         function renderLedger() {
             if (!currentArchive) return;
-            const txs = JSON.parse(localStorage.getItem('exampad_tx_history') || '[]');
+            const txs = JSON.parse(localStorage.getItem('TESTPAD_tx_history') || '[]');
             const myTxs = txs.filter(t => t.roll === currentArchive.roll);
             const body = document.getElementById('ledgerBody');
 
@@ -1322,7 +1322,7 @@
             win.document.write(`
                 <html>
                 <head>
-                    <title>Official Performance Transcript - ${currentArchive.roll}</title>
+                    <title>TESTPAD</title>
                     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
                     <style>
                         body { font-family: 'Segoe UI', sans-serif; padding: 40px; color: #111; line-height: 1.5; font-size:12px; }
@@ -1344,7 +1344,7 @@
                 </head>
                 <body>
                     <div class="header">
-                        <div class="logo">EXAMPAD OFFICIAL TRANSCRIPT</div>
+                        <div class="logo">TESTPAD OFFICIAL TRANSCRIPT</div>
                         <div><b>Ref:</b> ${'TRN' + Date.now().toString().substr(-8)}</div>
                     </div>
                     
@@ -1384,12 +1384,12 @@
                     </table>
 
                     <div style="font-size:10px; text-align:justify; margin-bottom:40px;">
-                        <b>NOTE:</b> This is an electronically generated Official Performance Transcript processed via the EXAMPAD OSM protocol. Physical signature is not required.
+                        <b>NOTE:</b> This is an electronically generated Official Performance Transcript processed via the TESTPAD OSM protocol. Physical signature is not required.
                     </div>
 
                     <div class="footer">
                         <div>Date: ${new Date().toLocaleString()}</div>
-                        <div class="sign-box">Controller of Examinations<br>EXAMPAD REGISTRY</div>
+                        <div class="sign-box">Controller of Examinations<br>TESTPAD REGISTRY</div>
                     </div>
                 </body>
                 </html>
@@ -1398,15 +1398,15 @@
         }
 
         function logout() {
-            localStorage.removeItem('exampad_last_roll');
-            localStorage.removeItem('exampad_last_exam');
+            localStorage.removeItem('TESTPAD_last_roll');
+            localStorage.removeItem('TESTPAD_last_exam');
             location.reload();
         }
 
         function restoreSession() {
             return new Promise((resolve) => {
-                const lastRoll = localStorage.getItem('exampad_last_roll');
-                const lastExam = localStorage.getItem('exampad_last_exam');
+                const lastRoll = localStorage.getItem('TESTPAD_last_roll');
+                const lastExam = localStorage.getItem('TESTPAD_last_exam');
                 if (!lastRoll) return resolve();
 
                 const tx = _db.transaction('archives', 'readonly');

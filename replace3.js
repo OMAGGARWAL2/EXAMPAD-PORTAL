@@ -1,5 +1,5 @@
 const fs = require('fs');
-let file = fs.readFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/EXAMPAD/pages/course-creator.html', 'utf8');
+let file = fs.readFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/TESTPAD/pages/course-creator.html', 'utf8');
 
 // Fix Tabs HTML
 file = file.replace(/<div class="dash-tabs">[\s\S]*?<div class="dash-tab">Digital Library<\/div>\s*<\/div>/, 
@@ -205,5 +205,5 @@ if (file.includes("let courseData = { title: '', summary: '', category: 'Enginee
     file = file.replace("let courseData = { title: '', summary: '', category: 'Engineering & Technology', modules: [], assignments: [] };", "let courseData = { title: '', summary: '', category: 'Engineering & Technology', modules: [], assignments: [], library: [] };");
 }
 
-fs.writeFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/EXAMPAD/pages/course-creator.html', file);
+fs.writeFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/TESTPAD/pages/course-creator.html', file);
 console.log('Modified 3 successfully');

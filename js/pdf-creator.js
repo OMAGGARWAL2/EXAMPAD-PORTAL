@@ -246,7 +246,7 @@ class CourseUserPDF {
     this.#pdfDoc.font("Helvetica-Bold");
     this.#pdfDoc.fontSize(14);
     this.#pdfDoc.fillColor("#DE6834");
-    this.#pdfDoc.text("EXAMPAD LAB REPORT", { align: "center" });
+    this.#pdfDoc.text("TESTPAD LAB REPORT", { align: "center" });
     this.#pdfDoc.fillColor("#000");
 
     this.#pdfDoc
@@ -664,7 +664,7 @@ class CourseUserReport {
           return {
             title: mod.title,
             questions: mod.lessons.map(lesson => {
-              const courseAttemptsStr = localStorage.getItem('exampad_attempts_' + lesson.id);
+              const courseAttemptsStr = localStorage.getItem('TESTPAD_attempts_' + lesson.id);
               let textContent = lesson.description || lesson.content || lesson.text || "";
               if ((!textContent || textContent.trim() === "") && lesson.data) {
                 textContent = lesson.data.description || lesson.data.desc || lesson.data.instruction || lesson.data.question || "";

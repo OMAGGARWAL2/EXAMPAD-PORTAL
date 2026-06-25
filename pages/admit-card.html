@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXAMPAD ERP | Admit Card & Seating Portal</title>
+    <title>TESTPAD</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -1239,7 +1239,7 @@
         <div class="auth-card">
             <div style="font-size: 40px; color: var(--erp-maroon); margin-bottom: 20px;"><i
                     class="fas fa-university"></i></div>
-            <h2 style="font-weight: 800; color: var(--erp-text); margin-bottom: 10px;">EXAMPAD MAINFRAME</h2>
+            <h2 style="font-weight: 800; color: var(--erp-text); margin-bottom: 10px;">TESTPAD MAINFRAME</h2>
             <p style="font-size: 13px; color: #64748b; margin-bottom: 30px;">Authorized Institutional Access Nodes Only
             </p>
             <form onsubmit="App.login(event)">
@@ -1266,7 +1266,7 @@
     <header class="erp-header">
         <div class="brand">
             <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" class="logo">
-            <div class="system-title">EXAMPAD ERP | HALL TICKET PORTAL</div>
+            <div class="system-title">TESTPAD ERP | HALL TICKET PORTAL</div>
             <div style="margin-left: 20px; font-size: 10px; font-weight: 800; color: #94a3b8; border-left: 1px solid #e2e8f0; padding-left: 15px;"
                 id="dispUserRole">ROLE: UNKNOWN</div>
         </div>
@@ -2173,7 +2173,7 @@
     </main>
 
     <footer class="erp-footer">
-        EXAMPAD ERP v5.4 | Admit Card Module | Registered to Chitkara University | Server Time: <span
+        TESTPAD ERP v5.4 | Admit Card Module | Registered to Chitkara University | Server Time: <span
             id="clock">--:--:--</span>
     </footer>
 
@@ -2214,7 +2214,7 @@
                 const role = document.getElementById('auth-role').value;
 
                 if (pass === 'admin') {
-                    localStorage.setItem('exampad_session', JSON.stringify({ user, role, time: Date.now() }));
+                    localStorage.setItem('TESTPAD_session', JSON.stringify({ user, role, time: Date.now() }));
                     this.checkSession();
                     this.logSystem(`SESSION ESTABLISHED: ${user} linked as [${role.toUpperCase()}]`, 'SECURITY');
                     this.showNotif("SECURE LINK ESTABLISHED");
@@ -2224,12 +2224,12 @@
             },
 
             logout() {
-                localStorage.removeItem('exampad_session');
+                localStorage.removeItem('TESTPAD_session');
                 location.reload();
             },
 
             checkSession() {
-                const session = JSON.parse(localStorage.getItem('exampad_session'));
+                const session = JSON.parse(localStorage.getItem('TESTPAD_session'));
                 const overlay = document.getElementById('auth-overlay');
                 if (!session) {
                     overlay.style.display = 'flex';
@@ -2408,7 +2408,7 @@
 
             checkLocalData() {
                 // Check if this is a reappear admit card
-                const txs = JSON.parse(localStorage.getItem('exampad_tx_history') || '[]');
+                const txs = JSON.parse(localStorage.getItem('TESTPAD_tx_history') || '[]');
                 const params = new URLSearchParams(window.location.search);
                 const ref = params.get('ref');
 
@@ -2872,9 +2872,9 @@
                     sub: r.querySelector('.in-sub').value
                 }));
 
-                const classes = JSON.parse(localStorage.getItem('exampad_saved_classes') || '{}');
+                const classes = JSON.parse(localStorage.getItem('TESTPAD_saved_classes') || '{}');
                 classes[name] = data;
-                localStorage.setItem('exampad_saved_classes', JSON.stringify(classes));
+                localStorage.setItem('TESTPAD_saved_classes', JSON.stringify(classes));
 
                 document.getElementById('saveClassModal').style.display = 'none';
                 this.showAlert("CLASS SAVED", `Enrollment registry for "${name}" exported to Local Repository.`, "success");
@@ -2882,7 +2882,7 @@
 
             openLoadClassModal(targetTab = 'enroll') {
                 this._lastLoadTarget = targetTab;
-                const classes = JSON.parse(localStorage.getItem('exampad_saved_classes') || '{}');
+                const classes = JSON.parse(localStorage.getItem('TESTPAD_saved_classes') || '{}');
                 const list = document.getElementById('savedClassList');
                 const names = Object.keys(classes);
 
@@ -2903,7 +2903,7 @@
             },
 
             loadClass(name) {
-                const classes = JSON.parse(localStorage.getItem('exampad_saved_classes') || '{}');
+                const classes = JSON.parse(localStorage.getItem('TESTPAD_saved_classes') || '{}');
                 const data = classes[name];
                 if (!data) return;
 
@@ -2923,9 +2923,9 @@
 
             deleteClass(name) {
                 if (!confirm(`Are you sure you want to delete Class "${name}" from the repository?`)) return;
-                const classes = JSON.parse(localStorage.getItem('exampad_saved_classes') || '{}');
+                const classes = JSON.parse(localStorage.getItem('TESTPAD_saved_classes') || '{}');
                 delete classes[name];
-                localStorage.setItem('exampad_saved_classes', JSON.stringify(classes));
+                localStorage.setItem('TESTPAD_saved_classes', JSON.stringify(classes));
                 this.openLoadClassModal();
             },
 
@@ -3079,9 +3079,9 @@
 
             markAttendance(status) {
                 const roll = document.getElementById('scanRoll').innerText.split(': ')[1];
-                const attn = JSON.parse(localStorage.getItem('exampad_attendance') || '{}');
+                const attn = JSON.parse(localStorage.getItem('TESTPAD_attendance') || '{}');
                 attn[roll] = status === 'PRESENT' ? 'P' : 'A';
-                localStorage.setItem('exampad_attendance', JSON.stringify(attn));
+                localStorage.setItem('TESTPAD_attendance', JSON.stringify(attn));
 
                 this.logSystem(`ATTENDANCE LOGGED: Roll ${roll} marked as ${status}.`);
                 this.showAlert("ATTENDANCE LOGGED", `Roll ${roll} marked as ${status}. Records synced with Mainframe.`, "success");
@@ -3099,7 +3099,7 @@
                     sub: row.querySelector('.in-sub').value
                 }));
 
-                const attn = JSON.parse(localStorage.getItem('exampad_attendance') || '{}');
+                const attn = JSON.parse(localStorage.getItem('TESTPAD_attendance') || '{}');
                 let present = 0, absent = 0;
 
                 tbody.innerHTML = enrollment.map(e => {
@@ -3127,9 +3127,9 @@
             },
 
             toggleManualAttn(roll, status) {
-                const attn = JSON.parse(localStorage.getItem('exampad_attendance') || '{}');
+                const attn = JSON.parse(localStorage.getItem('TESTPAD_attendance') || '{}');
                 attn[roll] = status;
-                localStorage.setItem('exampad_attendance', JSON.stringify(attn));
+                localStorage.setItem('TESTPAD_attendance', JSON.stringify(attn));
                 this.loadAttendanceList();
                 this.logSystem(`MANUAL ATTENDANCE: Roll ${roll} -> ${status}`);
             },
@@ -3153,7 +3153,7 @@
                 let content = `
                     <html>
                     <head>
-                        <title>EXAMPAD - Answer Booklet Headers</title>
+                        <title>TESTPAD</title>
                         <style>
                             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap');
                             body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
@@ -3238,7 +3238,7 @@
                                     </div>
 
                                     <div class="footer-note">
-                                        GENERATED BY EXAMPAD ERP V5.4 | SECURE_ID: ${Math.random().toString(36).substr(2, 12).toUpperCase()} | ${timestamp}
+                                        GENERATED BY TESTPAD ERP V5.4 | SECURE_ID: ${Math.random().toString(36).substr(2, 12).toUpperCase()} | ${timestamp}
                                     </div>
                                 </div>
                             `;
@@ -3268,7 +3268,7 @@
                 let content = `
                     <html>
                     <head>
-                        <title>EXAMPAD - UMC Cards</title>
+                        <title>TESTPAD</title>
                         <style>
                             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap');
                             body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background: #fff; }
@@ -3335,7 +3335,7 @@
                                     </div>
 
                                     <div class="footer-note">
-                                        GENERATED BY EXAMPAD ERP V5.4 - DISCIPLINARY COMMITTEE | SECURE_ID: UMC_${Math.random().toString(36).substr(2, 10).toUpperCase()} | ${timestamp}
+                                        GENERATED BY TESTPAD ERP V5.4 - DISCIPLINARY COMMITTEE | SECURE_ID: UMC_${Math.random().toString(36).substr(2, 10).toUpperCase()} | ${timestamp}
                                     </div>
                                 </div>
                             `;
@@ -3375,7 +3375,7 @@
             updateAnalytics() {
                 const studentCount = document.querySelectorAll('#enrollmentBody tr').length;
                 const roomCount = document.querySelectorAll('#infraBody tr').length;
-                const attn = JSON.parse(localStorage.getItem('exampad_attendance') || '{}');
+                const attn = JSON.parse(localStorage.getItem('TESTPAD_attendance') || '{}');
                 const presentCount = Object.values(attn).filter(v => v === 'P').length;
                 const perc = studentCount > 0 ? Math.round((presentCount / studentCount) * 100) : 0;
 
@@ -3401,7 +3401,7 @@
                 grid.innerHTML = rooms.map(roomNum => {
                     const roomTickets = tickets.filter(t => t.querySelector('#scheduleBody td:nth-child(5)').innerText.includes(roomNum));
                     const enrolled = roomTickets.length;
-                    const attn = JSON.parse(localStorage.getItem('exampad_attendance') || '{}');
+                    const attn = JSON.parse(localStorage.getItem('TESTPAD_attendance') || '{}');
                     const present = roomTickets.filter(t => attn[t.querySelector('#dispRoll').innerText] === 'P').length;
 
                     // Simulated AI violations
@@ -3512,7 +3512,7 @@
                 let content = `
                     <html>
                     <head>
-                        <title>EXAMPAD - Attendance Sheet</title>
+                        <title>TESTPAD</title>
                         <style>
                             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap');
                             body { font-family: 'Inter', sans-serif; margin: 0; padding: 20px; background: #fff; }
@@ -3663,7 +3663,7 @@
                 let content = `
                     <html>
                     <head>
-                        <title>EXAMPAD - Faculty Duty Slips</title>
+                        <title>TESTPAD</title>
                         <style>
                             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@700&display=swap');
                             body { font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
@@ -3772,7 +3772,7 @@
                         return t.querySelector('#scheduleBody td:nth-child(5)').innerText.includes(roomNum);
                     });
 
-                    const attn = JSON.parse(localStorage.getItem('exampad_attendance') || '{}');
+                    const attn = JSON.parse(localStorage.getItem('TESTPAD_attendance') || '{}');
                     const enrolled = tickets.length;
                     const present = tickets.filter(t => attn[t.querySelector('#dispRoll').innerText] === 'P').length;
                     const absent = enrolled - present;
@@ -3871,14 +3871,14 @@
                         room: r.querySelector('.ir-room').value,
                         cap: r.querySelector('.ir-cap').value
                     })),
-                    attendance: JSON.parse(localStorage.getItem('exampad_attendance') || '{}')
+                    attendance: JSON.parse(localStorage.getItem('TESTPAD_attendance') || '{}')
                 };
 
                 const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `EXAMPAD_SESSION_${Date.now()}.exerp`;
+                a.download = `TESTPAD_SESSION_${Date.now()}.exerp`;
                 a.click();
                 this.showAlert("BACKUP EXPORT", "Institutional state serialized and exported as .exerp", "success");
             },
@@ -3892,7 +3892,7 @@
                     reader.onload = (re) => {
                         try {
                             const data = JSON.parse(re.target.result);
-                            localStorage.setItem('exampad_attendance', JSON.stringify(data.attendance || {}));
+                            localStorage.setItem('TESTPAD_attendance', JSON.stringify(data.attendance || {}));
                             this.showAlert("BACKUP RESTORED", "Session state successfully synchronized from local archive.", "success");
                             this.init();
                         } catch (err) {

@@ -1,5 +1,5 @@
 /**
- * EXAMPAD Theme Engine
+ * TESTPAD Theme Engine
  * Applies user preferences globally across the application.
  */
 (function () {

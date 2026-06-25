@@ -1,4 +1,4 @@
-// ===== EXAMPAD UI AUTHENTICATION LOGIC =====
+// ===== TESTPAD UI AUTHENTICATION LOGIC =====
 
 // ADMIN_AUTHORIZATION_CODE removed as per request. Any user can now register as 'teacher'.
 
@@ -100,33 +100,58 @@ function toggleHistoryMenu(e) {
 }
 
 function renderHistoryDropdown() {
-    const history = auth.getAllSavedCredentials();
+    const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
     const dropdown = document.getElementById('historyDropdown');
     if (!dropdown) return;
 
-    if (!history || history.length === 0) {
+    if (users.length === 0) {
         dropdown.style.display = 'none';
-        showMessage("No saved identities found yet.");
+        showMessage("No created identities found yet.");
         return;
     }
 
     dropdown.innerHTML = '';
     dropdown.style.display = 'flex';
 
-    history.forEach(cred => {
+    [...users].reverse().forEach(u => {
         const item = document.createElement('div');
         item.className = 'history-item';
+        item.style.position = 'relative';
         item.innerHTML = `
             <div class="history-item-info">
-                <span class="history-item-email">${cred.email}</span>
-                <span class="history-item-role">${cred.role.toUpperCase()}</span>
+                <span class="history-item-email">${u.email || u.rollNo}</span>
+                <span class="history-item-role">${(u.role || 'user').toUpperCase()}</span>
             </div>
-            <i class="fas fa-history"></i>
+            <i class="fas fa-trash delete-btn" title="Delete ID from database" style="color: #ef4444; font-size: 1rem; cursor: pointer; padding: 5px; z-index: 10;"></i>
         `;
-        item.onmousedown = (e) => { // Use onmousedown to beat the blur/click listeners
+        
+        const delBtn = item.querySelector('.delete-btn');
+        delBtn.onmousedown = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            selectCredential(cred.email, cred.password);
+            if (confirm(`Delete identity ${u.email || u.rollNo} from database? You will be able to create it again.`)) {
+                let currentUsers = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
+                currentUsers = currentUsers.filter(user => user.id !== u.id);
+                localStorage.setItem('TESTPAD_users', JSON.stringify(currentUsers));
+                
+                let history = JSON.parse(localStorage.getItem('TESTPAD_login_history')) || [];
+                history = history.filter(item => atob(item.e) !== (u.email || u.rollNo));
+                localStorage.setItem('TESTPAD_login_history', JSON.stringify(history));
+                
+                showMessage(`Identity deleted: ${u.email || u.rollNo}`);
+                renderHistoryDropdown();
+            }
+        };
+
+        item.onmousedown = (e) => {
+            if (e.target.classList.contains('delete-btn')) return;
+            e.preventDefault();
+            e.stopPropagation();
+            
+            let pass = "";
+            try { pass = atob(u.password); } catch(ex) { pass = u.password; }
+            
+            selectCredential(u.email || u.rollNo, pass);
             dropdown.style.display = 'none';
         };
         dropdown.appendChild(item);

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad | Practice Attempts</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Hind:wght@400;500;600;700&display=swap"
@@ -353,7 +353,7 @@
             }
 
             body.innerHTML = allLessons.map((less, i) => {
-                const historyStr = localStorage.getItem('exampad_attempts_' + less.id);
+                const historyStr = localStorage.getItem('TESTPAD_attempts_' + less.id);
                 let history = [];
                 if (historyStr) {
                     try { history = JSON.parse(historyStr); } catch(e) {}

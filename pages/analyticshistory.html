@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registry Analytics | EXAMPAD ERP</title>
+    <title>TESTPAD</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
         rel="stylesheet">
@@ -614,7 +614,7 @@
         <div class="inst-id">
             <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" class="inst-logo" alt="Logo">
             <div class="inst-name-text">
-                <span class="inst-name-top">EXAMPAD REGISTRY SERVICES</span>
+                <span class="inst-name-top">TESTPAD REGISTRY SERVICES</span>
                 <span class="inst-name-sub">Academic Cell | evaluation cycle v4.0.2</span>
             </div>
         </div>
@@ -705,7 +705,7 @@
     </main>
 
     <script>
-        const DB_NAME = 'EXAMPAD_OSM_PERSISTENCE';
+        const DB_NAME = 'TESTPAD_OSM_PERSISTENCE';
         let _db = null;
         let cPages = {};
         let cPg = 1, tPg = 1, zVal = 1;
@@ -756,7 +756,7 @@
 
         async function loadHistory() {
             if (!_db) await initDB();
-            const data = JSON.parse(localStorage.getItem('exampad_osm_history') || '[]');
+            const data = JSON.parse(localStorage.getItem('TESTPAD_osm_history') || '[]');
             const body = document.getElementById('historyBody');
 
             if (data.length === 0) {
@@ -909,7 +909,7 @@
         }
 
         async function publishAllArchived() {
-            const data = JSON.parse(localStorage.getItem('exampad_osm_history') || '[]');
+            const data = JSON.parse(localStorage.getItem('TESTPAD_osm_history') || '[]');
             if (data.length === 0) return;
             if (!await sysConfirm("BATCH AUTHORIZATION", "Release all verified results in this batch?")) return;
             loadr(true, "Publishing...");
@@ -930,7 +930,7 @@
         }
 
         function exportRegistryCSV() {
-            const data = JSON.parse(localStorage.getItem('exampad_osm_history') || '[]');
+            const data = JSON.parse(localStorage.getItem('TESTPAD_osm_history') || '[]');
             if (data.length === 0) return;
             const headers = ['Roll Number', 'Exam', 'Total Marks', 'Max Marks', 'Time Spent (s)', 'Date', 'Evaluator ID'];
             const csv = [headers, ...data.map(r => [r.roll, r.exam, r.total, r.max, r.timeSpent, r.date, r.evaluatorId])].map(row => row.join(',')).join('\n');

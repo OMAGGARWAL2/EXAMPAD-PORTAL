@@ -1,4 +1,4 @@
-// ===== EXAMPAD SECURITY MODULE =====
+// ===== TESTPAD SECURITY MODULE =====
 /**
  * Professional-Grade Silent Proctoring Engine
  * This module manages low-level security violations silently to ensure 

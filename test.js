@@ -38,7 +38,7 @@ const params = new URLSearchParams(window.location.search);
             }
 
             body.innerHTML = allLessons.map((less, i) => {
-                const historyStr = localStorage.getItem('exampad_attempts_' + less.id);
+                const historyStr = localStorage.getItem('TESTPAD_attempts_' + less.id);
                 let history = [];
                 if (historyStr) {
                     try { history = JSON.parse(historyStr); } catch(e) {}

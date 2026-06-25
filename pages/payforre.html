@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SBI MOPS | Multi Option Payment System</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap"
@@ -498,11 +498,11 @@
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Merchant Name</span>
-                        <span class="info-value">EXAMPAD REGISTRY SERVICES</span>
+                        <span class="info-value">TESTPAD REGISTRY SERVICES</span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Merchant Code</span>
-                        <span class="info-value">EXAMPAD_SBI_001</span>
+                        <span class="info-value">TESTPAD_SBI_001</span>
                     </div>
                 </div>
 
@@ -579,7 +579,7 @@
         </div>
         <div class="qr-box">
             <p style="font-size:10px; font-weight:700; color:#888; margin-bottom:10px;">SCAN TO PAY VIA ANY UPI APP</p>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=exampad@sbi%26am=500%26tr=MOPS${Math.floor(Math.random()*999999)}"
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=TESTPAD@sbi%26am=500%26tr=MOPS${Math.floor(Math.random()*999999)}"
                 style="width:180px; height:180px;">
             <p style="font-size:12px; font-weight:700; margin-top:10px; color:var(--sbi-blue);">AMOUNT: ₹ <span
                     id="qrAmt">0.00</span></p>
@@ -657,7 +657,7 @@
         const stages = [
             { t: "Securing channel with bank host...", l: "[LOG]: TLS 1.3 encryption handshake successful." },
             { t: "Transmitting billing metadata...", l: "[LOG]: Payload parity check confirmed (CRC32)." },
-            { t: "Awaiting Bank Authentication...", l: "[LOG]: Routing through merchant node: EXAMPAD_REG" },
+            { t: "Awaiting Bank Authentication...", l: "[LOG]: Routing through merchant node: TESTPAD_REG" },
             { t: "Processing internal ledger updates...", l: "[LOG]: Transaction authorized by SBI-CORE." }
         ];
 
@@ -671,10 +671,10 @@
             document.getElementById('logStage').textContent = "[LOG]: RSA Key Handshake initiated.";
 
             const options = {
-                "key": "rzp_test_exampad_demo", // Standard Razorpay Test Key Placeholder
+                "key": "rzp_test_TESTPAD_demo", // Standard Razorpay Test Key Placeholder
                 "amount": parseFloat(amt) * 100, // paise
                 "currency": "INR",
-                "name": "EXAMPAD REGISTRY",
+                "name": "TESTPAD REGISTRY",
                 "description": purpose,
                 "image": "../logo.jpg",
                 "handler": function (response) {
@@ -684,7 +684,7 @@
                 },
                 "prefill": {
                     "name": "Student User",
-                    "email": "student@exampad.edu"
+                    "email": "student@TESTPAD.edu"
                 },
                 "notes": {
                     "roll": urlParams.get('roll'),
@@ -708,7 +708,7 @@
         }
 
         function finalizeTransaction(payId) {
-            const txs = JSON.parse(localStorage.getItem('exampad_tx_history') || '[]');
+            const txs = JSON.parse(localStorage.getItem('TESTPAD_tx_history') || '[]');
             txs.push({
                 ref: ref,
                 desc: purpose + (payId ? " [RZP: " + payId + "]" : ""),
@@ -722,7 +722,7 @@
                 status: 'PAID',
                 gateway_id: payId
             });
-            localStorage.setItem('exampad_tx_history', JSON.stringify(txs));
+            localStorage.setItem('TESTPAD_tx_history', JSON.stringify(txs));
 
             setTimeout(() => {
                 if (urlParams.get('type') === 'reappear') {

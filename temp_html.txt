@@ -1,0 +1,45 @@
+<!-- INTEGRATED FEEDBACK VIEW -->
+                <div id="feedbackView">
+                    <header class="feedback-header">
+                        <div class="feedback-inner-header">
+                            <img id="feedbackSuccessIcon"
+                                src="https://www.ragadesigners.com/services-images/theater/live.png"
+                                class="feedback-icon" alt="Success">
+                            <div class="feedback-header-content">
+                                <h1>Test submitted successfully :)</h1>
+                                <p class="time-took">you took <b id="finalTimeTook">-- mins</b> to finish the test
+                                </p>
+                                <p>Please take out a minute to submit your feedback. Your feedback helps us improve
+                                    the
+                                    quality of learning and the services we render to you.</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="feedback-body">
+                        <div class="feedback-inner-body">
+                            <div class="feedback-section border-divider">
+                                <label>How was the interpretation of questions</label>
+                                <div class="feedback-pills">
+                                    <button class="pill-opt" onclick="setFeedbackPill(this)">EXCELLENT</button>
+                                    <button class="pill-opt" onclick="setFeedbackPill(this)">GOOD</button>
+                                    <button class="pill-opt" onclick="setFeedbackPill(this)">AVERAGE</button>
+                                    <button class="pill-opt" onclick="setFeedbackPill(this)">POOR</button>
+                                </div>
+                            </div>
+
+                            <div class="feedback-section">
+                                <label>Any other suggestion or feedback?</label>
+                                <textarea class="feedback-text-area" id="finalFeedbackMsg"
+                                    placeholder=".enter text here..."></textarea>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 0; margin-top: -5px;">
+                                <button class="btn-feedback-done" id="feedbackSubmitBtn" onclick="submitFeedback()"
+                                    style="font-family: 'Roboto', sans-serif; text-transform: none;">Submit</button>
+                                <div id="immediateResultContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            

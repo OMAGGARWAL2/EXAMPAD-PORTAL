@@ -1,5 +1,5 @@
 const fs = require('fs');
-let content = fs.readFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/EXAMPAD/pages/course-creator.html', 'utf8');
+let content = fs.readFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/TESTPAD/pages/course-creator.html', 'utf8');
 
 // Replace courseData initialization to include assignments
 content = content.replace(
@@ -130,7 +130,7 @@ if (!content.includes('function renderAttempts()')) {
         `let attemptsChart = null;
         function renderAttempts() {
             const tbody = document.getElementById('attemptsTableBody');
-            const progressData = JSON.parse(localStorage.getItem('exampad_course_progress') || '[]');
+            const progressData = JSON.parse(localStorage.getItem('TESTPAD_course_progress') || '[]');
             const courseProgress = progressData.filter(p => p.courseId === (courseData.id || 'N/A'));
 
             if (courseProgress.length === 0) {
@@ -208,5 +208,5 @@ if (!content.includes('function renderAttempts()')) {
     );
 }
 
-fs.writeFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/EXAMPAD/pages/course-creator.html', content);
+fs.writeFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/TESTPAD/pages/course-creator.html', content);
 console.log('Modified successfully');

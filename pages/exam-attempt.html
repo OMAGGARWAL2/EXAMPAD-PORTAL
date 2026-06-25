@@ -575,7 +575,7 @@
         .question-description,
         .q-body {
             font-family: 'Hind', sans-serif !important;
-            font-size: 1.40rem !important;
+            font-size: 1.45rem !important;
             font-weight: 400 !important;
             line-height: 1.6 !important;
             color: #343a40 !important;
@@ -640,6 +640,7 @@
             color: #111 !important;
         }
 
+        .question-description pre,
         .q-body pre,
         .ql-syntax,
         .code-inline-box {
@@ -647,7 +648,7 @@
             border-radius: 4px !important;
             padding: 10px !important;
             font-family: SFMono-Regular, Consolas, monospace !important;
-            font-size: 1.25rem !important;
+            font-size: 1rem !important;
             line-height: 1.6 !important;
             color: #333 !important;
             margin: 1.25em 0 !important;
@@ -658,6 +659,20 @@
             cursor: text;
             display: block;
             box-sizing: border-box;
+        }
+
+        .question-description pre *,
+        .question-description pre span,
+        .q-body pre *,
+        .q-body pre span,
+        .ql-syntax *,
+        .ql-syntax span,
+        .code-inline-box *,
+        .code-inline-box span {
+            font-size: 1rem !important;
+            font-family: SFMono-Regular, Consolas, monospace !important;
+            line-height: 1.6 !important;
+            background-color: transparent !important;
         }
 
         .question-type {
@@ -1846,19 +1861,27 @@
         .question-description code,
         .question-description kbd,
         .question-description samp,
-        .question-description pre * {
+        .question-description pre *,
+        .question-description pre span,
+        .mcq-option pre,
+        .mcq-option code,
+        .mcq-option pre *,
+        .mcq-option pre span {
             font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace !important;
-            font-size: calc(0.85rem * var(--q-scale, 1)) !important;
-            /* Keep code blocks modest and ultra-stable */
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
+            background-color: transparent !important;
         }
 
-        .question-description pre.ql-syntax {
-            background: #ebebeb;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            overflow: auto;
-            margin: 1em 0;
+        .question-description pre.ql-syntax,
+        .mcq-option pre.ql-syntax {
+            background: #ebebeb !important;
+            border: none !important;
+            padding: 10px !important;
+            border-radius: 4px !important;
+            overflow: auto !important;
+            margin: 1em 0 !important;
+            font-size: 1rem !important;
         }
 
         .tri-orange-line {
@@ -4565,10 +4588,10 @@
         // --- QUICK START FEATURE ---
         function handleQuickStart() {
             try {
-                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
                 const student = users.reverse().find(u => u.role === 'student');
 
-                const exams = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+                const exams = JSON.parse(localStorage.getItem('TESTPAD_exams')) || [];
                 const latestExam = exams.reverse()[0];
 
                 if (!student || !latestExam) {
@@ -4696,7 +4719,7 @@
 
         async function init() {
             if (quickStart && examIdFromUrl && !auth.getCurrentUser()) {
-                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
                 const student = [...users].reverse().find(u => u.role === 'student');
                 if (student) {
                     console.log("[QUICK START] Auto-logging in student:", student.name);
@@ -4712,7 +4735,7 @@
             }
 
             // 0. NETWORK VALIDATION PHASE (Added for IP Restriction)
-            const exams_list = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+            const exams_list = JSON.parse(localStorage.getItem('TESTPAD_exams')) || [];
             const exam_ref = exams_list.find(e => e.id === (examIdFromUrl || currentExam?.id));
 
             if (exam_ref && exam_ref.security && exam_ref.security.ipRestriction && !exam_ref.security.isPracticeTest && !isPractice) {
@@ -4751,7 +4774,7 @@
                         if (currentExam) {
                             let student = auth.getCurrentUser();
                             if (!student || student.role !== 'student') {
-                                const users = JSON.parse(localStorage.getItem('exampad_users')) || [];
+                                const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
                                 student = [...users].reverse().find(u => u.role === 'student') || users.find(u => u.role === 'student');
                             }
 
@@ -4760,7 +4783,16 @@
                                 db.createSession(student.id, 'student');
                                 user = auth.getCurrentUser();
 
-                                const res = db.startAttempt(currentExam.id, student.id);
+                                let res = db.startAttempt(currentExam.id, student.id);
+                                if (!res.success && res.existingAttempt) {
+                                    if (res.existingAttempt.status === 'submitted' || res.existingAttempt.status === 'reviewed') {
+                                        res = db.startAttempt(currentExam.id, student.id, true);
+                                    } else {
+                                        res.success = true;
+                                        res.attempt = res.existingAttempt;
+                                    }
+                                }
+
                                 if (res.success || res.existingAttempt) {
                                     const attemptObj = res.attempt || res.existingAttempt;
                                     attemptId = attemptObj.id;
@@ -8334,7 +8366,7 @@
                 font-family: 'Outfit', sans-serif;
             `;
 
-            const deepLink = `exampad://open-exam?id=${examId}`;
+            const deepLink = `TESTPAD://open-exam?id=${examId}`;
 
             overlay.innerHTML = `
                 <div style="background: #fff; padding: 60px; border-radius: 32px; max-width: 600px; width: 90%; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.1); border: 1px solid #eee;">
@@ -8343,7 +8375,7 @@
                     </div>
                     <h1 style="font-size: 2.2rem; font-weight: 900; color: #101828; margin-bottom: 16px;">SECURE ENVIRONMENT REQUIRED</h1>
                     <p style="color: #475467; font-size: 1.15rem; line-height: 1.6; margin-bottom: 40px; font-weight: 500;">
-                        To ensure assessment integrity, this exam can only be attempted using the <b>EXAMPAD Desktop Application</b>. 
+                        To ensure assessment integrity, this exam can only be attempted using the <b>TESTPAD Desktop Application</b>. 
                         Browser-based attempts are restricted for this session.
                     </p>
                     
@@ -8970,31 +9002,31 @@
         function forceSaveCustomExam() {
             try {
                 if (currentExam) {
-                    let exDB = JSON.parse(localStorage.getItem('exampad_exams')) || [];
+                    let exDB = JSON.parse(localStorage.getItem('TESTPAD_exams')) || [];
                     let exIdx = exDB.findIndex(e => e.id === currentExam.id || e.testId === currentExam.id || e.id === currentExam.testId);
                     if (exIdx !== -1) {
                         exDB[exIdx] = currentExam;
-                        localStorage.setItem('exampad_exams', JSON.stringify(exDB));
+                        localStorage.setItem('TESTPAD_exams', JSON.stringify(exDB));
                     }
                 }
 
                 // Blanket update to ALL possible attempt locations to prevent load/save mismatch
                 if (typeof attemptId !== 'undefined' && attemptId) {
-                    let attDB = JSON.parse(localStorage.getItem('exampad_attempts')) || [];
+                    let attDB = JSON.parse(localStorage.getItem('TESTPAD_attempts')) || [];
                     let aIdx = attDB.findIndex(a => a.id === attemptId);
                     if (aIdx !== -1) {
                         attDB[aIdx].customExam = currentExam;
                         attDB[aIdx].selectedQuestionIds = currentExam.questions.map(q => q.id);
                         attDB[aIdx].selectedQuestions = currentExam.questions;
-                        localStorage.setItem('exampad_attempts', JSON.stringify(attDB));
+                        localStorage.setItem('TESTPAD_attempts', JSON.stringify(attDB));
                     }
                 }
 
                 // Also always save to practice session just in case it loads from there
                 let pId = (typeof itemId !== 'undefined' && itemId) ? itemId : 'standing_practice';
-                let pracDB = JSON.parse(localStorage.getItem('exampad_practice_sessions')) || {};
+                let pracDB = JSON.parse(localStorage.getItem('TESTPAD_practice_sessions')) || {};
                 pracDB[pId] = currentAttempt;
-                localStorage.setItem('exampad_practice_sessions', JSON.stringify(pracDB));
+                localStorage.setItem('TESTPAD_practice_sessions', JSON.stringify(pracDB));
 
                 questions = currentExam.questions;
             } catch (err) {

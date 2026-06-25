@@ -1,7 +1,8 @@
 {
-    "name": "exampad-proctor-desktop",
+    "name": "my-exampad",
+    "productName": "MyExamPad",
     "version": "1.0.0",
-    "description": "EXAMPAD Professional ERP - Secure Desktop Environment",
+    "description": "Custom ExamPad Environment",
     "main": "main.js",
     "scripts": {
         "start": "electron .",
@@ -10,7 +11,7 @@
         "dist": "electron-builder"
     },
     "build": {
-        "appId": "com.exampad.proctor",
+        "appId": "com.custom.myexampad",
         "win": {
             "target": "nsis",
             "icon": "icon.png"
@@ -24,7 +25,7 @@
         "Proctoring",
         "Secure"
     ],
-    "author": "EXAMPAD Engineering",
+    "author": "TESTPAD Engineering",
     "license": "ISC",
     "devDependencies": {
         "electron": "^28.3.3",

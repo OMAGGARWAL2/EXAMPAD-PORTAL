@@ -1,5 +1,5 @@
 const fs = require('fs');
-let content = fs.readFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/EXAMPAD/pages/course-creator.html', 'utf8');
+let content = fs.readFileSync('c:/Users/omagg/OneDrive/Desktop/C - 01/TESTPAD/pages/course-creator.html', 'utf8');
 
 // 1. Fix the duplicate tabs and structure
 // First, extract the course-dash-header

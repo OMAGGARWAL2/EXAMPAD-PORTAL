@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exampad | Download Admit Card</title>
+    <title>TESTPAD</title>
     <!-- Google Fonts: Inter and Outfit -->
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
@@ -474,7 +474,7 @@
                 <div class="logo-square">
                     <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" alt="CHITKARA">
                 </div>
-                <div class="logo-text">EXAMPAD</div>
+                <div class="logo-text">TESTPAD</div>
             </div>
         </div>
         <div class="header-right">
@@ -657,7 +657,7 @@
 
             const verifyID = "VER_" + Math.random().toString(36).substr(2, 9).toUpperCase();
             document.getElementById('dispVerifyID').innerText = verifyID;
-            document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=EXAMPAD_AUTH_${verifyID}_ROLL_${roll}`;
+            document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=TESTPAD_AUTH_${verifyID}_ROLL_${roll}`;
 
             const scheduleBody = document.getElementById('scheduleBody');
             scheduleBody.innerHTML = data.schedule.map(s => `

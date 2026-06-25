@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXAMPAD</title>
+    <title>TESTPAD</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
         rel="stylesheet">
@@ -1478,7 +1478,7 @@
                 style="background: transparent; border-radius: 0; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
                 <img src="../logo.jpg" alt="Chitkara" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <div style="font-family:var(--font-display); font-weight:700; font-size:15px; letter-spacing:0.5px;">EXAMPAD
+            <div style="font-family:var(--font-display); font-weight:700; font-size:15px; letter-spacing:0.5px;">TESTPAD
                 ERP</div>
         </div>
         <div class="sidebar-nav">
@@ -2260,7 +2260,7 @@
             </div>
         </div>
         <div style="padding:40px; text-align:center; color:#94a3b8; font-size:11px; font-weight:600;">
-            EXAMPAD UNIFIED ACADEMIC REGISTRY | EVALUATION CYCLE V4.0.2
+            TESTPAD UNIFIED ACADEMIC REGISTRY | EVALUATION CYCLE V4.0.2
         </div>
     </div>
 
@@ -2342,7 +2342,7 @@
         let sessionStart = Date.now();
 
         function updateLiveStats() {
-            const stats = JSON.parse(localStorage.getItem('exampad_osm_stats') || '{"checked":0, "seconds":0}');
+            const stats = JSON.parse(localStorage.getItem('TESTPAD_osm_stats') || '{"checked":0, "seconds":0}');
             const currentSessionSecs = Math.floor((Date.now() - sessionStart) / 1000);
             const totalSecs = stats.seconds + currentSessionSecs;
 
@@ -2394,7 +2394,7 @@
         }
 
         // PERSISTENCE ENGINE (IndexedDB)
-        const DB_NAME = 'EXAMPAD_OSM_PERSISTENCE';
+        const DB_NAME = 'TESTPAD_OSM_PERSISTENCE';
         const DB_VERSION = 2;
         let _db = null;
 
@@ -2780,9 +2780,9 @@
             });
             const name = await sysPrompt("Enter Template Name:", "Standard Final Matrix");
             if (!name) return;
-            const templates = JSON.parse(localStorage.getItem('exampad_osm_templates') || '{}');
+            const templates = JSON.parse(localStorage.getItem('TESTPAD_osm_templates') || '{}');
             templates[name] = defs;
-            localStorage.setItem('exampad_osm_templates', JSON.stringify(templates));
+            localStorage.setItem('TESTPAD_osm_templates', JSON.stringify(templates));
             showT("Template saved to local registry.");
         }
 
@@ -2829,7 +2829,7 @@
         }
 
         async function loadTemplate() {
-            const templates = JSON.parse(localStorage.getItem('exampad_osm_templates') || '{}');
+            const templates = JSON.parse(localStorage.getItem('TESTPAD_osm_templates') || '{}');
             const keys = Object.keys(templates);
             if (keys.length === 0) { showT("No templates found in system registry.", "error"); return; }
 
@@ -3645,7 +3645,7 @@
 
         async function commitToHistory(b, tl, max, timeSecs) {
             // 1. Sync LocalStorage Ledger (Updates Analytics History Table)
-            const rec = JSON.parse(localStorage.getItem('exampad_osm_history') || '[]');
+            const rec = JSON.parse(localStorage.getItem('TESTPAD_osm_history') || '[]');
             const examName = document.getElementById('wbTitle').textContent;
             const existingIdx = rec.findIndex(r => r.roll === b.id && r.exam === examName);
 
@@ -3664,7 +3664,7 @@
             if (existingIdx !== -1) rec[existingIdx] = entry;
             else rec.push(entry);
 
-            localStorage.setItem('exampad_osm_history', JSON.stringify(rec));
+            localStorage.setItem('TESTPAD_osm_history', JSON.stringify(rec));
 
             // 2. Persist to IndexDB Archives (For Student Portal)
             if (_db) {
@@ -3697,10 +3697,10 @@
             await commitToHistory(b, tl, max, timeSecs);
 
             // Update Global Stats
-            const stats = JSON.parse(localStorage.getItem('exampad_osm_stats') || '{"checked":0, "seconds":0}');
+            const stats = JSON.parse(localStorage.getItem('TESTPAD_osm_stats') || '{"checked":0, "seconds":0}');
             stats.checked++;
             stats.seconds += Math.floor((Date.now() - sessionStart) / 1000);
-            localStorage.setItem('exampad_osm_stats', JSON.stringify(stats));
+            localStorage.setItem('TESTPAD_osm_stats', JSON.stringify(stats));
             sessionStart = Date.now();
             updateLiveStats();
 
@@ -3820,7 +3820,7 @@
 
             loadr(true, `Synchronizing Metadata (${pending.length} scripts)...`);
 
-            const rec = JSON.parse(localStorage.getItem('exampad_osm_history') || '[]');
+            const rec = JSON.parse(localStorage.getItem('TESTPAD_osm_history') || '[]');
             const examName = document.getElementById('wbTitle').textContent;
 
             for (const b of pending) {
@@ -3848,7 +3848,7 @@
                 }
             }
 
-            localStorage.setItem('exampad_osm_history', JSON.stringify(rec));
+            localStorage.setItem('TESTPAD_osm_history', JSON.stringify(rec));
             await saveOSMSession();
         }
 

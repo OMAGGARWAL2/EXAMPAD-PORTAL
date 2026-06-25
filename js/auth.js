@@ -1,4 +1,4 @@
-// ===== EXAMPAD AUTHENTICATION =====
+// ===== TESTPAD AUTHENTICATION =====
 
 class Auth {
     constructor() {
@@ -11,7 +11,7 @@ class Auth {
 
     loadSession() {
         // First check persistent storage if 'Remember Me' was used
-        const savedUser = localStorage.getItem('exampad_remembered_user');
+        const savedUser = localStorage.getItem('TESTPAD_remembered_user');
         const activeSession = db.getActiveSession();
 
         if (activeSession) {
@@ -110,7 +110,7 @@ class Auth {
         }
 
         if (remember) {
-            localStorage.setItem('exampad_remembered_user', JSON.stringify(user));
+            localStorage.setItem('TESTPAD_remembered_user', JSON.stringify(user));
         }
 
         return { success: true, message: 'Login successful', user, session };
@@ -119,7 +119,7 @@ class Auth {
     saveLastCredentials(email, password, role) {
         try {
             let history = [];
-            const raw = localStorage.getItem('exampad_login_history');
+            const raw = localStorage.getItem('TESTPAD_login_history');
             if (raw) {
                 history = JSON.parse(raw);
             }
@@ -140,7 +140,7 @@ class Auth {
                 history = history.slice(0, 10);
             }
 
-            localStorage.setItem('exampad_login_history', JSON.stringify(history));
+            localStorage.setItem('TESTPAD_login_history', JSON.stringify(history));
             
             // Keep legacy single entry for backward compatibility if needed
             const legacyData = {
@@ -149,14 +149,14 @@ class Auth {
                 r: role,
                 t: Date.now()
             };
-            localStorage.setItem('exampad_last_access', JSON.stringify(legacyData));
+            localStorage.setItem('TESTPAD_last_access', JSON.stringify(legacyData));
         } catch (e) {
             console.error("Storage of login history failed", e);
         }
     }
 
     getSavedCredentials() {
-        const raw = localStorage.getItem('exampad_last_access');
+        const raw = localStorage.getItem('TESTPAD_last_access');
         if (!raw) return null;
         try {
             const data = JSON.parse(raw);
@@ -172,7 +172,7 @@ class Auth {
 
     getAllSavedCredentials() {
         try {
-            const raw = localStorage.getItem('exampad_login_history');
+            const raw = localStorage.getItem('TESTPAD_login_history');
             if (!raw) return [];
             const history = JSON.parse(raw);
             return history.map(data => ({
@@ -207,8 +207,8 @@ class Auth {
         }
         this.currentUser = null;
         this.currentSession = null;
-        localStorage.removeItem('exampad_remembered_user');
-        // Note: We intentionally keep 'exampad_last_access' for the auto-fill feature
+        localStorage.removeItem('TESTPAD_remembered_user');
+        // Note: We intentionally keep 'TESTPAD_last_access' for the auto-fill feature
     }
 
     isLoggedIn() {

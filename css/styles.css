@@ -1,4 +1,4 @@
-/* ===== EXAMPAD GLOBAL STYLES ===== */
+/* ===== TESTPAD GLOBAL STYLES ===== */
 /* Color Scheme: Orange (#FF8C00, #FFA500) + White (#FFFFFF) + Dark Text (#333333) */
 
 * {
@@ -259,4 +259,24 @@ body {
         padding: 25px;
         max-width: 90%;
     }
+}
+
+/* Custom Smooth Blue Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #60a5fa;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2563eb;
 }

@@ -759,7 +759,7 @@
                 <div class="logo-square">
                     <img src="../TESTPAD_WEBSITE__files/chitkara.png" alt="CHITKARA">
                 </div>
-                <div class="logo-text">EXAMPAD</div>
+                <div class="logo-text">TESTPAD</div>
             </div>
             <div class="header-nav">
                 <button class="nav-icon-btn active" title="Dashboard"
@@ -781,13 +781,17 @@
             <button class="plus-btn" onclick="createNewExam()" title="Launch New Assessment">
                 <i class="fas fa-plus"></i>
             </button>
-            <button class="grid-btn" onclick="showToast('View mode updated', 'info')"><i class="fas fa-th"></i></button>
+            <button class="grid-btn" onclick="showToast('View mode updated', 'info')" style="display: flex; align-items: center; justify-content: center;">
+                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png" style="width: 24px; height: 24px; opacity: 0.75; transition: all 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
+            </button>
             <div class="profile-bubble" onclick="handleLogout()">
                 <div class="user-info">
                     <div class="user-name" id="userName">OM AGGARWAL</div>
                     <div class="user-role" style="color: var(--primary);">SUPER ADMIN</div>
                 </div>
-                <div class="avatar" id="userInitial" style="background: #E66A35;">O</div>
+                <div class="avatar" id="userInitial" style="background: transparent; border: none; padding: 0;">
+                    <img src="../LINUX_TEST_CHITKARA_files/user-icon.3d6e2547.svg" style="width: 100%; height: 100%; border-radius: 50%;">
+                </div>
             </div>
         </div>
     </header>
@@ -816,10 +820,15 @@
             </div>
 
             <div class="content-header" style="margin-top: 60px;">
-                <h2 class="section-title">My Courses <span id="courseCount">(0)</span></h2>
-                <button class="btn-action primary" onclick="location.href='./course-creator.html'">
-                    <i class="fas fa-plus"></i> NEW COURSE
-                </button>
+                <h2 class="section-title">All Courses <span id="courseCount">(0)</span></h2>
+                <div class="bulk-actions" style="margin-left: auto; display: flex; gap: 8px;">
+                    <button class="btn-action primary" style="background:#d32f2f;" onclick="expireAllCourses()">
+                        <i class="fas fa-calendar-times"></i> EXPIRE ALL
+                    </button>
+                    <button class="btn-action primary" onclick="location.href='./course-creator.html'">
+                        <i class="fas fa-plus"></i> NEW COURSE
+                    </button>
+                </div>
             </div>
 
             <div class="assessments-grid" id="coursesList">
@@ -1026,7 +1035,7 @@
             renderExams(allExams);
             document.getElementById('examCount').textContent = `(${allExams.length})`;
 
-            const courses = db.getTeacherCourses ? db.getTeacherCourses(user.id) : [];
+            const courses = db.getAllCourses ? db.getAllCourses() : [];
             renderCourses(courses);
             document.getElementById('courseCount').textContent = `(${courses.length})`;
         }
@@ -1047,9 +1056,10 @@
             container.innerHTML = courses.map(c => {
                 const status = c.status || 'published';
                 const isDraft = status === 'draft';
+                const isExpired = status === 'expired';
                 return `
                     <div class="assessment-card ${isDraft ? 'draft-card' : ''}" onclick="location.href='./course-creator.html?id=${c.id}'">
-                        <div class="card-icon-area" style="background: ${isDraft ? '#FEF3F2' : '#ECFDF3'}; color: ${isDraft ? '#B42318' : '#027A48'};">
+                        <div class="card-icon-area" style="background: ${isDraft ? '#FEF3F2' : (isExpired ? '#F2F4F7' : '#ECFDF3')}; color: ${isDraft ? '#B42318' : (isExpired ? '#475467' : '#027A48')};">
                             <i class="fas ${isDraft ? 'fa-pencil-ruler' : 'fa-book-reader'}"></i>
                         </div>
                         <div class="card-body">
@@ -1057,7 +1067,7 @@
                             <div class="card-meta">
                                 <span><i class="far fa-folder"></i> ${c.modules?.length || 0} Modules</span>
                                 <span><i class="far fa-users"></i> ${c.studentCount || 0} Students</span>
-                                <div class="status-pill" style="display:inline-block; background:${isDraft ? '#FEF3F2' : '#ECFDF3'}; color:${isDraft ? '#B42318' : '#12B76A'}; border:1px solid ${isDraft ? '#FCA5A1' : '#ABEFC6'}; font-size:0.6rem; padding:1px 8px; border-radius:12px; font-weight:800; text-transform:uppercase; margin-left:8px;">${status}</div>
+                                <div class="status-pill" style="display:inline-block; background:${isDraft ? '#FEF3F2' : (isExpired ? '#F2F4F7' : '#ECFDF3')}; color:${isDraft ? '#B42318' : (isExpired ? '#475467' : '#12B76A')}; border:1px solid ${isDraft ? '#FCA5A1' : (isExpired ? '#EAECF0' : '#ABEFC6')}; font-size:0.6rem; padding:1px 8px; border-radius:12px; font-weight:800; text-transform:uppercase; margin-left:8px;">${status}</div>
                             </div>
                         </div>
                         <div class="stats-group">
@@ -1067,6 +1077,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
+                            ${!isExpired ? `<button class="btn-action light-orange" onclick="event.stopPropagation(); expireCourse('${c.id}')" title="Expire Course"><i class="fas fa-calendar-times"></i></button>` : ''}
                             <button class="btn-action" title="View Students" onclick="event.stopPropagation();"><i class="fas fa-user-friends"></i></button>
                             <button class="btn-action primary" style="background:${isDraft ? '#D96C33' : '#12B76A'};" onclick="event.stopPropagation(); location.href='./course-creator.html?id=${c.id}'">
                                 ${isDraft ? 'CONTINUE DESIGN' : 'EDIT CURRICULUM'}
@@ -1194,6 +1205,29 @@
             if (ok) {
                 db.updateExam(id, { status: 'expired' });
                 showToast('Assessment expired.', 'success');
+                loadData();
+            }
+        }
+
+        async function expireCourse(id) {
+            const ok = await showConfirm('Expire Course?', 'This will permanently remove the course from your dashboard and all student dashboards. It will only be visible to Superadmins.', 'Expire Course', 'light-orange');
+            if (ok) {
+                if (window.db && window.db.updateCourse) {
+                    window.db.updateCourse(id, { status: 'expired' });
+                }
+                showToast('Course expired successfully.', 'success');
+                loadData();
+            }
+        }
+
+        async function expireAllCourses() {
+            const ok = await showConfirm('Expire ALL Courses?', 'This will permanently expire ALL courses across the system. This cannot be undone.', 'Expire All', 'danger');
+            if (ok) {
+                const courses = db.getAllCourses ? db.getAllCourses().filter(c => c.status !== 'expired') : [];
+                courses.forEach(c => {
+                    db.updateCourse(c.id, { status: 'expired' });
+                });
+                showToast(`Successfully expired ${courses.length} courses.`, 'success');
                 loadData();
             }
         }
