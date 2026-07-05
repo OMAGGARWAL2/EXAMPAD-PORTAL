@@ -3330,19 +3330,27 @@
 
                                     <!-- LATEX PANE -->
                                     <div class="stb-pane" id="stb-pane-latex" style="flex-wrap: nowrap; gap:8px;">
-                                        <input id="inline-latex-input" placeholder="\frac{a}{b}"
-                                            style="height:26px; border:1px solid #ddd; border-radius:2px; padding:0 8px; font-size:0.85rem; width:180px; font-family:'JetBrains Mono', monospace;"
-                                            oninput="previewInlineLatex(this.value)">
-                                        <div id="inline-latex-preview"
-                                            style="min-width:60px; height:26px; font-size:1rem; padding:0 8px; background:#fff; border:1px solid #eee; border-radius:2px; font-family:'Times New Roman', Times, serif; color:#000; display:flex; align-items:center;">
+                                        <div style="display:flex; flex-direction:column; gap:4px;">
+                                            <select id="inline-latex-mode" onchange="previewInlineLatex()" style="height:22px; font-size:0.7rem; border:1px solid #ddd; border-radius:2px; font-family:'Montserrat', sans-serif;">
+                                                <option value="latex">LaTeX Equation</option>
+                                                <option value="text">Plain Text Paragraphs</option>
+                                            </select>
+                                            <textarea id="inline-latex-input" placeholder="Type here..."
+                                                style="height:40px; border:1px solid #ddd; border-radius:2px; padding:4px 8px; font-size:0.85rem; width:220px; font-family:'JetBrains Mono', monospace; resize:vertical; min-height:26px;"
+                                                oninput="previewInlineLatex()"></textarea>
                                         </div>
-                                        <div class="stb-divider"></div>
-                                        <button class="stb-icon-btn" title="Insert as Math" style="width:auto; padding:0 8px; font-family:'Times New Roman', Times, serif; font-weight:bold;"
-                                            onclick="insertInlineLatex('embed')">Math</button>
-                                        <button class="stb-icon-btn" title="Insert as Image" style="width:auto; padding:0 8px; font-family:'Times New Roman', Times, serif;"
-                                            onclick="insertInlineLatex('image')">Image</button>
-                                        <button class="stb-icon-btn" title="Insert as Text" style="width:auto; padding:0 8px; font-family:'Times New Roman', Times, serif;"
-                                            onclick="insertInlineLatex('text')">Text</button>
+                                        <div id="inline-latex-preview"
+                                            style="min-width:60px; min-height:26px; max-height:100px; max-width:250px; overflow-y:auto; font-size:1rem; padding:4px 8px; background:#fff; border:1px solid #eee; border-radius:2px; font-family:'Times New Roman', Times, serif; color:#000; display:flex; align-items:center; white-space:pre-wrap; word-wrap:break-word;">
+                                        </div>
+                                        <div class="stb-divider" style="height:auto;"></div>
+                                        <div style="display:flex; flex-direction:column; gap:2px; justify-content:center;">
+                                            <button class="stb-icon-btn" title="Insert as Interactive Math" style="width:auto; height:20px; padding:0 8px; font-family:'Times New Roman', Times, serif; font-weight:bold; font-size:0.75rem;"
+                                                onclick="insertInlineLatex('embed')">Math</button>
+                                            <button class="stb-icon-btn" title="Insert as High-Res Image" style="width:auto; height:20px; padding:0 8px; font-family:'Times New Roman', Times, serif; font-size:0.75rem;"
+                                                onclick="insertInlineLatex('image')">Image</button>
+                                            <button class="stb-icon-btn" title="Insert as Raw Text" style="width:auto; height:20px; padding:0 8px; font-family:'Times New Roman', Times, serif; font-size:0.75rem;"
+                                                onclick="insertInlineLatex('text')">Text</button>
+                                        </div>
                                     </div>
 
                                     <!-- TABLE / INSERT PANE -->
@@ -5120,10 +5128,17 @@
         }
     }
 
-    function previewInlineLatex(latex) {
+    function previewInlineLatex() {
+        const input = document.getElementById('inline-latex-input');
+        const mode = document.getElementById('inline-latex-mode').value;
         const preview = document.getElementById('inline-latex-preview');
+        const latex = input ? input.value : '';
         if (!latex.trim()) {
             preview.innerHTML = '';
+            return;
+        }
+        if (mode === 'text') {
+            preview.textContent = latex;
             return;
         }
         if (typeof katex !== 'undefined') {
