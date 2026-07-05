@@ -122,7 +122,11 @@
             background: rgba(222, 104, 52, 0.5);
         }
 
-        /* ======= TABBED SMART TOOLBAR STYLES ======= */
+        /* Hide Default Quill Toolbar (We use custom Smart Toolbar) */
+        .ql-toolbar.ql-snow {
+            display: none !important;
+        }
+
         /* ======= TABBED SMART TOOLBAR STYLES ======= */
         .stb-tabs {
             display: flex;
@@ -3324,6 +3328,35 @@
                                         <button class="stb-icon-btn" title="Increase Indent"
                                             onclick="quill.format('indent', '+1')"><i
                                                 class="fas fa-indent"></i></button>
+
+                                        <div class="stb-divider"></div>
+
+                                        <!-- Row 4: Lists & Blocks -->
+                                        <button class="stb-icon-btn" title="Numbered List"
+                                            onclick="document.querySelector('.ql-list[value=\'ordered\']').click()"><i
+                                                class="fas fa-list-ol"></i></button>
+                                        <button class="stb-icon-btn" title="Bulleted List"
+                                            onclick="document.querySelector('.ql-list[value=\'bullet\']').click()"><i
+                                                class="fas fa-list-ul"></i></button>
+                                        <button class="stb-icon-btn" title="Blockquote"
+                                            onclick="document.querySelector('.ql-blockquote').click()"><i
+                                                class="fas fa-quote-right"></i></button>
+                                        <button class="stb-icon-btn" title="Code Block"
+                                            onclick="document.querySelector('.ql-code-block').click()"><i
+                                                class="fas fa-code"></i></button>
+
+                                        <div class="stb-divider"></div>
+
+                                        <!-- Row 5: Media Insertion -->
+                                        <button class="stb-icon-btn" title="Insert Link"
+                                            onclick="document.querySelector('.ql-link').click()"><i
+                                                class="fas fa-link"></i></button>
+                                        <button class="stb-icon-btn" title="Insert Image"
+                                            onclick="document.querySelector('.ql-image').click()"><i
+                                                class="fas fa-image"></i></button>
+                                        <button class="stb-icon-btn" title="Insert Video"
+                                            onclick="document.querySelector('.ql-video').click()"><i
+                                                class="fas fa-film"></i></button>
                                     </div>
 
                                     <!-- DRAW PANE -->
