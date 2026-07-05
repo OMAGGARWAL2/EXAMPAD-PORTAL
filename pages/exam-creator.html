@@ -234,8 +234,9 @@
 
         .stb-select:focus {
             outline: none;
-            border: 1px solid #106ebe;
+            border: 1px solid #106ebe !important;
             background-color: #ffffff;
+            box-shadow: 0 0 0 1px #106ebe;
         }
 
         .stb-input {
@@ -249,11 +250,22 @@
 
         .stb-input:focus {
             outline: none;
-            border-color: #106ebe;
+            border-color: #106ebe !important;
+            box-shadow: 0 0 0 1px #106ebe;
         }
 
         .stb-input:hover {
             border-color: #a19f9d;
+        }
+
+        /* Hide ugly spin buttons for number inputs */
+        .stb-input[type="number"]::-webkit-inner-spin-button,
+        .stb-input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .stb-input[type="number"] {
+            -moz-appearance: textfield;
         }
 
         /* Smart Block Templates */
