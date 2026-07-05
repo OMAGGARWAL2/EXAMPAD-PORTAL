@@ -2131,10 +2131,13 @@
             <div style="display:flex; align-items:center; gap:16px;">
                 <h3 style="margin:0; font-family:'Montserrat', sans-serif; font-weight:700; color:#333;">Table Designer
                 </h3>
-                <select id="tdm-template-select" onchange="tdmApplyTemplate(this.value)"
-                    style="padding:4px 8px; border-radius:4px; border:1px solid #ddd; font-family:'Montserrat', sans-serif; font-size:0.85rem;">
-                    <option value="default">Template 1 (Academic Default - Times New Roman)</option>
-                </select>
+                <div style="position:relative;" id="tdm-gallery-container">
+                    <button onclick="tdmToggleGallery()" style="padding:6px 12px; border-radius:4px; border:1px solid #ddd; font-family:'Montserrat', sans-serif; font-size:0.85rem; background:#fff; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                        Table Styles <i class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
+                    </button>
+                    <div id="tdm-gallery-panel" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:660px; max-width:90vw; max-height:350px; overflow-y:auto; background:#fff; border:1px solid #ccc; box-shadow:0 4px 12px rgba(0,0,0,0.15); border-radius:4px; z-index:2000; padding:16px; flex-direction:column; gap:20px; text-align:left;">
+                    </div>
+                </div>
             </div>
             <button onclick="closeTableDesigner()"
                 style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999;">&times;</button>
@@ -5273,10 +5276,15 @@
         if (action !== 'bgColor') document.getElementById('tdm-context-menu').style.display = 'none';
     }
 
+    function tdmToggleGallery() {
+        const panel = document.getElementById('tdm-gallery-panel');
+        if (panel) panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+    }
+
     function tdmPopulateTemplates() {
         const panel = document.getElementById('tdm-gallery-panel');
         if (!panel || panel.children.length > 0) return;
-        
+
         const colors = [
             { main: '#555555', light: '#f2f2f2' },
             { main: '#4f81bd', light: '#dce6f1' },
@@ -5291,7 +5299,7 @@
         ];
 
         let html = '';
-        
+
         const createThumb = (type, main, light, clickArgs) => {
             let tr1 = '', tr2 = '', tr3 = '';
             if (type === 'plain') {
@@ -5367,24 +5375,24 @@
     function tdmApplyAdvancedTemplate(type, main, light) {
         const table = document.getElementById('designer-table');
         if (!table) return;
-        
+
         table.style.fontFamily = "'Times New Roman', Times, serif";
         table.style.borderCollapse = 'collapse';
         const rows = Array.from(table.querySelectorAll('tr'));
-        
+
         rows.forEach((tr, rIdx) => {
             const cells = Array.from(tr.querySelectorAll('th, td'));
             tr.style.border = '';
             tr.style.borderTop = '';
             tr.style.borderBottom = '';
             tr.style.backgroundColor = '#ffffff';
-            
+
             cells.forEach((c) => {
                 c.style.backgroundColor = '#ffffff';
                 c.style.color = '#333';
                 c.style.border = 'none';
                 c.style.fontWeight = 'normal';
-                
+
                 if (type === 'plain') {
                     if (rIdx === 0) c.style.borderTop = `1px solid ${main}`;
                     if (rIdx === 0 || rIdx === rows.length - 1) c.style.borderBottom = `1px solid ${main}`;
