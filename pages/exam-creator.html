@@ -2132,7 +2132,7 @@
                     <button onclick="tdmToggleGallery()" style="padding:6px 12px; border-radius:4px; border:1px solid #ddd; font-family:'Montserrat', sans-serif; font-size:0.85rem; background:#fff; cursor:pointer; display:flex; align-items:center; gap:8px;">
                         Table Styles <i class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
                     </button>
-                    <div id="tdm-gallery-panel" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:450px; max-height:350px; overflow-y:auto; background:#fff; border:1px solid #ccc; box-shadow:0 4px 12px rgba(0,0,0,0.15); border-radius:4px; z-index:2000; padding:16px; flex-direction:column; gap:20px; text-align:left;">
+                    <div id="tdm-gallery-panel" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:660px; max-width:90vw; max-height:350px; overflow-y:auto; background:#fff; border:1px solid #ccc; box-shadow:0 4px 12px rgba(0,0,0,0.15); border-radius:4px; z-index:2000; padding:16px; flex-direction:column; gap:20px; text-align:left;">
                         <!-- JS fills this gallery -->
                     </div>
                 </div>
@@ -5241,7 +5241,10 @@
             { main: '#a5a5a5', light: '#ededed' },
             { main: '#ffc000', light: '#fff2cc' },
             { main: '#4bacc6', light: '#dbeef3' },
-            { main: '#9bbb59', light: '#eaf1dd' } 
+            { main: '#9bbb59', light: '#eaf1dd' },
+            { main: '#8064a2', light: '#e5e0ec' },
+            { main: '#c0504d', light: '#f2dcdb' },
+            { main: '#31859b', light: '#d3eaf0' }
         ];
 
         let html = '';
@@ -5279,7 +5282,7 @@
         colors.forEach(c => html += createThumb('plain', c.main, c.light, ['plain', c.main, c.light]));
         html += `</div></div>`;
 
-        html += `<div><div style="font-weight:600; margin-bottom:8px; font-family:'Segoe UI', sans-serif;">Grid Tables</div><div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:8px;">`;
+        html += `<div><div style="font-weight:600; margin-bottom:8px; font-family:'Segoe UI', sans-serif;">Grid Tables</div><div style="display:grid; grid-template-columns:repeat(10, 1fr); gap:8px;">`;
         colors.forEach(c => html += createThumb('grid1', c.main, c.light, ['grid1', c.main, c.light]));
         colors.forEach(c => html += createThumb('grid2', c.main, c.light, ['grid2', c.main, c.light]));
         colors.forEach(c => html += createThumb('grid3', c.main, c.light, ['grid3', c.main, c.light]));
