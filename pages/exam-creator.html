@@ -5165,6 +5165,18 @@
         } else if (type === 'image') {
             const preview = document.getElementById('inline-latex-preview');
             if (preview) {
+                const clone = preview.cloneNode(true);
+                clone.style.maxHeight = 'none';
+                clone.style.maxWidth = '800px'; 
+                clone.style.width = 'auto';
+                clone.style.overflow = 'visible';
+                clone.style.position = 'absolute';
+                clone.style.left = '-9999px';
+                clone.style.top = '-9999px';
+                clone.style.border = 'none';
+                clone.style.background = 'transparent';
+                document.body.appendChild(clone);
+                
                 try {
                     if (typeof html2canvas === 'undefined') {
                         const script = document.createElement('script');
@@ -5172,16 +5184,18 @@
                         document.head.appendChild(script);
                         await new Promise(r => script.onload = r);
                     }
-                    const canvas = await html2canvas(preview, { scale: 3, backgroundColor: null });
+                    const canvas = await html2canvas(clone, { scale: 3, backgroundColor: null });
                     const imgData = canvas.toDataURL('image/png');
                     quill.insertEmbed(idx, 'image', imgData);
                     quill.insertText(idx + 1, ' ');
                     quill.setSelection(idx + 2);
-                    showToast('LaTeX inserted as high-res image');
+                    showToast('Inserted as high-res image');
                 } catch(e) {
                     console.error('HTML2Canvas Error', e);
                     quill.insertText(idx, latex, { font: 'Times New Roman' });
                     showToast('Image conversion failed, inserted text');
+                } finally {
+                    document.body.removeChild(clone);
                 }
             }
         } else {
