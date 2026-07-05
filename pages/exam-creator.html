@@ -3186,6 +3186,7 @@
                                         <div class="stb-tab active" onclick="switchStbTab('home')">Home</div>
                                         <div class="stb-tab" onclick="switchStbTab('draw')">Draw</div>
                                         <div class="stb-tab" onclick="switchStbTab('math')">Math</div>
+                                        <div class="stb-tab" onclick="switchStbTab('latex')">LaTeX</div>
                                         <div class="stb-tab" onclick="switchStbTab('table')">Insert</div>
                                         <div class="stb-tab" onclick="switchStbTab('code')">Code</div>
                                         <div class="stb-tab" onclick="switchStbTab('other')">Other</div>
@@ -3327,6 +3328,23 @@
                                                 class="fas fa-sigma"></i></button>
                                     </div>
 
+                                    <!-- LATEX PANE -->
+                                    <div class="stb-pane" id="stb-pane-latex" style="flex-wrap: nowrap; gap:8px;">
+                                        <input id="inline-latex-input" placeholder="\frac{a}{b}"
+                                            style="height:26px; border:1px solid #ddd; border-radius:2px; padding:0 8px; font-size:0.85rem; width:180px; font-family:'JetBrains Mono', monospace;"
+                                            oninput="previewInlineLatex(this.value)">
+                                        <div id="inline-latex-preview"
+                                            style="min-width:60px; height:26px; font-size:1rem; padding:0 8px; background:#fff; border:1px solid #eee; border-radius:2px; font-family:'Times New Roman', Times, serif; color:#000; display:flex; align-items:center;">
+                                        </div>
+                                        <div class="stb-divider"></div>
+                                        <button class="stb-icon-btn" title="Insert as Math" style="width:auto; padding:0 8px; font-family:'Times New Roman', Times, serif; font-weight:bold;"
+                                            onclick="insertInlineLatex('embed')">Math</button>
+                                        <button class="stb-icon-btn" title="Insert as Image" style="width:auto; padding:0 8px; font-family:'Times New Roman', Times, serif;"
+                                            onclick="insertInlineLatex('image')">Image</button>
+                                        <button class="stb-icon-btn" title="Insert as Text" style="width:auto; padding:0 8px; font-family:'Times New Roman', Times, serif;"
+                                            onclick="insertInlineLatex('text')">Text</button>
+                                    </div>
+
                                     <!-- TABLE / INSERT PANE -->
                                     <div class="stb-pane" id="stb-pane-table">
                                         <button class="stb-icon-btn" title="Insert Table"
@@ -3443,15 +3461,21 @@
                                 </div>
                                 <div id="latex-dialog"
                                     style="display:none; background:#fffcf8; border:1px solid #ddd; border-top:none; padding:10px 14px; gap:8px; align-items:center; flex-wrap:wrap;">
-                                    <input id="latex-input" placeholder="e.g. \\frac{a}{b} or x^2 + y^2"
+                                    <input id="latex-input" placeholder="e.g. \frac{a}{b} or x^2 + y^2"
                                         style="height:26px; border:1px solid #ddd; border-radius:2px; padding:0 8px; font-size:0.85rem; width:260px; font-family:'JetBrains Mono', monospace;"
                                         oninput="previewLatex(this.value)">
                                     <div id="latex-preview"
-                                        style="min-width:80px; font-size:1rem; padding:4px 8px; background:#fff; border:1px solid #eee; border-radius:2px;">
+                                        style="min-width:80px; font-size:1rem; padding:4px 8px; background:#fff; border:1px solid #eee; border-radius:2px; font-family:'Times New Roman', Times, serif; color:#000;">
                                     </div>
                                     <button
-                                        style="height:26px; font-size:0.75rem; background:#fff; border:1px solid #ddd; cursor:pointer;"
-                                        onclick="insertLatex()">Insert</button>
+                                        style="height:26px; font-size:0.75rem; background:#fff; border:1px solid #ddd; cursor:pointer; font-family:'Times New Roman', Times, serif; font-weight:bold;"
+                                        onclick="insertLatex('embed')">Insert Math</button>
+                                    <button
+                                        style="height:26px; font-size:0.75rem; background:#fff; border:1px solid #ddd; cursor:pointer; font-family:'Times New Roman', Times, serif;"
+                                        onclick="insertLatex('image')">Insert as Image</button>
+                                    <button
+                                        style="height:26px; font-size:0.75rem; background:#fff; border:1px solid #ddd; cursor:pointer; font-family:'Times New Roman', Times, serif;"
+                                        onclick="insertLatex('text')">Insert as Text</button>
                                     <button
                                         style="height:26px; font-size:0.75rem; background:#fff; border:1px solid #ddd; cursor:pointer;"
                                         onclick="document.getElementById('latex-dialog').style.display='none'">✕</button>
@@ -5028,7 +5052,7 @@
         document.getElementById('latex-input')?.focus();
     }
 
-    function insertLatex() {
+    async function insertLatex(type = 'embed') {
         const input = document.getElementById('latex-input');
         if (!input || !quill) return;
         const latex = input.value.trim();
@@ -5036,19 +5060,47 @@
         const range = quill.getSelection(true);
         const idx = range ? range.index : quill.getLength();
 
-        try {
-            quill.insertEmbed(idx, 'formula', latex);
-            quill.insertText(idx + 1, ' ');
-            quill.setSelection(idx + 2);
-            showToast('LaTeX inserted');
-        } catch (e) {
-            quill.insertText(idx, `[math]${latex}[/math]`);
-            showToast('Inserted as text');
+        if (type === 'text') {
+            quill.insertText(idx, latex, { font: 'Times New Roman' });
+            quill.setSelection(idx + latex.length);
+            showToast('LaTeX inserted as Times New Roman text');
+        } else if (type === 'image') {
+            const preview = document.getElementById('latex-preview');
+            if (preview) {
+                try {
+                    if (typeof html2canvas === 'undefined') {
+                        const script = document.createElement('script');
+                        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                        document.head.appendChild(script);
+                        await new Promise(r => script.onload = r);
+                    }
+                    const canvas = await html2canvas(preview, { scale: 3, backgroundColor: null });
+                    const imgData = canvas.toDataURL('image/png');
+                    quill.insertEmbed(idx, 'image', imgData);
+                    quill.insertText(idx + 1, ' ');
+                    quill.setSelection(idx + 2);
+                    showToast('LaTeX inserted as high-res image');
+                } catch(e) {
+                    console.error('HTML2Canvas Error', e);
+                    quill.insertText(idx, latex, { font: 'Times New Roman' });
+                    showToast('Image conversion failed, inserted text');
+                }
+            }
+        } else {
+            try {
+                quill.insertEmbed(idx, 'formula', latex);
+                quill.insertText(idx + 1, ' ');
+                quill.setSelection(idx + 2);
+                showToast('LaTeX inserted as interactive math');
+            } catch (e) {
+                quill.insertText(idx, latex, { font: 'Times New Roman' });
+                showToast('Inserted as Times New Roman text');
+            }
         }
 
         input.value = '';
-        const preview = document.getElementById('latex-preview');
-        if (preview) preview.innerHTML = '';
+        const previewEl = document.getElementById('latex-preview');
+        if (previewEl) previewEl.innerHTML = '';
         document.getElementById('latex-dialog')?.classList.remove('active');
         document.getElementById('latex-dialog').style.display = 'none';
     }
@@ -5066,6 +5118,72 @@
                 preview.innerHTML = '<span style="color:red; font-size:0.8rem;">...</span>';
             }
         }
+    }
+
+    function previewInlineLatex(latex) {
+        const preview = document.getElementById('inline-latex-preview');
+        if (!latex.trim()) {
+            preview.innerHTML = '';
+            return;
+        }
+        if (typeof katex !== 'undefined') {
+            try {
+                preview.innerHTML = katex.renderToString(latex, { throwOnError: false, displayMode: false });
+            } catch (e) {
+                preview.innerHTML = '<span style="color:red; font-size:0.8rem;">...</span>';
+            }
+        }
+    }
+
+    async function insertInlineLatex(type = 'embed') {
+        const input = document.getElementById('inline-latex-input');
+        if (!input || !quill) return;
+        const latex = input.value.trim();
+        if (!latex) { showToast('Enter a LaTeX expression'); return; }
+        const range = quill.getSelection(true);
+        const idx = range ? range.index : quill.getLength();
+
+        if (type === 'text') {
+            quill.insertText(idx, latex, { font: 'Times New Roman' });
+            quill.setSelection(idx + latex.length);
+            showToast('LaTeX inserted as Times New Roman text');
+        } else if (type === 'image') {
+            const preview = document.getElementById('inline-latex-preview');
+            if (preview) {
+                try {
+                    if (typeof html2canvas === 'undefined') {
+                        const script = document.createElement('script');
+                        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                        document.head.appendChild(script);
+                        await new Promise(r => script.onload = r);
+                    }
+                    const canvas = await html2canvas(preview, { scale: 3, backgroundColor: null });
+                    const imgData = canvas.toDataURL('image/png');
+                    quill.insertEmbed(idx, 'image', imgData);
+                    quill.insertText(idx + 1, ' ');
+                    quill.setSelection(idx + 2);
+                    showToast('LaTeX inserted as high-res image');
+                } catch(e) {
+                    console.error('HTML2Canvas Error', e);
+                    quill.insertText(idx, latex, { font: 'Times New Roman' });
+                    showToast('Image conversion failed, inserted text');
+                }
+            }
+        } else {
+            try {
+                quill.insertEmbed(idx, 'formula', latex);
+                quill.insertText(idx + 1, ' ');
+                quill.setSelection(idx + 2);
+                showToast('LaTeX inserted as interactive math');
+            } catch (e) {
+                quill.insertText(idx, latex, { font: 'Times New Roman' });
+                showToast('Inserted as Times New Roman text');
+            }
+        }
+
+        input.value = '';
+        const previewEl = document.getElementById('inline-latex-preview');
+        if (previewEl) previewEl.innerHTML = '';
     }
 
     function toggleTablePicker() {
