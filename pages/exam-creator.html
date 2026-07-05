@@ -224,7 +224,7 @@
             background-color: #f3f4f6;
             color: #111827;
         }
-        
+
         .stb-select:focus {
             outline: none;
             background-color: #e5e7eb;
@@ -2123,25 +2123,28 @@
     </div>
 </div>
 
-<div class="custom-modal-overlay" id="tableDesignerModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-    <div class="custom-modal" style="width: 95%; max-width: 900px; max-height:80vh; background:#fff; border-radius:8px; display:flex; flex-direction:column; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow:hidden;">
+<div class="custom-modal-overlay" id="tableDesignerModalOverlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+    <div class="custom-modal"
+        style="width: 95%; max-width: 900px; max-height:80vh; background:#fff; border-radius:8px; display:flex; flex-direction:column; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow:hidden;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <div style="display:flex; align-items:center; gap:16px;">
-                <h3 style="margin:0; font-family:'Montserrat', sans-serif; font-weight:700; color:#333;">Table Designer</h3>
-                <div style="position:relative;" id="tdm-gallery-container">
-                    <button onclick="tdmToggleGallery()" style="padding:6px 12px; border-radius:4px; border:1px solid #ddd; font-family:'Montserrat', sans-serif; font-size:0.85rem; background:#fff; cursor:pointer; display:flex; align-items:center; gap:8px;">
-                        Table Styles <i class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
-                    </button>
-                    <div id="tdm-gallery-panel" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:660px; max-width:90vw; max-height:350px; overflow-y:auto; background:#fff; border:1px solid #ccc; box-shadow:0 4px 12px rgba(0,0,0,0.15); border-radius:4px; z-index:2000; padding:16px; flex-direction:column; gap:20px; text-align:left;">
-                        <!-- JS fills this gallery -->
-                    </div>
-                </div>
+                <h3 style="margin:0; font-family:'Montserrat', sans-serif; font-weight:700; color:#333;">Table Designer
+                </h3>
+                <select id="tdm-template-select" onchange="tdmApplyTemplate(this.value)"
+                    style="padding:4px 8px; border-radius:4px; border:1px solid #ddd; font-family:'Montserrat', sans-serif; font-size:0.85rem;">
+                    <option value="default">Template 1 (Academic Default - Times New Roman)</option>
+                </select>
             </div>
-            <button onclick="closeTableDesigner()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999;">&times;</button>
+            <button onclick="closeTableDesigner()"
+                style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999;">&times;</button>
         </div>
-        <div style="font-size:0.85rem; color:#666; margin-bottom:16px;">Click on any cell to edit its contents. <strong style="color:var(--primary)">Right-click</strong> a cell for Excel settings (Merge, Insert/Delete, Style).</div>
+        <div style="font-size:0.85rem; color:#666; margin-bottom:16px;">Click on any cell to edit its contents. <strong
+                style="color:var(--primary)">Right-click</strong> a cell for Excel settings (Merge, Insert/Delete,
+            Style).</div>
         <div style="flex-grow:1; overflow:auto; border:1px solid #ddd; background:#ffffff; padding:16px;">
-            <table id="designer-table" style="width:100%; border-collapse:collapse; background:#ffffff; font-family:'Times New Roman', Times, serif;">
+            <table id="designer-table"
+                style="width:100%; border-collapse:collapse; background:#ffffff; font-family:'Times New Roman', Times, serif;">
             </table>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
@@ -2149,8 +2152,9 @@
             <button class="btn btn-primary" onclick="insertDesignedTable()">Insert Table</button>
         </div>
     </div>
-    
-    <div id="tdm-context-menu" style="display:none; position:absolute; z-index:2000; background:#fff; border:1px solid #ccc; box-shadow:0 4px 12px rgba(0,0,0,0.15); border-radius:4px; padding:4px 0; width:180px; font-family:'Montserrat', sans-serif; font-size:0.85rem; color:#333;">
+
+    <div id="tdm-context-menu"
+        style="display:none; position:absolute; z-index:2000; background:#fff; border:1px solid #ccc; box-shadow:0 4px 12px rgba(0,0,0,0.15); border-radius:4px; padding:4px 0; width:180px; font-family:'Montserrat', sans-serif; font-size:0.85rem; color:#333;">
         <div class="ctx-item" onclick="tdmAction('insertRowAbove')">Insert Row Above</div>
         <div class="ctx-item" onclick="tdmAction('insertRowBelow')">Insert Row Below</div>
         <div class="ctx-item" onclick="tdmAction('insertColLeft')">Insert Col Left</div>
@@ -2164,55 +2168,95 @@
         <div class="ctx-item" onclick="tdmAction('unmerge')">Unmerge</div>
         <div style="height:1px; background:#eee; margin:4px 0;"></div>
         <div class="ctx-item" style="display:flex; justify-content:space-between; align-items:center;">
-            Bg Color <input type="color" id="tdm-bg-color" onchange="tdmAction('bgColor', this.value)" style="width:24px; height:24px; padding:0; border:none; cursor:pointer;">
+            Bg Color <input type="color" id="tdm-bg-color" onchange="tdmAction('bgColor', this.value)"
+                style="width:24px; height:24px; padding:0; border:none; cursor:pointer;">
         </div>
         <div class="ctx-item" style="display:flex; justify-content:space-around;">
-            <i class="fas fa-align-left" style="cursor:pointer;" title="Align Left" onclick="tdmAction('alignLeft')"></i>
-            <i class="fas fa-align-center" style="cursor:pointer;" title="Align Center" onclick="tdmAction('alignCenter')"></i>
-            <i class="fas fa-align-right" style="cursor:pointer;" title="Align Right" onclick="tdmAction('alignRight')"></i>
+            <i class="fas fa-align-left" style="cursor:pointer;" title="Align Left"
+                onclick="tdmAction('alignLeft')"></i>
+            <i class="fas fa-align-center" style="cursor:pointer;" title="Align Center"
+                onclick="tdmAction('alignCenter')"></i>
+            <i class="fas fa-align-right" style="cursor:pointer;" title="Align Right"
+                onclick="tdmAction('alignRight')"></i>
         </div>
     </div>
 </div>
 <style>
-.ctx-item { padding: 8px 12px; cursor: pointer; transition: background 0.1s; }
-.ctx-item:hover { background: #f0f0f0; }
+    .ctx-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: background 0.1s;
+    }
+
+    .ctx-item:hover {
+        background: #f0f0f0;
+    }
 </style>
 
 <div class="custom-modal-overlay" id="drawingModalOverlay">
-    <div class="custom-modal" style="width: 95%; max-width: 800px; display:flex; flex-direction:column; align-items:center; padding: 24px;">
-        <h3 style="margin-top:0; font-family:'Montserrat', sans-serif; font-weight:700; align-self: flex-start; color:#333;">Drawing Canvas</h3>
-        <p style="color:var(--text-secondary); margin-bottom: 1rem; align-self: flex-start; font-family:'Montserrat', sans-serif; font-size: 0.9rem;">Draw or insert shapes directly into the editor.</p>
-        
-        <div style="display:flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; width: 100%; align-items:center; background:#fff; padding:10px 14px; border-radius:6px; border:1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-            <button class="btn btn-ghost" onclick="setDrawMode('pen')" id="drawBtnPen" style="height:32px; padding:0 12px; border-color:var(--primary); color:var(--primary); font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600;"><i class="fas fa-pen"></i> Pen</button>
-            <button class="btn btn-ghost" onclick="setDrawMode('highlighter')" id="drawBtnHighlighter" style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i class="fas fa-highlighter"></i> Highlighter</button>
-            <button class="btn btn-ghost" onclick="setDrawMode('eraser')" id="drawBtnEraser" style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i class="fas fa-eraser"></i> Eraser</button>
-            <button class="btn btn-ghost" onclick="setDrawMode('autoShape')" id="drawBtnAutoShape" style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i class="fas fa-magic"></i> Auto Shape</button>
-            
+    <div class="custom-modal"
+        style="width: 95%; max-width: 800px; display:flex; flex-direction:column; align-items:center; padding: 24px;">
+        <h3
+            style="margin-top:0; font-family:'Montserrat', sans-serif; font-weight:700; align-self: flex-start; color:#333;">
+            Drawing Canvas</h3>
+        <p
+            style="color:var(--text-secondary); margin-bottom: 1rem; align-self: flex-start; font-family:'Montserrat', sans-serif; font-size: 0.9rem;">
+            Draw or insert shapes directly into the editor.</p>
+
+        <div
+            style="display:flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; width: 100%; align-items:center; background:#fff; padding:10px 14px; border-radius:6px; border:1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+            <button class="btn btn-ghost" onclick="setDrawMode('pen')" id="drawBtnPen"
+                style="height:32px; padding:0 12px; border-color:var(--primary); color:var(--primary); font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600;"><i
+                    class="fas fa-pen"></i> Pen</button>
+            <button class="btn btn-ghost" onclick="setDrawMode('highlighter')" id="drawBtnHighlighter"
+                style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i
+                    class="fas fa-highlighter"></i> Highlighter</button>
+            <button class="btn btn-ghost" onclick="setDrawMode('eraser')" id="drawBtnEraser"
+                style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i
+                    class="fas fa-eraser"></i> Eraser</button>
+            <button class="btn btn-ghost" onclick="setDrawMode('autoShape')" id="drawBtnAutoShape"
+                style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i
+                    class="fas fa-magic"></i> Auto Shape</button>
+
             <div style="width:1px; height:20px; background:#e5e7eb; margin:0 4px;"></div>
-            
-            <button class="btn btn-ghost" onclick="setDrawMode('rectangle')" id="drawBtnRectangle" style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i class="far fa-square"></i> Rectangle</button>
-            <button class="btn btn-ghost" onclick="setDrawMode('circle')" id="drawBtnCircle" style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i class="far fa-circle"></i> Circle</button>
-            <button class="btn btn-ghost" onclick="setDrawMode('arrow')" id="drawBtnArrow" style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i class="fas fa-arrow-right"></i> Arrow</button>
-            
+
+            <button class="btn btn-ghost" onclick="setDrawMode('rectangle')" id="drawBtnRectangle"
+                style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i
+                    class="far fa-square"></i> Rectangle</button>
+            <button class="btn btn-ghost" onclick="setDrawMode('circle')" id="drawBtnCircle"
+                style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i
+                    class="far fa-circle"></i> Circle</button>
+            <button class="btn btn-ghost" onclick="setDrawMode('arrow')" id="drawBtnArrow"
+                style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666;"><i
+                    class="fas fa-arrow-right"></i> Arrow</button>
+
             <div style="flex-grow:1; min-width: 10px;"></div>
-            
-            <input type="color" id="drawColorPicker" value="#d96c33" style="height:28px; border:none; border-radius:4px; cursor:pointer; width:36px; padding:0; background:transparent;">
-            <input type="range" id="drawSizePicker" min="1" max="20" value="3" style="width: 80px; accent-color: var(--primary);">
-            
+
+            <input type="color" id="drawColorPicker" value="#d96c33"
+                style="height:28px; border:none; border-radius:4px; cursor:pointer; width:36px; padding:0; background:transparent;">
+            <input type="range" id="drawSizePicker" min="1" max="20" value="3"
+                style="width: 80px; accent-color: var(--primary);">
+
             <div style="width:1px; height:20px; background:#e5e7eb; margin:0 4px;"></div>
-            
-            <button class="btn btn-ghost" onclick="undoCanvas()" style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666; border:none;" title="Undo (Ctrl+Z)"><i class="fas fa-undo"></i> Undo</button>
-            <button class="btn btn-ghost" onclick="clearCanvas()" style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#ef4444; border:none;"><i class="fas fa-trash"></i> Clear</button>
+
+            <button class="btn btn-ghost" onclick="undoCanvas()"
+                style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#666; border:none;"
+                title="Undo (Ctrl+Z)"><i class="fas fa-undo"></i> Undo</button>
+            <button class="btn btn-ghost" onclick="clearCanvas()"
+                style="height:32px; padding:0 12px; font-family:'Montserrat', sans-serif; font-size: 0.85rem; font-weight:600; color:#ef4444; border:none;"><i
+                    class="fas fa-trash"></i> Clear</button>
         </div>
-        
+
         <div style="width:100%; overflow:hidden; border-radius:6px; border:1px solid #e5e7eb; background:#fff;">
-            <canvas id="drawingCanvas" width="750" height="400" style="background:#fff; cursor:crosshair; touch-action:none; display:block; max-width:100%; height:auto;"></canvas>
+            <canvas id="drawingCanvas" width="750" height="400"
+                style="background:#fff; cursor:crosshair; touch-action:none; display:block; max-width:100%; height:auto;"></canvas>
         </div>
-        
+
         <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px; width:100%;">
-            <button class="btn btn-ghost" onclick="closeDrawingModal()" style="font-family:'Montserrat', sans-serif; font-weight:600;">Cancel</button>
-            <button class="btn btn-run" onclick="insertDrawing()" style="font-family:'Montserrat', sans-serif; font-weight:700;">Insert Drawing</button>
+            <button class="btn btn-ghost" onclick="closeDrawingModal()"
+                style="font-family:'Montserrat', sans-serif; font-weight:600;">Cancel</button>
+            <button class="btn btn-run" onclick="insertDrawing()"
+                style="font-family:'Montserrat', sans-serif; font-weight:700;">Insert Drawing</button>
         </div>
     </div>
 </div>
@@ -3175,9 +3219,9 @@
                                             <option value="18px">Large</option>
                                             <option value="24px">Huge</option>
                                         </select>
-                                        
+
                                         <div class="stb-break"></div>
-                                        
+
                                         <!-- Row 2: Typography -->
                                         <select class="stb-select" style="width:110px;"
                                             onchange="applySmartFormat('heading',this.value); this.value=''">
@@ -3215,9 +3259,9 @@
                                         <button class="stb-icon-btn" title="Clear Formatting"
                                             onclick="quill.removeFormat(quill.getSelection().index, quill.getSelection().length)"><i
                                                 class="fas fa-eraser"></i></button>
-                                                
+
                                         <div class="stb-break"></div>
-                                        
+
                                         <!-- Row 3: Alignment -->
                                         <button class="stb-icon-btn" title="Left Align"
                                             onclick="quill.format('align', '')"><i
@@ -3243,21 +3287,21 @@
                                     <!-- DRAW PANE -->
                                     <!-- DRAW PANE -->
                                     <div class="stb-pane" id="stb-pane-draw">
-                                        <button class="stb-icon-btn" title="Pen"
-                                            onclick="openDrawingModal('pen')"><i
+                                        <button class="stb-icon-btn" title="Pen" onclick="openDrawingModal('pen')"><i
                                                 class="fas fa-pen"></i></button>
                                         <button class="stb-icon-btn" title="Highlighter"
                                             onclick="openDrawingModal('highlighter')"><i
                                                 class="fas fa-highlighter"></i></button>
                                         <button class="stb-icon-btn" title="Eraser"
-                                            onclick="openDrawingModal('eraser')"><i
-                                                class="fas fa-eraser"></i></button>
+                                            onclick="openDrawingModal('eraser')"><i class="fas fa-eraser"></i></button>
                                         <div class="stb-divider"></div>
-                                        <button class="stb-icon-btn" title="Rectangle" onclick="openDrawingModal('rectangle')"><i
+                                        <button class="stb-icon-btn" title="Rectangle"
+                                            onclick="openDrawingModal('rectangle')"><i
                                                 class="far fa-square"></i></button>
-                                        <button class="stb-icon-btn" title="Circle" onclick="openDrawingModal('circle')"><i
-                                                class="far fa-circle"></i></button>
-                                        <button class="stb-icon-btn" title="Arrow" onclick="openDrawingModal('arrow')"><i
+                                        <button class="stb-icon-btn" title="Circle"
+                                            onclick="openDrawingModal('circle')"><i class="far fa-circle"></i></button>
+                                        <button class="stb-icon-btn" title="Arrow"
+                                            onclick="openDrawingModal('arrow')"><i
                                                 class="fas fa-arrow-right"></i></button>
                                     </div>
 
@@ -3267,8 +3311,7 @@
                                             onclick="showLatexDialog()"><i class="fas fa-square-root-alt"></i></button>
                                         <div class="stb-divider"></div>
                                         <button class="stb-icon-btn" title="Greek Letters"
-                                            onclick="toggleMathSymbols()"><i
-                                                class="fas fa-language"></i></button>
+                                            onclick="toggleMathSymbols()"><i class="fas fa-language"></i></button>
                                         <button class="stb-icon-btn" title="Square Root"
                                             onclick="insertTextAtCursor('√')"><i
                                                 class="fas fa-superscript"></i></button>
@@ -3398,7 +3441,8 @@
                                 <div id="latex-dialog"
                                     style="display:none; background:#fffcf8; border:1px solid #ddd; border-top:none; padding:10px 14px; gap:8px; align-items:center; flex-wrap:wrap;">
                                     <input id="latex-input" placeholder="e.g. \\frac{a}{b} or x^2 + y^2"
-                                        style="height:26px; border:1px solid #ddd; border-radius:2px; padding:0 8px; font-size:0.85rem; width:260px; font-family:'JetBrains Mono', monospace;" oninput="previewLatex(this.value)">
+                                        style="height:26px; border:1px solid #ddd; border-radius:2px; padding:0 8px; font-size:0.85rem; width:260px; font-family:'JetBrains Mono', monospace;"
+                                        oninput="previewLatex(this.value)">
                                     <div id="latex-preview"
                                         style="min-width:80px; font-size:1rem; padding:4px 8px; background:#fff; border:1px solid #eee; border-radius:2px;">
                                     </div>
@@ -3409,20 +3453,28 @@
                                         style="height:26px; font-size:0.75rem; background:#fff; border:1px solid #ddd; cursor:pointer;"
                                         onclick="document.getElementById('latex-dialog').style.display='none'">✕</button>
                                 </div>
-                                
+
                                 <div id="math-symbols-panel"
                                     style="display:none; background:#fffcf8; border:1px solid #ddd; border-top:none; padding:12px 16px; flex-direction:column; gap:12px; max-height:220px; overflow-y:auto;">
                                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                                        <div style="font-size:0.75rem; font-weight:700; color:#555; font-family:'Montserrat', sans-serif;">GREEK & MATH SYMBOLS</div>
-                                        <button style="height:24px; width:24px; font-size:0.75rem; background:#fff; border:1px solid #ddd; cursor:pointer;" onclick="document.getElementById('math-symbols-panel').style.display='none'">✕</button>
+                                        <div
+                                            style="font-size:0.75rem; font-weight:700; color:#555; font-family:'Montserrat', sans-serif;">
+                                            GREEK & MATH SYMBOLS</div>
+                                        <button
+                                            style="height:24px; width:24px; font-size:0.75rem; background:#fff; border:1px solid #ddd; cursor:pointer;"
+                                            onclick="document.getElementById('math-symbols-panel').style.display='none'">✕</button>
                                     </div>
                                     <div id="math-symbols-grid" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
                                 </div>
-                                
+
                                 <div id="table-picker-panel"
                                     style="display:none; background:#fffcf8; border:1px solid #ddd; border-top:none; padding:12px; flex-direction:column; gap:8px; align-items:center;">
-                                    <div id="table-picker-label" style="font-size:0.85rem; font-weight:700; color:var(--primary); font-family:'Montserrat', sans-serif;">Insert Table</div>
-                                    <div id="table-picker-grid" style="display:grid; grid-template-columns:repeat(10, 18px); grid-template-rows:repeat(8, 18px); gap:2px;" onmouseleave="resetTablePicker()">
+                                    <div id="table-picker-label"
+                                        style="font-size:0.85rem; font-weight:700; color:var(--primary); font-family:'Montserrat', sans-serif;">
+                                        Insert Table</div>
+                                    <div id="table-picker-grid"
+                                        style="display:grid; grid-template-columns:repeat(10, 18px); grid-template-rows:repeat(8, 18px); gap:2px;"
+                                        onmouseleave="resetTablePicker()">
                                     </div>
                                 </div>
 
@@ -4945,9 +4997,9 @@
             const findReplace = document.getElementById('find-replace-panel');
             if (findReplace) findReplace.style.display = 'none';
             if (document.getElementById('table-picker-panel')) document.getElementById('table-picker-panel').style.display = 'none';
-            
+
             panel.style.display = 'flex';
-            
+
             const grid = document.getElementById('math-symbols-grid');
             if (grid.innerHTML.trim() === '') {
                 const syms = "α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω Γ Δ Θ Λ Ξ Π Σ Φ Ψ Ω ± × ÷ √ ∞ ∫ ≈ ≠ ≤ ≥ ∩ ∪ ⊂ ⊃ ∈ ∉ ∇ ∂ ∑ ∏ ° ∴ ∵ ∡ ≅ ≡".split(" ");
@@ -4980,7 +5032,7 @@
         if (!latex) { showToast('Enter a LaTeX expression'); return; }
         const range = quill.getSelection(true);
         const idx = range ? range.index : quill.getLength();
-        
+
         try {
             quill.insertEmbed(idx, 'formula', latex);
             quill.insertText(idx + 1, ' ');
@@ -4990,14 +5042,14 @@
             quill.insertText(idx, `[math]${latex}[/math]`);
             showToast('Inserted as text');
         }
-        
+
         input.value = '';
         const preview = document.getElementById('latex-preview');
         if (preview) preview.innerHTML = '';
         document.getElementById('latex-dialog')?.classList.remove('active');
         document.getElementById('latex-dialog').style.display = 'none';
     }
-    
+
     function previewLatex(latex) {
         const preview = document.getElementById('latex-preview');
         if (!latex.trim()) {
@@ -5022,9 +5074,9 @@
             if (document.getElementById('find-replace-panel')) document.getElementById('find-replace-panel').style.display = 'none';
             if (document.getElementById('emoji-picker-panel')) document.getElementById('emoji-picker-panel').style.display = 'none';
             if (document.getElementById('math-symbols-panel')) document.getElementById('math-symbols-panel').style.display = 'none';
-            
+
             panel.style.display = 'flex';
-            
+
             const grid = document.getElementById('table-picker-grid');
             if (grid.innerHTML.trim() === '') {
                 let html = '';
@@ -5041,7 +5093,7 @@
             resetTablePicker();
         }
     }
-    
+
     function hoverTablePicker(rows, cols) {
         document.getElementById('table-picker-label').innerText = `${cols}x${rows} Table`;
         const cells = document.querySelectorAll('.tp-cell');
@@ -5069,16 +5121,17 @@
 
     function insertTableGrid(rows, cols) {
         document.getElementById('table-picker-panel').style.display = 'none';
-        
-        const theadHtml = `<tr>` + Array(cols).fill(0).map((_, i) => `<th contenteditable="true" style="border:1px solid #ddd;padding:8px;background:#ffffff;text-align:left;min-width:60px;outline:none;">Header ${i+1}</th>`).join('') + `</tr>`;
-        const tbodyHtml = Array(rows).fill(0).map((_, r) => 
-            `<tr style="background:#ffffff">` + 
-            Array(cols).fill(0).map(() => `<td contenteditable="true" style="border:1px solid #ddd;padding:8px;outline:none;">Data</td>`).join('') + 
+
+        const theadHtml = `<tr>` + Array(cols).fill(0).map((_, i) => `<th contenteditable="true" style="border:1px solid #ddd;padding:8px;background:#ffffff;text-align:left;min-width:60px;outline:none;">Header ${i + 1}</th>`).join('') + `</tr>`;
+        const tbodyHtml = Array(rows).fill(0).map((_, r) =>
+            `<tr style="background:#ffffff">` +
+            Array(cols).fill(0).map(() => `<td contenteditable="true" style="border:1px solid #ddd;padding:8px;outline:none;">Data</td>`).join('') +
             `</tr>`
         ).join('');
-        
+
         document.getElementById('designer-table').innerHTML = `<thead>${theadHtml}</thead><tbody>${tbodyHtml}</tbody>`;
         if (typeof tdmPopulateTemplates === 'function') tdmPopulateTemplates();
+        if (document.getElementById('tdm-template-select')) document.getElementById('tdm-template-select').value = 'default';
         document.getElementById('tableDesignerModalOverlay').style.display = 'flex';
     }
 
@@ -5088,7 +5141,7 @@
 
     async function insertDesignedTable() {
         const tableElement = document.getElementById('designer-table');
-        
+
         try {
             if (typeof html2canvas === 'undefined') {
                 showToast('Loading image engine...');
@@ -5099,17 +5152,17 @@
                     document.head.appendChild(script);
                 });
             }
-            
+
             const cells = tableElement.querySelectorAll('td, th');
             cells.forEach(c => c.style.outline = 'none');
-            
+
             const canvas = await html2canvas(tableElement, {
                 backgroundColor: '#ffffff',
                 scale: 2 // Crisp resolution
             });
-            
+
             const dataUrl = canvas.toDataURL('image/png');
-            
+
             if (quill) {
                 const range = quill.getSelection(true);
                 const idx = range ? range.index : quill.getLength();
@@ -5117,7 +5170,7 @@
                 quill.insertText(idx + 1, '\n');
                 quill.setSelection(idx + 2);
             }
-            
+
             closeTableDesigner();
             showToast('Table inserted as image');
         } catch (err) {
@@ -5126,10 +5179,10 @@
             closeTableDesigner();
         }
     }
-    
+
     let tdmActiveCell = null;
 
-    document.addEventListener('contextmenu', function(e) {
+    document.addEventListener('contextmenu', function (e) {
         const table = document.getElementById('designer-table');
         if (table && table.contains(e.target) && (e.target.tagName === 'TD' || e.target.tagName === 'TH')) {
             e.preventDefault();
@@ -5144,15 +5197,10 @@
         }
     });
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         const ctxMenu = document.getElementById('tdm-context-menu');
         if (ctxMenu && !ctxMenu.contains(e.target) && e.target.tagName !== 'INPUT') {
             ctxMenu.style.display = 'none';
-        }
-        
-        const gallery = document.getElementById('tdm-gallery-panel');
-        if (gallery && !document.getElementById('tdm-gallery-container').contains(e.target)) {
-            gallery.style.display = 'none';
         }
     });
 
@@ -5162,7 +5210,7 @@
         const tbody = tr.parentElement;
         const rowIdx = Array.from(tbody.children).indexOf(tr);
         const colIdx = Array.from(tr.children).indexOf(tdmActiveCell);
-        
+
         if (action === 'insertRowAbove') {
             const newTr = tr.cloneNode(true);
             Array.from(newTr.children).forEach(c => { c.innerHTML = '<br>'; c.colSpan = 1; c.rowSpan = 1; c.style.backgroundColor = '#ffffff'; });
@@ -5221,13 +5269,8 @@
         } else if (action === 'alignRight') {
             tdmActiveCell.style.textAlign = 'right';
         }
-        
-        if (action !== 'bgColor') document.getElementById('tdm-context-menu').style.display = 'none';
-    }
 
-    function tdmToggleGallery() {
-        const panel = document.getElementById('tdm-gallery-panel');
-        panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+        if (action !== 'bgColor') document.getElementById('tdm-context-menu').style.display = 'none';
     }
 
     function tdmPopulateTemplates() {
@@ -5255,6 +5298,10 @@
                 tr1 = `<tr style="border-top:1px solid ${main}; border-bottom:1px solid ${main};"><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
                 tr2 = `<tr><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
                 tr3 = `<tr style="border-bottom:1px solid ${main};"><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
+            } else if (type === 'plain2') {
+                tr1 = `<tr style="border-top:3px double ${main}; border-bottom:1px solid ${main};"><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
+                tr2 = `<tr><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
+                tr3 = `<tr style="border-bottom:3px double ${main};"><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
             } else if (type === 'grid1') {
                 tr1 = `<tr style="background:${light};"><td style="border:1px solid ${main}"></td><td style="border:1px solid ${main}"></td><td style="border:1px solid ${main}"></td></tr>`;
                 tr2 = `<tr><td style="border:1px solid ${main}"></td><td style="border:1px solid ${main}"></td><td style="border:1px solid ${main}"></td></tr>`;
@@ -5267,10 +5314,26 @@
                 tr1 = `<tr style="background:${main};"><td style="border:1px solid #fff"></td><td style="border:1px solid #fff"></td><td style="border:1px solid #fff"></td></tr>`;
                 tr2 = `<tr style="background:${main};"><td style="border:1px solid #fff"></td><td style="border:1px solid #fff"></td><td style="border:1px solid #fff"></td></tr>`;
                 tr3 = `<tr style="background:${main};"><td style="border:1px solid #fff"></td><td style="border:1px solid #fff"></td><td style="border:1px solid #fff"></td></tr>`;
+            } else if (type === 'grid4') {
+                tr1 = `<tr style="background:${main};"><td style="border:1px solid #fff"></td><td style="border:1px solid #fff"></td><td style="border:1px solid #fff"></td></tr>`;
+                tr2 = `<tr><td style="background:${main}; border:1px solid #fff"></td><td style="border:1px solid ${light}"></td><td style="border:1px solid ${light}"></td></tr>`;
+                tr3 = `<tr><td style="background:${main}; border:1px solid #fff"></td><td style="border:1px solid ${light}"></td><td style="border:1px solid ${light}"></td></tr>`;
+            } else if (type === 'grid5') {
+                tr1 = `<tr style="border-top:2px solid ${main}; border-bottom:1px solid ${main}; background:${light}"><td style="border-right:1px solid ${main}; border-left:2px solid ${main}"></td><td style="border-right:1px solid ${main}"></td><td style="border-right:2px solid ${main}"></td></tr>`;
+                tr2 = `<tr><td style="border-right:1px solid ${main}; border-left:2px solid ${main}"></td><td style="border-right:1px solid ${main}"></td><td style="border-right:2px solid ${main}"></td></tr>`;
+                tr3 = `<tr style="border-bottom:2px solid ${main};"><td style="border-right:1px solid ${main}; border-left:2px solid ${main}"></td><td style="border-right:1px solid ${main}"></td><td style="border-right:2px solid ${main}"></td></tr>`;
             } else if (type === 'list1') {
                 tr1 = `<tr style="border-bottom:2px solid ${main};"><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
                 tr2 = `<tr><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
                 tr3 = `<tr style="background:${light};"><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
+            } else if (type === 'list2') {
+                tr1 = `<tr style="border-bottom:1px solid ${main};"><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
+                tr2 = `<tr><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
+                tr3 = `<tr style="background:#fafafa;"><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
+            } else if (type === 'list3') {
+                tr1 = `<tr style="background:${main};"><td style="border-right:1px solid ${main}"></td><td style="border-right:1px solid ${main}"></td><td></td></tr>`;
+                tr2 = `<tr style="background:${light};"><td style="border-right:1px solid ${light}"></td><td style="border-right:1px solid ${light}"></td><td></td></tr>`;
+                tr3 = `<tr><td style="border-right:1px solid #fff"></td><td style="border-right:1px solid #fff"></td><td></td></tr>`;
             }
 
             return `<table class="tdm-thumb" style="width:52px; height:40px; border-collapse:collapse; cursor:pointer; font-size:0; transition:transform 0.1s; box-shadow:0 0 0 1px transparent;" onclick="tdmApplyAdvancedTemplate('${clickArgs.join("','")}')" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 0 0 1px #ff9800'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 0 1px transparent'">
@@ -5278,18 +5341,23 @@
             </table>`;
         };
 
-        html += `<div><div style="font-weight:600; margin-bottom:8px; font-family:'Segoe UI', sans-serif;">Plain Tables</div><div style="display:flex; gap:8px; flex-wrap:wrap;">`;
+        html += `<div><div style="font-weight:600; margin-bottom:8px; font-family:'Segoe UI', sans-serif;">Plain Tables</div><div style="display:grid; grid-template-columns:repeat(10, 1fr); gap:8px;">`;
         colors.forEach(c => html += createThumb('plain', c.main, c.light, ['plain', c.main, c.light]));
+        colors.forEach(c => html += createThumb('plain2', c.main, c.light, ['plain2', c.main, c.light]));
         html += `</div></div>`;
 
         html += `<div><div style="font-weight:600; margin-bottom:8px; font-family:'Segoe UI', sans-serif;">Grid Tables</div><div style="display:grid; grid-template-columns:repeat(10, 1fr); gap:8px;">`;
         colors.forEach(c => html += createThumb('grid1', c.main, c.light, ['grid1', c.main, c.light]));
         colors.forEach(c => html += createThumb('grid2', c.main, c.light, ['grid2', c.main, c.light]));
         colors.forEach(c => html += createThumb('grid3', c.main, c.light, ['grid3', c.main, c.light]));
+        colors.forEach(c => html += createThumb('grid4', c.main, c.light, ['grid4', c.main, c.light]));
+        colors.forEach(c => html += createThumb('grid5', c.main, c.light, ['grid5', c.main, c.light]));
         html += `</div></div>`;
 
-        html += `<div><div style="font-weight:600; margin-bottom:8px; font-family:'Segoe UI', sans-serif;">List Tables</div><div style="display:flex; gap:8px; flex-wrap:wrap;">`;
+        html += `<div><div style="font-weight:600; margin-bottom:8px; font-family:'Segoe UI', sans-serif;">List Tables</div><div style="display:grid; grid-template-columns:repeat(10, 1fr); gap:8px;">`;
         colors.forEach(c => html += createThumb('list1', c.main, c.light, ['list1', c.main, c.light]));
+        colors.forEach(c => html += createThumb('list2', c.main, c.light, ['list2', c.main, c.light]));
+        colors.forEach(c => html += createThumb('list3', c.main, c.light, ['list3', c.main, c.light]));
         html += `</div></div>`;
 
         panel.innerHTML = html;
@@ -5320,6 +5388,10 @@
                 if (type === 'plain') {
                     if (rIdx === 0) c.style.borderTop = `1px solid ${main}`;
                     if (rIdx === 0 || rIdx === rows.length - 1) c.style.borderBottom = `1px solid ${main}`;
+                } else if (type === 'plain2') {
+                    if (rIdx === 0) c.style.borderTop = `3px double ${main}`;
+                    if (rIdx === 0) c.style.borderBottom = `1px solid ${main}`;
+                    if (rIdx === rows.length - 1) c.style.borderBottom = `3px double ${main}`;
                 } else if (type === 'grid1') {
                     c.style.border = `1px solid ${main}`;
                     if (rIdx === 0) {
@@ -5344,12 +5416,38 @@
                     if (main !== '#fff2cc' && main !== '#fde9d9' && main !== '#eaf1dd' && main !== '#dbeef3') {
                         c.style.color = '#fff';
                     }
+                } else if (type === 'grid4') {
+                    c.style.border = `1px solid ${light}`;
+                    if (rIdx === 0 || Array.from(tr.children).indexOf(c) === 0) {
+                        c.style.backgroundColor = main;
+                        if (main !== '#fff2cc' && main !== '#fde9d9' && main !== '#eaf1dd' && main !== '#dbeef3') c.style.color = '#fff';
+                        c.style.border = `1px solid #fff`;
+                        c.style.fontWeight = 'bold';
+                    }
+                } else if (type === 'grid5') {
+                    c.style.border = `1px solid ${main}`;
+                    if (rIdx === 0) c.style.backgroundColor = light;
+                    if (rIdx === 0) c.style.borderTop = `2px solid ${main}`;
+                    if (rIdx === rows.length - 1) c.style.borderBottom = `2px solid ${main}`;
+                    const colIdx = Array.from(tr.children).indexOf(c);
+                    if (colIdx === 0) c.style.borderLeft = `2px solid ${main}`;
+                    if (colIdx === tr.children.length - 1) c.style.borderRight = `2px solid ${main}`;
                 } else if (type === 'list1') {
                     if (rIdx === 0) {
                         c.style.borderBottom = `2px solid ${main}`;
                         c.style.fontWeight = 'bold';
                     }
                     else if (rIdx % 2 === 0) c.style.backgroundColor = light;
+                } else if (type === 'list2') {
+                    if (rIdx === 0) c.style.borderBottom = `1px solid ${main}`;
+                    if (rIdx % 2 !== 0 && rIdx !== 0) c.style.backgroundColor = '#fafafa';
+                } else if (type === 'list3') {
+                    if (rIdx === 0) {
+                        c.style.backgroundColor = main;
+                        if (main !== '#fff2cc' && main !== '#fde9d9' && main !== '#eaf1dd' && main !== '#dbeef3') c.style.color = '#fff';
+                        c.style.fontWeight = 'bold';
+                    }
+                    else if (rIdx % 2 !== 0) c.style.backgroundColor = light;
                 }
             });
         });
@@ -5375,12 +5473,12 @@
                 let rows = parseInt(prompt("Enter number of rows:", "3")) || 3;
                 let cols = parseInt(prompt("Enter number of columns:", "3")) || 3;
                 let thead = '<tr>';
-                for(let c=0; c<cols; c++) thead += `<th style="border:1px solid #ddd;padding:8px;background:#f9f9f9;text-align:left;">Col ${c+1}</th>`;
+                for (let c = 0; c < cols; c++) thead += `<th style="border:1px solid #ddd;padding:8px;background:#f9f9f9;text-align:left;">Col ${c + 1}</th>`;
                 thead += '</tr>';
                 let tbody = '';
-                for(let r=0; r<rows; r++) {
-                    tbody += `<tr style="${r%2 !== 0 ? 'background:#fafafa' : ''}">`;
-                    for(let c=0; c<cols; c++) tbody += `<td style="border:1px solid #ddd;padding:8px;">Data</td>`;
+                for (let r = 0; r < rows; r++) {
+                    tbody += `<tr style="${r % 2 !== 0 ? 'background:#fafafa' : ''}">`;
+                    for (let c = 0; c < cols; c++) tbody += `<td style="border:1px solid #ddd;padding:8px;">Data</td>`;
                     tbody += '</tr>';
                 }
                 html = `<table style="width:100%;border-collapse:collapse;margin:12px 0;">${thead}${tbody}</table><p><br></p>`;
@@ -8430,34 +8528,34 @@
 
     function recognizeShape(points) {
         if (points.length < 10) return null;
-        
+
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
         let strokeLength = 0;
-        
+
         for (let i = 0; i < points.length; i++) {
             const p = points[i];
             if (p.x < minX) minX = p.x;
             if (p.x > maxX) maxX = p.x;
             if (p.y < minY) minY = p.y;
             if (p.y > maxY) maxY = p.y;
-            if (i > 0) strokeLength += Math.hypot(p.x - points[i-1].x, p.y - points[i-1].y);
+            if (i > 0) strokeLength += Math.hypot(p.x - points[i - 1].x, p.y - points[i - 1].y);
         }
-        
+
         const width = maxX - minX;
         const height = maxY - minY;
         const diag = Math.hypot(width, height);
         if (diag < 10) return null;
-        
+
         const pStart = points[0];
         const pEnd = points[points.length - 1];
         const endDist = Math.hypot(pEnd.x - pStart.x, pEnd.y - pStart.y);
-        
+
         const isClosed = endDist < diag * 0.3;
-        
+
         if (isClosed) {
             const cx = minX + width / 2;
             const cy = minY + height / 2;
-            
+
             let area = 0;
             for (let i = 0; i < points.length; i++) {
                 const p1 = points[i];
@@ -8466,24 +8564,24 @@
             }
             area = Math.abs(area / 2);
             const areaRatio = area / (width * height);
-            
+
             let sumDist = 0;
             for (const p of points) sumDist += Math.hypot(p.x - cx, p.y - cy);
             const avgDist = sumDist / points.length;
             let varDist = 0;
             for (const p of points) varDist += Math.pow(Math.hypot(p.x - cx, p.y - cy) - avgDist, 2);
             const cv = Math.sqrt(varDist / points.length) / avgDist;
-            
+
             if (cv < 0.15) {
-                return { type: 'circle', cx, cy, rx: width/2, ry: height/2 };
+                return { type: 'circle', cx, cy, rx: width / 2, ry: height / 2 };
             } else if (areaRatio > 0.65) {
                 return { type: 'rectangle', x: minX, y: minY, w: width, h: height };
             } else {
                 let pt1 = points[0];
                 let pt2 = points[0], maxD = 0;
-                for(let p of points) { let d = Math.hypot(p.x-pt1.x, p.y-pt1.y); if(d>maxD){maxD=d; pt2=p;} }
+                for (let p of points) { let d = Math.hypot(p.x - pt1.x, p.y - pt1.y); if (d > maxD) { maxD = d; pt2 = p; } }
                 let pt3 = points[0]; maxD = 0;
-                for(let p of points) { let d = Math.hypot(p.x-pt1.x, p.y-pt1.y) + Math.hypot(p.x-pt2.x, p.y-pt2.y); if(d>maxD){maxD=d; pt3=p;} }
+                for (let p of points) { let d = Math.hypot(p.x - pt1.x, p.y - pt1.y) + Math.hypot(p.x - pt2.x, p.y - pt2.y); if (d > maxD) { maxD = d; pt3 = p; } }
                 return { type: 'triangle', p1: pt1, p2: pt2, p3: pt3 };
             }
         } else {
@@ -8501,21 +8599,21 @@
             ctx = canvas.getContext('2d');
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            
+
             canvas.addEventListener('mousedown', startDrawing);
             canvas.addEventListener('mousemove', draw);
             canvas.addEventListener('mouseup', stopDrawing);
             canvas.addEventListener('mouseout', stopDrawing);
-            
+
             // Clear canvas to white background
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             canvasHistory = [];
             canvasHistoryStep = -1;
             saveCanvasState();
-            
+
             if (!window.undoListenerAttached) {
-                document.addEventListener('keydown', function(e) {
+                document.addEventListener('keydown', function (e) {
                     const overlay = document.getElementById('drawingModalOverlay');
                     if (overlay && overlay.style.display === 'flex') {
                         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
@@ -8561,7 +8659,7 @@
             activeBtn.style.borderColor = 'var(--primary)';
             activeBtn.style.color = 'var(--primary)';
         }
-        
+
         const canvasEl = document.getElementById('drawingCanvas');
         if (canvasEl) {
             if (mode === 'pen' || mode === 'highlighter') {
@@ -8602,19 +8700,19 @@
         const pos = getCursorPos(e);
         const color = document.getElementById('drawColorPicker').value;
         const size = document.getElementById('drawSizePicker').value;
-        
+
         if (currentDrawMode === 'pen' || currentDrawMode === 'highlighter' || currentDrawMode === 'eraser' || currentDrawMode === 'autoShape') {
             if (currentDrawMode === 'autoShape') strokePoints.push(pos);
-            
+
             const midPoint = {
                 x: lastPoint.x + (pos.x - lastPoint.x) / 2,
                 y: lastPoint.y + (pos.y - lastPoint.y) / 2
             };
-            
+
             ctx.beginPath();
             ctx.moveTo(lastMid.x, lastMid.y);
             ctx.quadraticCurveTo(lastPoint.x, lastPoint.y, midPoint.x, midPoint.y);
-            
+
             if (currentDrawMode === 'eraser') {
                 ctx.strokeStyle = '#ffffff';
                 ctx.lineWidth = size * 3;
@@ -8628,7 +8726,7 @@
                 ctx.lineWidth = size;
                 ctx.globalAlpha = 1.0;
             }
-            
+
             ctx.stroke();
             lastPoint = pos;
             lastMid = midPoint;
@@ -8639,7 +8737,7 @@
             ctx.strokeStyle = color;
             ctx.lineWidth = size;
             ctx.beginPath();
-            
+
             if (currentDrawMode === 'rectangle') {
                 ctx.rect(startX, startY, pos.x - startX, pos.y - startY);
             } else if (currentDrawMode === 'circle') {
@@ -8664,7 +8762,7 @@
         if (!isDrawing) return;
         isDrawing = false;
         ctx.globalAlpha = 1.0;
-        
+
         if (currentDrawMode === 'autoShape' && strokePoints.length > 10) {
             const shape = recognizeShape(strokePoints);
             if (shape) {
@@ -8674,7 +8772,7 @@
                 ctx.strokeStyle = color;
                 ctx.lineWidth = size;
                 ctx.beginPath();
-                
+
                 if (shape.type === 'circle') {
                     ctx.ellipse(shape.cx, shape.cy, shape.rx, shape.ry, 0, 0, 2 * Math.PI);
                 } else if (shape.type === 'rectangle') {
@@ -8701,7 +8799,7 @@
                 ctx.stroke();
             }
         }
-        
+
         saveCanvasState();
     }
 
