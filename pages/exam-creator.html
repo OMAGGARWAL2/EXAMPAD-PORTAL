@@ -3366,6 +3366,20 @@
                                                 oninput="previewInlineLatex()"></textarea>
                                         </div>
                                         <div style="display:flex; flex-direction:column; gap:4px;">
+                                            <select class="stb-select" id="inline-latex-align" onchange="previewInlineLatex()" style="width:110px; border:1px solid #c8c6c4; background:#ffffff;">
+                                                <option value="left">Left Align</option>
+                                                <option value="center">Center</option>
+                                                <option value="right">Right</option>
+                                                <option value="justify" selected>Justify</option>
+                                            </select>
+                                            <select class="stb-select" id="inline-latex-font" onchange="previewInlineLatex()" style="width:110px; border:1px solid #c8c6c4; background:#ffffff;">
+                                                <option value="'Times New Roman', Times, serif" selected>Times NR</option>
+                                                <option value="Arial, sans-serif">Arial</option>
+                                                <option value="'Courier New', Courier, monospace">Courier</option>
+                                                <option value="'Montserrat', sans-serif">Montserrat</option>
+                                            </select>
+                                        </div>
+                                        <div style="display:flex; flex-direction:column; gap:4px;">
                                             <div style="display:flex; align-items:center; gap:4px; font-size:0.75rem; color:#605e5c;">
                                                 <span style="width:36px; text-align:right;">Size</span>
                                                 <input class="stb-input" type="number" id="inline-latex-fontsize" value="16" style="height:22px; width:44px; padding:0 4px; text-align:center;" oninput="previewInlineLatex()">
@@ -5176,10 +5190,14 @@
         const preview = document.getElementById('inline-latex-preview');
         const fontSize = document.getElementById('inline-latex-fontsize').value || 16;
         const lineHeight = document.getElementById('inline-latex-lineheight').value || 1.5;
+        const align = document.getElementById('inline-latex-align') ? document.getElementById('inline-latex-align').value : 'justify';
+        const font = document.getElementById('inline-latex-font') ? document.getElementById('inline-latex-font').value : "'Times New Roman', Times, serif";
         
         if (preview) {
             preview.style.fontSize = fontSize + 'px';
             preview.style.lineHeight = lineHeight;
+            preview.style.textAlign = align;
+            preview.style.fontFamily = font;
         }
 
         const latex = input ? input.value : '';
