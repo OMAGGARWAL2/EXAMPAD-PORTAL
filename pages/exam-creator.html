@@ -5199,7 +5199,9 @@
                 clone.style.left = '-9999px';
                 clone.style.top = '-9999px';
                 clone.style.border = 'none';
-                clone.style.background = 'transparent';
+                clone.style.background = '#ffffff';
+                clone.style.color = '#000000';
+                clone.style.padding = '20px';
                 document.body.appendChild(clone);
                 
                 try {
@@ -5209,7 +5211,7 @@
                         document.head.appendChild(script);
                         await new Promise(r => script.onload = r);
                     }
-                    const canvas = await html2canvas(clone, { scale: 3, backgroundColor: null });
+                    const canvas = await html2canvas(clone, { scale: 4, backgroundColor: '#ffffff' });
                     const imgData = canvas.toDataURL('image/png');
                     quill.insertEmbed(idx, 'image', imgData);
                     quill.insertText(idx + 1, ' ');
