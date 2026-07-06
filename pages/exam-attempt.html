@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="../js/theme-engine.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -1569,7 +1570,7 @@
         /* MAIN DIVIDER */
         .pane-divider {
             width: 10px;
-            background: #E5E7EB;
+            background: #e2e2e2;
             cursor: col-resize;
             position: relative;
             display: flex;
@@ -1580,25 +1581,24 @@
             transition: background 0.2s;
         }
 
-        /* INNER HANDLE (THOSE 3 DOTS) */
+        /* INNER HANDLE (3 ROUND DOTS) */
         .pane-divider::before {
             content: '';
-            width: 4px;
-            height: 20px;
-            border-radius: 4px;
-            background: transparent;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #a3a3a3;
             box-shadow:
-                0 -8px 0 #9CA3AF,
-                0 0px 0 #9CA3AF,
-                0 8px 0 #9CA3AF;
+                0 -15px 0 #a3a3a3,
+                0 15px 0 #a3a3a3;
         }
 
         .pane-divider:hover {
-            background: #D1D5DB;
+            background: #d4d4d4;
         }
 
         .pane-divider:active {
-            background: #C7CDD4;
+            background: #c2c2c2;
         }
 
         .workspace {
@@ -3629,7 +3629,7 @@
                 style="flex: 1.2; display: flex; flex-direction: column; padding: 60px; position: relative; z-index: 2; justify-content: center;">
                 <div style="margin: auto 0;">
                     <h1 id="verifyTestTitle"
-                        style="font-size: 2.2rem; font-weight: 500; color: #2d2d2d; margin-bottom: 32px; font-family: 'Montserrat', sans-serif; line-height: 1.2; letter-spacing: -0.5px; max-width: 500px;">
+                        style="font-size: 2.2rem; font-weight: 400; color: #2d2d2d; margin-bottom: 32px; font-family: 'Roboto', sans-serif; line-height: 1.2; letter-spacing: -0.5px; max-width: 500px;">
                         M-17th Feb-26 - DSOOPs FA 1 - CSE 2024 Batch</h1>
 
                     <!-- Progress Bar -->
@@ -3642,14 +3642,14 @@
 
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                         <div
-                            style="font-size: 1.25rem; color: #2d2d2d; font-weight: 700; font-family: 'Montserrat', sans-serif; display: flex; align-items: center; gap: 12px;">
+                            style="font-size: 1.25rem; color: #2d2d2d; font-weight: 700; font-family: 'Roboto', sans-serif; display: flex; align-items: center; gap: 12px;">
                             Total Questions <span id="verifyTotalQuestions"
-                                style="color: #de6834; font-weight: 500; font-family: 'Montserrat', sans-serif;">3</span>
+                                style="color: #de6834; font-weight: 500; font-family: 'Roboto', sans-serif;">3</span>
                         </div>
                         <div
-                            style="font-size: 1.25rem; color: #2d2d2d; font-weight: 700; font-family: 'Montserrat', sans-serif; display: flex; align-items: center; gap: 12px;">
+                            style="font-size: 1.25rem; color: #2d2d2d; font-weight: 700; font-family: 'Roboto', sans-serif; display: flex; align-items: center; gap: 12px;">
                             Total Time <span id="verifyTotalTime"
-                                style="color: #de6834; font-weight: 500; font-family: 'Montserrat', sans-serif;">90
+                                style="color: #de6834; font-weight: 500; font-family: 'Roboto', sans-serif;">90
                                 mins</span>
                         </div>
                     </div>
@@ -4683,11 +4683,12 @@
         window.startSystemBrain = startSystemBrain;
 
         function applyWatermark(rollNumber) {
+            if (currentExam?.security?.showWatermark === false) return;
             const safeRoll = (rollNumber || '').toString().replace(/[^a-zA-Z0-9-]/g, '');
             if (!safeRoll) return;
             const svg = `
             <svg xmlns="http://www.w3.org/2000/svg" width="280" height="180">
-                <text x="50%" y="50%" transform="rotate(-30 140 90)" fill="rgba(0,0,0,0.12)" font-size="26" font-family="'Hind', sans-serif" font-weight="600" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">
+                <text x="50%" y="50%" transform="rotate(-30 140 90)" fill="rgba(128,128,128,0.2)" font-size="26" font-family="Arial, sans-serif" font-weight="500" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">
                     ${safeRoll}
                 </text>
             </svg>`;
@@ -5500,6 +5501,7 @@
 
             const sessionKey = isPractice ? (attemptId || 'practice') : attemptId;
             sessionStorage.setItem(`exam_roll_${sessionKey}`, roll);
+            applyWatermark(roll);
 
             // Sync to UI
             const userIdEl = document.getElementById('userId');
@@ -6060,7 +6062,7 @@
                             <td style="padding: 20px 10px; text-align: left; white-space: normal; overflow-wrap: break-word;">
                                 <span class="q-title-link" onclick="${clickAction}" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; transition: all 0.2s; display: block; font-size: calc(22px * var(--dash-font-scale));">${customHeading}</span>
                             </td>
-                            <td style="padding: 20px 10px; color: #475467; text-align: left; font-weight: 400; font-size: calc(22px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${(qInfo.type || 'MCQ').charAt(0).toUpperCase() + (qInfo.type || 'MCQ').slice(1).replace('_', ' ')}</td>
+                            <td style="padding: 20px 10px; color: #475467; text-align: left; font-weight: 400; font-size: calc(22px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${(!qInfo.type || qInfo.type.toLowerCase() === 'mcq') ? 'MCQ' : (qInfo.type.charAt(0).toUpperCase() + qInfo.type.slice(1).replace('_', ' '))}</td>
                             <td style="padding: 20px 10px; color: ${statusColor}; text-align: left; font-weight: 400; font-size: calc(22px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${status}</td>
                             ${isSubmitted ? '' : `
                             <td style="padding: 20px 0; text-align: left;">
@@ -6756,7 +6758,7 @@
 
                         const currentScaleVal = document.getElementById('fontSlider')?.value || 100;
                         const currentEScale = 1 + (((currentScaleVal / 100) - 1) * 0.12);
-                        const currentEditorSize = (18 * currentEScale).toFixed(2) + "px";
+                        const currentEditorSize = (15 * currentEScale).toFixed(2) + "px";
 
                         const hEd = ace.edit("editorHead");
                         hEd.setTheme("ace/theme/chrome");
@@ -6999,7 +7001,7 @@
                 if (window.allCodingEditors) {
                     // Editor increases a bit faster now (sensitivity 0.12)
                     const eScale = 1 + (scale - 1) * 0.12;
-                    const editorSize = (18 * eScale).toFixed(2) + "px";
+                    const editorSize = (15 * eScale).toFixed(2) + "px";
                     document.documentElement.style.setProperty('--editor-font-size', editorSize);
                     window.allCodingEditors.forEach(ed => {
                         ed.setFontSize(editorSize);
@@ -7007,7 +7009,7 @@
                 } else if (editorInstance) {
                     // Fallback
                     const eScale = 1 + (scale - 1) * 0.12;
-                    const editorSize = (18 * eScale).toFixed(2) + "px";
+                    const editorSize = (15 * eScale).toFixed(2) + "px";
                     document.documentElement.style.setProperty('--editor-font-size', editorSize);
                     editorInstance.setFontSize(editorSize);
                 }
@@ -7246,7 +7248,6 @@
                 if (typeof isPractice !== 'undefined' && isPractice) {
                     wifiBannerHiddenUntil = Date.now() + 5 * 60 * 1000; // 5 minutes
                     updateWifiStat();
-                    showToast("Wifi warning hidden for 5 minutes.");
                 }
             }
         });

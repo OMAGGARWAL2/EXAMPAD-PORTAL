@@ -1910,23 +1910,27 @@
         #editorOverlay {
             position: fixed;
             inset: 0;
-            background: #1e1e1e;
+            background: #ffffff;
             z-index: 20000;
             display: none;
             flex-direction: column;
         }
 
         .overlay-header {
-            padding: 12px 24px;
-            background: #252526;
+            height: 50px;
+            background: #f9f9f9;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #333;
+            position: relative;
+            padding: 0 20px;
+            border-bottom: 1px solid #eaeaea;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         #monaco-container {
             flex: 1;
+            width: 100%;
         }
 
         /* Rich Text Fonts Support */
@@ -2318,9 +2322,22 @@
 <!-- Fullscreen Monaco Editor Overlay -->
 <div id="editorOverlay">
     <div class="overlay-header">
-        <h3 id="overlayTitle" style="color: #fff; font-family: 'Outfit', sans-serif; margin: 0;">CODE WORKSPACE</h3>
-        <button class="btn btn-ghost" onclick="closeEditorOverlay()"
-            style="color: #fff; border-color: #555;">CLOSE</button>
+        <select id="overlayLangSelect" style="padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.85rem; background: #fff; cursor: pointer; outline: none; min-width: 90px; color: #555;">
+            <option value="Java">Java</option>
+            <option value="Python">Python</option>
+            <option value="C++">C++</option>
+            <option value="C">C</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="SQL">SQL</option>
+        </select>
+        
+        <button onclick="closeEditorOverlay()" style="position: absolute; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; border-radius: 50%; background: #666; color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; opacity: 0.9; transition: opacity 0.2s; padding: 0;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <button onclick="closeEditorOverlay()" style="position: absolute; right: 20px; background: none; border: none; cursor: pointer; color: #555; font-size: 1.1rem; padding: 5px; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
+            <i class="fas fa-compress-arrows-alt"></i>
+        </button>
     </div>
     <div id="monaco-container"></div>
 </div>
@@ -2510,6 +2527,18 @@
                             <span style="font-size:0.9rem; font-weight:700; color:#D96C33;">UNIVERSAL TIME FRAME</span>
                         </label>
                     </div>
+                    <div class="input-group">
+                        <label class="label">MULTIPLE EXAM SETS</label>
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(52, 152, 219, 0.05); padding:10px; border-radius: 0; border:1px dashed rgba(52, 152, 219, 0.3);">
+                            <input type="checkbox" id="hasMultipleSets" style="width:18px; height:18px;" onchange="document.getElementById('numSetsContainer').style.display = this.checked ? 'block' : 'none';">
+                            <span style="font-size:0.9rem; font-weight:700; color:#3498db;">ENABLE MULTIPLE SETS</span>
+                        </label>
+                        <div id="numSetsContainer" style="display:none; margin-top: 10px;">
+                            <input type="number" id="numSets" class="clean-input" min="2" value="2" placeholder="Num Sets"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: #fff; border: 1px solid #ccc; padding: 8px 12px; border-radius: 0; width: 100%; box-sizing: border-box;">
+                        </div>
+                    </div>
                 </div>
 
                 <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee;">
@@ -2578,6 +2607,21 @@
                                     Block PrintScreen & Snipping</div>
                             </div>
                             <input type="checkbox" id="blockScreenshot"
+                                style="width:24px; height:24px; accent-color: var(--primary);">
+                        </label>
+
+                        <label class="sec-toggle"
+                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
+                            onmouseover="this.style.borderColor='var(--primary)'"
+                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i data-lucide="type"
+                                    style="color:var(--primary); width: 24px; height: 24px;"></i>
+                                <div
+                                    style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
+                                    Show Roll No Watermark</div>
+                            </div>
+                            <input type="checkbox" id="showWatermark" checked
                                 style="width:24px; height:24px; accent-color: var(--primary);">
                         </label>
 
@@ -3894,6 +3938,15 @@
                                 style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 4px;">
                         </div>
 
+                        <div class="input-group" id="setAssignmentStrategyContainer" style="display:none;">
+                            <label class="label">SET ASSIGNMENT STRATEGY</label>
+                            <select id="setAssignmentStrategy" class="clean-input"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 4px; width: 100%;">
+                                <option value="random">Assign Randomly to Students</option>
+                                <option value="rollNumber">Assign based on Roll Number (Even/Odd/Modulo)</option>
+                            </select>
+                        </div>
+
                         <div class="input-group">
                             <label class="label">LATE ENTRY DEADLINE</label>
                             <input type="text" id="entryDeadline" class="clean-input" placeholder="Select Date & Time"
@@ -4056,18 +4109,20 @@
                         assessment live.</p>
 
                     <div
-                        style="background:#fff; border:1px solid #eee; padding:24px; border-radius: 0; margin-bottom:24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        style="background:#fff; border:1px solid #e2e8f0; border-left: 4px solid var(--primary); padding:24px; border-radius: 0; margin-bottom:24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
                         <div style="display:flex; flex-direction:column; gap:16px;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:0.85rem; font-weight:700; color:#888;">RELEASE STATUS</span>
+                                <span style="font-size:0.8rem; font-weight:700; color:#64748b; font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px;">RELEASE STATUS</span>
                                 <span
-                                    style="background:#e9ecef; color:#495057; padding:6px 12px; border-radius: 0; font-size:0.75rem; font-weight:800;">DRAFT
+                                    style="background:rgba(217, 108, 51, 0.1); color:var(--primary); padding:6px 12px; border-radius: 0; font-size:0.75rem; font-weight:800; font-family: 'Montserrat', sans-serif; border: 1px solid rgba(217, 108, 51, 0.2);">DRAFT
                                     MODE</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:0.85rem; font-weight:700; color:#888;">TEST IDENTITY</span>
+                                <span style="font-size:0.8rem; font-weight:700; color:#64748b; font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px;">TEST IDENTITY</span>
                                 <input type="text" id="customTestId" placeholder="e.g. ping456net789"
-                                    style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 0; font-family: 'JetBrains Mono'; color: #000; font-weight: 700; width: 200px; outline: none; text-align: right; font-size: 1rem;">
+                                    style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 0; font-family: 'JetBrains Mono', monospace; color: #0f172a; font-weight: 700; width: 220px; outline: none; text-align: right; font-size: 0.95rem; transition: all 0.2s;"
+                                    onfocus="this.style.borderColor='var(--primary)'; this.style.background='#fff'; this.style.boxShadow='0 0 0 3px rgba(217, 108, 51, 0.1)';"
+                                    onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc'; this.style.boxShadow='none';">
                             </div>
                         </div>
                     </div>
@@ -4530,6 +4585,12 @@
                 promptAddSection();
             }
         }
+        if (e.ctrlKey && (e.key === 'q' || e.key === 'Q')) {
+            e.preventDefault();
+            if (currentStep === 4 && (currentQuestionType === 'mcq' || currentQuestionType === 'true_false' || currentQuestionType === 'assertion_reason')) {
+                autofillOptions();
+            }
+        }
         if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
             e.preventDefault();
             if (currentStep === 4) {
@@ -4541,6 +4602,12 @@
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable && !e.target.closest('.ql-editor')) {
             if (e.key === 'q' || e.key === 'Q') navigateBuilder(-1);
             if (e.key === 'a' || e.key === 'A') navigateBuilder(1);
+            if (e.key === 'd' || e.key === 'D') {
+                const popup = document.getElementById('teacherWellnessPopup');
+                if (popup && popup.style.opacity === '1') {
+                    window.dismissWellnessMsg();
+                }
+            }
             if (currentQuestionType === 'mcq' && ['1', '2', '3', '4'].includes(e.key)) {
                 const rows = document.querySelectorAll('.option-row');
                 const idx = parseInt(e.key) - 1;
@@ -4591,7 +4658,14 @@
         const content = quill ? quill.root.innerHTML : '';
         const type = currentQuestionType;
 
-        document.getElementById('livePreviewTitle').textContent = heading;
+        document.getElementById('livePreviewTitle').innerHTML = `
+            <div style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: #1a1a1b;">${heading}</div>
+            <div class="tri-orange-line" style="margin: 12px 0 24px 0;">
+                <div class="tol-light"></div>
+                <div class="tol-mid"></div>
+                <div class="tol-dark"></div>
+            </div>
+        `;
         document.getElementById('livePreviewContent').innerHTML = content;
 
         let interactionHtml = '';
@@ -4600,7 +4674,7 @@
             interactionHtml = options.map((opt, i) => `
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; padding: 12px; border: 1px solid #eee; border-radius: 0; background: #fafafa;">
                     <div style="width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 50%;"></div>
-                    <div style="flex:1; font-size: 0.9rem;">${opt || 'Option ' + (i + 1)}</div>
+                    <div style="flex:1; font-size: 0.9rem; font-family: 'Hind', sans-serif;">${opt || 'Option ' + (i + 1)}</div>
                 </div>
             `).join('');
         } else if (type === 'subjective') {
@@ -4650,7 +4724,7 @@
         editor.session.setMode("ace/mode/" + mlang);
         editor.setValue(initialValue, -1);
         editor.setOptions({
-            fontSize: "16px",
+            fontSize: "14px",
             fontFamily: "Consolas",
             showPrintMargin: false,
             highlightActiveLine: true,
@@ -4664,7 +4738,21 @@
 
     function openEditorOverlay(sourceId, lang, title) {
         aceTargetId = sourceId;
-        document.getElementById('overlayTitle').textContent = `${lang.toUpperCase()} ARCHITECT - ${title}`;
+        const select = document.getElementById('overlayLangSelect');
+        if (select) {
+            Array.from(select.options).forEach(opt => {
+                if (opt.value.toLowerCase() === lang.toLowerCase()) {
+                    select.value = opt.value;
+                }
+            });
+            select.onchange = function(e) {
+                if (activeAceEditor) {
+                    let newLang = e.target.value.toLowerCase();
+                    if (newLang === 'c++') newLang = 'c_cpp';
+                    activeAceEditor.session.setMode("ace/mode/" + newLang);
+                }
+            };
+        }
         document.getElementById('editorOverlay').style.display = 'flex';
 
         const initialValue = inlineAceEditors[sourceId] ? inlineAceEditors[sourceId].getValue() : '';
@@ -4674,7 +4762,7 @@
             activeAceEditor = ace.edit('monaco-container');
             activeAceEditor.setTheme("ace/theme/textmate");
             activeAceEditor.setOptions({
-                fontSize: "18px",
+                fontSize: "15px",
                 fontFamily: "Consolas",
                 showPrintMargin: false,
                 enableBasicAutocompletion: true,
@@ -4830,6 +4918,18 @@
         }
 
         exams.pools[sectionName][key] = parseInt(value) || 0;
+        
+        if (exams.hasMultipleSets && exams.numSets > 1) {
+            const reqPool = (exams.pools[sectionName].pickCount || 0) * exams.numSets;
+            if (exams.pools[sectionName].totalGoal < reqPool) {
+                if (key === 'pickCount') {
+                    showToast(`Warning: Pool size must be at least ${reqPool} for ${exams.numSets} sets.`, 'warning');
+                } else if (key === 'totalGoal') {
+                    showToast(`Warning: Pool size should be at least ${reqPool} to support ${exams.numSets} sets picking ${exams.pools[sectionName].pickCount} each.`, 'warning');
+                }
+            }
+        }
+        
         autoSave();
     }
 
@@ -5966,6 +6066,9 @@
         languages: [],
         pools: {},
         identityFields: [],
+        hasMultipleSets: false,
+        numSets: 2,
+        setAssignmentStrategy: 'random',
         theme: { primaryColor: '#D96C33', font: 'Outfit', darkMode: false },
         sectionLockEnabled: false,
         security: {
@@ -6083,6 +6186,13 @@
         if (document.getElementById('isUniversalTime')) document.getElementById('isUniversalTime').checked = exams.isUniversalTime || false;
         if (document.getElementById('joiningKey')) document.getElementById('joiningKey').value = exams.joiningKey || '';
 
+        if (document.getElementById('hasMultipleSets')) {
+            document.getElementById('hasMultipleSets').checked = exams.hasMultipleSets || false;
+            document.getElementById('numSetsContainer').style.display = exams.hasMultipleSets ? 'block' : 'none';
+        }
+        if (document.getElementById('numSets')) document.getElementById('numSets').value = exams.numSets || 2;
+        if (document.getElementById('setAssignmentStrategy')) document.getElementById('setAssignmentStrategy').value = exams.setAssignmentStrategy || 'random';
+
         if (exams.theme) {
             if (document.getElementById('themePrimaryColor')) document.getElementById('themePrimaryColor').value = exams.theme.primaryColor || '#D96C33';
             if (document.getElementById('themeFont')) document.getElementById('themeFont').value = exams.theme.font || 'Outfit';
@@ -6104,7 +6214,8 @@
 
         if (exams.security) {
             if (document.getElementById('blockCopyPaste')) document.getElementById('blockCopyPaste').checked = exams.security.blockCopyPaste;
-            if (document.getElementById('blockScreenshot')) document.getElementById('blockScreenshot').checked = exams.security.blockScreenshot;
+            if (document.getElementById('blockScreenshot')) document.getElementById('blockScreenshot').checked = exams.security.blockScreenshot || false;
+            if (document.getElementById('showWatermark')) document.getElementById('showWatermark').checked = exams.security.showWatermark !== false;
             if (document.getElementById('shuffleQuestions')) document.getElementById('shuffleQuestions').checked = exams.security.shuffleQuestions;
             if (document.getElementById('fullScreenRequired')) document.getElementById('fullScreenRequired').checked = exams.security.fullScreenRequired;
             if (document.getElementById('desktopOnly')) document.getElementById('desktopOnly').checked = exams.security.desktopOnly || false;
@@ -6646,12 +6757,13 @@
                         <!-- Middle: Randomize Config -->
                         <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.1); padding: 6px 16px; border-radius: 0; border: 1px solid rgba(255,255,255,0.1);">
                             <label style="font-size:0.8rem; font-weight:700; color:white; display:flex; align-items:center; gap:8px; cursor:pointer; margin:0; letter-spacing: 0.5px;">
-                                <input type="checkbox" id="randEnabled_${i}" ${(exams.pools && exams.pools[s] && exams.pools[s].enabled) ? 'checked' : ''} 
+                                <input type="checkbox" id="randEnabled_${i}" ${(exams.pools && exams.pools[s] && exams.pools[s].enabled) || exams.hasMultipleSets ? 'checked' : ''} 
+                                    ${exams.hasMultipleSets ? 'disabled' : ''}
                                     onchange="toggleRandomization('${s}', this.checked, ${i})" style="width:16px; height:16px; cursor:pointer;">
                                 RANDOMIZE
                             </label>
                             
-                            <div id="randConfig_${i}" style="display:${(exams.pools && exams.pools[s] && exams.pools[s].enabled) ? 'flex' : 'none'}; align-items:center; gap:12px; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.2);">
+                            <div id="randConfig_${i}" style="display:${(exams.pools && exams.pools[s] && exams.pools[s].enabled) || exams.hasMultipleSets ? 'flex' : 'none'}; align-items:center; gap:12px; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.2);">
                                 <div style="display:flex; align-items:center; gap:6px;">
                                     <span style="font-size:0.75rem; font-weight:700; opacity: 0.9;">POOL:</span>
                                     <input type="number" value="${(exams.pools && exams.pools[s] && exams.pools[s].totalGoal) || 0}" 
@@ -6704,7 +6816,7 @@
                                     <tr>
                                         <td style="padding: 20px 12px; color: #333; font-weight: 500; border-bottom: 1px solid #f5f5f5;">${qIndex + 1}.</td>
                                         <td style="padding: 20px 12px; color: #333; font-weight: 500; border-bottom: 1px solid #f5f5f5;">${q.heading || q.title || 'Untitled'}</td>
-                                        <td style="padding: 20px 12px; color: #666; border-bottom: 1px solid #f5f5f5; text-transform: capitalize;">${q.type || 'Mcq'}</td>
+                                        <td style="padding: 20px 12px; color: #666; border-bottom: 1px solid #f5f5f5; text-transform: ${(!q.type || q.type.toLowerCase() === 'mcq') ? 'uppercase' : 'capitalize'};">${q.type || 'MCQ'}</td>
                                         <td style="padding: 20px 12px; color: #444; border-bottom: 1px solid #f5f5f5; font-weight: 500;">Saved</td>
                                         <td style="padding: 20px 12px; border-bottom: 1px solid #f5f5f5;">
                                             <button onclick="goToStep(4); document.getElementById('questionSection').value = '${s}'; renderQuestions(); editQuestion('${q.id}');" style="background: none; border: none; color: #cf8469; cursor: pointer; font-size: 0.95rem; text-align: left; padding: 0;">
@@ -7170,6 +7282,11 @@
         if (targetStep) targetStep.classList.add('active');
         if (targetInd) targetInd.classList.add('active');
 
+        if (step === 5) {
+            const stratCont = document.getElementById('setAssignmentStrategyContainer');
+            if (stratCont) stratCont.style.display = exams.hasMultipleSets ? 'block' : 'none';
+        }
+
         for (let i = 1; i < step; i++) {
             const ind = document.getElementById('ind' + i);
             if (ind) ind.classList.add('completed');
@@ -7195,12 +7312,29 @@
             // Validate Randomization Goals before going to Step 5
             for (const section of exams.sections) {
                 const config = exams.pools ? exams.pools[section] : null;
-                if (config && config.enabled && config.totalGoal > 0) {
-                    const actualCount = exams.questions.filter(q => q.section === section).length;
-                    if (actualCount < config.totalGoal) {
-                        const missing = config.totalGoal - actualCount;
-                        showToast(`Section "${section}" needs ${missing} more question(s) to meet your goal of ${config.totalGoal}.`, 'error');
-                        return; // Block progression
+                const actualCount = exams.questions.filter(q => q.section === section).length;
+                
+                if (exams.hasMultipleSets && exams.numSets > 1) {
+                    if (!config || config.pickCount <= 0) {
+                        showToast(`Section "${section}" MUST have a Pick Count configured when Multiple Sets are active.`, 'error');
+                        return;
+                    }
+                    const requiredTotal = config.pickCount * exams.numSets;
+                    if (config.totalGoal < requiredTotal) {
+                        showToast(`Section "${section}" pool goal (${config.totalGoal}) must be at least ${requiredTotal} for ${exams.numSets} sets.`, 'error');
+                        return;
+                    }
+                    if (actualCount < requiredTotal) {
+                        showToast(`Section "${section}" needs ${requiredTotal - actualCount} more question(s) to support ${exams.numSets} sets.`, 'error');
+                        return;
+                    }
+                } else {
+                    if (config && config.enabled && config.totalGoal > 0) {
+                        if (actualCount < config.totalGoal) {
+                            const missing = config.totalGoal - actualCount;
+                            showToast(`Section "${section}" needs ${missing} more question(s) to meet your goal of ${config.totalGoal}.`, 'error');
+                            return; // Block progression
+                        }
                     }
                 }
             }
@@ -7336,6 +7470,12 @@
         if (endDateEl) exams.scheduledEndDate = endDateEl.value;
         const universalTimeEl = document.getElementById('isUniversalTime');
         if (universalTimeEl) exams.isUniversalTime = universalTimeEl.checked;
+        const hasSets = document.getElementById('hasMultipleSets');
+        if (hasSets) exams.hasMultipleSets = hasSets.checked;
+        const numSets = document.getElementById('numSets');
+        if (numSets) exams.numSets = parseInt(numSets.value) || 2;
+        const setStrategy = document.getElementById('setAssignmentStrategy');
+        if (setStrategy) exams.setAssignmentStrategy = setStrategy.value;
 
         // Security & Step 4 Fields
         const cp = document.getElementById('blockCopyPaste');
@@ -7359,6 +7499,7 @@
             desktopOnly: document.getElementById('desktopOnly') ? document.getElementById('desktopOnly').checked : false,
             blockCopyPaste: cp ? cp.checked : false,
             blockScreenshot: ss ? ss.checked : false,
+            showWatermark: document.getElementById('showWatermark') ? document.getElementById('showWatermark').checked : true,
             shuffleQuestions: sq ? sq.checked : false,
             fullScreenRequired: fs ? fs.checked : false,
             webcamEnabled: wc ? wc.checked : false,

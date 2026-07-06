@@ -1,6 +1,6 @@
 {
-    "name": "my-exampad",
-    "productName": "MyExamPad",
+    "name": "tespad",
+    "productName": "TesPad",
     "version": "1.0.0",
     "description": "Custom ExamPad Environment",
     "main": "main.js",
@@ -11,7 +11,7 @@
         "dist": "electron-builder"
     },
     "build": {
-        "appId": "com.custom.myexampad",
+        "appId": "com.custom.tespad",
         "win": {
             "target": "nsis",
             "icon": "icon.png"
