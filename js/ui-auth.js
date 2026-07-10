@@ -251,21 +251,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- AUTO-FILL SAVED IDENTITY ---
-    const saved = auth.getSavedCredentials();
-    if (saved && loginForm) {
+    const allSaved = auth.getAllSavedCredentials();
+    let targetSaved = null;
+    
+    if (urlRole && allSaved.length > 0) {
+        targetSaved = allSaved.find(c => c.role === urlRole);
+    } 
+    
+    if (!targetSaved && auth.getSavedCredentials()) {
+        targetSaved = auth.getSavedCredentials();
+    }
+
+    if (targetSaved && loginForm) {
         // Only auto-fill if nothing is there or if it's the very last one
         if (!document.getElementById('loginEmail').value) {
-            document.getElementById('loginEmail').value = saved.email;
-            document.getElementById('loginPassword').value = saved.password;
+            document.getElementById('loginEmail').value = targetSaved.email;
+            document.getElementById('loginPassword').value = targetSaved.password;
             
-            if (!urlTestId) {
+            if (!urlTestId && urlTab !== 'signup') {
                 switchTab('login');
             }
-            showMessage(`Identity restored for: ${saved.email}`);
+            if (urlTab !== 'signup') {
+                showMessage(`Identity restored for: ${targetSaved.email}`);
+            }
         }
         
-        const btn = document.getElementById('loginSubmitBtn');
-        if (btn) btn.focus();
+        if (urlTab !== 'signup') {
+            const btn = document.getElementById('loginSubmitBtn');
+            if (btn) btn.focus();
+        }
     }
 
     renderRecentLogins();

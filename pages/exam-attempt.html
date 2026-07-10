@@ -3988,7 +3988,8 @@
                         <div id="fontSizeTooltip" class="font-size-tooltip">100%</div>
                     </div>
                     <i class="fas fa-home" style="color:#DE5B2B; font-size:24px; cursor:pointer;"
-                        onclick="showDashboard()"></i>
+                        onclick="showDashboard()" onmouseenter="showDashboardTooltipDelayed(this)"
+                        onmouseleave="hideDashboardTooltipDelayed()"></i>
                 </div>
 
                 <!-- HEADER RIGHT -->
@@ -4231,7 +4232,7 @@
 
     <!-- WIFI CUSTOM TOOLTIP DOM -->
     <div class="wifi-tooltip" id="wifiTooltip"
-        style="display: none; position: fixed; background: #ffffff; border: 1px solid #EAECF0; padding: 12px 20px; border-radius: 4px; box-shadow: 0 10px 35px rgba(0,0,0,0.25); z-index: 2147483647 !important; flex-direction: column; pointer-events: none; transition: opacity 0.2s; opacity: 0; color: #344054; font-size: 15px; font-weight: 400 !important; font-family: 'Hind', sans-serif; min-width: 180px; text-align: left; gap: 6px;">
+        style="display: none; position: fixed; background: #ffffff; border: 1px solid #EAECF0; padding: 12px 20px; border-radius: 4px; box-shadow: 0 10px 35px rgba(0,0,0,0.25); z-index: 2147483647 !important; flex-direction: column; pointer-events: none; transition: opacity 0.2s; opacity: 0; color: #344054; font-size: 19px !important; font-weight: 400 !important; font-family: 'Hind' !important; min-width: 180px; text-align: left; gap: 6px;">
         <div style="white-space: nowrap; font-weight: 400 !important;">Upload Speed: <span id="ttUpload"
                 style="font-weight: 400 !important;">0 KB/s</span></div>
         <div style="white-space: nowrap; font-weight: 400 !important;">Upload Latency: <span id="ttLatency"
@@ -4769,6 +4770,14 @@
             } else {
                 if (!attemptId) {
                     if (quickStart && examIdFromUrl) {
+                        const savedQuickStartId = sessionStorage.getItem(`quickStartAttemptId_${examIdFromUrl}`);
+                        if (savedQuickStartId && db.getAttempt(savedQuickStartId)) {
+                            attemptId = savedQuickStartId;
+                        }
+                    }
+                }
+                if (!attemptId) {
+                    if (quickStart && examIdFromUrl) {
                         console.log("[QUICK START] Attempting to find exam:", examIdFromUrl);
                         currentExam = db.getExamById(examIdFromUrl);
 
@@ -4797,6 +4806,7 @@
                                 if (res.success || res.existingAttempt) {
                                     const attemptObj = res.attempt || res.existingAttempt;
                                     attemptId = attemptObj.id;
+                                    sessionStorage.setItem(`quickStartAttemptId_${examIdFromUrl}`, attemptId);
                                     currentAttempt = attemptObj;
                                     console.log("[QUICK START] Successfully created attempt:", attemptId);
 
@@ -4930,7 +4940,7 @@
 
             // --- SESSION FLOW CONTROL ---
             const sessionKey = isPractice ? (attemptId || 'practice') : attemptId;
-            const hasStartedValue = sessionStorage.getItem(`exam_started_${sessionKey}`);
+            const hasStartedValue = currentAttempt.examStarted ? 'true' : sessionStorage.getItem(`exam_started_${sessionKey}`);
 
             if (hasStartedValue === 'true') {
                 // Resume session immediately
@@ -4953,8 +4963,8 @@
             }
 
             // --- RENDER ---
-            const savedQ = sessionStorage.getItem(`exam_q_${sessionKey}`);
-            if (savedQ !== null) currentQuestionIndex = parseInt(savedQ);
+            const savedQ = currentAttempt.lastQuestionIndex !== undefined ? currentAttempt.lastQuestionIndex : sessionStorage.getItem(`exam_q_${sessionKey}`);
+            if (savedQ !== null && savedQ !== undefined) currentQuestionIndex = parseInt(savedQ);
             if (currentQuestionIndex >= (questions.length || 1)) currentQuestionIndex = 0;
 
             renderQuestionRail();
@@ -5529,7 +5539,7 @@
             }
 
             // Persistence
-            if (!isPractice) {
+            if (attemptId && attemptId !== 'practice') {
                 db.updateAttempt(attemptId, {
                     studentRollNo: currentAttempt.studentRollNo,
                     identityResponses: currentAttempt.identityResponses
@@ -5544,12 +5554,19 @@
         function startExamSession() {
             const sessionKey = isPractice ? (attemptId || 'practice') : attemptId;
             sessionStorage.setItem(`exam_started_${sessionKey}`, 'true');
+            currentAttempt.examStarted = true;
 
             // Calculate and persist the official absolute endTime the moment the test is confirmed
             if (!currentAttempt.endTime && !isPractice) {
                 const durationSeconds = (currentAttempt.timeLeft || (currentExam.duration * 60) || 3600);
                 currentAttempt.endTime = Date.now() + (durationSeconds * 1000);
-                if (attemptId) db.updateAttempt(attemptId, { endTime: currentAttempt.endTime });
+                if (attemptId && attemptId !== 'practice') db.updateAttempt(attemptId, { endTime: currentAttempt.endTime, examStarted: true });
+            } else if (attemptId && attemptId !== 'practice') {
+                db.updateAttempt(attemptId, { examStarted: true });
+            }
+
+            if (isPractice) {
+                db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
             }
 
             const overlay = document.getElementById('securityCheckOverlay');
@@ -5679,26 +5696,44 @@
             const tooltip = document.getElementById('globalTooltip');
             if (tooltip) tooltip.style.display = 'none';
         }
+
+        let dashboardTooltipTimer = null;
+        function showDashboardTooltipDelayed(el) {
+            dashboardTooltipTimer = setTimeout(() => {
+                showGlobalTooltip(el, 'Dashboard', 'bottom');
+            }, 2000); // 8 sec delay
+        }
+        function hideDashboardTooltipDelayed() {
+            if (dashboardTooltipTimer) clearTimeout(dashboardTooltipTimer);
+            hideGlobalTooltip();
+        }
+
         function renderQuestionRail() {
             const container = document.getElementById('railNodesContainer');
             if (!container) return;
             container.innerHTML = '';
 
             const active = getActiveSection();
-            const sections = [];
-            if (!currentExam.questions) return;
-            currentExam.questions.forEach(q => {
-                const s = q.section || "Section A";
-                if (!sections.includes(s)) sections.push(s);
-            });
+            if (!currentExam.sections) {
+                currentExam.sections = [];
+            }
+            if (currentExam.questions) {
+                currentExam.questions.forEach(q => {
+                    const s = q.section || "Section A";
+                    if (!currentExam.sections.includes(s)) currentExam.sections.push(s);
+                });
+            }
+            const sections = currentExam.sections;
 
             // Group questions by section
             const sectionsMap = {};
-            currentExam.questions.forEach((q, idx) => {
-                const s = q.section || "Section A";
-                if (!sectionsMap[s]) sectionsMap[s] = [];
-                sectionsMap[s].push({ q, idx });
-            });
+            sections.forEach(s => sectionsMap[s] = []);
+            if (currentExam.questions) {
+                currentExam.questions.forEach((q, idx) => {
+                    const s = q.section || "Section A";
+                    if (sectionsMap[s]) sectionsMap[s].push({ q, idx });
+                });
+            }
 
             const submitted = currentAttempt.submittedSections || [];            // Display title of current section in sidebar label? Handled within the loop now
             /* const railLabel = document.querySelector('.section-label');
@@ -5709,6 +5744,7 @@
             } */
 
             for (const [sName, qs] of Object.entries(sectionsMap)) {
+                if (qs.length === 0 && !ctrlEModeActive) continue;
                 const isSub = submitted.includes(sName);
                 const isActive = (sName === active);
                 const isFuture = !isSub && !isActive;
@@ -5775,6 +5811,28 @@
                     secContainer.appendChild(node);
                 });
 
+                if (qs.length === 0) {
+                    const emptyNode = document.createElement('div');
+                    emptyNode.className = 'empty-rail-node';
+                    emptyNode.dataset.sectionName = sName;
+                    emptyNode.style.cssText = 'width: 42px; height: 42px; margin: 6px 0; border: 2px dashed #D0D5DD; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #98A2B3; font-size: 16px; cursor: pointer; transition: all 0.2s;';
+                    emptyNode.innerHTML = '<i class="fas fa-plus"></i>';
+                    emptyNode.dataset.tooltipText = 'Empty Section. Right-click to paste questions';
+                    emptyNode.onmouseenter = (e) => {
+                        e.currentTarget.style.borderColor = '#ce866a';
+                        e.currentTarget.style.color = '#ce866a';
+                        e.currentTarget.style.background = '#FFF4ED';
+                        showGlobalTooltip(e.currentTarget, e.currentTarget.dataset.tooltipText);
+                    };
+                    emptyNode.onmouseleave = (e) => {
+                        e.currentTarget.style.borderColor = '#D0D5DD';
+                        e.currentTarget.style.color = '#98A2B3';
+                        e.currentTarget.style.background = 'transparent';
+                        hideGlobalTooltip();
+                    };
+                    secContainer.appendChild(emptyNode);
+                }
+
                 segmentWrap.appendChild(secContainer);
 
                 if (isLocked) {
@@ -5796,7 +5854,7 @@
                     ` : `
                         <i class="fas fa-lock" style="color: #000; font-size: 22px;"></i>
                     `;
-                    lockContainer.dataset.tooltipText = isSub ? "SECTION ALREADY SUBMITTED" : "SECTION LOCKED";
+                    lockContainer.dataset.tooltipText = isSub ? "SECTION ALREADY SUBMITTED" : "Section is locked. Kindly Submit previous sections to attempt";
                     lockContainer.onmouseenter = (e) => showGlobalTooltip(e.currentTarget, e.currentTarget.dataset.tooltipText);
                     lockContainer.onmouseleave = hideGlobalTooltip;
 
@@ -5875,14 +5933,15 @@
                 if (input === String(code)) {
                     currentAttempt.submittedSections.push(sName);
                     collapsedSections[sName] = true;
-                    if (!isPractice) {
+                    if (attemptId && attemptId !== 'practice') {
                         db.updateAttempt(attemptId, { submittedSections: currentAttempt.submittedSections });
-                    } else {
+                    }
+                    if (isPractice) {
                         db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
                     }
                     closeModal('sectionModal');
 
-                    showToast(`Section Submitted Successfully`, 'success');
+                    showHighFidelityBanner(`Section Submitted Successfully`, 'success');
                     renderDashboardTable();
                     renderQuestionRail();
                 } else {
@@ -5903,24 +5962,32 @@
             dashView.style.gap = "60px";
 
             // Group questions by section
-            const sections = [];
-            currentExam.questions.forEach(q => {
-                const s = q.section || "Section A";
-                if (!sections.includes(s)) sections.push(s);
-            });
+            if (!currentExam.sections) {
+                currentExam.sections = [];
+            }
+            if (currentExam.questions) {
+                currentExam.questions.forEach(q => {
+                    const s = q.section || "Section A";
+                    if (!currentExam.sections.includes(s)) currentExam.sections.push(s);
+                });
+            }
+            const sections = currentExam.sections;
 
             // Find current active section
             const activeSection = sections.find(s => !currentAttempt.submittedSections.includes(s));
 
             const secMap = {};
-            currentExam.questions.forEach((q, idx) => {
-                const sName = q.section || "Section A";
-                if (!secMap[sName]) secMap[sName] = [];
-                secMap[sName].push({ q, idx });
-            });
+            sections.forEach(s => secMap[s] = []);
+            if (currentExam.questions) {
+                currentExam.questions.forEach((q, idx) => {
+                    const sName = q.section || "Section A";
+                    if (secMap[sName]) secMap[sName].push({ q, idx });
+                });
+            }
 
             sections.forEach((sName) => {
                 const qs = secMap[sName];
+                if (qs.length === 0 && !ctrlEModeActive) return;
                 const isSubmitted = currentAttempt.submittedSections.includes(sName);
                 const isActive = (sName === activeSection);
                 const isLocked = !isSubmitted && (currentExam.allSectionsLocked || (currentExam.sectionLockEnabled && !isActive));
@@ -5933,6 +6000,8 @@
 
                 // --- SECTION HEADER ---
                 const header = document.createElement('div');
+                header.className = 'dashboard-section-header';
+                header.dataset.sectionName = sName;
                 let headerColor = '#ce866a'; // Exact Terracotta Muted Orange
                 let textColor = '#fff';
 
@@ -5967,7 +6036,8 @@
                 const indicatorIcon = isLocked ? '' : `<i class="fas fa-caret-${isCollapsed ? 'right' : 'down'}" style="font-size: calc(18px * var(--header-scale)); margin-left: 12px; opacity: 0.8;"></i>`;
                 const sectionTypeText = qs[0]?.q?.section_type || `Section ${sections.indexOf(sName) + 1}`;
 
-                const editableSName = `<span class="edit-section-name" data-section="${sName}">${sName}</span>`;
+                const isEditableStr = (typeof ctrlEModeActive !== 'undefined' && ctrlEModeActive) ? 'contenteditable="true" style="border: 1px dashed #de6834; padding: 2px; outline: none;"' : '';
+                const editableSName = `<span class="edit-section-name" data-section="${sName}" ${isEditableStr}>${sName}</span>`;
                 let sectionTitleContent = `<span style="letter-spacing: 0.1px;">${editableSName} - ${sectionTypeText}</span>`;
                 if (isSubmitted) {
                     sectionTitleContent = `<span style="letter-spacing: 0.1px; display: flex; align-items: center; gap: 12px;">${editableSName} - ${sectionTypeText} <span style="background: #fff; color: ${headerColor}; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: calc(14px * var(--header-scale));"><i class="fas fa-check"></i></span></span>`;
@@ -6026,38 +6096,47 @@
                     `;
                     const tbody = table.querySelector('tbody');
 
-                    qs.forEach((item, secQIdx) => {
-                        const qInfo = item.q;
-                        const i = item.idx;
-                        const response = currentAttempt.responses[qInfo.id];
-                        let status = "Pending";
-                        let actionText = "Solve<br>Question";
-                        let statusColor = "#101828";
-                        let actionColor = '#ce866a'; // Correct terracotta clay tone
+                    if (qs.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="${isSubmitted ? 4 : 5}" style="padding: 40px 10px; text-align: center; color: #667085; font-size: calc(22px * var(--dash-font-scale)); font-weight: 500; font-family: 'Hind', sans-serif;">
+                                    Empty Section. Enable Live Edit mode (Ctrl+E) and right-click to add or paste questions here.
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        qs.forEach((item, secQIdx) => {
+                            const qInfo = item.q;
+                            const i = item.idx;
+                            const response = currentAttempt.responses[qInfo.id];
+                            let status = "Pending";
+                            let actionText = "Solve<br>Question";
+                            let statusColor = "#101828";
+                            let actionColor = '#ce866a'; // Correct terracotta clay tone
 
-                        if (isSubmitted) {
-                            status = "Submitted";
-                            actionText = "Submitted";
-                            statusColor = "#101828";
-                            actionColor = "#101828";
-                        } else if (response?.submitted) {
-                            status = "Submitted";
-                            actionText = "Modify<br>Answer";
-                            actionColor = '#ce866a';
-                        } else if (response?.value) {
-                            status = "Drafted";
-                            statusColor = "#CF5927";
-                        }
+                            if (isSubmitted) {
+                                status = "Submitted";
+                                actionText = "Submitted";
+                                statusColor = "#101828";
+                                actionColor = "#101828";
+                            } else if (response?.submitted) {
+                                status = "Submitted";
+                                actionText = "Modify<br>Answer";
+                                actionColor = '#ce866a';
+                            } else if (response?.value) {
+                                status = "Drafted";
+                                statusColor = "#CF5927";
+                            }
 
-                        const wrapState = 'normal'; // Always allow wrapping for the action link
-                        const displayAction = actionText; // Preserve <br>
+                            const wrapState = 'normal'; // Always allow wrapping for the action link
+                            const displayAction = actionText; // Preserve <br>
 
-                        const clickAction = isLocked ? `showToast('Please complete previous section first', 'error')` : `loadQuestion(${i})`;
-                        const tr = document.createElement('tr');
-                        tr.style = `background: transparent; transition: all 0.2s; ${isLocked ? 'cursor: not-allowed; opacity: 0.75;' : ''}`;
-                        const qNum = secQIdx + 1;
-                        const customHeading = qInfo.heading ? qInfo.heading.replace(/Question\s*\d+/i, 'Question ' + qNum) : ('Question ' + qNum);
-                        tr.innerHTML = `
+                            const clickAction = isLocked ? `showToast('Please complete previous section first', 'error')` : `loadQuestion(${i})`;
+                            const tr = document.createElement('tr');
+                            tr.style = `background: transparent; transition: all 0.2s; ${isLocked ? 'cursor: not-allowed; opacity: 0.75;' : ''}`;
+                            const qNum = secQIdx + 1;
+                            const customHeading = qInfo.heading ? qInfo.heading.replace(/Question\s*\d+/i, 'Question ' + qNum) : ('Question ' + qNum);
+                            tr.innerHTML = `
                             <td style="padding: 20px 0; color: #101828; text-align: left; font-weight: 400; font-size: calc(22px * var(--dash-font-scale)); font-family: 'Hind', sans-serif;">${qNum}.</td>
                             <td style="padding: 20px 10px; text-align: left; white-space: normal; overflow-wrap: break-word;">
                                 <span class="q-title-link" onclick="${clickAction}" style="cursor: ${isLocked ? 'not-allowed' : 'pointer'}; transition: all 0.2s; display: block; font-size: calc(22px * var(--dash-font-scale));">${customHeading}</span>
@@ -6071,20 +6150,21 @@
                             </td>
                             `}
                         `;
-                        const titleSpan = tr.querySelector('.q-title-link');
-                        titleSpan.onmouseenter = () => titleSpan.style.textDecoration = 'underline';
-                        titleSpan.onmouseleave = () => titleSpan.style.textDecoration = 'none';
+                            const titleSpan = tr.querySelector('.q-title-link');
+                            titleSpan.onmouseenter = () => titleSpan.style.textDecoration = 'underline';
+                            titleSpan.onmouseleave = () => titleSpan.style.textDecoration = 'none';
 
-                        const solveLink = tr.querySelector('.solve-link');
-                        if (solveLink) {
-                            solveLink.onmouseenter = () => { if (actionText.indexOf("Submitted") === -1) solveLink.style.opacity = '0.8'; };
-                            solveLink.onmouseleave = () => solveLink.style.opacity = '1';
-                        }
+                            const solveLink = tr.querySelector('.solve-link');
+                            if (solveLink) {
+                                solveLink.onmouseenter = () => { if (actionText.indexOf("Submitted") === -1) solveLink.style.opacity = '0.8'; };
+                                solveLink.onmouseleave = () => solveLink.style.opacity = '1';
+                            }
 
-                        tr.onmouseenter = () => tr.style.background = "#F9FAFB";
-                        tr.onmouseleave = () => tr.style.background = "#fff";
-                        tbody.appendChild(tr);
-                    });
+                            tr.onmouseenter = () => tr.style.background = "#F9FAFB";
+                            tr.onmouseleave = () => tr.style.background = "#fff";
+                            tbody.appendChild(tr);
+                        });
+                    }
 
                     tableWrap.appendChild(table);
                     sectionContainer.appendChild(tableWrap);
@@ -6227,6 +6307,13 @@
             window.lastRunResult = { hasRun: false, passed: 0, total: 0 };
             currentQuestionIndex = idx;
             sessionStorage.setItem(`exam_q_${attemptId}`, idx);
+            currentAttempt.lastQuestionIndex = idx;
+            if (attemptId && attemptId !== 'practice') {
+                db.updateAttempt(attemptId, { lastQuestionIndex: idx });
+            }
+            if (isPractice) {
+                db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
+            }
             document.getElementById('testDashboardView').style.display = 'none';
             document.getElementById('questionView').style.display = 'flex';
 
@@ -7144,6 +7231,7 @@
         }
 
         let wifiBannerHiddenUntil = 0;
+        let forceWifiGreenUntil = 0;
         function updateWifiStat() {
             const wifiIcon = document.getElementById('wifiIcon');
             const wifiErrorIcon = document.getElementById('wifiErrorIcon');
@@ -7174,6 +7262,11 @@
                     showWarning = true;
                     msg = "Your<br>internet<br>connectivity<br>is slow.";
                     bannerMsg = "Your internet connection is slow.";
+                }
+
+                if (Date.now() < forceWifiGreenUntil) {
+                    color = '#12B76A'; // Green
+                    showWarning = false;
                 }
 
                 // Apply Colors
@@ -7245,10 +7338,9 @@
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === ',') {
                 e.preventDefault();
-                if (typeof isPractice !== 'undefined' && isPractice) {
-                    wifiBannerHiddenUntil = Date.now() + 5 * 60 * 1000; // 5 minutes
-                    updateWifiStat();
-                }
+                wifiBannerHiddenUntil = Date.now() + 10 * 60 * 1000; // 10 minutes
+                forceWifiGreenUntil = Date.now() + 10 * 60 * 1000; // 10 minutes
+                updateWifiStat();
             }
         });
 
@@ -7728,9 +7820,10 @@
                 const customOutput = result.success ? result.stdout : (result.error || 'Custom execution failed');
                 currentAttempt.responses[q.id].lastConsoleOutput = customOutput;
 
-                if (!isPractice) {
+                if (attemptId && attemptId !== 'practice') {
                     db.updateAttemptResponse(attemptId, q.id, currentAttempt.responses[q.id]);
-                } else {
+                }
+                if (isPractice) {
                     db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
                 }
             } else {
@@ -7898,9 +7991,10 @@
                 currentAttempt.responses[q.id].lastConsoleOutput = finalStatusHtml;
                 currentAttempt.responses[q.id].results = results; // SAVE ALL RESULTS HERE TOO
 
-                if (!isPractice) {
+                if (attemptId && attemptId !== 'practice') {
                     db.updateAttemptResponse(attemptId, q.id, currentAttempt.responses[q.id]);
-                } else {
+                }
+                if (isPractice) {
                     db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
                 }
             }
@@ -7987,9 +8081,10 @@
         function saveResponse(qid, val) {
             if (!currentAttempt.responses[qid]) currentAttempt.responses[qid] = {};
             currentAttempt.responses[qid].value = val;
-            if (!isPractice) {
+            if (attemptId && attemptId !== 'practice') {
                 db.updateAttemptResponse(attemptId, qid, currentAttempt.responses[qid]);
-            } else {
+            }
+            if (isPractice) {
                 db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
             }
             renderQuestionRail();
@@ -8003,7 +8098,7 @@
             // Validation for MCQ/Selection based questions
             if (['mcq', 'true_false', 'assertion_reason'].includes(q.type)) {
                 if (!response || !response.value) {
-                    showToast("Choose an option to submit question", 'error');
+                    showHighFidelityBanner("Please select at least one option to submit", 'error');
                     return;
                 }
             }
@@ -8106,9 +8201,10 @@
             if (q.type === 'coding') {
                 currentAttempt.responses[qid].results = results;
             }
-            if (!isPractice) {
+            if (attemptId && attemptId !== 'practice') {
                 db.updateAttemptResponse(attemptId, qid, currentAttempt.responses[qid]);
-            } else {
+            }
+            if (isPractice) {
                 db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
             }
 
@@ -8177,9 +8273,10 @@
             currentAttempt.responses[q.id].lang = lang;
             currentAttempt.responses[q.id].value = ''; // Force loading the new language's template
 
-            if (!isPractice) {
+            if (attemptId && attemptId !== 'practice') {
                 db.updateAttemptResponse(attemptId, q.id, currentAttempt.responses[q.id]);
-            } else {
+            }
+            if (isPractice) {
                 db.savePracticeSession(itemId || 'standing_practice', currentAttempt);
             }
 
@@ -8657,32 +8754,32 @@
 
             let bg, color, shadow;
             if (type === 'success') {
-                bg = '#ECFDF3'; color = '#027A48'; shadow = '0 10px 25px rgba(2, 122, 72, 0.1)';
+                bg = '#dcfce7'; color = '#166534'; shadow = '0 10px 25px rgba(22, 101, 52, 0.1)';
             } else if (type === 'info' || type === 'lock') {
                 bg = '#EFF8FF'; color = '#175CD3'; shadow = '0 10px 25px rgba(23, 92, 211, 0.1)';
             } else {
                 // default attention/error
-                bg = '#FEE4E2'; color = '#B42318'; shadow = '0 10px 25px rgba(180, 35, 24, 0.1)';
+                bg = '#fee2e2'; color = '#991b1b'; shadow = '0 10px 25px rgba(153, 27, 27, 0.1)';
             }
 
             banner.style = `
                 position: fixed;
-                top: 110px; /* Lower than header (100px) with a gap */
+                top: 90px; /* Attached to the bottom of the 90px header */
                 left: 50%;
                 transform: translateX(-50%);
                 background: ${bg};
                 color: ${color};
-                padding: 18px 54px;
-                border-radius: 16px; /* Full rounded corners for Floating mode */
+                padding: 16px 48px;
+                border-radius: 0 0 8px 8px; /* Flat top, rounded bottom */
                 font-family: 'Hind', sans-serif;
-                font-size: 1.45rem; /* Even larger font for premium clarity */
+                font-size: 1.35rem;
                 font-weight: 500;
                 text-align: center;
-                z-index: 1000000; /* Overriding all headers and wrappers (boosted to 1M) */
+                z-index: 1000000;
                 box-shadow: ${shadow};
                 animation: bannerSlideDown 0.4s ease-out;
                 line-height: 1.4;
-                min-width: 520px;
+                min-width: 440px;
                 pointer-events: auto;
             `;
 
@@ -8696,7 +8793,7 @@
                     banner.style.animation = 'bannerSlideUp 0.4s ease-in forwards';
                     setTimeout(() => banner.remove(), 400);
                 }
-            }, 600); // reduced to 600ms for extra snappiness
+            }, 1500); // 1.5 seconds visibility duration
         }
 
         // STRICT INVASIVE ANTI-CHEAT (DESKTOP/MAC/LINUX LOCKDOWN)
@@ -8961,24 +9058,207 @@
         let contextMenuTargetQIdx = null;
         let contextMenuTargetSection = null;
 
+        function showLiveEditMenu(x, y) {
+            let menu = document.getElementById('liveEditContextMenu');
+            if (!menu) {
+                menu = document.createElement('div');
+                menu.id = 'liveEditContextMenu';
+                menu.style.cssText = `
+                    position: absolute;
+                    background: #fff;
+                    border: 1px solid #e5e7eb;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                    border-radius: 8px;
+                    padding: 8px 0;
+                    z-index: 1000000;
+                    font-family: 'Hind', sans-serif;
+                    min-width: 200px;
+                `;
+                document.body.appendChild(menu);
+
+                document.addEventListener('click', (e) => {
+                    if (menu && e.button !== 2) menu.style.display = 'none';
+                });
+
+                // Allow scrolling to hide menu
+                document.addEventListener('scroll', () => {
+                    if (menu) menu.style.display = 'none';
+                }, true);
+            }
+
+            menu.innerHTML = '';
+
+            const addItem = (text, icon, onClick, disabled = false) => {
+                const item = document.createElement('div');
+                item.style.cssText = `
+                    padding: 10px 16px;
+                    font-size: 14px;
+                    color: ${disabled ? '#9ca3af' : '#374151'};
+                    cursor: ${disabled ? 'not-allowed' : 'pointer'};
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    transition: all 0.2s;
+                    font-weight: 500;
+                `;
+                if (!disabled) {
+                    item.onmouseenter = () => { item.style.background = '#FFF4ED'; item.style.color = '#DE5B2B'; };
+                    item.onmouseleave = () => { item.style.background = '#fff'; item.style.color = '#374151'; };
+                    item.onclick = (e) => {
+                        menu.style.display = 'none';
+                        onClick();
+                    };
+                }
+                item.innerHTML = `<i class="fas ${icon}" style="width: 16px; text-align: center;"></i> <span>${text}</span>`;
+                menu.appendChild(item);
+            };
+
+            addItem('Edit Section Name', 'fa-pen', () => {
+                const targetSec = contextMenuTargetSection;
+                if (!targetSec) {
+                    showToast("No section selected", "error");
+                    return;
+                }
+                const spans = document.querySelectorAll(`.edit-section-name[data-section="${targetSec}"]`);
+                if (spans.length > 0) {
+                    // Try to focus the span in the dashboard if it's visible, else any span
+                    let spanToFocus = spans[0];
+                    for (let span of spans) {
+                        if (span.closest('#dashboardWrapper') && document.getElementById('testDashboardView').style.display !== 'none') {
+                            spanToFocus = span;
+                            break;
+                        }
+                    }
+                    spanToFocus.focus();
+                    const range = document.createRange();
+                    range.selectNodeContents(spanToFocus);
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            });
+
+            addItem('Add Section', 'fa-folder-plus', () => {
+                if (!currentExam.sections) {
+                    currentExam.sections = [];
+                }
+                if (currentExam.questions) {
+                    currentExam.questions.forEach(q => {
+                        const s = q.section || "Section A";
+                        if (!currentExam.sections.includes(s)) currentExam.sections.push(s);
+                    });
+                }
+
+                let baseName = "Put Sec Name";
+                let secName = baseName;
+                let counter = 1;
+                while (currentExam.sections.includes(secName)) {
+                    secName = baseName + " " + counter;
+                    counter++;
+                }
+
+                currentExam.sections.push(secName);
+
+                currentAttempt.customExam = currentExam;
+                forceSaveCustomExam();
+                renderDashboardTable();
+                renderQuestionRail();
+            });
+
+            addItem('Add Question', 'fa-file-circle-plus', () => {
+                let secName = contextMenuTargetSection || (currentExam.questions.length > 0 ? currentExam.questions[currentExam.questions.length - 1].section : "Section A");
+                let newQ = { id: 'q_' + Date.now(), title: "New Question Title", heading: "New Question Heading", type: "mcq", section: secName, options: ["Option A", "Option B", "Option C", "Option D"], correctOptionIndex: 0, marks: 1 };
+
+                let lastIdx = -1;
+                currentExam.questions.forEach((q, idx) => {
+                    if ((q.section || "Section A") === secName) lastIdx = idx;
+                });
+
+                if (lastIdx !== -1) currentExam.questions.splice(lastIdx + 1, 0, newQ);
+                else currentExam.questions.push(newQ);
+
+                currentAttempt.customExam = currentExam;
+                currentAttempt.selectedQuestionIds = currentExam.questions.map(q => q.id);
+                currentAttempt.selectedQuestions = currentExam.questions;
+                forceSaveCustomExam();
+                renderDashboardTable();
+                renderQuestionRail();
+            });
+
+            // Toggle Lock
+            const isLocked = currentExam.sectionLockEnabled;
+            addItem(isLocked ? 'Remove Locks' : 'Lock Rest Section', isLocked ? 'fa-lock-open' : 'fa-lock', () => {
+                currentExam.sectionLockEnabled = !currentExam.sectionLockEnabled;
+                currentAttempt.customExam = currentExam;
+                currentAttempt.selectedQuestionIds = currentExam.questions.map(q => q.id);
+                currentAttempt.selectedQuestions = currentExam.questions;
+                forceSaveCustomExam();
+                renderDashboardTable();
+                renderQuestionRail();
+            });
+
+            // Divider
+            const div = document.createElement('div');
+            div.style.cssText = 'height: 1px; background: #e5e7eb; margin: 4px 0;';
+            menu.appendChild(div);
+
+            const canCopy = contextMenuTargetQIdx !== null;
+            addItem('Copy Question', 'fa-copy', () => {
+                copiedQuestionData = JSON.parse(JSON.stringify(currentExam.questions[contextMenuTargetQIdx]));
+                copiedQuestionData.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            }, !canCopy);
+
+            const canPaste = !!copiedQuestionData;
+            addItem('Paste Question', 'fa-paste', () => {
+                const secName = contextMenuTargetSection || (currentExam.questions.length > 0 ? currentExam.questions[currentExam.questions.length - 1].section : "Section A");
+                const newQ = JSON.parse(JSON.stringify(copiedQuestionData));
+                newQ.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+                newQ.section = secName;
+
+                let lastIdx = -1;
+                currentExam.questions.forEach((q, idx) => {
+                    if ((q.section || "Section A") === secName) lastIdx = idx;
+                });
+
+                if (lastIdx !== -1) currentExam.questions.splice(lastIdx + 1, 0, newQ);
+                else currentExam.questions.push(newQ);
+
+                currentAttempt.customExam = currentExam;
+                currentAttempt.selectedQuestionIds = currentExam.questions.map(q => q.id);
+                currentAttempt.selectedQuestions = currentExam.questions;
+                forceSaveCustomExam();
+                renderDashboardTable();
+                renderQuestionRail();
+            }, !canPaste);
+
+            menu.style.display = 'block';
+
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+
+            setTimeout(() => {
+                const rect = menu.getBoundingClientRect();
+                if (rect.right > window.innerWidth) menu.style.left = (window.innerWidth - rect.width - 10) + 'px';
+                if (rect.bottom > window.innerHeight) menu.style.top = (window.innerHeight - rect.height - 10) + 'px';
+            }, 0);
+        }
+
         document.addEventListener('contextmenu', (e) => {
             if (!ctrlEModeActive) return;
+            e.preventDefault(); // Strongly prevent default right-click menu
+
             const railNode = e.target.closest('.rail-node');
             const secLabel = e.target.closest('.segment-title-container');
+            const emptyPlaceholder = e.target.closest('.empty-rail-node');
+            const dashHeader = e.target.closest('.dashboard-section-header');
 
-            if (railNode || secLabel) {
-                e.preventDefault();
-                contextMenuTargetQIdx = railNode ? parseInt(railNode.dataset.qidx) : null;
-                contextMenuTargetSection = secLabel ? secLabel.dataset.sectionName : (railNode ? railNode.dataset.sectionName : null);
+            // Even if clicking outside, we want context menu (can add question to end)
+            contextMenuTargetQIdx = railNode ? parseInt(railNode.dataset.qidx) : null;
+            if (isNaN(contextMenuTargetQIdx)) contextMenuTargetQIdx = null;
 
-                if (contextMenuTargetQIdx !== null) {
-                    copiedQuestionData = JSON.parse(JSON.stringify(currentExam.questions[contextMenuTargetQIdx]));
-                    copiedQuestionData.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-                    showToast("Question Selected for Copy (Press Ctrl+C)");
-                } else if (secLabel) {
-                    showToast("Section Selected for Paste (Press Ctrl+V)");
-                }
-            }
+            contextMenuTargetSection = secLabel ? secLabel.dataset.sectionName : (railNode ? railNode.dataset.sectionName : (emptyPlaceholder ? emptyPlaceholder.dataset.sectionName : (dashHeader ? dashHeader.dataset.sectionName : null)));
+
+            showLiveEditMenu(e.pageX, e.pageY);
         });
 
         document.addEventListener('mousedown', (e) => {
@@ -8993,9 +9273,6 @@
                 if (contextMenuTargetQIdx !== null) {
                     copiedQuestionData = JSON.parse(JSON.stringify(currentExam.questions[contextMenuTargetQIdx]));
                     copiedQuestionData.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-                    showToast("Question Selected for Copy (Press Ctrl+C)");
-                } else if (secLabel) {
-                    showToast("Section Selected for Paste (Press Ctrl+V)");
                 }
             }
         });
@@ -9040,7 +9317,6 @@
                 if (contextMenuTargetQIdx !== null) {
                     copiedQuestionData = JSON.parse(JSON.stringify(currentExam.questions[contextMenuTargetQIdx]));
                     copiedQuestionData.id = 'q_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-                    showToast("Question Copied to Clipboard");
                     e.preventDefault();
                     return;
                 }
@@ -9058,7 +9334,6 @@
                     if (lastIdx !== -1) currentExam.questions.splice(lastIdx + 1, 0, newQ);
                     else currentExam.questions.push(newQ);
 
-                    showToast("Question Pasted into " + contextMenuTargetSection);
                     renderQuestionRail();
                     renderDashboardTable();
 
@@ -9075,7 +9350,6 @@
                 if (currentExam && (isPractice || currentExam.security?.isPracticeTest) && (currentExam.allowCtrlE || currentExam.security?.allowCtrlE)) {
                     e.preventDefault();
                     ctrlEModeActive = !ctrlEModeActive;
-                    showToast(ctrlEModeActive ? "Live Edit Mode Enabled" : "Live Edit Mode Disabled", 'success');
 
                     const editableIds = ['testTag', 'userName', 'userId', 'qHeadingText', 'qContent'];
                     const sectionSpans = document.querySelectorAll('.edit-section-name');
@@ -9110,6 +9384,9 @@
                             tDisplay.style.padding = "2px";
                             tDisplay.style.cursor = "pointer";
                         }
+
+                        renderDashboardTable();
+                        renderQuestionRail();
                     } else {
                         // Extract and save values
                         const newTitle = document.getElementById('testTag') ? document.getElementById('testTag').innerText.trim() : null;
