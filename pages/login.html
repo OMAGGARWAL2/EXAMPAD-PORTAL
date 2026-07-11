@@ -683,7 +683,8 @@
     <div class="auth-card">
         <div class="auth-header">
             <div class="logo-box" style="margin-bottom: 24px;">
-                <img src="https://www.chitkara.edu.in/chitkara-university-logo.png" alt="Chitkara University" style="height: 84px; object-fit: contain;">
+                <img src="https://www.chitkara.edu.in/chitkara-university-logo.png" alt="Chitkara University"
+                    style="height: 84px; object-fit: contain;">
             </div>
             <h2>Log into your account</h2>
         </div>
@@ -779,6 +780,21 @@
     </div>
 
     <div class="message-toast" id="toast">Message content</div>
+
+    <div id="deleteConfirmBanner"
+        style="display: none; position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-20px); opacity: 0; background: white; padding: 24px 32px; z-index: 9999; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); border-radius: 12px; border: 1px solid #eee; text-align: center; flex-direction: column; gap: 20px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div id="deleteConfirmText" style="font-weight: 500; font-size: 1.05rem; color: #444;">do you really want to
+            remove this identity?</div>
+        <div style="display: flex; gap: 16px; justify-content: center;">
+            <button id="confirmDeleteBtn"
+                style="background: #e30613; border: none; padding: 10px 32px; border-radius: 30px; color: white; font-weight: 500; font-size: 1rem; cursor: pointer; transition: transform 0.1s;"
+                onmousedown="this.style.transform='scale(0.95)'"
+                onmouseup="this.style.transform='scale(1)'">Yes</button>
+            <button id="cancelDeleteBtn"
+                style="background: #fde8e8; border: none; padding: 10px 32px; border-radius: 30px; color: #2d3436; font-weight: 500; font-size: 1rem; cursor: pointer; transition: transform 0.1s;"
+                onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">No</button>
+        </div>
+    </div>
 
     <script src="../js/db.js"></script>
     <script src="../js/auth.js"></script>

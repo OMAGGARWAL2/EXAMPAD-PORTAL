@@ -129,17 +129,68 @@ function renderHistoryDropdown() {
         delBtn.onmousedown = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            if (confirm(`Delete identity ${u.email || u.rollNo} from database? You will be able to create it again.`)) {
-                let currentUsers = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
-                currentUsers = currentUsers.filter(user => user.id !== u.id);
-                localStorage.setItem('TESTPAD_users', JSON.stringify(currentUsers));
+            
+            const banner = document.getElementById('deleteConfirmBanner');
+            if (banner) {
+                const text = document.getElementById('deleteConfirmText');
+                const confirmBtn = document.getElementById('confirmDeleteBtn');
+                const cancelBtn = document.getElementById('cancelDeleteBtn');
                 
-                let history = JSON.parse(localStorage.getItem('TESTPAD_login_history')) || [];
-                history = history.filter(item => atob(item.e) !== (u.email || u.rollNo));
-                localStorage.setItem('TESTPAD_login_history', JSON.stringify(history));
+                text.textContent = `Delete identity ${u.email || u.rollNo} from records? You can create it again.`;
+                banner.style.display = 'flex';
                 
-                showMessage(`Identity deleted: ${u.email || u.rollNo}`);
-                renderHistoryDropdown();
+                // Close dropdown so it doesn't overlap weirdly
+                const dropdown = document.getElementById('historyDropdown');
+                if (dropdown) dropdown.style.display = 'none';
+
+                requestAnimationFrame(() => {
+                    banner.style.transform = 'translateX(-50%) translateY(0)';
+                    banner.style.opacity = '1';
+                });
+                
+                confirmBtn.onclick = () => {
+                    banner.style.transform = 'translateX(-50%) translateY(-20px)';
+                    banner.style.opacity = '0';
+                    setTimeout(() => { banner.style.display = 'none'; }, 300);
+                    
+                    let currentUsers = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
+                    currentUsers = currentUsers.filter(user => user.id !== u.id);
+                    localStorage.setItem('TESTPAD_users', JSON.stringify(currentUsers));
+                    
+                    let history = JSON.parse(localStorage.getItem('TESTPAD_login_history')) || [];
+                    history = history.filter(item => atob(item.e) !== (u.email || u.rollNo));
+                    localStorage.setItem('TESTPAD_login_history', JSON.stringify(history));
+                    
+                    showMessage(`Identity deleted: ${u.email || u.rollNo}`);
+                    // Ensure the email field gets cleared if it was the one deleted
+                    const emailField = document.getElementById('loginEmail');
+                    if (emailField && emailField.value === (u.email || u.rollNo)) {
+                        emailField.value = '';
+                        const passField = document.getElementById('loginPassword');
+                        if (passField) passField.value = '';
+                    }
+                    renderHistoryDropdown();
+                };
+                
+                cancelBtn.onclick = () => {
+                    banner.style.transform = 'translateX(-50%) translateY(-20px)';
+                    banner.style.opacity = '0';
+                    setTimeout(() => { banner.style.display = 'none'; }, 300);
+                };
+            } else {
+                // Fallback
+                if (confirm(`Delete identity ${u.email || u.rollNo} from database? You will be able to create it again.`)) {
+                    let currentUsers = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
+                    currentUsers = currentUsers.filter(user => user.id !== u.id);
+                    localStorage.setItem('TESTPAD_users', JSON.stringify(currentUsers));
+                    
+                    let history = JSON.parse(localStorage.getItem('TESTPAD_login_history')) || [];
+                    history = history.filter(item => atob(item.e) !== (u.email || u.rollNo));
+                    localStorage.setItem('TESTPAD_login_history', JSON.stringify(history));
+                    
+                    showMessage(`Identity deleted: ${u.email || u.rollNo}`);
+                    renderHistoryDropdown();
+                }
             }
         };
 

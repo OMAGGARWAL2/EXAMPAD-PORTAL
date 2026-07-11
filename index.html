@@ -50,6 +50,25 @@
             flex-direction: column;
         }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(220, 38, 38, 0.4);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(220, 38, 38, 0.6);
+        }
+
         /* Ambient Geometric Background */
         .page-bg {
             position: fixed;
@@ -163,7 +182,7 @@
 
         /* --- Hero Section --- */
         .hero {
-            padding: 60px 0 60px;
+            padding: 40px 0 20px;
             text-align: center;
             position: relative;
         }
@@ -233,12 +252,14 @@
         .portal-card {
             background: var(--bg-card);
             border: 2px solid var(--card-border);
-            border-radius: 16px;
-            padding: 48px 32px;
+            border-radius: 6px;
+            padding: 56px 32px;
+            min-height: 420px;
             text-decoration: none;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -254,38 +275,86 @@
         }
 
         .card-icon-wrapper {
-            width: 64px;
-            height: 64px;
+            width: 110px;
+            height: 110px;
             background: var(--bg-site);
             border: 1px solid var(--card-border);
-            border-radius: 14px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 3rem;
             color: var(--text-main);
-            margin-bottom: 20px;
+            margin-bottom: 32px;
             transition: var(--transition);
+            position: relative;
+            z-index: 1;
         }
 
         .portal-card:hover .card-icon-wrapper {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
-            transform: scale(1.1) rotate(-5deg);
+            transform: scale(1.1);
         }
 
         .card-title {
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 600;
             color: var(--text-main);
             margin-bottom: 0;
             letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
         }
+
+        .card-watermark {
+            position: absolute;
+            right: -30px;
+            bottom: -30px;
+            width: 320px !important;
+            height: 320px !important;
+            stroke-width: 1px;
+            color: var(--text-muted);
+            opacity: 0.03;
+            transform: rotate(-10deg);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .portal-card:hover .card-watermark {
+            opacity: 0.06;
+            color: var(--primary);
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        
+
+        
+
+        .portal-card:hover 
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), #fb7185);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .portal-card:hover::before {
+            opacity: 1;
+        }
+
 
         /* --- Feature Highlights --- */
         .features-section {
-            padding: 80px 0;
+            padding: 40px 0;
             background: white;
             border-top: 1px solid var(--card-border);
             border-bottom: 1px solid var(--card-border);
@@ -447,6 +516,18 @@
             }
         }
     </style>
+
+    <style>
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+    </style>
 </head>
 
 <body>
@@ -457,11 +538,23 @@
     <header>
         <div class="container">
             <a href="index.html" class="brand-container" style="padding: 0;">
-                <img src="https://www.chitkara.edu.in/chitkara-university-logo.png" alt="Chitkara University" style="height: 60px; object-fit: contain;">
+                <img src="https://www.chitkara.edu.in/chitkara-university-logo.png" alt="Chitkara University"
+                    style="height: 60px; object-fit: contain;">
             </a>
 
             <div style="display: flex; gap: 12px; align-items: center;">
-                <button onclick="window.location.reload()" style="background: white; border: 1px solid var(--card-border); width: 38px; height: 38px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'; this.style.transform='translateY(-1px)'; this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.color='var(--text-muted)'; this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)'" title="Refresh">
+                <button onclick="clearStorage()"
+                    style="background: #fee2e2; border: 1px solid #fca5a5; width: auto; height: 38px; padding: 0 16px; border-radius: 30px; cursor: pointer; color: #b91c1c; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); transition: all 0.2s; font-weight: 600; font-size: 0.8rem; font-family: 'Segoe UI', sans-serif;"
+                    onmouseover="this.style.background='#fecaca'; this.style.transform='translateY(-1px)'; this.style.boxShadow='var(--shadow-md)'"
+                    onmouseout="this.style.background='#fee2e2'; this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)'"
+                    title="Clear Storage (Fix 5MB Quota)">
+                    <i data-lucide="trash-2" style="width: 14px; height: 14px; margin-right: 6px;"></i> Free Space
+                </button>
+                <button onclick="window.location.reload()"
+                    style="background: white; border: 1px solid var(--card-border); width: 38px; height: 38px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); transition: all 0.2s;"
+                    onmouseover="this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'; this.style.transform='translateY(-1px)'; this.style.boxShadow='var(--shadow-md)'"
+                    onmouseout="this.style.borderColor='var(--card-border)'; this.style.color='var(--text-muted)'; this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)'"
+                    title="Refresh">
                     <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
                 </button>
             </div>
@@ -475,6 +568,7 @@
             <div class="portal-grid">
                 <!-- Administrative / Instructor Login -->
                 <div class="portal-card" onclick="transitionTo('pages/login.html?role=teacher')">
+                    <i data-lucide="presentation" class="card-watermark"></i>
                     <div class="card-icon-wrapper">
                         <i data-lucide="presentation"></i>
                     </div>
@@ -483,15 +577,16 @@
 
                 <!-- Student Login -->
                 <div class="portal-card" onclick="transitionTo('pages/login.html?role=student')">
+                    <i data-lucide="book-open" class="card-watermark"></i>
                     <div class="card-icon-wrapper">
-                        <i data-lucide="user-square-2"></i>
+                        <i data-lucide="book-open"></i>
                     </div>
                     <h2 class="card-title">Candidate Gateway</h2>
                 </div>
             </div>
 
             <div
-                style="margin-top: -40px; margin-bottom: 80px; display: flex; justify-content: center; gap: 40px; animation: slideUpFade 0.8s ease-out 0.4s both;">
+                style="margin-top: -40px; margin-bottom: 20px; display: flex; justify-content: center; gap: 40px; animation: slideUpFade 0.8s ease-out 0.4s both;">
                 <a href="#" onclick="transitionTo('pages/login.html?tab=signup&role=student')"
                     style="color: var(--primary); text-decoration: none; font-weight: 700; font-size: 0.95rem;">
                     <i data-lucide="user-plus"
@@ -541,33 +636,7 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-left">
-                <div class="footer-logo">
-                    <img src="logo.jpg" alt="Logo" width="24">
-                    <span style="font-weight: 700; color: var(--text-main);">CHITKARA</span>
-                </div>
-                <div class="footer-copyright" style="margin-top: 12px; cursor: pointer; user-select: none;"
-                    id="quickStartTrigger" onclick="handleQuickStart()">
-                    &copy; 2026 <span style="text-decoration: none;">Powered by CHITKARA Architecture.</span><br>All
-                    rights reserved.
-                </div>
-            </div>
-            <div class="footer-links">
-                <a href="#"><i data-lucide="shield-check"
-                        style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i> System
-                    Integrity Policy</a>
-                <a href="#"><i data-lucide="file-text"
-                        style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i> Support
-                    Documents</a>
-                <a href="#"><i data-lucide="scale"
-                        style="width: 14px; height: 14px; margin-right: 4px; vertical-align: middle;"></i> Exampad
-                    Platform terms</a>
-            </div>
-        </div>
-    </footer>
+
 
     <script>
         function transitionTo(url) {
@@ -602,7 +671,7 @@
 
                 const exams = JSON.parse(localStorage.getItem('TESTPAD_exams')) || [];
                 const attempts = JSON.parse(localStorage.getItem('TESTPAD_attempts')) || [];
-                
+
                 // Find latest exam that is NOT submitted or reviewed
                 const latestExam = exams.reverse().find(e => {
                     const hasFinished = attempts.some(a => a.examId === e.id && a.studentId === student.id && (a.status === 'submitted' || a.status === 'reviewed'));
@@ -619,6 +688,15 @@
             } catch (e) {
                 console.error("Quick Start failed:", e);
                 alert("Quick Start failed.");
+            }
+        }
+        function clearStorage() {
+            if (confirm("⚠️ Storage limit reached. Are you sure you want to clear your saved exams? This will free up browser storage space but delete past drafts and exams.")) {
+                localStorage.removeItem('TESTPAD_exams');
+                localStorage.removeItem('TESTPAD_question_pool');
+                localStorage.removeItem('TESTPAD_preview_data');
+                alert("Storage successfully cleared! You can now create new exams without quota errors.");
+                window.location.reload();
             }
         }
     </script>
