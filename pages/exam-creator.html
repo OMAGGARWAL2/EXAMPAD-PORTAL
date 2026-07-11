@@ -7773,34 +7773,28 @@
                     desc: '',
                     content: `
                     <style>
-                        @keyframes thumbPop {
-                            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
-                            70% { transform: scale(1.2) rotate(10deg); opacity: 1; }
-                            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-                        }
-                    </style>
-                    <div style="font-family: 'Hind', sans-serif; color: #000; text-align:center; padding: 0px 5px;">
-                        <div style="font-size: 3rem; color: #000; margin-bottom: 12px; animation: thumbPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                               <div style="font-family: 'Hind', sans-serif; color: #000; text-align:center; padding: 0px 5px;">
+                        <div style="font-size: 3rem; color: #D35400; margin-bottom: 12px; animation: thumbPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
                             <i class="fas fa-thumbs-up"></i>
                         </div>
-                        <h2 style="font-weight: 700; margin-bottom: 16px; font-size: 1.4rem; letter-spacing: -0.5px;">Test Created Successfully</h2>
+                        <h2 style="font-weight: 700; margin-bottom: 16px; font-size: 1.4rem; letter-spacing: -0.5px; color: #D35400;">Test Created Successfully</h2>
                         
-                        <div style="margin-bottom:16px; text-align: left;">
-                             <label style="font-size:0.7rem; font-weight:700; display:block; margin-bottom:4px; text-transform:uppercase;">Direct Assessment URL</label>
+                        <div style="margin-bottom:16px; text-align: left; background:var(--primary-soft); padding: 12px; border-radius: 6px; border: 1px solid #ffe8dd;">
+                             <label style="font-size:0.7rem; font-weight:700; display:block; margin-bottom:6px; text-transform:uppercase; color: var(--primary);">Direct Assessment URL</label>
                              <div style="display:flex; gap:0px; align-items:center;">
-                                <input type="text" readonly value="https://exam.testpad.chitpara.edu.in/test/${testId}" style="flex:1; background:#fff; border:1px solid #000; padding: 8px 10px; border-radius: 0; font-size:0.8rem; color:#000; font-weight:500;" id="finalLink">
-                                <button onclick="navigator.clipboard.writeText(document.getElementById('finalLink').value); showToast('Link Copied!')" style="background:#000; color:#fff; border:1px solid #000; border-left: none; padding:8px 14px; border-radius: 0; font-size:0.8rem; cursor:pointer; font-weight:600;"><i class="fas fa-copy"></i></button>
+                                <input type="text" readonly value="https://exam.testpad.chitpara.edu.in/test/${testId}" style="flex:1; background:#fff; border:1px solid #ffccb3; padding: 8px 10px; border-radius: 4px 0 0 4px; font-size:0.8rem; color:#d96c33; font-weight:500;" id="finalLink">
+                                <button onclick="navigator.clipboard.writeText(document.getElementById('finalLink').value); showToast('Link Copied!')" style="background:var(--primary); color:#fff; border:1px solid var(--primary); border-left: none; padding:8px 14px; border-radius: 0 4px 4px 0; font-size:0.8rem; cursor:pointer; font-weight:600;"><i class="fas fa-copy"></i></button>
                              </div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; text-align: left;">
-                            <div style="border:1px solid #000; padding:10px; border-radius: 0;">
-                                <div style="font-size:0.65rem; font-weight:700; margin-bottom: 2px; text-transform:uppercase;">Test Code</div>
-                                <div style="font-size:1.15rem; font-weight:700;">${testId}</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; text-align: left;">
+                            <div style="border:1px solid #ffe8dd; padding:10px; border-radius: 6px; background: #fffaf7;">
+                                <div style="font-size:0.65rem; font-weight:700; margin-bottom: 2px; text-transform:uppercase; color: #666;">Test Code</div>
+                                <div style="font-size:1.15rem; font-weight:700; color: var(--primary);">${testId}</div>
                             </div>
-                            <div style="border:1px solid #000; padding:10px; border-radius: 0;">
-                                <div style="font-size:0.65rem; font-weight:700; margin-bottom: 2px; text-transform:uppercase;">Passcode</div>
-                                <div style="font-size:1.15rem; font-weight:700;">${passcode}</div>
+                            <div style="border:1px solid #ffe8dd; padding:10px; border-radius: 6px; background: #fffaf7;">
+                                <div style="font-size:0.65rem; font-weight:700; margin-bottom: 2px; text-transform:uppercase; color: #666;">Passcode</div>
+                                <div style="font-size:1.15rem; font-weight:700; color: #333;">${passcode}</div>
                             </div>
                         </div>
 
@@ -7834,7 +7828,7 @@
                         </div>
                     </div>
                 `,
-                    confirmText: 'Return to Command Center',
+                    confirmText: 'Return to Home',
                     onConfirm: goBack
                 });
             } catch (e) {
