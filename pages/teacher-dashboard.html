@@ -1535,6 +1535,13 @@
             }
         }
 
+        document.addEventListener('keydown', function(event) {
+            if ((event.key === 'l' || event.key === 'L') && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+                auth.logout();
+                location.href = '../index.html';
+            }
+        });
+
         init();
     </script>
 </body>

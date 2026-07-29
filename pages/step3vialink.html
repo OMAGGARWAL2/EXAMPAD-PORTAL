@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TESTPAD</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../js/db.js"></script>
@@ -33,6 +33,20 @@
             position: relative;
         }
 
+        body::after {
+            content: "";
+            background-image: url(../BGNEW01.png);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            background-position: top;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: -5;
+        }
+
         .bg-container {
             position: fixed;
             top: 0;
@@ -40,15 +54,13 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background-color: #fffaf5;
+            background-color: #ffffff;
             overflow: hidden;
         }
 
         .bg-container svg {
             width: 100%;
             height: 100%;
-            transform: scale(1.1);
-            filter: blur(2px);
         }
 
         .top-left-logo {
@@ -88,7 +100,7 @@
             display: flex;
             width: 100%;
             max-width: 320px;
-            height: 10px;
+            height: 6px;
             margin-bottom: 35px;
             border-radius: 0px;
             overflow: hidden;
@@ -158,12 +170,14 @@
             font-size: 1.1rem;
             color: var(--text-muted);
             margin-bottom: 5px;
+            font-family: 'Hind', sans-serif;
         }
 
         .stat-value {
             font-size: 1.6rem;
             font-weight: 700;
             color: var(--primary-orange);
+            font-family: 'Hind', sans-serif;
         }
 
         .instruction-list {
@@ -276,20 +290,19 @@
     </style>
 
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
     </style>
 </head>
 
 <body>
-    <div class="bg-container">
-        <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1440,0 L1440,900 C1100,700 800,1000 600,600 C400,200 1000,0 1440,0 Z" fill="#fde6d8"
-                opacity="0.5"></path>
-            <path d="M0,900 L0,700 C400,850 720,800 1000,300 C1200,-100 1440,100 1440,100 L1440,900 Z" fill="#f7d8c3"
-                opacity="0.7"></path>
-        </svg>
-    </div>
 
     <div class="top-left-logo">
         <img src="../logo.jpg" alt="Exampad Logo">
@@ -302,7 +315,7 @@
                 <div class="progress-segment segment-2"></div>
                 <div class="progress-segment segment-3"></div>
             </div>
-            <h1 id="testTitle" style="font-size: 2.2rem; color: #2d2d2d; text-align: left; margin: 0;">Loading Test
+            <h1 id="testTitle" style="font-size: 1.8rem; font-weight: 500; color: #2d2d2d; font-family: 'Hind', sans-serif; text-align: left; margin: 0;">Loading Test
                 Details...</h1>
         </div>
 
@@ -446,12 +459,24 @@
 
             // Small delay for effect
             setTimeout(() => {
-                const attemptRes = db.startAttempt(currentExam.id, currentUser.id);
+                let attemptRes = db.startAttempt(currentExam.id, currentUser.id);
+                if (!attemptRes.success && attemptRes.existingAttempt) {
+                    const status = attemptRes.existingAttempt.status;
+                    if (status === 'submitted' || status === 'reviewed' || status === 'completed') {
+                        // Start a fresh re-attempt
+                        attemptRes = db.startAttempt(currentExam.id, currentUser.id, true);
+                    }
+                }
+
                 if (attemptRes.success || attemptRes.existingAttempt) {
                     const attempt = attemptRes.attempt || attemptRes.existingAttempt;
                     if (Object.keys(verificationData).length > 0) {
                         db.updateAttempt(attempt.id, { verificationData });
                     }
+                    // Save roll number for the watermark in exam-attempt.html
+                    const roll = currentUser.rollNo || currentUser.id || 'STUDENT';
+                    sessionStorage.setItem(`exam_roll_${attempt.id}`, roll);
+
                     window.location.href = 'exam-attempt.html?attemptId=' + attempt.id + '&vialink=true';
                 } else {
                     document.getElementById('loadingOverlay').style.display = 'none';

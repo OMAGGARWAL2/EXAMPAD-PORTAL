@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&family=Mulish:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <!-- Quill Rich Text Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -26,6 +26,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #DE6834; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { opacity: 0.8; }
+
         .flatpickr-calendar {
             font-family: 'Montserrat', sans-serif !important;
             border-radius: 0 !important;
@@ -245,6 +251,77 @@
             border: 1px solid #106ebe !important;
             background-color: #ffffff;
             box-shadow: 0 0 0 1px #106ebe;
+        }
+
+        /* Custom Font Dropdown */
+        .stb-custom-select {
+            position: relative;
+            width: 140px;
+            height: 26px;
+            font-size: 0.8rem;
+            font-family: 'Segoe UI', 'Montserrat', sans-serif;
+            color: #333;
+            outline: none;
+            margin-right: 4px;
+        }
+        .stb-select-header {
+            border: 1px solid transparent;
+            border-radius: 2px;
+            padding: 0 8px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.2s;
+        }
+        .stb-custom-select:hover .stb-select-header {
+            border: 1px solid #c8c6c4;
+            background-color: #f3f2f1;
+        }
+        .stb-custom-select:focus .stb-select-header {
+            border: 1px solid #106ebe !important;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 1px #106ebe;
+        }
+        .stb-select-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 160px;
+            background: #ffffff;
+            border: 1px solid #e1dfdd;
+            border-radius: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-height: 240px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+        .stb-select-list.show {
+            display: block;
+        }
+        .stb-select-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #333;
+            transition: background 0.15s;
+        }
+        .stb-select-item:hover {
+            background: rgba(222, 104, 52, 0.15);
+            color: var(--primary);
+        }
+        .stb-select-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .stb-select-list::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        .stb-select-list::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
         }
 
         .stb-input {
@@ -3327,14 +3404,29 @@
                                         <button class="stb-icon-btn" title="Redo" onclick="quill.history.redo()"><i
                                                 class="fas fa-redo"></i></button>
                                         <div class="stb-divider"></div>
-                                        <select class="stb-select" style="width:130px;"
-                                            onchange="quill.format('font', this.value); this.value=''">
-                                            <option value="">Font Family</option>
-                                            <option value="Inter">Inter</option>
-                                            <option value="Outfit">Outfit</option>
-                                            <option value="Roboto">Roboto</option>
-                                            <option value="JetBrains Mono">Monospace</option>
-                                        </select>
+                                        <!-- Custom Font Dropdown -->
+                                        <div class="stb-custom-select" id="customFontPicker" tabindex="0" onblur="setTimeout(() => document.getElementById('fontSelectList').classList.remove('show'), 150)">
+                                            <div class="stb-select-header" onclick="document.getElementById('fontSelectList').classList.toggle('show')">
+                                                <span id="fontSelectLabel">Font Family</span>
+                                                <i class="fas fa-chevron-down" style="font-size:0.7rem; color:#888;"></i>
+                                            </div>
+                                            <div class="stb-select-list" id="fontSelectList">
+                                                <div class="stb-select-item" style="font-family: Arial;" onclick="selectCustomFont('Arial', 'Arial')">Arial</div>
+                                                <div class="stb-select-item" style="font-family: 'Comic Sans MS';" onclick="selectCustomFont('Comic Sans MS', 'Comic Sans')">Comic Sans</div>
+                                                <div class="stb-select-item" style="font-family: 'Courier New';" onclick="selectCustomFont('Courier New', 'Courier New')">Courier New</div>
+                                                <div class="stb-select-item" style="font-family: Georgia;" onclick="selectCustomFont('Georgia', 'Georgia')">Georgia</div>
+                                                <div class="stb-select-item" style="font-family: Helvetica;" onclick="selectCustomFont('Helvetica', 'Helvetica')">Helvetica</div>
+                                                <div class="stb-select-item" style="font-family: 'Lucida Sans Unicode';" onclick="selectCustomFont('Lucida Sans Unicode', 'Lucida')">Lucida</div>
+                                                <div class="stb-select-item" style="font-family: Tahoma;" onclick="selectCustomFont('Tahoma', 'Tahoma')">Tahoma</div>
+                                                <div class="stb-select-item" style="font-family: 'Times New Roman';" onclick="selectCustomFont('Times New Roman', 'Times New Roman')">Times New Roman</div>
+                                                <div class="stb-select-item" style="font-family: 'Trebuchet MS';" onclick="selectCustomFont('Trebuchet MS', 'Trebuchet')">Trebuchet</div>
+                                                <div class="stb-select-item" style="font-family: Verdana;" onclick="selectCustomFont('Verdana', 'Verdana')">Verdana</div>
+                                                <div class="stb-select-item" style="font-family: Inter;" onclick="selectCustomFont('Inter', 'Inter')">Inter</div>
+                                                <div class="stb-select-item" style="font-family: Outfit;" onclick="selectCustomFont('Outfit', 'Outfit')">Outfit</div>
+                                                <div class="stb-select-item" style="font-family: Montserrat;" onclick="selectCustomFont('Montserrat', 'Montserrat')">Montserrat</div>
+                                                <div class="stb-select-item" style="font-family: Hind;" onclick="selectCustomFont('Hind', 'Hind')">Hind</div>
+                                            </div>
+                                        </div>
                                         <select class="stb-select" style="width:90px;"
                                             onchange="quill.format('size', this.value); this.value=''">
                                             <option value="">Size</option>
@@ -4180,35 +4272,39 @@
                         assessment live.</p>
 
                     <div
-                        style="position: relative; background: #fff; border: 1px solid rgba(217,108,51,0.2); border-left: 6px solid var(--primary); padding: 30px; border-radius: 0; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(217,108,51,0.05); overflow: hidden; transition: all 0.3s ease;">
+                        style="position: relative; background: #fff url('../assets/BGNEW01.png') center/cover; padding: 30px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); overflow: hidden; font-family: 'Mulish', sans-serif;">
                         
-                        <div id="testIdentityWatermark" style="position: absolute; right: 10%; top: 50%; transform: translateY(-50%) rotate(-10deg); font-size: 6rem; font-weight: 900; color: rgba(217,108,51,0.07); white-space: nowrap; pointer-events: none; user-select: none; font-family: 'Montserrat', sans-serif; letter-spacing: -1px; z-index: 0; transition: all 0.3s ease;">
-                            EXAMPAD
+                        <div id="testIdentityWatermark" style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 0; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTIwJz48dGV4dCB4PSc1MCUnIHk9JzUwJScgdHJhbnNmb3JtPSdyb3RhdGUoLTIwIDkwIDYwKScgdGV4dC1hbmNob3I9J21pZGRsZScgZm9udC1mYW1pbHk9J0FyaWFsLCBzYW5zLXNlcmlmJyBmb250LXNpemU9JzIyJyBmb250LXdlaWdodD0nYm9sZCcgZmlsbD0nIzAwMCc+RVhBTVBBRDwvdGV4dD48L3N2Zz4='); background-repeat: repeat; transition: all 0.3s ease;">
                         </div>
 
                         <div style="display:flex; flex-direction:column; gap:24px; position: relative; z-index: 1;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span
-                                    style="font-size:1.1rem; font-weight:800; color:var(--primary); font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px; text-transform: uppercase;">
-                                    RELEASE STATUS
+                                    style="font-size:1.1rem; font-weight:800; color:var(--primary); letter-spacing: 0.5px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-rocket"></i> RELEASE STATUS
                                 </span>
                                 <span
-                                    style="background:var(--primary); color:#fff; padding:8px 16px; border-radius: 0; font-size:0.9rem; font-weight:800; font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(217, 108, 51, 0.3);">
-                                    DRAFT MODE
+                                    style="background:var(--primary); color:#fff; padding:8px 16px; border-radius: 6px; font-size:0.9rem; font-weight:800; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(217, 108, 51, 0.3); display: flex; align-items: center; gap: 6px;">
+                                    <i class="fas fa-file-signature"></i> DRAFT MODE
                                 </span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px dashed rgba(217,108,51,0.3); padding-top: 20px;">
-                                <div style="display:flex; flex-direction:column;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="display:flex; flex-direction:column; gap: 4px;">
                                     <span
-                                        style="font-size:1.2rem; font-weight:800; color:#2d3748; font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px;">TEST
-                                        IDENTITY</span>
-                                    <span style="font-size:0.9rem; color:#718096; font-weight:500;">Custom unique URL slug</span>
+                                        style="font-size:1.2rem; font-weight:800; color:#2d3748; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-fingerprint" style="color: var(--primary);"></i> TEST IDENTITY
+                                    </span>
+                                    <span style="font-size:0.9rem; color:#718096; font-weight:600; padding-left: 26px;">Custom unique URL slug</span>
                                 </div>
                                 <input type="text" id="customTestId" placeholder="e.g. ping456net789"
-                                    style="padding: 12px 16px; border: 2px solid rgba(217, 108, 51, 0.4); background: #ffffff; border-radius: 0; font-family: 'JetBrains Mono', monospace; color: var(--primary); font-weight: 800; width: 280px; outline: none; text-align: right; font-size: 1.25rem; transition: all 0.2s; user-select: text !important; pointer-events: auto !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);"
-                                    onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 4px rgba(217, 108, 51, 0.15)';"
-                                    onblur="this.style.borderColor='rgba(217, 108, 51, 0.4)'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.02)';"
-                                    oninput="document.getElementById('testIdentityWatermark').textContent = (this.value || 'EXAMPAD').toUpperCase();">
+                                    style="padding: 14px 20px; border: 2px solid rgba(217, 108, 51, 0.2); background: rgba(255, 255, 255, 0.85); border-radius: 8px; font-family: 'Mulish', sans-serif; color: var(--primary); font-weight: 800; width: 340px; outline: none; text-align: right; font-size: 1.5rem; letter-spacing: 0.5px; transition: all 0.3s ease; user-select: text !important; pointer-events: auto !important; box-shadow: 0 4px 12px rgba(0,0,0,0.04); backdrop-filter: blur(4px);"
+                                    onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 6px 16px rgba(217, 108, 51, 0.2), 0 0 0 4px rgba(217, 108, 51, 0.1)'; this.style.transform='translateY(-2px)';"
+                                    onblur="this.style.borderColor='rgba(217, 108, 51, 0.2)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.04)'; this.style.transform='translateY(0)';"
+                                    oninput="
+                                        const text = this.value || 'EXAMPAD';
+                                        const svg = '<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'120\'><text x=\'50%\' y=\'50%\' transform=\'rotate(-20 90 60)\' text-anchor=\'middle\' font-family=\'Arial, sans-serif\' font-size=\'22\' font-weight=\'bold\' fill=\'#000\'>' + text + '</text></svg>';
+                                        document.getElementById('testIdentityWatermark').style.backgroundImage = 'url(&quot;data:image/svg+xml;base64,' + btoa(svg) + '&quot;)';
+                                    ">
                             </div>
                         </div>
                     </div>
@@ -4592,7 +4688,7 @@
 <script>
     // Custom Font & Size registration for Quill
     const Font = Quill.import('attributors/style/font');
-    Font.whitelist = ['Inter', 'Outfit', 'Roboto', 'Arial', 'Times New Roman', 'Georgia', 'Garamond', 'Tex Gyre Schola', 'Century Schoolbook', 'JetBrains Mono'];
+    Font.whitelist = ['Arial', 'Comic Sans MS', 'Courier New', 'Georgia', 'Helvetica', 'Lucida Sans Unicode', 'Tahoma', 'Times New Roman', 'Trebuchet MS', 'Verdana', 'Inter', 'Outfit', 'Montserrat', 'Hind'];
     Quill.register(Font, true);
 
     const Size = Quill.import('attributors/style/size');
@@ -5222,6 +5318,12 @@
         const range = quill.getSelection(true);
         quill.insertText(range ? range.index : quill.getLength(), text);
         showToast('Inserted');
+    }
+
+    function selectCustomFont(value, label) {
+        if (quill) quill.format('font', value);
+        document.getElementById('fontSelectLabel').innerText = label;
+        document.getElementById('fontSelectList').classList.remove('show');
     }
 
     function applySmartFormat(type, value) {
@@ -6416,8 +6518,22 @@
                     </select>
                 </div>
                 <div class="input-group" style="margin:0;">
-                    <label class="label" style="font-size:0.65rem;">${f.type === 'dropdown' ? 'OPTIONS (COMMA SEPARATED)' : (f.type === 'testcode' ? 'REQUIRED CODE' : 'PLACEHOLDER')}</label>
-                    <input type="text" value="${f.value || ''}" onchange="updateIdentityField(${i}, 'value', this.value)" class="clean-input" style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 12px 16px; border-radius: 0; width: 100%; box-sizing: border-box;" placeholder="${f.type === 'dropdown' ? 'A, B, C' : ''}">
+                    <label class="label" style="font-size:0.65rem;">${f.type === 'dropdown' ? 'OPTIONS' : (f.type === 'testcode' ? 'REQUIRED CODE' : 'PLACEHOLDER')}</label>
+                    ${f.type === 'dropdown' ? `
+                        <div style="border: 2px solid #ccc; background: #fff; padding: 8px; min-height: 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px; max-height: 80px; overflow-y: auto; padding-right: 4px;">
+                                ${(f.value || '').split(',').map(o => o.trim()).filter(o => o).map((opt, optIndex) => `
+                                    <span style="background: #f1f3f4; padding: 4px 8px; font-size: 0.8rem; font-family: 'Montserrat', sans-serif; font-weight: 600; display: flex; align-items: center; gap: 6px; border-radius: 4px;">
+                                        ${opt}
+                                        <i class="fas fa-times" style="cursor: pointer; color: #d93025; font-size: 0.85rem;" onclick="removeIdentityFieldOption(${i}, ${optIndex})"></i>
+                                    </span>
+                                `).join('')}
+                            </div>
+                            <input type="text" id="addIdentityOpt_${i}" onkeypress="if(event.key === 'Enter') { event.preventDefault(); addIdentityFieldOption(${i}, this.value); this.value=''; }" style="border: none; outline: none; padding: 4px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.85rem; width: 100%; background: transparent;" placeholder="Type option and press Enter">
+                        </div>
+                    ` : `
+                        <input type="text" value="${f.value || ''}" onchange="updateIdentityField(${i}, 'value', this.value)" class="clean-input" style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 12px 16px; border-radius: 0; width: 100%; box-sizing: border-box;" placeholder="${f.type === 'testcode' ? '' : 'PLACEHOLDER'}">
+                    `}
                 </div>
                 <div class="input-group" style="margin:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:8px;">
                     <label class="label" style="font-size:0.65rem;">MANDATORY</label>
@@ -6440,6 +6556,29 @@
     function updateIdentityField(index, key, val) {
         exams.identityFields[index][key] = val;
         updateIdentityFieldsList(); // Refresh to update labels if type changed
+        autoSave();
+    }
+
+    function addIdentityFieldOption(index, optionText) {
+        if (!optionText || !optionText.trim()) return;
+        let opts = (exams.identityFields[index].value || '').split(',').map(o => o.trim()).filter(o => o);
+        opts.push(optionText.trim());
+        exams.identityFields[index].value = opts.join(', ');
+        updateIdentityFieldsList();
+        autoSave();
+        
+        // Focus the input back after rerender
+        setTimeout(() => {
+            const input = document.getElementById(`addIdentityOpt_${index}`);
+            if (input) input.focus();
+        }, 50);
+    }
+
+    function removeIdentityFieldOption(index, optIndex) {
+        let opts = (exams.identityFields[index].value || '').split(',').map(o => o.trim()).filter(o => o);
+        opts.splice(optIndex, 1);
+        exams.identityFields[index].value = opts.join(', ');
+        updateIdentityFieldsList();
         autoSave();
     }
 

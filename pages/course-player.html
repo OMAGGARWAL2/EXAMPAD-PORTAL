@@ -7,7 +7,7 @@
     <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Hind:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Hind:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Mulish:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,6 +16,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.0/ext-language_tools.js"></script>
     <!-- Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/ruby/ruby.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/shell/shell.min.js"></script>
 
     <style>
         :root {
@@ -155,7 +163,7 @@
             font-weight: 600;
             color: #333;
             text-transform: uppercase;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Mulish', sans-serif !important;
             letter-spacing: 0.5px;
         }
 
@@ -164,6 +172,7 @@
             font-weight: 700;
             color: var(--primary);
             text-transform: uppercase;
+            font-family: 'Mulish', sans-serif !important;
         }
 
         .profile-avatar {
@@ -231,7 +240,7 @@
         }
 
         body .ace_editor {
-            font-size: var(--editor-font-size, 18px) !important;
+            font-size: var(--editor-font-size, 22px) !important;
             line-height: 1.4 !important;
         }
 
@@ -1008,6 +1017,37 @@
             justify-content: space-between;
         }
 
+        .hindi-font-readability,
+        .hindi-font-readability *:not(pre):not(code):not(.CodeMirror):not(.CodeMirror *):not(.ql-syntax):not(.tut-output-area):not(.tut-output-area *) {
+            font-family: 'Hind', sans-serif !important;
+            font-size: 22px !important;
+            line-height: 1.6 !important;
+            font-weight: 400 !important;
+            color: #101828 !important;
+        }
+
+        @media print {
+
+            .quill-runnable-code,
+            .CodeMirror {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .CodeMirror {
+                height: auto !important;
+            }
+
+            .CodeMirror-scroll {
+                overflow: visible !important;
+                height: auto !important;
+            }
+
+            .CodeMirror-sizer {
+                min-height: auto !important;
+            }
+        }
+
         .prob-desc {
             margin-top: 24px;
         }
@@ -1033,6 +1073,41 @@
             cursor: text;
             display: block;
             box-sizing: border-box;
+        }
+
+        /* Apply to the CodeMirror wrapper */
+        .CodeMirror {
+            font-family: monospace !important;
+            /* On most Windows machines, this defaults to Courier New or Consolas */
+            font-size: 20px !important;
+            line-height: 1.5 !important;
+            height: auto !important;
+            min-height: 200px !important;
+            /* Adjusted to your preference */
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        /* Internal padding used on this page */
+        .CodeMirror-lines {
+            padding: 4px 0px !important;
+        }
+
+        .CodeMirror-line {
+            padding: 0px 4px !important;
+        }
+
+        /* Fix for CodeMirror lines being affected by global pre styles */
+        .CodeMirror pre {
+            background-color: transparent !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            color: inherit !important;
+            font-size: inherit !important;
+            line-height: inherit !important;
+            font-family: inherit !important;
+            border: none !important;
+            overflow: visible !important;
         }
 
         .q-footer {
@@ -1455,11 +1530,12 @@
             border-color: #FEE4E2;
         }
 
-        font-size: 0.75rem;
-        font-weight: 700;
-        color: #999;
-        margin-bottom: 6px;
-        text-transform: uppercase;
+        .tc-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #999;
+            margin-bottom: 6px;
+            text-transform: uppercase;
         }
 
         .tc-val {
@@ -1626,8 +1702,20 @@
     </style>
 
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        /* Hide Ace Editor autocomplete description grey box */
+        .ace_tooltip.ace_doc-tooltip {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -1635,8 +1723,8 @@
 
     <header>
         <div class="header-left-icons" style="gap: 110px;">
-            <div class="chitkara-logo-red" onclick="location.reload()"
-                style="background: transparent; width: auto; height: auto;">
+            <div class="chitkara-logo-red" onclick="window.location.reload();"
+                style="background: transparent; width: auto; height: auto; cursor: pointer;">
                 <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" style="height: 44px; border-radius: 6px;">
             </div>
             <img src="../Testpad_pra_files_files/menu-1.svg" id="widgetDashboard"
@@ -1691,11 +1779,11 @@
 
         <!-- Plus Popover -->
         <div class="popover plus-popover" id="plusMenu">
-            <div class="plus-item">
+            <div class="plus-item" onclick="window.location.href='./playground.html';" style="cursor: pointer;">
                 <img src="../Testpad_pra_files_files/playground.svg" style="width: 28px; height: 28px;">
                 <span class="plus-item-text">Playground</span>
             </div>
-            <div class="plus-item">
+            <div class="plus-item" onclick="window.location.href='./playground.html';" style="cursor: pointer;">
                 <img src="../Testpad_pra_files_files/playground.svg" style="width: 28px; height: 28px;">
                 <span class="plus-item-text">Python Notebook</span>
             </div>
@@ -1840,7 +1928,7 @@
                         <div id="editorHead" class="editor-head" style="flex: none;"></div>
                         <div class="editor-gap" style="height: 12px; flex-shrink: 0;"></div>
                         <div id="editorMain" class="editor-main" style="flex: none;"></div>
-                        <div class="editor-gap" style="height: 320px; flex-shrink: 0;"></div>
+                        <div class="editor-gap" style="height: 12px; flex-shrink: 0;"></div>
                         <div id="editorTail" class="editor-tail" style="flex: none;"></div>
                     </div>
 
@@ -2266,24 +2354,29 @@
                                 <div></div>
                             </div>
                             <div class="hindi-font-readability" style="font-size: 1.15rem; line-height: 1.8; color: #333;">${less.data.content || less.data.body || 'Lesson content goes here.'}</div>
-                            
-                            <div class="q-footer" style="margin-top: 60px; border-top: 1px solid #EAEAEA; padding-top: 20px; background: transparent;">
-                                <div class="q-nav-btn" onclick="prevLesson()">
-                                    <i class="fas fa-caret-left"></i> previous
-                                </div>
-                                <div style="color:#DE6834; font-weight:500; font-size:1.15rem; cursor:pointer;" onclick="toggleReportModal()">Report a problem</div>
-                                <div class="q-nav-btn" onclick="nextLesson()">
-                                    next <i class="fas fa-caret-right"></i>
-                                </div>
+                        </div>
+                        <div class="q-footer" style="position: sticky; bottom: -40px; margin-left: -40px; margin-right: -40px; margin-bottom: -40px; margin-top: 40px; border-top: 1px solid #EAEAEA; background: #fff !important; z-index: 10;">
+                            <div class="q-nav-btn" onclick="prevLesson()">
+                                <i class="fas fa-caret-left"></i> previous
+                            </div>
+                            <div style="color:#DE6834; font-weight:500; font-size:1.15rem; cursor:pointer;" onclick="toggleReportModal()">Report a problem</div>
+                            <div class="q-nav-btn" onclick="nextLesson()">
+                                next <i class="fas fa-caret-right"></i>
                             </div>
                         </div>
                     `;
                 }
             }
 
-            if (!['mcq', 'quiz', 'assertion', 'diagram', 'coding', 'drawing'].includes(less.type)) {
+            const hasRunnableCode = less.type === 'tutorial' && (less.data.content || '').includes('quill-runnable-code');
+            if (!['mcq', 'quiz', 'assertion', 'diagram', 'coding', 'drawing'].includes(less.type) && !hasRunnableCode) {
                 db.updateCourseProgress(courseId, user.id, less.id);
                 updateGlobalProgress();
+            }
+            if (hasRunnableCode) {
+                setTimeout(() => {
+                    initTutorialRunners(courseId, user.id, less);
+                }, 50);
             }
             renderSidebar();
         }
@@ -3153,6 +3246,132 @@
             }
         }
 
+        function initTutorialRunners(courseId, userId, less) {
+            const blocks = document.querySelectorAll('.quill-runnable-code');
+            const completedRunners = new Set();
+
+            blocks.forEach((node, idx) => {
+                const lang = node.getAttribute('data-lang') || 'javascript';
+                const codeRaw = node.getAttribute('data-code') || '';
+                const code = decodeURIComponent(codeRaw);
+
+                const langMap = {
+                    'javascript': 'JavaScript',
+                    'python': 'Python',
+                    'java': 'Java',
+                    'c_cpp': 'C / C++',
+                    'csharp': 'C#',
+                    'ruby': 'Ruby',
+                    'sh': 'Bash'
+                };
+                const langName = langMap[lang] || 'JavaScript';
+                const editorId = 'tut-editor-' + idx;
+                const outId = 'tut-out-' + idx;
+
+                node.style.border = 'none';
+                node.style.borderRadius = '0';
+                node.style.padding = '0';
+                node.style.background = 'transparent';
+
+                node.innerHTML = `
+                    <div style="border:1px solid #EAEAEA; border-radius:0; margin:24px 0; overflow:hidden; background:#fff;">
+                        <!-- Top Bar -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #EAEAEA; background:#fff;">
+                            <div style="padding:10px 28px; background:#F5F5F5; font-family:'Hind', sans-serif; font-weight:600; font-size:1.25rem; color:#000; border-right:1px solid #EAEAEA;">
+                                ${langName}
+                            </div>
+                            <div style="padding-right:16px; display:flex; align-items:center; cursor:pointer;" onclick="location.href='playground.html'">
+                                <span style="font-family:'Hind', sans-serif; font-size:1.15rem; font-weight:700; color:#000; margin-right:8px;">open in playground</span>
+                                <img src="../TESTPAD_WEBSITE__files/playground-normal.svg" alt="open in playground" style="width:18px;">
+                            </div>
+                        </div>
+                        
+                        <!-- Ace Editor Container -->
+                        <div id="${editorId}" style="width:100%; min-height:200px; background:#fff;"></div>
+                        
+                        <!-- Bottom Bar -->
+                        <div style="background:rgba(222, 104, 52, 0.08); padding:0 20px; height:56px; display:flex; align-items:center; border-top:1px solid #EAEAEA;">
+                            <div style="font-family:'Hind', sans-serif; color:#000; font-size:1.2rem; cursor:pointer; font-weight:600; margin-right:24px;" onclick="window.tutEditors['${editorId}'].setValue(decodeURIComponent('${encodeURIComponent(code)}')); document.getElementById('${outId}').style.display='none'; document.getElementById('tut-tick-${idx}').style.display='none';">reset</div>
+                            <button id="tut-btn-${idx}" style="background:#DE6834; color:#fff; border:none; height:100%; padding:0 32px; border-radius:0; font-family:'Hind', sans-serif; font-weight:600; cursor:pointer; font-size:1.25rem; display:flex; align-items:center; justify-content:center;">run</button>
+                            <div id="tut-tick-${idx}" style="display:none; margin-left:16px; align-items:center; justify-content:center;">
+                                <img src="../TESTPAD_WEBSITE__files/foursquare-check-in.png" style="width:22px; filter: invert(47%) sepia(61%) saturate(1470%) hue-rotate(339deg) brightness(97%) contrast(93%); display:block;" alt="completed">
+                            </div>
+                        </div>
+                    </div> <!-- End of main container -->
+
+                    <!-- Output Area (Hidden Initially) -->
+                    <div id="${outId}" class="tut-output-area" style="display:none; position:relative; background:#000; color:#fff !important; padding:32px 24px 24px 24px; font-family:Consolas, monospace; font-size:1.5rem; max-height:250px; overflow-y:auto; margin-top:16px; margin-bottom:24px; border:none; border-radius:0;">
+                        <i class="fas fa-times" style="position:absolute; top:12px; right:16px; color:#999; cursor:pointer; font-size:1.2rem;" onclick="document.getElementById('${outId}').style.display='none';"></i>
+                        <div id="tut-out-text-${idx}" style="white-space: pre-wrap; margin-top: 8px;"></div>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    if (window.CodeMirror) {
+                        const editorContainer = document.getElementById(editorId);
+
+                        const cmModeMap = {
+                            'javascript': 'javascript',
+                            'python': 'python',
+                            'java': 'text/x-java',
+                            'c_cpp': 'text/x-c++src',
+                            'csharp': 'text/x-csharp',
+                            'ruby': 'ruby',
+                            'sh': 'shell'
+                        };
+                        const cmMode = cmModeMap[lang] || 'javascript';
+
+                        window.tutEditors = window.tutEditors || {};
+                        const editor = CodeMirror(editorContainer, {
+                            value: code,
+                            mode: cmMode,
+                            lineNumbers: true,
+                            viewportMargin: Infinity,
+                            theme: "default"
+                        });
+
+                        window.tutEditors[editorId] = editor;
+
+                        const runBtn = document.getElementById('tut-btn-' + idx);
+                        runBtn.onclick = async () => {
+                            runBtn.innerHTML = '<div class="custom-spinner" style="width:14px; height:14px; border-width:2px; border-color:rgba(255,255,255,0.4); border-top-color:#FFF; display:inline-block; margin-right:6px; vertical-align:middle;"></div>';
+                            runBtn.disabled = true;
+                            runBtn.style.opacity = '0.8';
+
+                            const currentCode = editor.getValue();
+                            const result = await executeRunner({ language: lang, code: currentCode, stdin: '' });
+
+                            const outDiv = document.getElementById(outId);
+                            const outText = document.getElementById('tut-out-text-' + idx);
+                            outDiv.style.display = 'block';
+
+                            if (result.success) {
+                                outText.style.color = '#fff';
+                                outText.style.fontFamily = 'Consolas, monospace';
+                                outText.innerHTML = escapeHtml(result.stdout || 'Process exited with no output.');
+
+                                document.getElementById('tut-tick-' + idx).style.display = 'block';
+
+                                completedRunners.add(idx);
+                                if (completedRunners.size === blocks.length) {
+                                    db.updateCourseProgress(courseId, userId, less.id);
+                                    updateGlobalProgress();
+                                    renderSidebar();
+                                }
+                            } else {
+                                outText.style.color = '#F04438';
+                                outText.innerHTML = escapeHtml(result.error || 'Execution failed');
+                            }
+
+                            runBtn.innerHTML = 'run';
+                            runBtn.disabled = false;
+                            runBtn.style.opacity = '1';
+                        };
+                    }
+                }, 100);
+            });
+        }
+
         function resetIDE() {
             const less = courseData.modules[mIdx].lessons[lIdx];
             const lang = document.getElementById('langSelector').value;
@@ -3474,15 +3693,14 @@
                     </div>
                     ${videoHtml}
                     <div class="hindi-font-readability" style="margin-top: 32px; font-size: 1.15rem; line-height: 1.6; color: #333;">${less.data.notes || ''}</div>
-                    
-                    <div class="q-footer" style="margin-top: 60px; border-top: 1px solid #EAEAEA; padding-top: 20px; background: transparent;">
-                        <div class="q-nav-btn" onclick="prevLesson()">
-                            <i class="fas fa-caret-left"></i> previous
-                        </div>
-                        <div style="color:#DE6834; font-weight:500; font-size:1.15rem; cursor:pointer;" onclick="toggleReportModal()">Report a problem</div>
-                        <div class="q-nav-btn" onclick="nextLesson()">
-                            next <i class="fas fa-caret-right"></i>
-                        </div>
+                </div>
+                <div class="q-footer" style="position: sticky; bottom: -40px; margin-left: -40px; margin-right: -40px; margin-bottom: -40px; margin-top: 40px; border-top: 1px solid #EAEAEA; background: #fff !important; z-index: 10;">
+                    <div class="q-nav-btn" onclick="prevLesson()">
+                        <i class="fas fa-caret-left"></i> previous
+                    </div>
+                    <div style="color:#DE6834; font-weight:500; font-size:1.15rem; cursor:pointer;" onclick="toggleReportModal()">Report a problem</div>
+                    <div class="q-nav-btn" onclick="nextLesson()">
+                        next <i class="fas fa-caret-right"></i>
                     </div>
                 </div>
             `;
@@ -3606,7 +3824,7 @@
                 const val = encodedVal ? decodeURIComponent(encodedVal) : '';
                 if (val === correctVal) {
                     opt.classList.add('correct-reveal');
-                    opt.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #22c55e; font-size: 1.2rem; font-weight: 600; margin-left: 12px; display: flex; align-items: center; gap: 6px;"><i class="fas fa-check" style="font-size: 1.4rem;"></i> correct answer</span>`);
+                    opt.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #22c55e; font-size: 1.2rem; font-weight: 600; margin-left: 12px; display: flex; align-items: center; gap: 6px;"><img src="../TESTPAD_WEBSITE__files/foursquare-check-in.png" style="width: 20px; height: 20px; object-fit: contain;"> correct answer</span>`);
                 }
                 else if (opt === selected && val !== correctVal) {
                     opt.classList.add('incorrect-reveal');

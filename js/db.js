@@ -260,6 +260,8 @@ class ExampadDB {
                 existingAttempt.feedback = null;
                 existingAttempt.submittedSections = [];
                 existingAttempt.tabSwitchCount = 0;
+                existingAttempt.examStarted = false;
+                existingAttempt.isReattempt = true;
                 localStorage.setItem('TESTPAD_attempts', JSON.stringify(attempts));
                 return { success: true, attempt: existingAttempt, message: 'Re-started existing attempt' };
             }

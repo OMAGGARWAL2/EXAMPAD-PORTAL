@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TESTPAD</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Hind:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Lato:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=Mulish:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="../Tests _ Chitkara_files/fonts.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../js/db.js"></script>
     <script src="../js/auth.js"></script>
@@ -23,7 +24,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Roboto', 'Inter', sans-serif;
+            font-family: 'Hind', sans-serif;
             background-color: var(--bg-site);
             height: 100vh;
             display: flex;
@@ -31,6 +32,20 @@
             justify-content: center;
             overflow: hidden;
             position: relative;
+        }
+
+        body::after {
+            content: "";
+            background-image: url(../BGNEW01.png);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            background-position: top;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: -5;
         }
 
         /* Organic Background Shapes */
@@ -41,38 +56,30 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background-color: #fffaf5;
+            background-color: #ffffff;
             overflow: hidden;
         }
 
         .bg-container svg {
             width: 100%;
             height: 100%;
-            transform: scale(1.1);
-            filter: blur(2px);
-            /* Very slight blur for softness but keeping structure */
         }
 
         .top-left-logo {
             position: absolute;
             top: 30px;
             left: 30px;
-            width: 44px;
-            height: 44px;
+            height: 50px;
             z-index: 20;
-            background: #e30613;
-            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 8px;
         }
 
         .top-left-logo img {
-            width: 100%;
             height: 100%;
+            width: auto;
             object-fit: contain;
-            filter: brightness(0) invert(1);
         }
 
         .container {
@@ -89,68 +96,52 @@
         .test-info {
             flex: 1;
             padding-right: 60px;
+            margin-left: -95px;
+            margin-top: 30px;
             text-align: left;
         }
 
         .test-title {
-            font-size: 2.2rem;
-            font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            color: var(--text-dark);
+            font-size: 1.5rem;
+            font-weight: 550;
+            font-family: 'Mulish', sans-serif;
+            color: #000000;
             margin-bottom: 25px;
             line-height: 1.3;
             max-width: 500px;
         }
 
-        .progress-bar-container {
+        .tri-orange-line {
             display: flex;
-            width: 100%;
-            max-width: 320px;
-            height: 10px;
-            margin-bottom: 35px;
+            height: 7px;
+            width: 340px;
             border-radius: 0px;
             overflow: hidden;
-        }
-
-        .progress-segment {
-            height: 100%;
-        }
-
-        .segment-1 {
-            width: 15%;
-            background: #de6834;
-        }
-
-        .segment-2 {
-            width: 25%;
-            background: #de6834;
-        }
-
-        .segment-3 {
-            width: 60%;
-            background: #f2f2f2;
+            margin-top: 12px;
+            margin-bottom: 30px;
         }
 
         .stats {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 6px;
             margin-bottom: 40px;
         }
 
         .stat-line {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             color: var(--text-dark);
             font-weight: 700;
+            font-family: 'Mulish', sans-serif;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .stat-value {
             color: #de6834;
             font-weight: 500;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Mulish', sans-serif;
         }
 
         .action-btns {
@@ -184,9 +175,9 @@
         .portal-card {
             background: var(--card-bg);
             border-radius: 30px;
-            padding: 40px;
-            width: 480px;
-            min-height: 280px;
+            padding: 35px 40px;
+            width: 510px;
+            min-height: 430px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -194,6 +185,12 @@
             border: 1px solid rgba(255, 255, 255, 0.8);
             box-sizing: border-box;
             animation: slideIn 0.5s ease-out;
+            font-family: 'Mulish', sans-serif;
+        }
+
+        .portal-card,
+        .portal-card * {
+            font-family: 'Mulish', sans-serif !important;
         }
 
         .restriction-card p {
@@ -207,35 +204,49 @@
         /* Sign-in specific */
         .card-heading {
             font-size: 2.2rem;
-            font-weight: 400;
+            font-weight: 600;
             color: #2b2b2b;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             text-align: left;
         }
 
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 18px;
             position: relative;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.9rem;
+            font-size: 1.15rem;
             color: #666;
             margin-bottom: 6px;
+            font-weight: 600;
         }
 
         .input-group input {
             width: 100%;
             padding: 10px 0;
+            font-size: 1.15rem;
+            color: var(--text-dark);
             border: none;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e0e0e0;
             background: transparent;
-            font-size: 1.1rem;
-            color: #333;
+            transition: all 0.2s;
             outline: none;
-            transition: border-color 0.2s;
-            box-sizing: border-box;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 500;
+        }
+
+        .input-group input[type="password"] {
+            font-size: 1.15rem;
+            letter-spacing: 0.08em;
+            font-family: Verdana, sans-serif;
+        }
+
+        .input-group input[type="password"]::placeholder {
+            font-size: 1.15rem;
+            letter-spacing: normal;
+            font-family: 'Mulish', sans-serif;
         }
 
         .input-group input:focus {
@@ -257,11 +268,12 @@
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 600;
             cursor: pointer;
             margin-top: 15px;
             transition: all 0.2s;
+            font-family: 'Mulish', sans-serif;
         }
 
         .sign-in-btn:hover {
@@ -272,7 +284,7 @@
         .forgot-link {
             text-align: center;
             display: block;
-            margin-top: 25px;
+            margin-top: 18px;
             font-size: 0.95rem;
             color: #999;
             text-decoration: none;
@@ -319,45 +331,62 @@
                 max-width: 450px;
             }
         }
-    </style>
 
+        .error-banner {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FEF3F2;
+            color: #D93025;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            transition: all 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            font-family: 'Hind', sans-serif;
+            white-space: nowrap;
+        }
+
+        .error-banner.show {
+            top: 25px;
+        }
+    </style>
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
     </style>
 </head>
 
 <body>
-    <div class="bg-container">
-        <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Peachy Light Tide (Collapsing Wave - Green Line style) -->
-            <path d="M1440,0 L1440,900 C1100,700 800,1000 600,600 C400,200 1000,0 1440,0 Z" fill="#fde6d8"
-                opacity="0.5"></path>
-            <!-- Orange Tide (Bottom Rising Wave - Black Line style) -->
-            <path d="M0,900 L0,700 C400,850 720,800 1000,300 C1200,-100 1440,100 1440,100 L1440,900 Z" fill="#f7d8c3"
-                opacity="0.7"></path>
-        </svg>
-    </div>
 
-    <!-- Exit Fullscreen Message -->
-    <div
-        style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: #2d2d2d; color: white; padding: 10px 20px; border-radius: 4px; font-size: 14px; z-index: 100; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); opacity: 0.9;">
-        To exit full screen, press and hold <span
-            style="border: 1px solid #666; padding: 2px 6px; border-radius: 3px; background: #333; font-weight: 500;">Esc</span>
-    </div>
+
 
     <div class="top-left-logo">
-        <img src="../logo.jpg" alt="Exampad Logo">
+        <img src="../TESTPAD_WEBSITE__files/chitkara.png" alt="Chitkara University">
     </div>
 
     <div class="container">
         <div class="test-info">
-            <h1 class="test-title" id="testTitle">M2 - 22th April-26 - DSOOPs FA 7 - CSE 20 24 Batch</h1>
+            <h1 class="test-title" id="testTitle">Assessment Session</h1>
 
-            <div class="progress-bar-container">
-                <div class="progress-segment segment-1"></div>
-                <div class="progress-segment segment-2"></div>
-                <div class="progress-segment segment-3"></div>
+            <div class="tri-orange-line">
+                <div style="background: #FFF1E7; flex: 2.5;"></div>
+                <div style="background: #E6BCA5; flex: 3.5; cursor: pointer;" onclick="window.location.reload()"></div>
+                <div style="background: #DE5B2B; flex: 5;"></div>
             </div>
 
             <div class="stats">
@@ -365,10 +394,6 @@
                 <div class="stat-line">Total Time <span class="stat-value" id="totTime">90 mins</span></div>
             </div>
 
-            <div class="action-btns">
-                <a href="#" class="btn">Download App</a>
-                <a href="#" class="btn">Open In App</a>
-            </div>
         </div>
 
         <!-- Desktop Restriction Card -->
@@ -378,7 +403,7 @@
 
         <!-- Sign-in Card -->
         <div class="portal-card login-card" id="loginCard">
-            <div style="text-align: center; margin-bottom: 20px;">
+            <div style="display: none; text-align: center; margin-bottom: 20px;">
                 <img
                     src="data:image/png;base64,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) no-repeat center center; background-size: contain; width: 100%; height: 200px;">
             </div>
@@ -387,24 +412,21 @@
             <form id="signInForm" onsubmit="handleSignIn(event)">
                 <div class="input-group">
                     <label>email or rollnumber *</label>
-                    <input type="text" id="rollnumber" required autocomplete="username"
-                        placeholder="Enter email or rollnumber">
+                    <input type="text" id="rollnumber" required autocomplete="username" placeholder="">
                 </div>
 
                 <div class="input-group">
                     <label>password *</label>
-                    <input type="password" id="password" required autocomplete="current-password"
-                        placeholder="Enter password">
+                    <input type="password" id="password" required autocomplete="current-password" placeholder="">
                     <i class="fas fa-eye-slash eye-icon" onclick="togglePass()"></i>
                 </div>
 
                 <div class="input-group">
                     <label>test code *</label>
-                    <input type="text" id="testcode" required placeholder="Enter test code">
+                    <input type="text" id="testcode" required placeholder="">
                 </div>
 
                 <button type="submit" class="sign-in-btn">sign in</button>
-                <a href="#" class="forgot-link" onclick="handleForgotPassword(event)">forgot password?</a>
             </form>
         </div>
 
@@ -426,18 +448,23 @@
         </div>
 
         <!-- Waiting Card (Test not started/ended) -->
-        <div class="portal-card waiting-card" id="waitingCard"
-            style="display: none; align-items: center; text-align: center;">
-            <div id="waitingIllustration" style="margin-bottom: 20px;">
+        <div class="portal-card login-card" id="waitingCard"
+            style="display: none; flex-direction: column; justify-content: center; text-align: center;">
+            <div id="waitingIllustration" style="display: none; margin-bottom: 20px;">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAABYlBMVEX/////3rH/kABjY2MnMjj/+O3/4rT/4LL/4rb///3++fD+/Pf/3rLMz9D427X4lBH4njH448PBwLybn6EPICf/iQB/eGr5zZavnobU19f4ninj5OQAChm6pov09fXp6+u2urxAR0xdYmU4PkNERkc4OzvAsJi+qYtbW14vNzzhyKPXvpu9tahdXV0DGSIcKS+ibSrnggAAFh+wr6uTlpjOgBv1xID9+uF5foKorK8AAAAMIi/88NyEiIpLT1JpbmbZewD748CllHvOuJfv0qr3p0m2bhWtoIsADhhsc3b77dS5pYbl39OjnJHexqSWi3gdJih0bmAAESNjYllTUkp4c2W1kmavf0THvaW+u6+xdzH+uGf8v3XRxq2vhVfpxJZgUDF1UiaNXyDkixuEcVi6cACubB21g0W/fSqegmDIcQDVuI9xTyWXXhOge04AABqPjYPvu1zpvm3noDj32ZP/+NKuNeARAAAYRUlEQVR4nO2di0PT2LbGg7R5J7UPhUwlDRQptEJFEam0vZRWsDDiW2ec1x09cuY658wd8cz/f/cryU6yE0JJKJ3LJ5Y2feXHWnuttR9JOO5KV7rSla50pStdKRGZxZY1BL8tTTPGvS8pqVDkupy5bALI1rj3JR1pkHDLgnfnzTHvSzpChLcq8G7nb2bECv4FCc0nyHqtjeDTkyoJ4GiAQjMJIdoKCMucCX60CmfC8GNo493Nc8lcsDitxXUqyEuxDYvFYocrdswOwDcyZW7LrGyNez/PoaHBzQMrdRBhFWWKYcHY4Ixix+DMea4KngObKsjgEylAWDI0kAYhodaBLlnltA3gtQuAqmlWOWtL01oTHF63sA3LiBC45UYZMGu2DavEhpMcXTe0ImiHlQKAqgJHNLtFsLE8BO2wvMVZFjevGUOTm2QbmlaFMwoaqGSMIswMxQXY4jTgmFwZbEZx1NImPGf8fxA7TE5q8Iytvz3gla50pStd6UpXutKVrnSlC9JV7+JKVxqXJMXW364dSkq2fZDv6aKoQom63js4yBJOSZpwXklu53vqFEt6vq2Me/fOKyV7oDPhkCB3ry1zE5s9pGxedUgiOPNZaSIZ5Sjr+d21PXGAUrsXG48wjnuX44l4m9LWT3PNoHrZce99HCFfUw7EM8IR5ZWJaI0O31ltODUZriq1HbARCKemDi67Edvxw2eIejL+pEtGSnYn2zsvH5B+WQOOBBrgSH4Z1GVtjLaDJoB5KRGV/PnBXB2MG8cviZN7SQJeQsR2Qi3Q1WVyVBBHD5Lmu2SIyTZBW2r20uTEpJuggyiPm4xIPncVE6be5TBhNukYI/AiFM8LU/lxw8FmknAQFUS1P3tYq9UOZ/s6fxmiTXsEirC/iQr46rNzA2A/aMTB3GxdHHtTDM0SfKiECAPqs31Ap9cbvzfqOs+L/dlx+2k4YP8wTEdsRGBYvr6r82Jj9rA/0Af9w9kGoN399nICTvFzIFLwKF6I+B55xIuzfNh76rMigDwSeQGKF9H9ufKlBISEIc+EEgoDAFjri9jE6Fbs10R+dnwLbKMqNX6OZzZFIZxQ3BXF2brnSRWaVXw6LsDIKAoI+X4tqCMhjJA/1Pnakf85vl7jdQt+3cUn/+g0AQlnRV3XVZ3cqCr8PRvWDoVBjQc/vo3gg2p1fmksK91RJROe7BFhIDEI6lwYIX8oAjf1fSR8vwj+UNa4AE+zYRAlnFA8FOt9gZFI+H6d379INNwclNOKbZ6NEkoo1Pv8XMB+hJ1vXHjGkHqnAIZ4aTghX1Nh+A35KL1w0YSnd3jP6qUgLAFbhXyUKty5QDjopTGqbUg4B2qY2ITAUDCSCiRvUvUC3x/wtYsdI86GUIG9E3u9Hq7NAMrNZ7sNH2OEl/J6n58Sjg7nkEBYtV1caNT52oUW4CFRRuX1uZuLz58/zyy+eDY3WOrtvmxur93ue6q3KC/VD10bghRBwQMbqhe5nIHdCEGtsrLdzCA1AdrKi9fo/stdGjGEUPW3Qw/hrKrOCRfYFW4zE70gvtrOeERoMy8bVEQNtyFobFSxThEKYLveFy5uyEZWmYTiGx+gS/qMMmJ4xgcVW3/g5kDKhsB74TMX1tnPCyJLRy9DADPNm7EIYXHmJkSKEFbk8NGFuCkcdxJmWTp81Qwj3N6liCLqUuimuqAGCIEJByDKTvUughDEUREmOoZehBLe1uO0QwQlOlEJE6oq7DXqYDP4CP0CoimanmDXVuLrUCd9Rr8+glBoNPiBbTrHhuJcnT+CiXJq6kKSfhZ33slonz0MA8WyYXOtBG5L/VheCql02KUXKEJBnDvidUJ7IdNteTzEtDt3OOcbQGO0w+aWZlXhbxAIhRiE0CH5we4A1uuIUECPdNt1L6IhwnINdYvEQDt8FiBsLoB3tIAVt6lgGkkoiABIrM3WgXfUwP/6LLh1AKcuoqzpOYT+neP3g+lwBbzDutdsvqSQotohqovggHDjsAbCc+2wocIhYeC2JMCmny+gCdX4hCWT44xXr18txcqHWOIRHCIlbZsXj2Yb1JvTr77zaGSITbgUJIQn3CnXcQ/KroJOIwRmbMweNnS9p+sNOOhN96HVtAs3Ge1mXMJm0+K0Ztc3hH8qIYwver0GYletrvvHCNLMF/CvhweAYxDCJNHsloEFK0NdFOgqNgYh+jio4OaU3VRS4xKWjdJKdXllpdpd7q4u1vEsBJYYjzBEYrrRlAxdhBDOOYQrWxw3bGbAO0zNenPzVa3eoBQ6IhxL6UbTfCShG0tXLI7RLJ4hjXPsdRhl7mafboaoKTKGUWMrzdrUHp0JIaSqtjWD69wrIkLO2j1q+DWyDdVUKzfJHmCLQdgxFkrwtHOm9bRRD2owugnTNKLssIQQOl4Km2ATlt2t5q1nfhdFiiKAjRYUorDpCiTeeBKqnlpd4wxzMwhhLfd0+R624hPgn8ZapqR11zJrITMRYVJVdQB/PP+mBp64mlrCcGa0mTYUxAJnDO+Vms2SBV5cBEVNqZkpvTjbQRd8vVFHbt0Y1AcN+E/vD/pqf1CnXpSaEXsRhLzeqMETkpmt7haare0iczafiWdqcWINFKIwpdj/iE8LYp3+nJSMKIlTofmQ3y+Uy2XDsuwzPJpPcNp4czYTCs5sgeuWGK1+AS1Rdr7DIbQDAf/UnmWvWBZNmFmxR9kE/46zHsLJGRa4OiUMPBvSCacMQryPgkjPQJstePJHjWSONZIXBH2gkikzgZAJU9Qkr/1hoSb32DClnOjOGHq9VKy/vfvu3bvDOwWyrKfc4rj9mzh1lIgN+afffff993f2a426DpoaH5IxhH4IIm1DlRgxcVd1FwfRhLz+9vM1rNzn9/t4sr1Y6eu3oRW33xCvE7/L5a7/8OMmn//pe6Cnd5b69WBljbJgHBumU50yCIFXNd5fo/X5ZzTd3qnz+qu15vZtnVTc/V9uPFhfz6HXXH/8w8wU/1OrHqQRGiGEgur7e6TRE2YQCqJjQEfr7+GE+1NVEPvPdu04wy/9sP7fv3749fju8fq1azeui5s3Hn8fvjgzuFBTCFg8heEMPyGIGoN3OT8g9NY9wLiP1rSh3YMzD3dy13Ye7Ow9+PDhIyDc5B7emBnejKFn+6QB+m2YxvrvvIdwrt/v735i8CHG3+4Y9PiTUO8Drhs3nOc3H99oP7p1qtZKQ24Jt+Rgq00+7XsIp3hR/3k9BBDq/T90t5zhlzgJHtO9+ePj67kbSI8t43RtlBa4JTwaHAxLyY/YeAgF8TDMgI6vvm304N8fFuWwaZpG2SiXv/22nRdmfnysWjG+srW2EG7D5NM+3Q5F8Q9WC/Rp5/3hAC3EQ8vucCIxzTKs70zOJTTKFaOigZ+yUfEu7aIIA+0QZ4xEGyNFODv7jxiAUJ/gvJrQh7WABsAADKrvKqbmrKY0OhvFDau1XGl1NjpDzz67hP5YqkK3TdqI1HJgsUdnwY+RiKA14nWFxIYVAFrWaBO2NopFqzXUrK1WZ+j5ymgbJp72qXVeQn2HgjiOIszVeEGFVQCxHqFyCIHJipbWAl5qGFpL8559nrJhgzW2mHDapxZ68TXaSSMJr/0sYic1YAMEblqugLZYKce6igchVENsmLQR3b7FlPiWZvjMTPs2955OOykMNS2rxVmtX2ZOlezYUOXrzIo12ZaoUITvaJiPOwzCYxt7vTGArgfCpe2lFgcIub0bp6pNCEFGHAwGOgMx4ZzortYT/+kx114Q8IEbft4iExoc8lLgpFqFs7QN7s43pyn30Lah0LtVernLMxw12cImH0LIaIg09CcLvtl2UoMr4gvNVGK0RMdLe2uZ7X1W9z/ZWQw3XYi/eXj2Ag3xmNqyDiOpSVJhxTQ1eNkAoA2LqaJzr2W6Nixltpnj5MnGGieYCrq3Ylt/4AP86NnwPxpwTkgJ3LRQKeLrIJjFkG+xnHvlskMoIkJ2rEmwrFFUUv8KeW+vMNAQvW77SdM020nLJiYwW2HXXQkSCoP+T6VM81mDdcRbsp2onmNDX7/XR+gjBm5qkjhatq9jYYRe0IJBqJfW4MjkLeZAXKLR1GmIRx7C3CevVwbSx1vnEwzTMZ1VZqpSrNh3tQrxUjy73HzFHKVKtK9vT80IR16E45zXLT/7KtVPzrF1Zsu526qw5W53CKfE181MZo19WGaiSd8+iMRPuPPxgYcpUOS4h0o4JjTCDoGxnHtupOGPQLa4yZ7iSbY2JW7KN7yEub0c5aaMnv/7wP6bodeVoQgdG07xb5rPQ84blmxGVAjh7z4KT0IMZsdr68+W7hdQQiRg5fAL51CEjg1BbLsVNm2c8BxGD/0Z+d99ECB4Ujk+F0R8K/L8oN+v1XAWNDbCsxhFWGndAoRoEaQ4JzqLIb2WTHjdcJvY0M+wl8s5Zl3PBau4T3D6Ah4pgsaLNS3iImQUYbEFu8b3fXrqOwQnWUI8lR8kpDPgx+OPwVL8LV7viw6xK1cpjChCdjAqiGkRolMFQiOq/NuAH9KNL7f33l/GXTsW1SlnOGM+HmFIuL2fGiESMqIYJPR65oN/+cducoew+Yj34WeY8QjNR5VAa4XnqS16M3/is6XtKX8Xn/imx2y5D37EY9CBFeq4xzQf9QWO4VqP2AfhF295ZksTH92HRmTYEPipl+nYH27fgr46mUntxvqmCEK6uEl+nRswIqMdBpT7t2/DTo3HTspxC8U4Gt6KRZhPfqo0z4ilDP3x3r9hqU92eXivFEPNe7EID5InlFWHMHJqRvfljD18nUqwO53qfAxV7wUv+igFCdNYFt0W7KptL5AVKCCx4e1FfjLLGt7LeBcdbT1in0ahdWtAH1ycxpoFqedU3h/DR4M/D8Sap0DfA5kA+x3zuPNWh2iLaLk53KJkP91Zbr5488JZKJHO0hrF7T3ljsNmLXaOBPGQduNdzr5SpcX60O7q9OL0KlCTCK71d1VaBk9OL66uLjfh9v+1FwGk0Ayhyrb/PXiQC3iq3Tvs8560sgd9Dl/IkeWl5vL0dHcaaiVw1AYSeq7b6ayiR9v2koaUFoCZTgv7CLqG/lEaYlZQigRIh4AxN9gkc7vert/D93v5UFsP9u14wy/9sP7fv3749fju8fq1azeui5s3Hn8fvjgzuFBTCFg8heEMPyGIGoN3OT8g9NY9wLiP1rSh3YMzD3dy13Ye7Ow9+PDhIyDc5B7emBnejKFn+6QB+m2YxvrvvIdwrt/v735i8CHG3+4Y9PiTUO8Drhs3nOc3H99oP7p1qtZKQ24Jt+Rgq00+7XsIp3hR/3k9BBDq/T90t5zhlzgJHtO9+ePj67kbSI8t43RtlBa4JTwaHAxLyY/YeAgF8TDMgI6vvm304N8fFuWwaZpG2SiXv/22nRdmfnysWjG+srW2EG7D5NM+3Q5F8Q9WC/Rp5/3hAC3EQ8vucCIxzTKs70zOJTTKFaOigZ+yUfEu7aIIA+0QZ4xEGyNFODv7jxiAUJ/gvJrQh7WABsAADKrvKqbmrKY0OhvFDau1XGl1NjpDzz67hP5YqkK3TdqI1HJgsUdnwY+RiKA14nWFxIYVAFrWaBO2NopFqzXUrK1WZ+j5ymgbJp72qXVeQn2HgjiOIszVeEGFVQCxHqFyCIHJipbWAl5qGFpL8559nrJhgzW2mHDapxZ68TXaSSMJr/0sYic1YAMEblqugLZYKce6igchVENsmLQR3b7FlPiWZvjMTPs2955OOykMNS2rxVmtX2ZOlezYUOXrzIo12ZaoUITvaJiPOwzCYxt7vTGArgfCpe2lFgcIub0bp6pNCEFGHAwGOgMx4ZzortYT/+kx114Q8IEbft4iExoc8lLgpFqFs7QN7s43pyn30Lah0LtVernLMxw12cImH0LIaIg09CcLvtl2UoMr4gvNVGK0RMdLe2uZ7X1W9z/ZWQw3XYi/eXj2Ag3xmNqyDiOpSVJhxTQ1eNkAoA2LqaJzr2W6Nixltpnj5MnGGieYCrq3Ylt/4AP86NnwPxpwTkgJ3LRQKeLrIJjFkG+xnHvlskMoIkJ2rEmwrFFUUv8KeW+vMNAQvW77SdM020nLJiYwW2HXXQkSCoP+T6VM81mDdcRbsp2onmNDX7/XR+gjBm5qkjhatq9jYYRe0IJBqJfW4MjkLeZAXKLR1GmIRx7C3CevVwbSx1vnEwzTMZ1VZqpSrNh3tQrxUjy73HzFHKVKtK9vT80IR16E45zXLT/7KtVPzrF1Zsu526qw5W53CKfE181MZo19WGaiSd8+iMRPuPPxgYcpUOS4h0o4JjTCDoGxnHtupOGPQLa4yZ7iSbY2JW7KN7yEub0c5aaMnv/7wP6bodeVoQgdG07xb5rPQ84blmxGVAjh7z4KT0IMZsdr68+W7hdQQiRg5fAL51CEjg1BbLsVNm2c8BxGD/0Z+d99ECB4Ujk+F0R8K/L8oN+v1XAWNDbCsxhFWGndAoRoEaQ4JzqLIb2WTHjdcJvY0M+wl8s5Zl3PBau4T3D6Ah4pgsaLNS3iImQUYbEFu8b3fXrqOwQnWUI8lR8kpDPgx+OPwVL8LV7viw6xK1cpjChCdjAqiGkRolMFQiOq/NuAH9KNL7f33l/GXTsW1SlnOGM+HmFIuL2fGiESMqIYJPR65oN/+cducoew+Yj34WeY8QjNR5VAa4XnqS16M3/is6XtKX8Xn/imx2y5D37EY9CBFeq4xzQf9QWO4VqP2AfhF295ZksTH92HRmTYEPipl+nYH27fgr46mUntxvqmCEK6uEl+nRswIqMdBpT7t2/DTo3HTspxC8U4Gt6KRZhPfqo0z4ilDP3x3r9hqU92eXivFEPNe7EID5InlFWHMHJqRvfljD18nUqwO53qfAxV7wUv+igFCdNYFt0W7KptL5AVKCCx4e1FfjLLGt7LeBcdbT1in0ahdWtAH1ycxpoFqedU3h/DR4M/D8Sap0DfA5kA+x3zuPNWh2iLaLk53KJkP91Zbr5488JZKJHO0hrF7T3ljsNmLXaOBPGQduNdzr5SpcX60O7q9OL0KlCTCK71d1VaBk9OL66uLjfh9v+1FwGk0Ayhyrb/PXiQC3iq3Tvs8560sgd9Dl/IkeWl5vL0dHcaaiVw1AYSeq7b6ayiR9v2koaUFoCZTgv7CLqG/lEaYlZQigRIh4AxN9gkc7vert/D93v5UFsP9u14wy/9sP7fv3749fju8fq1azeui5s3Hn8fvjgzuFBTCFg8heEMPyGIGoN3OT8g9NY9wLiP1rSh3YMzD3dy13Ye7Ow9+PDhIyDc5B7emBnejKFn+6QB+m2YxvrvvIdwrt/v735i8CHG3+4Y9PiTUO8Drhs3nOc3H99oP7p1qtZKQ24Jt+Rgq00+7XsIp3hR/3k9BBDq/T90t5zhlzgJHtO9+ePj67kbSI8t43RtlBa4JTwaHAxLyY/YeAgF8TDMgI6vvm304N8fFuWwaZpG2SiXv/22nRdmfnysWjG+srW2EG7D5NM+3Q5F8Q9WC/Rp5/3hAC3EQ8vucCIxzTKs70zOJTTKFaOigZ+yUfEu7aIIA+0QZ4xEGyNFODv7jxiAUJ/gvJrQh7WABsAADKrvKqbmrKY0OhvFDau1XGl1NjpDzz67hP5YqkK3TdqI1HJgsUdnwY+RiKA14nWFxIYVAFrWaBO2NopFqzXUrK1WZ+j5ymgbJp72qXVeQn2HgjiOIszVeEGFVQCxHqFyCIHJipbWAl5qGFpL8559nrJhgzW2mHDapxZ68TXaSSMJr/0sYic1YAMEblqugLZYKce6igchVENsmLQR3b7FlPiWZvjMTPs2955OOykMNS2rxVmtX2ZOlezYUOXrzIo12ZaoUITvaJiPOwzCYxt7vTGArgfCpe2lFgcIub0bp6pNCEFGHAwGOgMx4ZzortYT/+kx114Q8IEbft4iExoc8lLgpFqFs7QN7s43pyn30Lah0LtVernLMxw12cImH0LIaIg09CcLvtl2UoMr4gvNVGK0RMdLe2uZ7X1W9z/ZWQw3XYi/eXj2Ag3xmNqyDiOpSVJhxTQ1eNkAoA2LqaJzr2W6Nixltpnj5MnGGieYCrq3Ylt/4AP86NnwPxpwTkgJ3LRQKeLrIJjFkG+xnHvlskMoIkJ2rEmwrFFUUv8KeW+vMNAQvW77SdM020nLJiYwW2HXXQkSCoP+T6VM81mDdcRbsp2onmNDX7/XR+gjBm5qkjhatq9jYYRe0IJBqJfW4MjkLeZAXKLR1GmIRx7C3CevVwbSx1vnEwzTMZ1VZqpSrNh3tQrxUjy73HzFHKVKtK9vT80IR16E45zXLT/7KtVPzrF1Zsu526qw5W53CKfE181MZo19WGaiSd8+iMRPuPPxgYcpUOS4h0o4JjTCDoGxnHtupOGPQLa4yZ7iSbY2JW7KN7yEub0c5aaMnv/7wP6bodeVoQgdG07xb5rPQ84blmxGVAjh7z4KT0IMZsdr68+W7hdQQiRg5fAL51CEjg1BbLsVNm2c8BxGD/0Z+d99ECB4Ujk+F0R8K/L8oN+v1XAWNDbCsxhFWGndAoRoEaQ4JzqLIb2WTHjdcJvY0M+wl8s5Zl3PBau4T3D6Ah4pgsaLNS3iImQUYbEFu8b3fXrqOwQnWUI8lR8kpDPgx+OPwVL8LV7viw6xK1cpjChCdjAqiGkRolMFQiOq/NuAH9KNL7f33l/GXTsW1SlnOGM+HmFIuL2fGiESMqIYJPR65oN/+cducoew+Yj34WeY8QjNR5VAa4XnqS16M3/is6XtKX8Xn/imx2y5D37EY9CBFeq4xzQf9QWO4VqP2AfhF295ZksTH92HRmTYEPipl+nYH27fgr46mUntxvqmCEK6uEl+nRswIqMdBpT7t2/DTo3HTspxC8U4Gt6KRZhPfqo0z4ilDP3x3r9hqU92eXivFEPNe7EID5InlFWHMHJqRvfljD18nUqwO53qfAxV7wUv+igFCdNYFt0W7KptL5AVKCCx4e1FfjLLGt7LeBcdbT1in0ahdWtAH1ycxpoFqedU3h/DR4M/D8Sap0DfA5kA+x3zuPNWh2iLaLk53KJkP91Zbr5488JZKJHO0hrF7T3ljsNmLXaOBPGQduNdzr5SpcX60O7q9OL0KlCTCK71d1VaBk9OL66uLjfh9v+1FwGk0Ayhyrb/PXiQC3iq3Tvs8560sgd9Dl/IkeWl5vL0dHcaaiVw1AYSeq7b6ayiR9v2koaUFoCZTgv7CLqG/lEaYlZQigRIh4AxN9gkc7vert/D93v5UFsP9u14wy/9sP7fv3749fju8fq1azeui5s3Hn8fvjgzuFBTCFg8heEMPyGIGoN3OT8g9NY9wLiP1rSh3YMzD3dy13Ye7Ow9+PDhIyDc5B7emBnejKFn+6QB+m2YxvrvvIdwrt/v735i8CHG3+4Y9PiTUO8Drhs3nOc3H99oP7p1qtZKQ24Jt+Rgq00+7XsIp3hR/3k9BBDq/T90t5zhlzgJHtO9+ePj67kbSI8t43RtlBa4JTwaHAxLyY/YeAgF8TDMgI6vvm304N8fFuWwaZpG2SiXv/22nRdmfnysWjG+srW2EG7D5NM+3Q5F8Q9WC/Rp5/3hAC3EQ8vucCIxzTKs70zOJTTKFaOigZ+yUfEu7aIIA+0QZ4xEGyNFODv7jxiAUJ/gvJrQh7WABsAADKrvKqbmrKY0OhvFDau1XGl1NjpDzz67hP5YqkK3TdqI1HJgsUdnwY+RiKA14nWFxIYVAFrWaBO2NopFqzXUrK1WZ+j5ymgbJp72qXVeQn2HgjiOIszVeEGFVQCxHqFyCIHJipbWAl5qGFpL8559nrJhgzW2mHDapxZ68TXaSSMJr/0sYic1YAMEblqugLZYKce6igchVENsmLQR3b7FlPiWZvjMTPs2955OOykMNS2rxVmtX2ZOlezYUOXrzIo12ZaoUITvaJiPOwzCYxt7vTGArgfCpe2lFgcIub0bp6pNCEFGHAwGOgMx4ZzortYT/+kx114Q8IEbft4iExoc8lLgpFqFs7QN7s43pyn30Lah0LtVernLMxw12cImH0LIaIg09CcLvtl2UoMr4gvNVGK0RMdLe2uZ7X1W9z/ZWQw3XYi/eXj2Ag3xmNqyDiOpSVJhxTQ1eNkAoA2LqaJzr2W6Nixltpnj5MnGGieYCrq3Ylt/4AP86NnwPxpwTkgJ3LRQKeLrIJjFkG+xnHvlskMoIkJ2rEmwrFFUUv8KeW+vMNAQvW77SdM020nLJiYwW2HXXQkSCoP+T6VM81mDottM8Y9ziHIKXzLcqkAaaBfoxDamj34rzCmgw0uelI2rySuZDvR+Ct5j5IMKhJLsvXdCCfwbUIjolzxSB2o8wtmOINohUJY8hIrzNEGEBpbHfrCimJKzlN+5iIqHEHcoOHeMBnUvxrre8UXIcsRChDnQ9VLJRYRWHK2TPyaBPRfWnIAmZvs+FUul8mS9R0xOZMkcZ6d7HHIHE0qSeeK9XEnCOUmFp6ShPJGKCPGfEjv2ZicqW9iRG3v2fPvkQ1m2rSjbIeT9iHPvY8pOuZMeK7mD3YfIkg7vRGUHROXvIrKInV9UTrp3UrSbk6795JhSkp10byfHlHanF3uiKaAQpSgA67Vl6CDqhh5BiLBoKtYmXpL9K63YmYf6fOunfC/m67SGGubfB0/v+YPl6+YpZ6G975Wf+A5/uGmfV7pSStd7+p+vX6beB/y6fvNwv/6Zf/m9Uu8Dfq78NfhfSPr/ASZ0u9Z2OId7AAAAAElFTkSuQmCC"
                     alt="Waiting" style="width: 250px; height: auto;">
             </div>
-            <h2 id="waitingStatus" style="font-size: 2.2rem; color: #de6834; font-weight: 500; margin-bottom: 10px;">The
-                test hasn't started yet</h2>
-            <p id="waitingTimeInfo" style="font-size: 1.1rem; color: #666; font-weight: 400;"></p>
-            <div style="margin-top: 30px;">
-                <button class="btn" onclick="location.reload()">Refresh Page</button>
+            <h2 id="waitingStatus"
+                style="font-size: 1.8rem; color: #de6834; font-weight: 700; font-family: 'Hind', sans-serif; text-transform: uppercase; margin-bottom: 15px;">
+                The test hasn't started yet</h2>
+            <div id="waitingTestTitle"
+                style="font-size: 1.25rem; font-weight: 600; color: #000; font-family: 'Hind', sans-serif; margin-bottom: 15px;">
             </div>
+            <p id="waitingTimeInfo"
+                style="font-size: 1.15rem; color: #666; font-weight: 500; font-family: 'Hind', sans-serif; margin-bottom: 30px;">
+            </p>
+            <button class="sign-in-btn" style="margin-top: auto;" onclick="location.href='joinvialink.html'">Go
+                Back</button>
         </div>
 
     </div>
@@ -450,34 +477,79 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const examId = urlParams.get('testId');
+            const rawParam = urlParams.get('voidLink') || urlParams.get('testId') || sessionStorage.getItem('pending_test_id');
+            const voidLinks = JSON.parse(localStorage.getItem('void_links')) || {};
 
-            if (examId) {
-                if (window.db && window.db.getExamById) {
-                    const exam = db.getExamById(examId) || db.getExamByTestId(examId);
-                    if (exam) {
-                        currentExam = exam;
-                        document.getElementById('testTitle').textContent = exam.title || exam.name || 'Assessment Session';
-                        document.getElementById('totQuestions').textContent = exam.questions ? exam.questions.length : (exam.totalQuestions || '3');
-                        document.getElementById('totTime').textContent = (exam.duration || 90) + ' mins';
+            let voidTitle = null;
+            let voidKey = null;
 
-                        // CHECK TEST TIMING FIRST
-                        if (!checkTestTiming(exam)) {
-                            return; // Stop here if timing is not valid (waiting screen shown)
-                        }
-
-                        // CHECK FOR DESKTOP ONLY RESTRICTION
-                        const isDesktopOnly = exam.security ? exam.security.desktopOnly : exam.desktopOnly;
-
-                        if (isDesktopOnly) {
-                            document.getElementById('restrictionCard').style.display = 'flex';
-                            document.getElementById('loginCard').style.display = 'none';
-                        } else {
-                            document.getElementById('restrictionCard').style.display = 'none';
-                            document.getElementById('loginCard').style.display = 'flex';
-                            document.getElementById('testcode').value = exam.testId || exam.id || '';
+            if (rawParam) {
+                const q = decodeURIComponent(rawParam).toLowerCase();
+                if (voidLinks[q]) {
+                    voidKey = q;
+                    voidTitle = voidLinks[q];
+                } else {
+                    for (let k in voidLinks) {
+                        if (k.toLowerCase() === q || q.includes(k.toLowerCase()) || k.toLowerCase().includes(q)) {
+                            voidKey = k;
+                            voidTitle = voidLinks[k];
+                            break;
                         }
                     }
+                }
+            }
+
+            // If no param or param not matched directly, check if any void link exists in void_links
+            if (!voidTitle) {
+                const keys = Object.keys(voidLinks);
+                if (keys.length > 0) {
+                    const lastKey = keys[keys.length - 1];
+                    voidKey = lastKey;
+                    voidTitle = voidLinks[lastKey];
+                }
+            }
+
+            if (voidTitle) {
+                document.getElementById('testTitle').textContent = voidTitle;
+                document.getElementById('totQuestions').textContent = '3';
+                document.getElementById('totTime').textContent = '90 mins';
+                document.getElementById('restrictionCard').style.display = 'none';
+                document.getElementById('loginCard').style.display = 'flex';
+                if (voidKey) document.getElementById('testcode').value = '';
+                return;
+            }
+
+            if (window.db) {
+                let exam = null;
+                if (rawParam) {
+                    exam = db.getExamById(rawParam) || db.getExamByTestId(rawParam);
+                }
+                if (!exam && db.getAllExams) {
+                    const all = db.getAllExams() || [];
+                    if (all.length > 0) exam = all[all.length - 1];
+                }
+
+                if (exam) {
+                    currentExam = exam;
+                    document.getElementById('testTitle').textContent = exam.title || exam.name || 'Test';
+                    document.getElementById('totQuestions').textContent = exam.questions ? exam.questions.length : (exam.totalQuestions || '3');
+                    document.getElementById('totTime').textContent = (exam.duration || 90) + ' mins';
+
+                    if (!checkTestTiming(exam)) {
+                        return;
+                    }
+
+                    const isDesktopOnly = exam.security ? exam.security.desktopOnly : exam.desktopOnly;
+
+                    if (isDesktopOnly) {
+                        document.getElementById('restrictionCard').style.display = 'flex';
+                        document.getElementById('loginCard').style.display = 'none';
+                    } else {
+                        document.getElementById('restrictionCard').style.display = 'none';
+                        document.getElementById('loginCard').style.display = 'flex';
+                        document.getElementById('testcode').value = exam.testId || exam.id || '';
+                    }
+                    return;
                 }
             }
         });
@@ -526,7 +598,7 @@
             overlay.style.background = 'transparent';
 
             const pad = (n) => n.toString().padStart(2, '0');
-            const dateStr = `${pad(endTime.getDate())}/${pad(endTime.getMonth()+1)}/${endTime.getFullYear()}, ${pad(endTime.getHours())}:${pad(endTime.getMinutes())}:${pad(endTime.getSeconds())}`;
+            const dateStr = `${pad(endTime.getDate())}/${pad(endTime.getMonth() + 1)}/${endTime.getFullYear()}, ${pad(endTime.getHours())}:${pad(endTime.getMinutes())}:${pad(endTime.getSeconds())}`;
 
             overlay.innerHTML = `
                 <div style="text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 1001;">
@@ -609,8 +681,13 @@
             document.getElementById('waitingTimeInfo').textContent = info;
         }
 
-        function togglePass() {
+        function handleForgotPassword(e) {
+            if (e) e.preventDefault();
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('forgotCard').style.display = 'flex';
+        }
 
+        function togglePass() {
             const passInput = document.getElementById('password');
             const icon = document.querySelector('.eye-icon');
             if (passInput.type === 'password') {
@@ -622,12 +699,6 @@
                 icon.classList.remove('fa-eye');
                 icon.classList.add('fa-eye-slash');
             }
-        }
-
-        function handleForgotPassword(e) {
-            if (e) e.preventDefault();
-            document.getElementById('loginCard').style.display = 'none';
-            document.getElementById('forgotCard').style.display = 'flex';
         }
 
         function showLogin(e) {
@@ -646,16 +717,77 @@
             handleSignIn(null, true);
         }
 
+        function showErrorBanner(message) {
+            let errorBanner = document.getElementById('errorBanner');
+            if (!errorBanner) {
+                errorBanner = document.createElement('div');
+                errorBanner.id = 'errorBanner';
+                errorBanner.className = 'error-banner';
+                errorBanner.innerHTML = `<span>${message}</span>`;
+                document.body.appendChild(errorBanner);
+            } else {
+                errorBanner.querySelector('span').textContent = message;
+            }
+            errorBanner.classList.add('show');
+            clearTimeout(window.errorBannerTimeout);
+            window.errorBannerTimeout = setTimeout(() => {
+                errorBanner.classList.remove('show');
+            }, 3500);
+        }
+
         async function handleSignIn(e, isBypass = false) {
             if (e) e.preventDefault();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawParam = urlParams.get('voidLink') || urlParams.get('testId') || sessionStorage.getItem('pending_test_id');
+            const voidLinks = JSON.parse(localStorage.getItem('void_links')) || {};
+            const testcodeInput = document.getElementById('testcode');
+            const code = testcodeInput ? testcodeInput.value.trim().toLowerCase() : '';
+
+            let voidTitle = null;
+
+            if (rawParam) {
+                const q = decodeURIComponent(rawParam).toLowerCase();
+                if (voidLinks[q]) voidTitle = voidLinks[q];
+                else {
+                    for (let k in voidLinks) {
+                        if (k.toLowerCase() === q || q.includes(k.toLowerCase()) || k.toLowerCase().includes(q)) {
+                            voidTitle = voidLinks[k];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!voidTitle && code) {
+                if (voidLinks[code]) voidTitle = voidLinks[code];
+                else {
+                    for (let k in voidLinks) {
+                        if (k.toLowerCase() === code || code.includes(k.toLowerCase()) || k.toLowerCase().includes(code)) {
+                            voidTitle = voidLinks[k];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!voidTitle) {
+                const keys = Object.keys(voidLinks);
+                if (keys.length > 0) {
+                    voidTitle = voidLinks[keys[keys.length - 1]];
+                }
+            }
+
+            if (voidTitle || urlParams.get('voidLink')) {
+                showErrorBanner("Test already submitted");
+                return;
+            }
 
             const rollInput = document.getElementById('rollnumber');
             const roll = rollInput.value.trim();
             const pass = document.getElementById('password').value.trim();
-            const testcodeInput = document.getElementById('testcode');
-            const code = testcodeInput.value.trim().toUpperCase();
+            const codeUpper = testcodeInput ? testcodeInput.value.trim().toUpperCase() : '';
 
-            const urlParams = new URLSearchParams(window.location.search);
             const urlExamId = urlParams.get('testId');
 
             let exam = null;
@@ -664,8 +796,8 @@
                 exam = db.getExamByTestId(urlExamId) || db.getExamById(urlExamId);
             }
 
-            if (!exam && code) {
-                exam = db.getExamByTestId(code) || db.getExamById(code);
+            if (!exam && codeUpper) {
+                exam = db.getExamByTestId(codeUpper) || db.getExamById(codeUpper);
             }
 
             if (!exam && urlExamId) {
@@ -680,7 +812,7 @@
 
             // RE-CHECK TIMING ON SUBMIT
             if (!checkTestTiming(exam)) return;
-            
+
             // Check if not started yet overlay is active
             if (document.getElementById('notStartedOverlay')) {
                 showToast("Please wait for the test to start.", "error");

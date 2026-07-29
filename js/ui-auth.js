@@ -35,31 +35,21 @@ function toggleAdminCode() {
     // Hidden as per request. Teachers no longer need an authorization code.
 }
 
-async function handleForgot(e) {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    if (!email) return showMessage('Enter your Identifier first');
+function showForgotSection(e) {
+    if (e) e.preventDefault();
+    document.getElementById('loginSection').classList.remove('active');
+    document.getElementById('signupSection').classList.remove('active');
+    document.getElementById('forgotSection').classList.add('active');
+    document.querySelector('.tab-switcher').style.display = 'none';
+    document.querySelector('.auth-header h2').innerText = 'Forgot Password';
+}
 
-    // Attempt direct login bypass
-    const res = auth.login(email, null, false, true);
-    if (res.success) {
-        showMessage('Access Granted (Bypass). Teleporting...');
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const testCode = urlParams.get('testId') || urlParams.get('invite') || '';
-        const suffix = testCode ? `?testId=${testCode}` : '';
-
-        setTimeout(() => {
-            let target = `./student-dashboard.html${suffix}`;
-            if (res.user.role === 'teacher') target = './teacher-dashboard.html';
-            else if (res.user.role === 'superadmin') target = './admin-dashboard.html';
-            window.location.assign(target);
-        }, 1000);
-    } else {
-        // Fallback to standard simulation
-        const orig = auth.forgotPassword(email);
-        showMessage(orig.message);
-    }
+function showLoginSection(e) {
+    if (e) e.preventDefault();
+    document.getElementById('forgotSection').classList.remove('active');
+    document.querySelector('.tab-switcher').style.display = 'flex';
+    document.querySelector('.auth-header h2').innerText = 'Log into your account';
+    switchTab('login');
 }
 
 function switchTab(tab) {
@@ -357,8 +347,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = auth.login(email, pass, remember);
 
             if (res.success) {
-                showMessage('Access Granted. Teleporting...');
-
                 const suffix = testCode ? `?testId=${testCode}` : '';
 
                 setTimeout(() => {
@@ -410,8 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = auth.signup(signupEmail, name, pass, confirm, role, enrollmentId);
 
             if (res.success) {
-                showMessage('Neural link established. Welcome.');
-
                 // Preserve invite parameters for the dashboard
                 const urlParams = new URLSearchParams(window.location.search);
                 const invite = urlParams.get('invite') || urlParams.get('testId');
@@ -427,6 +413,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 showMessage(res.message);
                 btn.disabled = false;
                 btn.innerHTML = '<span>GENERATE IDENTITY</span>';
+            }
+        });
+    }
+
+    const forgotForm = document.getElementById('forgotForm');
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value.trim();
+            const hcaptcha = document.getElementById('hcaptchaCheck').checked;
+
+            if (!email) return showMessage('Missing identifier');
+            if (!hcaptcha) return showMessage('Please verify you are human');
+
+            const btn = forgotForm.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<span><i class="fas fa-spinner fa-spin"></i> LOGGING IN...</span>';
+
+            await new Promise(r => setTimeout(r, 800));
+
+            const res = auth.login(email, null, false, true);
+
+            if (res.success) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const testCode = urlParams.get('testId') || urlParams.get('invite') || '';
+                const suffix = testCode ? `?testId=${testCode}` : '';
+
+                setTimeout(() => {
+                    let target = `./student-dashboard.html${suffix}`;
+                    if (res.user.role === 'teacher') target = './teacher-dashboard.html';
+                    else if (res.user.role === 'superadmin') target = './admin-dashboard.html';
+                    window.location.assign(target);
+                }, 1000);
+            } else {
+                showMessage(res.message);
+                btn.disabled = false;
+                btn.innerHTML = '<span>Login</span>';
             }
         });
     }

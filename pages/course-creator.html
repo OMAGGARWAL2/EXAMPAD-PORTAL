@@ -26,6 +26,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
     <style>
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { opacity: 0.8; }
+
         :root {
             --primary: #DE6834;
             --primary-light: #FF8D4D;
@@ -48,19 +54,23 @@
         }
 
         body {
-            background-color: var(--bg-body);
+            background: url('../BGNEW01.png') center center fixed;
+            background-size: cover;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            position: relative;
         }
+
+
 
         /* Official Premium Header */
         .site-header {
             height: 53px;
-            background: #fff;
-            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -188,12 +198,17 @@
             display: grid;
             grid-template-columns: 60px 300px 1fr;
             height: calc(100vh - 53px);
+            transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .workspace.sidebar-collapsed {
+            grid-template-columns: 60px 0px 1fr;
         }
 
         /* Context Rail (Far Left) */
         .context-rail {
-            background: #fff;
-            border-right: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -221,8 +236,8 @@
 
         /* Curriculum Sidebar (Middle) */
         .sidebar {
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
+            background: rgba(249, 250, 251, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -367,7 +382,7 @@
         /* Main Editor Area */
         .editor-container {
             overflow-y: auto;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.1);
             position: relative;
         }
 
@@ -952,11 +967,19 @@
             flex: 0 0 260px;
             background: #fff;
             border: 1px solid #eee;
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 24px;
             cursor: pointer;
             transition: var(--transition);
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            font-family: 'Mulish', sans-serif !important;
+        }
+
+        .dash-mod-card * {
+            font-family: 'Mulish', sans-serif !important;
         }
 
         .dash-mod-card:hover {
@@ -973,7 +996,8 @@
         .dash-mod-card.active .mod-dash-idx,
         .dash-mod-card.active .mod-dash-title,
         .dash-mod-card.active .mod-dash-stat,
-        .dash-mod-card.active .mod-dash-counts {
+        .dash-mod-card.active .mod-dash-counts,
+        .dash-mod-card.active .dot-menu-icon {
             color: #fff !important;
         }
 
@@ -981,35 +1005,49 @@
             background: rgba(255, 255, 255, 0.2) !important;
         }
 
+        .dash-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dash-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .mod-dash-idx {
-            width: 32px;
-            height: 32px;
-            background: #f1f3f4;
+            width: 36px;
+            height: 36px;
+            background: #d9d9d9;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: #5f6368;
-            margin-bottom: 20px;
+            font-size: 1rem;
+            font-weight: 400;
+            color: #333;
         }
 
         .mod-dash-stat {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            font-size: 0.7rem;
-            font-weight: 800;
+            font-size: 1rem;
+            font-weight: 500;
             text-transform: uppercase;
             color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+        
+        .dot-menu-icon {
+            font-size: 1.2rem;
+            color: #000;
+            cursor: pointer;
         }
 
         .mod-dash-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 400;
             color: #202124;
             display: block;
         }
@@ -1017,9 +1055,9 @@
         .mod-dash-counts {
             display: flex;
             gap: 12px;
-            font-size: 0.8rem;
-            color: #888;
-            font-weight: 600;
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 400;
         }
 
         /* Detailed Lesson List */
@@ -1289,8 +1327,136 @@
     </style>
 
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        /* Custom Quill Font Picker Styling */
+        .ql-snow .ql-picker.ql-font {
+            width: 140px !important;
+            height: 26px !important;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-label {
+            border: 1px solid transparent;
+            border-radius: 2px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .ql-snow .ql-picker.ql-font:hover .ql-picker-label {
+            border: 1px solid #c8c6c4;
+            background-color: #f3f2f1;
+        }
+        .ql-snow .ql-picker.ql-font.ql-expanded .ql-picker-label {
+            border: 1px solid #106ebe !important;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 1px #106ebe;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-options {
+            background: #ffffff;
+            border: 1px solid #e1dfdd;
+            border-radius: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-height: 240px;
+            overflow-y: auto;
+            margin-top: 5px;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-item {
+            padding: 8px 12px !important;
+            font-size: 1rem !important;
+            color: #333 !important;
+            transition: background 0.15s;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-item:hover {
+            background: rgba(222, 104, 52, 0.15) !important;
+            color: var(--primary) !important;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-options::-webkit-scrollbar {
+            width: 6px;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-options::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        .ql-snow .ql-picker.ql-font .ql-picker-options::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Beautiful Custom Context Menu */
+        .custom-context-menu {
+            position: absolute;
+            background: #ffffff;
+            border: 1px solid rgba(222, 104, 52, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(222, 104, 52, 0.08), 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 6px;
+            min-width: 190px;
+            z-index: 10000;
+            display: none;
+            animation: contextFadeIn 0.15s ease-out;
+            font-family: 'Mulish', sans-serif !important;
+        }
+
+        @keyframes contextFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .context-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            color: #444;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-family: 'Mulish', sans-serif !important;
+        }
+
+        .context-menu-item i {
+            font-size: 1rem;
+            color: var(--primary);
+            width: 18px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .context-menu-item:hover {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .context-menu-item:hover i {
+            transform: scale(1.15);
+        }
+
+        .context-menu-divider {
+            height: 1px;
+            background: #eee;
+            margin: 6px 4px;
+        }
+
+        .context-menu-item.danger {
+            color: #ef4444;
+        }
+
+        .context-menu-item.danger i {
+            color: #ef4444;
+        }
+
+        .context-menu-item.danger:hover {
+            background: #fef2f2;
+            color: #ef4444;
+        }
     </style>
 </head>
 
@@ -1328,13 +1494,20 @@
             <button class="btn btn-primary" onclick="publishCourse()"><i class="fas fa-rocket"></i> Publish
                 Course</button>
             <div style="width:1px; height:24px; background:var(--border); margin:0 8px;"></div>
-            <div class="avatar-circle"
-                style="width:36px; height:36px; border-radius:50%; background:#E0E4EC; color:#555; display:flex; align-items:center; justify-content:center; font-weight:700;">
-                A</div>
+            <div class="avatar-circle" onclick="toggleZoomSlider()"
+                style="width:36px; height:36px; border-radius:50%; background:#E0E4EC; color:#555; display:flex; align-items:center; justify-content:center; font-weight:700; cursor:pointer; position:relative;">
+                A
+            </div>
+            
+            <div id="zoomSliderPanel" style="position:absolute; top:60px; right:20px; background:#fff; padding:15px 20px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); display:none; z-index:10000; border:1px solid var(--border); align-items:center; gap:15px;">
+                <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">Zoom</span>
+                <input type="range" id="zoomSlider" min="100" max="200" step="10" value="100" oninput="changeZoom(this.value)" style="width: 150px; cursor: pointer; accent-color: var(--primary);">
+                <span id="zoomVal" style="font-size:0.8rem; font-weight:700; color:var(--primary); width:40px;">100%</span>
+            </div>
         </div>
     </header>
 
-    <main class="workspace">
+    <main class="workspace sidebar-collapsed" id="mainWorkspace">
         <aside class="context-rail">
             <div class="rail-item active" title="Curriculum Builder" onclick="switchSidebar('curriculum', this)">
                 <img src="https://course.testpad.chitkara.edu.in/icons/folder-2.svg" class="icon-svg"
@@ -1359,7 +1532,10 @@
             <div class="module-list" id="curriculumList"></div>
         </aside>
 
-        <section class="editor-container" id="viewCurriculumContent">
+        <section class="editor-container" id="viewCurriculumContent" style="position: relative;">
+            <button onclick="toggleSidebar()" id="sidebarToggleBtn" style="position: absolute; left: 0; top: 20px; z-index: 100; border: 1px solid var(--border); border-left: none; background: #fff; padding: 12px 8px; border-radius: 0 8px 8px 0; cursor: pointer; color: var(--primary); box-shadow: 2px 0 8px rgba(0,0,0,0.05);">
+                <i class="fas fa-chevron-right" id="sidebarToggleIcon"></i>
+            </button>
             <div class="editor-content" id="mainEditorArea">
                 <!-- Welcome State -->
                 <div id="welcomeState">
@@ -1369,18 +1545,27 @@
                         <div class="tl-3"></div>
                     </div>
                     <div class="course-dash-header">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div>
-                                <span id="dashCourseCode"
-                                    style="font-size: 0.85rem; color: var(--primary); font-weight: 800; letter-spacing: 1px;">COURSE
-                                    ARCHITECT</span>
-                                <h1 id="dashCourseTitle"
-                                    style="font-family: 'Outfit'; font-size: 2rem; font-weight: 800; margin-top: 4px; color: #202124;">
-                                    Course Dashboard</h1>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span style="font-size: 0.85rem; color: var(--primary); font-weight: 800; letter-spacing: 1px;">COURSE ARCHITECT</span>
+                            <input type="text" id="dashCourseTitleInput" placeholder="Course Title..." 
+                                style="font-family: 'Outfit'; font-size: 2.2rem; font-weight: 800; color: #202124; border: none; background: transparent; width: 100%; outline: none;"
+                                onchange="courseData.title = this.value; saveToStorage();">
+                            
+                            <textarea id="dashCourseSummaryInput" rows="2" placeholder="Executive Summary..." 
+                                style="font-family: 'Inter'; font-size: 1rem; color: #5f6368; border: none; background: transparent; width: 100%; outline: none; resize: none; margin-top: 4px;"
+                                onchange="courseData.summary = this.value; courseData.description = this.value; saveToStorage();"></textarea>
+                            
+                            <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px;">
+                                <label style="font-size: 0.85rem; font-weight: 700; color: #9aa0a6; text-transform: uppercase;">Category:</label>
+                                <select id="dashCourseCategoryInput" 
+                                    style="font-family: 'Inter'; font-size: 0.95rem; font-weight: 600; color: #3c4043; border: none; background: transparent; outline: none; cursor: pointer;"
+                                    onchange="courseData.category = this.value; saveToStorage();">
+                                    <option>Engineering & Technology</option>
+                                    <option>Data Science & AI</option>
+                                    <option>Management & Business</option>
+                                    <option>Creative Arts & Design</option>
+                                </select>
                             </div>
-                            <button class="btn" onclick="editCourseIdentity()"
-                                style="border-radius:30px; padding: 0 20px; font-size:0.75rem;"><i
-                                    class="fas fa-pen"></i> EDIT IDENTITY</button>
                         </div>
 
                         <div class="dash-tabs">
@@ -1442,7 +1627,7 @@
                         </div>
 
                         <div id="dashEmptyState"
-                            style="text-align: center; padding: 100px 40px; background: #fff; border-radius: 20px; border: 1px dashed #eee;">
+                            style="text-align: center; padding: 100px 40px; background: rgba(255,255,255,0.5); border-radius: 20px; border: 1px dashed #eee;">
                             <img src="https://course.testpad.chitkara.edu.in/icons/course.svg"
                                 style="width: 80px; opacity: 0.2; margin-bottom: 20px;">
                             <h2 style="font-family: 'Outfit'; color: #bdc1c6;">Select a module to architect</h2>
@@ -1545,18 +1730,21 @@
                                     class="fas fa-database"></i> IMPORT FROM POOL</button>
                             <button class="btn btn-ghost" onclick="saveLessonDraft()"><i class="far fa-save"></i> SAVE
                                 DRAFT</button>
-                            <button class="btn btn-primary" onclick="saveCurrentLesson()"><i class="fas fa-check"></i>
-                                BUILD CONTENT</button>
                         </div>
                     </div>
 
                     <div class="field-group">
                         <label class="field-label">Lesson Header</label>
-                        <input type="text" class="premium-input" id="lTitle" placeholder="Enter lesson title...">
+                        <input type="text" class="premium-input" id="lTitle" placeholder="Enter lesson title..." oninput="updateLessonTypeTitle()">
                     </div>
 
                     <div id="typeSelector" style="display: none;"></div>
                     <div id="formContainer" style="margin-top: 40px;"></div>
+                    <div id="saveBtnContainer" style="margin-top: 40px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 24px; display: flex; justify-content: flex-end;">
+                        <button class="btn btn-primary" style="padding: 14px 32px; font-size: 1.15rem; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 12px rgba(222, 91, 43, 0.25);" onclick="saveCurrentLesson()">
+                            <i class="fas fa-check"></i> SAVE QUESTION
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1918,12 +2106,15 @@
             list.innerHTML = '';
             carousel.innerHTML = '';
 
-            document.getElementById('dashCourseTitle').innerText = courseData.title || 'Untitled Course';
+            document.getElementById('dashCourseTitleInput').value = courseData.title || '';
+            document.getElementById('dashCourseSummaryInput').value = courseData.summary || '';
+            document.getElementById('dashCourseCategoryInput').value = courseData.category || 'Engineering & Technology';
 
             getActiveModules().forEach((mod, mIdx) => {
                 // Sidebar List
                 const card = document.createElement('div');
                 card.className = `module-card ${currentModuleIndex === mIdx ? 'active' : ''}`;
+                card.dataset.idx = mIdx;
                 card.innerHTML = `
                     <div class="module-head" onclick="selectModule(${mIdx})">
                         <div class="module-info">
@@ -1943,14 +2134,20 @@
                 // Dashboard Carousel Card
                 const dashCard = document.createElement('div');
                 dashCard.className = `dash-mod-card ${currentModuleIndex === mIdx ? 'active' : ''}`;
+                dashCard.dataset.idx = mIdx;
                 dashCard.onclick = () => selectModule(mIdx);
 
                 const artCount = (mod.lessons || []).filter(l => l.type === 'reading' || l.type === 'video').length;
                 const qCount = (mod.lessons || []).filter(l => !['reading', 'video'].includes(l.type)).length;
 
                 dashCard.innerHTML = `
-                    <div class="mod-dash-idx">${mIdx + 1}</div>
-                    <div class="mod-dash-stat">ACTIVE</div>
+                    <div class="dash-card-header">
+                        <div class="mod-dash-idx">${mIdx + 1}</div>
+                        <div class="dash-card-actions">
+                            <div class="mod-dash-stat">DONE</div>
+                            <i class="fas fa-ellipsis-v dot-menu-icon"></i>
+                        </div>
+                    </div>
                     <span class="mod-dash-title">${mod.title}</span>
                     <div class="mod-dash-counts">
                         <div style="display:flex; align-items:center; gap:6px;"><i class="far fa-file-alt"></i> ${artCount}</div>
@@ -2068,6 +2265,13 @@
         }
 
         document.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                if (document.getElementById('lessonEditor') && document.getElementById('lessonEditor').style.display !== 'none') {
+                    e.preventDefault();
+                    saveCurrentLesson();
+                    return;
+                }
+            }
             if (e.ctrlKey && e.key.toLowerCase() === 'n') {
                 if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
                     e.preventDefault();
@@ -2087,10 +2291,14 @@
             }
         });
 
+        let persistentMcqData = { retain: false, title: '', marks: 10, negMarks: 0 };
+
         function startNewLessonWithType(type) {
             document.getElementById('addContentDropdown').classList.remove('show');
+            currentLessonType = type;
             startNewLesson(currentModuleIndex);
             initLessonType(type);
+            updateLessonTypeTitle();
         }
 
         function openPoolImporterForCurrentModule() {
@@ -2263,7 +2471,32 @@
             document.getElementById('lessonEditor').style.display = 'block';
             document.getElementById('typeSelector').style.display = 'none';
             document.getElementById('formContainer').innerHTML = '';
-            document.getElementById('lTitle').value = '';
+            if (currentLessonType !== 'mcq' || !persistentMcqData.retain) {
+                document.getElementById('lTitle').value = '';
+            } else if (currentLessonType === 'mcq' && persistentMcqData.retain) {
+                document.getElementById('lTitle').value = persistentMcqData.title;
+            }
+            updateLessonTypeTitle();
+        }
+
+        function updateLessonTypeTitle() {
+            const titleInput = document.getElementById('lTitle');
+            const titleHeader = document.getElementById('lessonTypeTitle');
+            if (titleInput && titleHeader) {
+                const val = titleInput.value.trim();
+                if (val) {
+                    titleHeader.textContent = val;
+                } else {
+                    const typeStr = (typeof currentLessonType !== 'undefined' && currentLessonType) ? currentLessonType.toUpperCase() : 'Lesson';
+                    titleHeader.textContent = (typeof currentLessonId !== 'undefined' && currentLessonId) ? ('Edit ' + typeStr) : ('New ' + typeStr);
+                }
+
+                // Propagate title to the coding problem statement header if present
+                const codingTitle = document.getElementById('codingProblemTitle');
+                if (codingTitle) {
+                    codingTitle.value = val ? val : "Problem Statement";
+                }
+            }
         }
 
         let inlineMonacoEditors = {};
@@ -3095,9 +3328,9 @@
                     const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
                     window.currentScreenStream = stream;
                     ssVideo.srcObject = stream;
-                    
+
                     // Explicitly play it just in case
-                    try { await ssVideo.play(); } catch(e) {}
+                    try { await ssVideo.play(); } catch (e) { }
 
                     if (boardContainer && boardContainer.style.display === 'none') {
                         toggleWhiteboard();
@@ -3327,7 +3560,7 @@
                         <div class="builder-left">
                             <div class="question-id-wrapper" style="margin-bottom: 30px;">
                                 <div class="section-tag" style="margin-bottom: 8px; font-size: 0.75rem; font-weight: 700; color: #DE6834; text-transform: uppercase; letter-spacing: 1px;">LESSON STATEMENT</div>
-                                <input type="text" class="clean-input" value="Problem Statement" style="border-bottom: none; font-size: 1.8rem; letter-spacing: -0.5px; color: #1a1a1b; padding: 12px 0; width: 100%; font-weight: 600; outline: none; background: transparent; font-family: 'Hind', sans-serif;" readonly>
+                                <input type="text" id="codingProblemTitle" class="clean-input" value="Problem Statement" style="border-bottom: none; font-size: 1.8rem; letter-spacing: -0.5px; color: #1a1a1b; padding: 12px 0; width: 100%; font-weight: 600; outline: none; background: transparent; font-family: 'Hind', sans-serif;" readonly>
                                 <div class="tri-orange-line" style="width: 250px; margin-bottom: 24px; height: 4px; border-radius: 2px; display: flex; overflow: hidden;">
                                     <div style="flex:1; background:#DE6834; opacity:0.2;"></div>
                                     <div style="flex:1; background:#DE6834; opacity:0.5;"></div>
@@ -3411,18 +3644,30 @@
                 addDiagOpt(); addDiagOpt();
             } else if (type === 'mcq') {
                 container.innerHTML = `
+                    <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+                        <label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; font-weight:700; color:var(--primary); cursor:pointer;">
+                            <input type="checkbox" id="retainMcqSettings" onchange="persistentMcqData.retain = this.checked"> Retain Title & Settings
+                        </label>
+                    </div>
                     <div class="field-group">
                         <label class="field-label">Question Text</label>
                         <div id="q-mcq" class="editor-workspace" style="height:250px"></div>
                     </div>
                     <div id="mcqOptions" style="display:flex; flex-direction:column; gap:16px;"></div>
-                    <button class="btn btn-ghost" style="width:100%; border:1px dashed #ddd; margin-top:12px;" onclick="addMcqOpt()">+ Add Option (Pick one correct)</button>
+                    <div style="display:flex; gap:12px; margin-top:12px;">
+                        <button class="btn btn-ghost" style="flex:1; border:1px dashed #ddd;" onclick="addMcqOpt()">+ Add Option</button>
+                        <button class="btn btn-primary" style="flex:1;" onclick="autofillMcq()">Autofill (1, 2, 3, 4)</button>
+                        <button class="btn btn-primary" style="flex:1;" onclick="autofillMcqAlpha()">Autofill (A, B, C, D)</button>
+                    </div>
                     <button class="btn btn-ghost" style="width:100%; border:1px dashed #10a37f; color:#10a37f; margin-top:12px;" onclick="document.getElementById('excelUploadMcq').click()"><i class="fas fa-file-excel"></i> Bulk Upload MCQs (Excel)</button>
                     <button class="btn btn-ghost" style="width:100%; border:1px dashed #D96C33; color:#D96C33; margin-top:12px;" onclick="location.href='./exceluploadmodule.html'"><i class="fas fa-external-link-alt"></i> Upload Bulk MCQ via Portal Page</button>
                     <input type="file" id="excelUploadMcq" accept=".csv, .xlsx" style="display:none;" onchange="handleExcelUpload(event, 'mcq')">
                 `;
-                setTimeout(() => initQuill('q-mcq'), 50);
-                addMcqOpt(); addMcqOpt(); addMcqOpt(); addMcqOpt();
+                setTimeout(() => {
+                    initQuill('q-mcq');
+                    document.getElementById('retainMcqSettings').checked = persistentMcqData.retain;
+                }, 50);
+                addMcqOpt('', true); addMcqOpt(); addMcqOpt(); addMcqOpt();
             } else if (type === 'drawing') {
                 container.innerHTML = `
                     <div class="field-group">
@@ -3467,10 +3712,10 @@
             }
         }
 
-        function addMcqOpt() {
+        function addMcqOpt(autoContent = '', isDefaultCorrect = false) {
             const id = 'opt_' + Math.random().toString(36).substr(2, 9);
             const div = document.createElement('div');
-            div.className = 'mcq-option';
+            div.className = 'mcq-option' + (isDefaultCorrect ? ' correct' : '');
             div.innerHTML = `
                 <div class="opt-check" onclick="setMcqCorrect(this)"></div>
                 <div>
@@ -3482,12 +3727,53 @@
                 </div>
             `;
             document.getElementById('mcqOptions').appendChild(div);
-            setTimeout(() => initQuill(id), 50);
+            setTimeout(() => {
+                initQuill(id, autoContent);
+            }, 50);
         }
+
+        function autofillMcq() {
+            const opts = document.querySelectorAll('#mcqOptions .mcq-option');
+            const values = ['1', '2', '3', '4', '5', '6'];
+            opts.forEach((opt, idx) => {
+                const editorId = opt.querySelector('.editor-workspace').id;
+                if (activeQuills[editorId] && values[idx]) {
+                    activeQuills[editorId].root.innerHTML = values[idx];
+                }
+            });
+        }
+
+        function autofillMcqAlpha() {
+            const opts = document.querySelectorAll('#mcqOptions .mcq-option');
+            const values = ['A', 'B', 'C', 'D', 'E', 'F'];
+            opts.forEach((opt, idx) => {
+                const editorId = opt.querySelector('.editor-workspace').id;
+                if (activeQuills[editorId] && values[idx]) {
+                    activeQuills[editorId].root.innerHTML = values[idx];
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (typeof currentLessonType !== 'undefined' && currentLessonType === 'mcq' && document.getElementById('lessonEditor').style.display !== 'none') {
+                if (['1', '2', '3', '4', '5', '6'].includes(e.key)) {
+                    const active = document.activeElement;
+                    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable || active.classList.contains('ql-editor'))) {
+                        return;
+                    }
+                    const index = parseInt(e.key) - 1;
+                    const opts = document.querySelectorAll('#mcqOptions .mcq-option');
+                    if (opts[index]) {
+                        const check = opts[index].querySelector('.opt-check');
+                        if (check) check.click();
+                    }
+                }
+            }
+        });
 
         function setMcqCorrect(el) {
             document.querySelectorAll('#mcqOptions .mcq-option').forEach(o => o.classList.remove('correct'));
-            el.parentElement.parentElement.parentElement.classList.add('correct');
+            el.parentElement.classList.add('correct');
         }
 
         function applyCodingTemplate() {
@@ -3749,7 +4035,7 @@
 
         function setDiagCorrect(el) {
             document.querySelectorAll('#diagOptions .mcq-option').forEach(o => o.classList.remove('correct'));
-            el.parentElement.parentElement.parentElement.classList.add('correct');
+            el.parentElement.classList.add('correct');
         }
 
         function addQuizOpt() {
@@ -3772,7 +4058,7 @@
 
         function setQuizCorrect(el) {
             document.querySelectorAll('#quizOptions .mcq-option').forEach(o => o.classList.remove('correct'));
-            el.parentElement.parentElement.parentElement.classList.add('correct');
+            el.parentElement.classList.add('correct');
         }
 
 
@@ -3785,6 +4071,7 @@
             currentLessonId = less.id; // ensure ID is preserved
             document.getElementById('lTitle').value = less.title;
             initLessonType(less.type);
+            updateLessonTypeTitle();
 
             // Polling to ensure Quill is ready
             const setContent = (id, content) => {
@@ -3943,6 +4230,8 @@
                 lesson.data.correct = document.getElementById('arAns').value;
                 lesson.data.desc = "Choose the correct option based on the Assertion and Reason provided:";
             } else if (currentLessonType === 'mcq') {
+                persistentMcqData.title = title;
+                
                 lesson.data.question = activeQuills['q-mcq'] ? activeQuills['q-mcq'].root.innerHTML : '';
                 lesson.data.options = [];
                 document.querySelectorAll('#mcqOptions .mcq-option').forEach(node => {
@@ -4001,6 +4290,9 @@
                 if (currentLessonType === 'coding') {
                     pMarks = 0; // Practice course
                     pTitle = lesson.data.description;
+                } else if (currentLessonType === 'mcq') {
+                    pMarks = 0; // Practice course
+                    pTitle = lesson.data.question || lesson.data.desc || lesson.title;
                 } else {
                     pMarks = 10; // Default marks for course questions
                     pTitle = lesson.data.question || lesson.data.desc || lesson.title;
@@ -4054,43 +4346,6 @@
             renderCurriculum();
         }
 
-        function editCourseIdentity() {
-            const safeTitle = (courseData.title || '').replace(/"/g, '&quot;');
-            const safeSummary = (courseData.summary || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            showModal({
-                title: "Course Identity Architect",
-                desc: "Update the core proposition and branding of this course.",
-                body: `
-                    <div class="field-group">
-                        <label class="field-label">Course Proposition</label>
-                        <input type="text" id="editTitle" class="standard-input" value="${safeTitle}" placeholder="Enter Title...">
-                    </div>
-                    <div class="field-group">
-                        <label class="field-label">Executive Summary</label>
-                        <textarea id="editSummary" class="standard-input" rows="4" placeholder="Description...">${safeSummary}</textarea>
-                    </div>
-                    <div class="field-group">
-                        <label class="field-label">Category</label>
-                        <select id="editCategory" class="standard-input">
-                            <option ${courseData.category === 'Engineering & Technology' ? 'selected' : ''}>Engineering & Technology</option>
-                            <option ${courseData.category === 'Data Science & AI' ? 'selected' : ''}>Data Science & AI</option>
-                            <option ${courseData.category === 'Management & Business' ? 'selected' : ''}>Management & Business</option>
-                            <option ${courseData.category === 'Creative Arts & Design' ? 'selected' : ''}>Creative Arts & Design</option>
-                        </select>
-                    </div>
-                `,
-                confirmText: "SYNC CHANGES",
-                onConfirm: () => {
-                    courseData.title = document.getElementById('editTitle').value;
-                    courseData.summary = document.getElementById('editSummary').value;
-                    courseData.description = courseData.summary;
-                    courseData.category = document.getElementById('editCategory').value;
-                    renderCurriculum();
-                    saveToLocal();
-                    closeModal();
-                }
-            });
-        }
 
         function saveToLocal() {
             localStorage.setItem('current_editing_course', JSON.stringify(courseData));
@@ -4161,7 +4416,7 @@
                 const user = auth.getCurrentUser();
                 // Check if updating
                 const urlParams = new URLSearchParams(window.location.search);
-                const editingId = urlParams.get('id');
+                let editingId = urlParams.get('id');
 
                 if (editingId) {
                     db.updateCourse(editingId, courseData);
@@ -4173,9 +4428,9 @@
                 }
 
                 hideLoader();
-                showSuccessModal(courseData.status === 'draft' ? "DRAFT SAVED" : "COURSE DEPLOYED");
+                showSuccessModal(courseData.status === 'draft' ? "DRAFT SAVED" : "COURSE PUBLISHED");
                 localStorage.removeItem('current_editing_course');
-            }, 1000);
+            }, 2500);
         }
 
         function showProcessing() {
@@ -4193,7 +4448,7 @@
         function showSuccessModal(title) {
             document.getElementById('modalOverlay').classList.add('active');
             document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalDesc').innerText = title.includes('SAVED') ? "Your draft has been securely stored." : "Your curriculum is now live and available for enrollment.";
+            document.getElementById('modalDesc').innerText = title.includes('SAVED') ? "Your draft has been securely stored." : "Your course is published successfully!";
             document.getElementById('modalBody').innerHTML = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; border:1px solid #eee; text-align:center; font-weight:700; color:var(--primary);">${courseData.title}</div>`;
 
             document.getElementById('modalFooter').style.display = 'flex';
@@ -4245,6 +4500,18 @@
             const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<i class="fas fa-check-circle"></i> ${m}`;
             c.appendChild(t); setTimeout(() => t.remove(), 3000);
         }
+        function toggleSidebar() {
+            const ws = document.getElementById('mainWorkspace');
+            const icon = document.getElementById('sidebarToggleIcon');
+            if (ws.classList.contains('sidebar-collapsed')) {
+                ws.classList.remove('sidebar-collapsed');
+                icon.className = 'fas fa-chevron-left';
+            } else {
+                ws.classList.add('sidebar-collapsed');
+                icon.className = 'fas fa-chevron-right';
+            }
+        }
+
         function switchSidebar(view, el) {
             document.querySelectorAll('.rail-item').forEach(i => i.classList.remove('active'));
             if (el) el.classList.add('active');
@@ -4452,7 +4719,137 @@
                 renderCurriculum();
             };
         }
+
+        // Beautiful Context Menu JavaScript Logic
+        let contextModuleIndex = -1;
+
+        document.addEventListener('contextmenu', function (e) {
+            const card = e.target.closest('.module-card, .dash-mod-card');
+            if (card) {
+                e.preventDefault();
+                contextModuleIndex = parseInt(card.dataset.idx);
+                
+                // Automatically select the module on right click
+                selectModule(contextModuleIndex);
+                
+                const menu = document.getElementById('moduleContextMenu');
+                if (menu) {
+                    menu.style.display = 'block';
+                    
+                    // Position menu at cursor
+                    const menuWidth = 200;
+                    const menuHeight = 180;
+                    const windowWidth = window.innerWidth;
+                    const windowHeight = window.innerHeight;
+                    
+                    let x = e.pageX;
+                    let y = e.pageY;
+                    
+                    // Prevent menu from going off screen
+                    if (x + menuWidth > windowWidth) {
+                        x = windowWidth - menuWidth - 10;
+                    }
+                    if (y + menuHeight > windowHeight) {
+                        y = windowHeight - menuHeight - 10;
+                    }
+                    
+                    menu.style.left = x + 'px';
+                    menu.style.top = y + 'px';
+                }
+            } else {
+                hideContextMenu();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('#moduleContextMenu')) {
+                hideContextMenu();
+            }
+        });
+
+        function hideContextMenu() {
+            const menu = document.getElementById('moduleContextMenu');
+            if (menu) menu.style.display = 'none';
+        }
+
+        function handleContextAction(action) {
+            hideContextMenu();
+            if (contextModuleIndex === -1) return;
+
+            if (action === 'tutorial') {
+                startNewLessonWithType('tutorial');
+            } else if (action === 'coding') {
+                startNewLessonWithType('coding');
+            } else if (action === 'mcq') {
+                startNewLessonWithType('mcq');
+            } else if (action === 'delete') {
+                confirmDeleteModule(contextModuleIndex);
+            }
+        }
+        
+        function toggleZoomSlider() {
+            const panel = document.getElementById('zoomSliderPanel');
+            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+        }
+        
+        function changeZoom(val) {
+            document.getElementById('zoomVal').innerText = val + '%';
+            document.body.style.zoom = val / 100;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Watermark Logic
+            const user = (typeof auth !== 'undefined' && auth.getCurrentUser) ? auth.getCurrentUser() : null;
+            if (!user) return;
+            const enrollmentId = user.email || user.rollNo || user.id;
+            const safeId = (enrollmentId || '').toString().replace(/[^a-zA-Z0-9-@.]/g, '');
+            if (!safeId) return;
+
+            const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="280" height="180">
+                <text x="50%" y="50%" transform="rotate(-30 140 90)" fill="rgba(222, 91, 43, 0.15)" font-size="26" font-family="Arial, sans-serif" font-weight="500" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">
+                    ${safeId}
+                </text>
+            </svg>`;
+            
+            const encoded = btoa(svg);
+            const dataUrl = `url("data:image/svg+xml;base64,${encoded}")`;
+            
+            let style = document.createElement('style');
+            style.innerHTML = `
+                body, .workspace, .editor-container, .context-rail, .sidebar, .site-header, .editor-content {
+                    background-image: ${dataUrl} !important;
+                    background-repeat: repeat !important;
+                    background-attachment: fixed !important;
+                }
+                body {
+                    background-image: ${dataUrl}, url('../BGNEW01.png') !important;
+                    background-repeat: repeat, no-repeat !important;
+                    background-position: top left, center center !important;
+                    background-size: auto, cover !important;
+                    background-attachment: fixed, fixed !important;
+                }
+            `;
+            document.head.appendChild(style);
+        });
     </script>
+
+    <!-- Beautiful Context Menu Container -->
+    <div id="moduleContextMenu" class="custom-context-menu">
+        <div class="context-menu-item" onclick="handleContextAction('tutorial')">
+            <i class="fas fa-chalkboard-teacher"></i> Add Interactive Tutorial
+        </div>
+        <div class="context-menu-item" onclick="handleContextAction('coding')">
+            <i class="fas fa-code"></i> Add Coding
+        </div>
+        <div class="context-menu-item" onclick="handleContextAction('mcq')">
+            <i class="fas fa-check-double"></i> Add MCQ
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item danger" onclick="handleContextAction('delete')">
+            <i class="fas fa-trash-alt"></i> Delete Module
+        </div>
+    </div>
 </body>
 
 </html>

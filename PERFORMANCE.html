@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!-- saved from url=(0066)https://cuiet.codebrigade.in/studentPerformanceParent/graphDisplay -->
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=IE8">
   
   <title>TESTPAD</title>
@@ -8,13 +8,13 @@
     <!--
     body {
       margin-left: 0px;
-      margin-top: 0px;
-      margin-right: 0px;
+      margin-top: 0px; -->
+      <!-- margin-right: 0px;
       margin-bottom: 0px;
-    }
+    <!-- }
     -->
     .tableContent
-    {
+    <!-- {
     font-family:
     Verdana,
     Geneva,
@@ -22,11 +22,11 @@
     Helvetica,
     sans-serif;
     font-size:
-    11px
+    11px -->
     }
   </style>
   <style type="text/css">
-        .dhtmlgoodies_tabPane{
+        .dhtmlgoodies_tabPane{ -->
         height:21px;
         margin-top: 25px;
         margin-left: 2px;
@@ -48,7 +48,7 @@
         cursor:pointer;
         position:relative;
         bottom:-1px;
-        margin-left:0px;
+        margin-left:0px; -->
         margin-right:0px;
     }
     .dhtmlgoodies_tabPane .tabActive{
@@ -70,7 +70,7 @@
     }
     
     .dhtmlgoodies_tabPane .tabInactive{
-        
+/*         
         margin-left:-3px;
         margin-right:0px;
         z-index:1;
@@ -90,7 +90,7 @@
         margin-right:0px;
         border-top: 2px solid #598DC4;
         border-right: 1px solid #c2c1c1;
-        border-left: 1px solid #c2c1c1;
+        border-left: 1px solid #c2c1c1; */
         padding: 2px 17px;
         margin-top:-7px;
         border-top-right-radius: 2px;
@@ -740,7 +740,7 @@ function dropDownOptionsAdvanced(tableName,column1,column2,selectedId,whereClaus
         url: "https://cuiet.codebrigade.in/miscLibrary/dropDownOptions",
         type: "POST",
         async:false,
-        data: ({tableName:tableName,column1:column1,column2:column2,selectedId:selectedId,whereClause:whereClause,defaultValue:defaultValue}),
+        data: ({tableName:tableName,column1:column1,column2:column2,selectedId:selectedId,whereClause:whereClause,defaultValue:defaultValue}), -->
         success: function(msg){
    
 		 if(document.getElementById('loaderDiv') && document.getElementById('loaderDiv').style.display!="none")

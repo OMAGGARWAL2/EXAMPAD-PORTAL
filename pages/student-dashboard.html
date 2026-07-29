@@ -787,8 +787,15 @@
     </style>
 
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
     </style>
 </head>
 
@@ -796,19 +803,28 @@
 
     <header class="site-header">
         <div class="header-left">
-            <div class="logo-box" onclick="window.location.href='./student-dashboard.html'">
-                <div class="logo-icon">
-                    <img src="../icon.png" alt="TESTPAD">
-                </div>
-                <div style="font-weight: 800; font-size: 1.2rem; color: #333;">TESTPAD</div>
+            <div class="logo-box" onclick="window.location.reload();" style="cursor: pointer;" title="Refresh Dashboard">
+                <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" style="height: 44px; border-radius: 6px;">
             </div>
             <nav class="nav-icons">
                 <i class="far fa-file-alt" title="Assessment List" onclick="scrollToExams()"></i>
                 <i class="fas fa-chart-bar" title="Performance" onclick="location.href='./studentreports.html'"></i>
             </nav>
         </div>
-        <div class="header-right">
-            <div class="plus-btn" title="Quick Join" onclick="focusJoinField()"><i class="fas fa-plus"></i></div>
+        <div class="header-right" style="position: relative;">
+            <div class="plus-btn" id="plusBtn" title="Create New" onclick="togglePlusMenu(event)"><i class="fas fa-plus"></i></div>
+
+            <!-- Plus Popover -->
+            <div class="popover plus-popover" id="plusMenu" style="display: none; position: absolute; top: 64px; right: 60px; background: #fff; border-radius: 8px; border: 1px solid #EAECF0; box-shadow: 0 10px 30px rgba(0,0,0,0.12); z-index: 2000; width: 210px; padding: 6px 0;">
+                <div class="plus-item" onclick="window.location.href='./playground.html';" style="display: flex; align-items: center; gap: 14px; padding: 12px 20px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+                    <img src="../Testpad_pra_files_files/playground.svg" style="width: 26px; height: 26px;">
+                    <span style="font-size: 15px; color: #344054; font-weight: 500; font-family: 'Hind', sans-serif;">Playground</span>
+                </div>
+                <div class="plus-item" onclick="window.location.href='./playground.html';" style="display: flex; align-items: center; gap: 14px; padding: 12px 20px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='transparent'">
+                    <img src="../Testpad_pra_files_files/playground.svg" style="width: 26px; height: 26px;">
+                    <span style="font-size: 15px; color: #344054; font-weight: 500; font-family: 'Hind', sans-serif;">Python Notebook</span>
+                </div>
+            </div>
             <div class="grid-icon" title="Menu" onclick="showToast('More features coming soon!', 'info')">
                 <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png"
                     style="width: 26px; height: 26px; opacity: 0.75; transition: all 0.2s;"
@@ -1093,7 +1109,7 @@
 
             if (!exam) {
                 // Try case-insensitive fallback for convenience
-                exam = db.getExams().find(e => e.joiningKey && String(e.joiningKey).toLowerCase() === rawInput.toLowerCase());
+                exam = db.getAllExams().find(e => e.joiningKey && String(e.joiningKey).toLowerCase() === rawInput.toLowerCase());
             }
 
             if (!exam) {
@@ -1116,7 +1132,7 @@
             }
 
             let res = db.startAttempt(exam.id, user.id);
-            
+
             // Allow resuming or re-attempting if an attempt already exists
             if (!res.success && res.existingAttempt) {
                 if (res.existingAttempt.status === 'submitted' || res.existingAttempt.status === 'reviewed') {
@@ -1155,7 +1171,7 @@
 
             allExams = exams.map(exam => {
                 let attempt = [...attempts].reverse().find(a => a.examId === exam.id);
-                
+
                 // Recover orphaned completed competitive attempts
                 if (exam.isCompetitive && (!attempt || attempt.status !== 'completed')) {
                     const orphan = [...allAttemptsRaw].reverse().find(a => a.examId === exam.id && a.status === 'completed' && (a.studentId === user.id || a.rollNo === user.rollNo || a.studentName === user.name));
@@ -1422,6 +1438,26 @@
                 location.href = '../index.html';
             }
         }
+
+        document.addEventListener('keydown', function(event) {
+            if ((event.key === 'l' || event.key === 'L') && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+                auth.logout();
+                location.href = '../index.html';
+            }
+        });
+
+        function togglePlusMenu(e) {
+            if (e) e.stopPropagation();
+            const p = document.getElementById('plusMenu');
+            if (p) p.style.display = p.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#plusBtn') && !e.target.closest('#plusMenu')) {
+                const p = document.getElementById('plusMenu');
+                if (p) p.style.display = 'none';
+            }
+        });
 
         init();
     </script>
