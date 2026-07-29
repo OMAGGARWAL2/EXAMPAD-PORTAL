@@ -4779,13 +4779,8 @@
             const safeRoll = (rollNumber || '').toString().replace(/[^a-zA-Z0-9-]/g, '');
             if (!safeRoll) return;
             const svg = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="300" height="190">
-                <defs>
-                    <filter id="latexShadow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feDropShadow dx="1.5" dy="1.5" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.25"/>
-                    </filter>
-                </defs>
-                <text x="50%" y="50%" transform="rotate(-30 150 95)" fill="rgba(80,80,80,0.18)" font-size="25" font-family="'STIX Two Math', 'Latin Modern Math', 'Computer Modern', 'TeX Gyre Termes', 'Times New Roman', serif" font-style="italic" font-weight="600" text-anchor="middle" dominant-baseline="middle" letter-spacing="2" filter="url(#latexShadow)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="280" height="180">
+                <text x="50%" y="50%" transform="rotate(-30 140 90)" fill="rgba(128,128,128,0.2)" font-size="26" font-family="Arial, sans-serif" font-weight="500" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">
                     ${safeRoll}
                 </text>
             </svg>`;
