@@ -4778,10 +4778,11 @@
             if (currentExam?.security?.showWatermark === false && !forceWatermark) return;
             const safeRoll = (rollNumber || '').toString().replace(/[^a-zA-Z0-9-]/g, '');
             if (!safeRoll) return;
+            const latexRoll = `$${safeRoll}$`;
             const svg = `
             <svg xmlns="http://www.w3.org/2000/svg" width="280" height="180">
-                <text x="50%" y="50%" transform="rotate(-30 140 90)" fill="rgba(128,128,128,0.2)" font-size="26" font-family="'STIX Two Math', 'Latin Modern Math', 'Computer Modern', 'TeX Gyre Termes', 'Times New Roman', serif" font-style="italic" font-weight="600" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">
-                    ${safeRoll}
+                <text x="50%" y="50%" transform="rotate(-30 140 90)" fill="rgba(128,128,128,0.2)" font-size="26" font-family="Arial, sans-serif" font-weight="500" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">
+                    ${latexRoll}
                 </text>
             </svg>`;
             const encoded = btoa(svg);
