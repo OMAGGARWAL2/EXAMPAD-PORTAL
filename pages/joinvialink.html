@@ -506,9 +506,8 @@
                             const attempt = res.attempt || res.existingAttempt;
                             // Save roll number for the watermark in exam-attempt.html
                             const roll = user.rollNo || user.id || 'STUDENT';
-                            sessionStorage.setItem(`exam_roll_${attempt.id}`, roll);
-
-                            window.location.href = `./exam-attempt.html?attemptId=${attempt.id}`;
+                            sessionStorage.setItem('joined_via_link', 'true');
+                            window.location.href = `./exam-attempt.html?attemptId=${attempt.id}&vialink=true`;
                             return true;
                         }
                     }

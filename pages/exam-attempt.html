@@ -4334,7 +4334,7 @@
         let itemId = urlParams.get('itemId');
         let quickStart = urlParams.get('quickStart') === 'true';
         let examIdFromUrl = urlParams.get('examId');
-        let isVialink = urlParams.get('vialink') === 'true' || quickStart;
+        let isVialink = urlParams.get('vialink') === 'true' || quickStart || sessionStorage.getItem('joined_via_link') === 'true';
         let isReattempt = false;
 
         console.log("[INIT] URL Params:", { attemptId, isPractice, quickStart, examIdFromUrl, isVialink });
@@ -4831,7 +4831,7 @@
             const exams_list = JSON.parse(localStorage.getItem('TESTPAD_exams')) || [];
             const exam_ref = exams_list.find(e => e.id === (examIdFromUrl || currentExam?.id));
 
-            if (exam_ref && exam_ref.security && exam_ref.security.ipRestriction && !exam_ref.security.isPracticeTest && !isPractice) {
+            if (exam_ref && exam_ref.security && exam_ref.security.ipRestriction && !exam_ref.security.isPracticeTest && !isPractice && !isVialink) {
                 const isValid = await validateNetwork(exam_ref);
                 if (!isValid) return; // Stop initialization if network is invalid
             }
@@ -5386,7 +5386,7 @@
 
             // Handle Kiosk Mode based on isVialink mode
             if (window.proctorBridge) {
-                if (isVialink) {
+                if (isVialink || isPractice) {
                     console.log("[SECURITY] Vialink mode: Enabling Fullscreen Practice Mode (Unlocked).");
                     proctorBridge.setKioskMode({ enable: true, isPractice: true });
                 } else {
@@ -5464,7 +5464,7 @@
 
             // Handle Kiosk Mode based on isVialink mode
             if (window.proctorBridge) {
-                if (isVialink) {
+                if (isVialink || isPractice) {
                     console.log("[SECURITY] Vialink mode: Enabling Fullscreen Practice Mode for Lobby (Unlocked).");
                     proctorBridge.setKioskMode({ enable: true, isPractice: true });
                 } else {
@@ -8560,7 +8560,7 @@
         }
 
         function enterFS() {
-            if (isVialink) {
+            if (isVialink || isPractice) {
                 if (window.proctorBridge) window.proctorBridge.setKioskMode({ enable: true, isPractice: true });
                 return;
             }
@@ -8576,7 +8576,7 @@
         }
 
         function handleInfraction(type) {
-            if (isPreview || isPractice) return;
+            if (isPreview || isPractice || isVialink) return;
             const alertCount = document.getElementById('switchCountHeader');
 
             currentAttempt.tabSwitchCount = (currentAttempt.tabSwitchCount || 0) + 1;

@@ -4974,7 +4974,7 @@
 
         function enterFS() {
             document.documentElement.requestFullscreen().then(() => {
-                if (window.proctorBridge) window.proctorBridge.setKioskMode(true);
+                if (window.proctorBridge) window.proctorBridge.setKioskMode({ enable: true, isPractice: true });
                 const b = document.getElementById('fsBarrier');
                 if (b) b.remove();
             }).catch(e => {
