@@ -662,14 +662,14 @@
 
     <header>
         <div class="header-left-icons" style="gap: 110px;">
-            <div class="chitkara-logo-red" onclick="location.href='./student-dashboard.html'"
-                style="background: transparent; width: auto; height: auto; margin-left: -10px;">
+            <div class="chitkara-logo-red" onclick="window.location.reload();"
+                style="background: transparent; width: auto; height: auto; margin-left: -10px; cursor: pointer;" title="Refresh Page">
                 <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" style="height: 52px; border-radius: 6px;">
             </div>
-            <img src="../Testpad_pra_files_files/menu-1.svg" id="widgetDashboard"
-                style="height: 32px; cursor: pointer;">
-            <img src="../Testpad_pra_files_files/statistics.svg" id="widgetAttempts"
-                style="height: 32px; cursor: pointer;">
+            <img src="../Testpad_pra_files_files/menu-1.svg" id="widgetDashboard" onclick="window.location.href='./student-dashboard.html';"
+                style="height: 32px; cursor: pointer;" title="Student Dashboard">
+            <img src="../Testpad_pra_files_files/statistics.svg" id="widgetAttempts" onclick="const urlParams = new URLSearchParams(window.location.search); const cid = urlParams.get('courseId') || (typeof courseId !== 'undefined' ? courseId : ''); window.location.href='./course-attempts.html?courseId=' + cid;"
+                style="height: 32px; cursor: pointer;" title="Course Attempts">
         </div>
 
         <div class="header-right-tools">

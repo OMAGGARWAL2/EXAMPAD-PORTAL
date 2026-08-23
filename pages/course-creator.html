@@ -4644,7 +4644,7 @@
                     <td style="padding: 16px;"><span style="background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">${q.type}</span></td>
                     <td style="padding: 16px;">
                         <div style="font-weight: 600; color: #111;">
-                            ${q.source === 'course' ? '<span style="color: #2563eb; font-weight: bold; margin-right: 6px;" title="Course">C</span>' : (q.source === 'exam' ? '<span style="color: #d97706; font-weight: bold; margin-right: 6px;" title="Exam">E</span>' : '')}
+                            ${q.source === 'course' ? '<span style="color: #2563eb; font-weight: 600; margin-right: 6px;" title="Course">C</span>' : (q.source === 'exam' ? '<span style="color: #d97706; font-weight: 600; margin-right: 6px;" title="Exam">E</span>' : '')}
                             ${q.heading || 'Untitled'}
                         </div>
                         <div style="font-size: 0.8rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;">${(q.title || '').replace(/<[^>]+>/g, '')}</div>
@@ -4700,9 +4700,13 @@
                     lesson.data.code = q.code;
                     lesson.data.testCases = q.testCases;
                 } else if (q.type === 'mcq') {
-                    lesson.data.question = q.title;
-                    lesson.data.options = q.options;
-                    lesson.data.correct = q.correct;
+                    lesson.data.question = q.title || q.heading || q.description || q.question;
+                    lesson.data.description = q.title || q.heading || q.description || q.question;
+                    lesson.data.options = q.options || q.choices || [];
+                    lesson.data.correct = q.correct !== undefined ? q.correct : (q.answer !== undefined ? q.answer : (q.correctAnswer !== undefined ? q.correctAnswer : (q.correctOption !== undefined ? q.correctOption : '')));
+                    if (q.assertion) lesson.data.assertion = q.assertion;
+                    if (q.reason) lesson.data.reason = q.reason;
+                    if (q.url) lesson.data.url = q.url;
                 } else {
                     lesson.data.question = q.title;
                 }

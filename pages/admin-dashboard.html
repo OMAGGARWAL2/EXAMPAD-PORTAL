@@ -123,8 +123,8 @@
         .header-nav {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-left: 20px;
+            gap: 90px;
+            margin-left: 48px;
         }
 
         .nav-icon-btn {
@@ -751,8 +751,15 @@
     </style>
 
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
     </style>
 </head>
 
@@ -786,8 +793,11 @@
             <button class="plus-btn" onclick="createNewExam()" title="Launch New Assessment">
                 <i class="fas fa-plus"></i>
             </button>
-            <button class="grid-btn" onclick="showToast('View mode updated', 'info')" style="display: flex; align-items: center; justify-content: center;">
-                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png" style="width: 24px; height: 24px; opacity: 0.75; transition: all 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
+            <button class="grid-btn" onclick="showToast('View mode updated', 'info')"
+                style="display: flex; align-items: center; justify-content: center;">
+                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png"
+                    style="width: 24px; height: 24px; opacity: 0.75; transition: all 0.2s;"
+                    onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
             </button>
             <div class="profile-bubble" onclick="handleLogout()">
                 <div class="user-info">
@@ -795,7 +805,8 @@
                     <div class="user-role" style="color: var(--primary);">SUPER ADMIN</div>
                 </div>
                 <div class="avatar" id="userInitial" style="background: transparent; border: none; padding: 0;">
-                    <img src="../LINUX_TEST_CHITKARA_files/user-icon.3d6e2547.svg" style="width: 100%; height: 100%; border-radius: 50%;">
+                    <img src="../LINUX_TEST_CHITKARA_files/user-icon.3d6e2547.svg"
+                        style="width: 100%; height: 100%; border-radius: 50%;">
                 </div>
             </div>
         </div>
@@ -806,8 +817,10 @@
             <div class="content-header">
                 <h2 class="section-title">Assessments <span id="examCount">(0)</span></h2>
                 <div class="bulk-actions" style="margin-left: auto; margin-right: 20px; display: flex; gap: 8px;">
-                    <button class="btn-action primary" style="background:#d32f2f;" onclick="endAllExams()"><i class="fas fa-stop-circle"></i> END ALL</button>
-                    <button class="btn-action primary" style="background:#FF8A00;" onclick="expireAllExams()"><i class="fas fa-calendar-times"></i> EXPIRE ALL</button>
+                    <button class="btn-action primary" style="background:#d32f2f;" onclick="endAllExams()"><i
+                            class="fas fa-stop-circle"></i> END ALL</button>
+                    <button class="btn-action primary" style="background:#FF8A00;" onclick="expireAllExams()"><i
+                            class="fas fa-calendar-times"></i> EXPIRE ALL</button>
                 </div>
                 <div class="search-container">
                     <i class="fas fa-search"></i>

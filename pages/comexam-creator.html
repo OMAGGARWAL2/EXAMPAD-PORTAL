@@ -1737,8 +1737,15 @@
     </style>
 
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
     </style>
 </head>
 
@@ -1831,7 +1838,8 @@
             <i class="fas fa-sync-alt"></i> Refresh
         </button>
         <!-- Sidebar Toggle Button -->
-        <button onclick="toggleSidebar()" style="background: var(--primary); color: white; border: none; border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; box-shadow: 0 2px 8px rgba(217,108,51,0.3);">
+        <button onclick="toggleSidebar()"
+            style="background: var(--primary); color: white; border: none; border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; box-shadow: 0 2px 8px rgba(217,108,51,0.3);">
             <i class="fas fa-chevron-left" id="sidebarToggleIcon"></i>
         </button>
     </div>

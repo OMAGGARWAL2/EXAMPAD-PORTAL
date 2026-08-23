@@ -504,9 +504,10 @@
 
                         if (res.success || res.attempt) {
                             const attempt = res.attempt || res.existingAttempt;
-                            // Save roll number for the watermark in exam-attempt.html
+                            sessionStorage.removeItem(`exam_started_${attempt.id}`);
                             const roll = user.rollNo || user.id || 'STUDENT';
                             sessionStorage.setItem('joined_via_link', 'true');
+                            if (passcode) sessionStorage.setItem('pending_passcode', passcode);
                             window.location.href = `./exam-attempt.html?attemptId=${attempt.id}&vialink=true`;
                             return true;
                         }
@@ -572,7 +573,7 @@
             }
 
             if (matchedKey) {
-                window.location.href = `./step2vialink.html?voidLink=${encodeURIComponent(matchedKey)}`;
+                window.location.href = `./exam-attempt.html?voidLink=${encodeURIComponent(matchedKey)}&vialink=true`;
                 return;
             }
 
@@ -583,9 +584,18 @@
                     const finalTestId = exam.testId || exam.id;
                     if (tryDirectRedirect(finalTestId, passcode)) return;
 
-                    sessionStorage.setItem('pending_test_id', finalTestId);
+                    let user = auth.isLoggedIn() ? auth.getCurrentUser() : null;
+                    if (!user) {
+                        const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
+                        user = [...users].reverse().find(u => u.role === 'student');
+                        if (user) db.createSession(user.id, 'student');
+                    }
+                    let res = user ? db.startAttempt(exam.id, user.id, true) : null;
+                    const attId = res && (res.attempt || res.existingAttempt) ? (res.attempt || res.existingAttempt).id : '';
+                    if (attId) sessionStorage.removeItem(`exam_started_${attId}`);
+                    sessionStorage.setItem('joined_via_link', 'true');
                     if (passcode) sessionStorage.setItem('pending_passcode', passcode);
-                    window.location.href = `./step2vialink.html?testId=${finalTestId}${passcode ? '&passcode=' + passcode : ''}`;
+                    window.location.href = `./exam-attempt.html?${attId ? 'attemptId=' + attId + '&' : ''}examId=${exam.id}&vialink=true`;
                     return;
                 } else {
                     showError("No such test exists");
@@ -604,6 +614,13 @@
                 handleGo();
             }
         });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'v' || e.key === 'V') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                window.location.href = '../index.html';
+            }
+        });
+
 
 
         // --- QUICK START FEATURE ---
@@ -633,27 +650,16 @@
                 if (pendingExam) {
                     console.log(`[QUICK START] Fast-tracking to ${pendingExam.title} for ${student.name}`);
 
-                    let res = db.startAttempt(pendingExam.id, student.id);
-                    if (!res.success && res.existingAttempt) {
-                        if (res.existingAttempt.status === 'submitted' || res.existingAttempt.status === 'reviewed' || res.existingAttempt.status === 'completed') {
-                            res = db.startAttempt(pendingExam.id, student.id, true);
-                            if (res.success && res.attempt) {
-                                sessionStorage.removeItem(`exam_started_${res.attempt.id}`);
-                                sessionStorage.removeItem(`quickStartAttemptId_${pendingExam.id}`);
-                            }
-                        } else {
-                            res.success = true;
-                            res.attempt = res.existingAttempt;
-                        }
-                    }
+                    let res = db.startAttempt(pendingExam.id, student.id, true);
+                    const attempt = res.attempt || res.existingAttempt;
 
-                    if (res.success || res.attempt) {
-                        const attempt = res.attempt || res.existingAttempt;
-                        // Save roll number for the watermark in exam-attempt.html
+                    if (attempt) {
+                        sessionStorage.removeItem(`exam_started_${attempt.id}`);
+                        sessionStorage.removeItem(`quickStartAttemptId_${pendingExam.id}`);
                         const roll = student.rollNo || student.id || 'STUDENT';
                         sessionStorage.setItem(`exam_roll_${attempt.id}`, roll);
 
-                        window.location.href = `./exam-attempt.html?attemptId=${attempt.id}&quickStart=true&vialink=true`;
+                        window.location.href = `./exam-attempt.html?attemptId=${attempt.id}&quickStart=true&vialink=true&reattempt=true`;
                     }
                 } else {
                     console.log(`[QUICK START] All exams completed for ${student.name}. Loading dashboard.`);

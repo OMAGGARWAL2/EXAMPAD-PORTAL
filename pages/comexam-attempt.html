@@ -1076,8 +1076,15 @@
     </style>
 
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
     </style>
 </head>
 
@@ -1665,10 +1672,52 @@
             }
 
             function populateInstructions() {
-                questions = examData.questions || [];
+                const shuffleArray = (array) => {
+                    const shuffled = [...array];
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                    }
+                    return shuffled;
+                };
+
+                let allQ = examData.questions || [];
+                let selectedQ = [];
+
+                if (examData.pools) {
+                    const sectionsMap = {};
+                    allQ.forEach(q => {
+                        const s = q.section || 'General';
+                        if (!sectionsMap[s]) sectionsMap[s] = [];
+                        sectionsMap[s].push(q);
+                    });
+
+                    const sections = examData.sections && examData.sections.length > 0 ? examData.sections : (Object.keys(sectionsMap).length > 0 ? Object.keys(sectionsMap) : ['General']);
+                    sections.forEach(sName => {
+                        const secPool = sectionsMap[sName] || [];
+                        const poolConfig = examData.pools[sName];
+                        const poolEnabled = poolConfig && (poolConfig.enabled === true || poolConfig.enabled === 'true');
+                        const poolSize = poolEnabled ? parseInt(poolConfig.pickCount || 0) : 0;
+                        if (poolEnabled && poolSize > 0 && poolSize < secPool.length) {
+                            selectedQ.push(...shuffleArray(secPool).slice(0, poolSize));
+                        } else {
+                            selectedQ.push(...secPool);
+                        }
+                    });
+                }
+
+                if (selectedQ.length > 0) {
+                    questions = selectedQ;
+                } else {
+                    questions = allQ;
+                }
+
+                const totalMarksCalc = questions.length > 0 ? questions.reduce((acc, q) => acc + (parseFloat(q.marks) || 1), 0) : (examData.totalMarks || 100);
+                examData.totalMarks = totalMarksCalc;
+
                 document.getElementById('instDuration').textContent = examData.duration || 60;
                 document.getElementById('instDuration2').textContent = examData.duration || 60;
-                document.getElementById('instMarks').textContent = examData.totalMarks || (questions.length > 0 ? questions.reduce((acc, q) => acc + (parseFloat(q.marks) || 1), 0) : 100);
+                document.getElementById('instMarks').textContent = totalMarksCalc;
                 document.getElementById('instQCount').textContent = questions.length;
 
                 document.getElementById('instPosMark').textContent = questions.length > 0 ? (questions[0].marks || 1) : 1;
@@ -2316,7 +2365,9 @@
                     startTime: new Date().toISOString(),
                     endTime: new Date().toISOString(),
                     score: score,
-                    totalMarks: examData.totalMarks || 100,
+                    totalMarks: examData.totalMarks || (questions.length > 0 ? questions.reduce((acc, q) => acc + (parseFloat(q.marks) || 1), 0) : 100),
+                    selectedQuestions: questions,
+                    selectedQuestionIds: questions.map(q => q.id),
                     responses: attemptQs,
                     status: 'completed'
                 };
@@ -2326,7 +2377,9 @@
                 if (existingIndex !== -1) {
                     attempts[existingIndex].endTime = new Date().toISOString();
                     attempts[existingIndex].score = score;
-                    attempts[existingIndex].totalMarks = examData.totalMarks || 100;
+                    attempts[existingIndex].totalMarks = examData.totalMarks || (questions.length > 0 ? questions.reduce((acc, q) => acc + (parseFloat(q.marks) || 1), 0) : 100);
+                    attempts[existingIndex].selectedQuestions = questions;
+                    attempts[existingIndex].selectedQuestionIds = questions.map(q => q.id);
                     attempts[existingIndex].responses = attemptQs;
                     attempts[existingIndex].status = 'completed';
                 } else {

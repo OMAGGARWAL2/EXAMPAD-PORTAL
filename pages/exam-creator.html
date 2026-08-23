@@ -27,10 +27,23 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         /* Custom Scrollbars */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #DE6834; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { opacity: 0.8; }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #DE6834;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            opacity: 0.8;
+        }
 
         .flatpickr-calendar {
             font-family: 'Montserrat', sans-serif !important;
@@ -264,6 +277,7 @@
             outline: none;
             margin-right: 4px;
         }
+
         .stb-select-header {
             border: 1px solid transparent;
             border-radius: 2px;
@@ -276,15 +290,18 @@
             background: transparent;
             transition: all 0.2s;
         }
+
         .stb-custom-select:hover .stb-select-header {
             border: 1px solid #c8c6c4;
             background-color: #f3f2f1;
         }
+
         .stb-custom-select:focus .stb-select-header {
             border: 1px solid #106ebe !important;
             background-color: #ffffff;
             box-shadow: 0 0 0 1px #106ebe;
         }
+
         .stb-select-list {
             position: absolute;
             top: 100%;
@@ -293,15 +310,17 @@
             background: #ffffff;
             border: 1px solid #e1dfdd;
             border-radius: 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             max-height: 240px;
             overflow-y: auto;
             display: none;
             z-index: 1000;
         }
+
         .stb-select-list.show {
             display: block;
         }
+
         .stb-select-item {
             padding: 8px 12px;
             cursor: pointer;
@@ -309,17 +328,21 @@
             color: #333;
             transition: background 0.15s;
         }
+
         .stb-select-item:hover {
             background: rgba(222, 104, 52, 0.15);
             color: var(--primary);
         }
+
         .stb-select-list::-webkit-scrollbar {
             width: 6px;
         }
+
         .stb-select-list::-webkit-scrollbar-thumb {
             background: #ccc;
             border-radius: 3px;
         }
+
         .stb-select-list::-webkit-scrollbar-thumb:hover {
             background: var(--primary);
         }
@@ -352,6 +375,30 @@
 
         .stb-input[type="number"] {
             -moz-appearance: textfield;
+        }
+
+        @keyframes bannerSlideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bannerSlideUp {
+            from {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
         }
 
         /* Smart Block Templates */
@@ -748,7 +795,7 @@
             display: block;
             font-size: 0.875rem;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: #000000;
             margin-bottom: 8px;
         }
 
@@ -2224,6 +2271,25 @@
             background: rgba(251, 146, 60, 0.3) !important;
             color: inherit;
         }
+
+        /* Transparent Background & Orange Bottom Borders Overrides */
+        input:not([type="checkbox"]):not([type="radio"]),
+        select,
+        textarea {
+            background-color: transparent !important;
+            border: none !important;
+            border-bottom: 2px solid rgba(222, 91, 43, 0.4) !important;
+            box-sizing: border-box !important;
+            transition: border-color 0.2s, box-shadow 0.2s !important;
+        }
+
+        input:not([type="checkbox"]):not([type="radio"]):focus,
+        select:focus,
+        textarea:focus {
+            border-bottom-color: rgba(222, 91, 43, 0.9) !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
     </style>
 </head>
 
@@ -2443,6 +2509,466 @@
     <div id="monaco-container"></div>
 </div>
 
+<!-- ==================== EXAM CREATOR SETTINGS MODAL ==================== -->
+<style>
+    @keyframes settingsModalPop {
+        0% { transform: scale(0.94) translateY(16px); opacity: 0; }
+        100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes settingsFadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+    .settings-modal-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(15, 23, 42, 0.7) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        display: none;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 99999 !important;
+        padding: 20px !important;
+        animation: settingsFadeIn 0.25s ease-out;
+    }
+    .security-modal-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(15, 23, 42, 0.75) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        display: none;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 100000 !important;
+        padding: 20px !important;
+        animation: settingsFadeIn 0.25s ease-out;
+    }
+    .settings-modal-card {
+        animation: settingsModalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bg-option-card {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        user-select: none;
+    }
+    .bg-option-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        border-color: #cbd5e1 !important;
+    }
+    .bg-option-card.active {
+        border-color: #DE6834 !important;
+        background: #fffdfb !important;
+        box-shadow: 0 0 0 2px rgba(222, 104, 52, 0.25), 0 10px 25px -5px rgba(222, 104, 52, 0.15) !important;
+    }
+    .bg-option-card.active .bg-check-badge {
+        background: #DE6834 !important;
+        border-color: #DE6834 !important;
+        color: #fff !important;
+    }
+    .font-option-card {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        user-select: none;
+    }
+    .font-option-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        border-color: #cbd5e1 !important;
+    }
+    .font-option-card.active {
+        border-color: #DE6834 !important;
+        background: #fffdfb !important;
+        box-shadow: 0 0 0 2px rgba(222, 104, 52, 0.25), 0 10px 25px -5px rgba(222, 104, 52, 0.15) !important;
+    }
+    .settings-modal-card * {
+        box-sizing: border-box;
+    }
+    
+    /* Sleek Modern Switch Toggles */
+    .creator-stylish-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 18px;
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        min-height: 52px;
+        box-sizing: border-box;
+        position: relative;
+    }
+    .creator-stylish-toggle:hover {
+        border-color: #DE6834;
+        background: #fffdfb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(222, 104, 52, 0.08);
+    }
+    .creator-stylish-toggle:has(input:checked) {
+        border-color: #DE6834 !important;
+        background: #fff9f5 !important;
+        box-shadow: 0 4px 14px rgba(222, 104, 52, 0.12) !important;
+    }
+    .creator-toggle-text {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #334155;
+        letter-spacing: 0.3px;
+        font-family: 'Montserrat', 'Mulish', sans-serif;
+        transition: color 0.2s ease;
+    }
+    .creator-stylish-toggle:has(input:checked) .creator-toggle-text {
+        color: #DE6834;
+    }
+    .creator-switch-track {
+        position: relative;
+        width: 48px;
+        height: 26px;
+        background: #cbd5e1;
+        border-radius: 20px;
+        transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-shrink: 0;
+        display: inline-block;
+    }
+    .creator-switch-track::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        background: #ffffff;
+        border-radius: 50%;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .creator-stylish-toggle input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+    }
+    .creator-stylish-toggle input[type="checkbox"]:checked + .creator-switch-track {
+        background: #DE6834;
+    }
+    .creator-stylish-toggle input[type="checkbox"]:checked + .creator-switch-track::after {
+        transform: translateX(22px);
+    }
+
+    /* Signature Orange Square-in-Square Checkbox */
+    .custom-orange-check {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        flex-shrink: 0;
+    }
+    .custom-orange-check input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+    }
+    .custom-orange-box {
+        width: 20px;
+        height: 20px;
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-shrink: 0;
+        box-sizing: border-box;
+    }
+    .custom-orange-box::after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background-color: #DE6834;
+        border-radius: 2px;
+        transform: scale(0);
+        transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .custom-orange-check:hover .custom-orange-box {
+        border-color: #DE6834;
+        box-shadow: 0 2px 6px rgba(222, 104, 52, 0.15);
+    }
+    .custom-orange-check input[type="checkbox"]:checked + .custom-orange-box {
+        border-color: #DE6834;
+        background: #ffffff;
+        box-shadow: 0 0 0 2px rgba(222, 104, 52, 0.15);
+    }
+    .custom-orange-check input[type="checkbox"]:checked + .custom-orange-box::after {
+        transform: scale(1);
+    }
+</style>
+
+<div id="creatorSettingsModalOverlay" class="settings-modal-overlay" style="font-family: 'Mulish', sans-serif;">
+    <div class="settings-modal-card" style="background: #ffffff; width: 92vw; max-width: 1050px; height: 88vh; max-height: 850px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); display: flex; flex-direction: column; overflow: hidden; font-family: 'Mulish', sans-serif; border: 1px solid rgba(222, 104, 52, 0.15);">
+        
+        <!-- Modal Header -->
+        <div style="padding: 24px 32px 18px 32px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(222, 104, 52, 0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <img src="../Testpad_pra_files_files/password.svg" style="width: 26px; height: 26px;" onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
+                    </div>
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.45rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; letter-spacing: -0.3px;">EXAM CREATOR SETTINGS</h2>
+                        <span style="font-size: 0.85rem; color: #64748b; font-weight: 600; font-family: 'Mulish', sans-serif;">Configure workspace background, account security, and global typography</span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeCreatorSettingsModal()" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s;" onmouseover="this.style.background='#fee2e2'; this.style.color='#ef4444';" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b';" title="Close Settings">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body (Scrollable) -->
+        <div style="flex: 1; overflow-y: auto; padding: 28px 32px; display: flex; flex-direction: column; gap: 32px; font-family: 'Mulish', sans-serif;">
+            
+            <!-- SECTION 1: BACKGROUND SELECTION -->
+            <div class="settings-section">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <h3 style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-palette" style="color: #DE6834;"></i> Choose Background for Exam-Creator
+                    </h3>
+                    <span style="font-size: 0.78rem; font-weight: 700; color: #DE6834; background: rgba(222, 104, 52, 0.1); padding: 4px 10px; border-radius: 20px;">Teacher Account Persistent</span>
+                </div>
+                <!-- Signature Tri-Orange Line for Heading -->
+                <div class="tri-orange-line" style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
+                </div>
+                <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; font-weight: 600;">Choose the background design for your Exam Creator workspace. The selected background stays active across all sessions for this account.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+                    <!-- Option 1: Orange Default -->
+                    <div class="bg-option-card" id="bgOptDefault" onclick="selectBgOption('default')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
+                        <div style="height: 96px; border-radius: 8px; background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid rgba(222, 104, 52, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; overflow: hidden;">
+                            <div style="width: 70px; height: 16px; background: #DE6834; border-radius: 4px; opacity: 0.85;"></div>
+                            <div style="position: absolute; bottom: 8px; right: 8px; font-size: 0.7rem; font-weight: 800; color: #DE6834; background: #fff; padding: 2px 8px; border-radius: 10px;">DEFAULT</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">Orange Default</h4>
+                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Standard warm theme background</span>
+                            </div>
+                            <div class="bg-check-badge" style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
+                                <i class="fas fa-check" style="font-size: 0.75rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Option 2: White #ffffff -->
+                    <div class="bg-option-card" id="bgOptWhite" onclick="selectBgOption('white')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
+                        <div style="height: 96px; border-radius: 8px; background: #ffffff; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.03);">
+                            <div style="font-size: 0.82rem; font-weight: 800; color: #334155; letter-spacing: 0.5px;">#FFFFFF SOLID WHITE</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">Pure White (#ffffff)</h4>
+                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Clean, minimal white canvas</span>
+                            </div>
+                            <div class="bg-check-badge" style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
+                                <i class="fas fa-check" style="font-size: 0.75rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Option 3: BGNEW01.png -->
+                    <div class="bg-option-card" id="bgOptBgnew" onclick="selectBgOption('bgnew01')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
+                        <div style="height: 96px; border-radius: 8px; background: #f8fafc url('../BGNEW01.png') center/cover no-repeat; border: 1px solid #e2e8f0; display: flex; align-items: flex-end; justify-content: flex-end; padding: 8px; margin-bottom: 12px;">
+                            <span style="font-size: 0.7rem; font-weight: 800; color: #1e293b; background: rgba(255,255,255,0.92); padding: 2px 8px; border-radius: 4px;">BGNEW01.PNG</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">BGNEW01.png Pattern</h4>
+                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Custom textured graphical wallpaper</span>
+                            </div>
+                            <div class="bg-check-badge" style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
+                                <i class="fas fa-check" style="font-size: 0.75rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: SECURITY METHODS (PASSWORD BEFORE FINALISE IN STEP 5) -->
+            <div class="settings-section">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <h3 style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-shield-alt" style="color: #DE6834;"></i> Security Methods & Authorization
+                    </h3>
+                    <span style="font-size: 0.78rem; font-weight: 700; color: #0284c7; background: rgba(2, 132, 199, 0.1); padding: 4px 10px; border-radius: 20px;">Step 5 Protection</span>
+                </div>
+                <!-- Signature Tri-Orange Line for Heading -->
+                <div class="tri-orange-line" style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
+                </div>
+                
+                <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+                    <!-- Checkbox Toggle -->
+                    <label style="display: flex; align-items: flex-start; gap: 14px; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="creatorSecurityCheckbox" onchange="toggleSecurityInputs(this.checked)" style="width: 22px; height: 22px; margin-top: 2px; accent-color: #DE6834; cursor: pointer;">
+                        <div>
+                            <div style="font-size: 1rem; font-weight: 800; color: #1e293b;">Enable Security Passcode before Finalising Test (Step 5)</div>
+                            <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-top: 3px; line-height: 1.4;">When enabled, your security password is required every single time before deploying or finalizing an exam in Step 5.</div>
+                        </div>
+                    </label>
+
+                    <!-- Password Inputs Container (shown when checkbox is enabled) -->
+                    <div id="securityInputsContainer" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #cbd5e1;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                            <div>
+                                <label style="display: block; font-size: 0.82rem; font-weight: 800; color: #334155; margin-bottom: 8px; text-transform: uppercase;">SET SECURITY PASSWORD</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="creatorSecurityPass" oninput="validateSecurityPasswordRules()" placeholder="Enter minimum 8 character password..." style="width: 100%; height: 44px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 600; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#DE6834'" onblur="this.style.borderColor='#cbd5e1'">
+                                    <button type="button" onclick="togglePassVisibility('creatorSecurityPass', 'passEyeIcon1')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
+                                        <i class="fas fa-eye" id="passEyeIcon1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.82rem; font-weight: 800; color: #334155; margin-bottom: 8px; text-transform: uppercase;">CONFIRM SECURITY PASSWORD</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="creatorSecurityConfirmPass" oninput="validateSecurityPasswordRules()" placeholder="Re-enter security password..." style="width: 100%; height: 44px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 600; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#DE6834'" onblur="this.style.borderColor='#cbd5e1'">
+                                    <button type="button" onclick="togglePassVisibility('creatorSecurityConfirmPass', 'passEyeIcon2')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
+                                        <i class="fas fa-eye" id="passEyeIcon2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rule Validation Badges -->
+                        <div style="margin-top: 16px; background: #ffffff; border-radius: 8px; padding: 14px 18px; border: 1px solid #e2e8f0;">
+                            <div style="font-size: 0.78rem; font-weight: 800; color: #475569; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Password Criteria (Minimum 8 chars with letters, numbers & special character):</div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: 0.82rem; font-weight: 700;">
+                                <div id="ruleLength" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Min 8 characters</div>
+                                <div id="ruleLetter" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Letters (a-z, A-Z)</div>
+                                <div id="ruleNumber" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Numbers (0-9)</div>
+                                <div id="ruleSymbol" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Special symbol (!@#$%^&*)</div>
+                                <div id="ruleMatch" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Passwords match</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: FONT OPTION -->
+            <div class="settings-section">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <h3 style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-font" style="color: #DE6834;"></i> Typography & Global Font Option
+                    </h3>
+                    <span style="font-size: 0.78rem; font-weight: 700; color: #16a34a; background: rgba(222, 104, 52, 0.1); padding: 4px 10px; border-radius: 20px;">Account Persistent</span>
+                </div>
+                <!-- Signature Tri-Orange Line for Heading -->
+                <div class="tri-orange-line" style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
+                </div>
+                <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; font-weight: 600;">Choose the typography for Exam Creator. Default is Mulish, with Arial and Hind options. The selected font will be applied to the whole page forever for this account until changed.</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+                    <!-- Option 1: Mulish (Default) -->
+                    <div class="font-option-card" id="fontOptMulish" onclick="selectFontOption('Mulish')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: 'Mulish', sans-serif;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Mulish</h4>
+                            <span style="font-size: 0.7rem; font-weight: 800; color: #DE6834; background: rgba(222, 104, 52, 0.1); padding: 2px 8px; border-radius: 10px;">DEFAULT</span>
+                        </div>
+                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox jumps over the lazy dog. 1234567890</p>
+                    </div>
+
+                    <!-- Option 2: Arial -->
+                    <div class="font-option-card" id="fontOptArial" onclick="selectFontOption('Arial')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: Arial, sans-serif;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Arial</h4>
+                            <span style="font-size: 0.7rem; font-weight: 800; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 10px;">SYSTEM SANS</span>
+                        </div>
+                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox jumps over the lazy dog. 1234567890</p>
+                    </div>
+
+                    <!-- Option 3: Hind -->
+                    <div class="font-option-card" id="fontOptHind" onclick="selectFontOption('Hind')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: 'Hind', sans-serif;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Hind</h4>
+                            <span style="font-size: 0.7rem; font-weight: 800; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 10px;">CLEAN</span>
+                        </div>
+                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox jumps over the lazy dog. 1234567890</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div style="padding: 18px 32px; border-top: 1px solid #f1f5f9; background: #f8fafc; display: flex; justify-content: space-between; align-items: center; font-family: 'Mulish', sans-serif;">
+            <button onclick="closeCreatorSettingsModal()" style="padding: 10px 22px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; color: #475569; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: 'Mulish', sans-serif; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
+                Cancel
+            </button>
+            <button onclick="saveAndApplyCreatorPreferences()" style="padding: 11px 28px; border-radius: 8px; border: none; background: #DE6834; color: #fff; font-weight: 800; font-size: 0.95rem; cursor: pointer; font-family: 'Mulish', sans-serif; box-shadow: 0 4px 14px rgba(222, 104, 52, 0.35); transition: all 0.2s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.background='#c85826'" onmouseout="this.style.background='#DE6834'">
+                <i class="fas fa-check"></i> Save & Apply Preferences
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== STEP 5 SECURITY AUTHORIZATION PROMPT MODAL ==================== -->
+<div id="creatorSecurityPromptModal" class="security-modal-overlay" style="font-family: 'Mulish', sans-serif;">
+    <div style="background: #ffffff; width: 95%; max-width: 480px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden; font-family: 'Mulish', sans-serif; border: 1px solid rgba(222, 104, 52, 0.2); animation: settingsModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div style="padding: 22px 26px 16px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 14px;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(222, 104, 52, 0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <img src="../Testpad_pra_files_files/password.svg" style="width: 26px; height: 26px;" onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
+            </div>
+            <div>
+                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #1e293b;">Security Authorization</h3>
+                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Step 5 Finalization Passcode Required</span>
+            </div>
+        </div>
+        <!-- Signature Tri-Orange Line -->
+        <div class="tri-orange-line" style="display:flex; height:4px; border-radius:0; margin: 0;">
+            <div style="background: #FFF1E7; flex: 2.5;"></div>
+            <div style="background: #E6BCA5; flex: 3.5;"></div>
+            <div style="background: #DE5B2B; flex: 5;"></div>
+        </div>
+        <div style="padding: 24px 26px;">
+            <p style="font-size: 0.9rem; color: #475569; margin: 0 0 16px 0; font-weight: 600; line-height: 1.4;">This account is protected with security authorization. Please enter your security passcode to finalize and publish this exam.</p>
+            <div style="position: relative; margin-bottom: 8px;">
+                <input type="password" id="creatorPromptPasscode" placeholder="Enter your 8+ char security password..." style="width: 100%; height: 46px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 1rem; font-weight: 700; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#DE6834'" onblur="this.style.borderColor='#cbd5e1'" onkeydown="if(event.key==='Enter') verifyAndExecutePublish();">
+                <button type="button" onclick="togglePassVisibility('creatorPromptPasscode', 'promptPassEyeIcon')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
+                    <i class="fas fa-eye" id="promptPassEyeIcon"></i>
+                </button>
+            </div>
+            <div id="promptPassError" style="display: none; color: #ef4444; font-size: 0.82rem; font-weight: 700; margin-top: 8px;">
+                <i class="fas fa-exclamation-circle"></i> Incorrect security password. Please try again.
+            </div>
+        </div>
+        <div style="padding: 16px 26px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px;">
+            <button onclick="closeCreatorSecurityPromptModal()" style="padding: 9px 18px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; color: #64748b; font-weight: 700; font-size: 0.85rem; cursor: pointer;">Cancel</button>
+            <button onclick="verifyAndExecutePublish()" style="padding: 9px 24px; border-radius: 8px; border: none; background: #DE6834; color: #fff; font-weight: 800; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 12px rgba(222, 104, 52, 0.3);">
+                <i class="fas fa-lock-open" style="margin-right: 6px;"></i> Authorize & Finalise
+            </button>
+        </div>
+    </div>
+</div>
+
 <header class="site-header" style="position: relative;">
     <div id="teacherWellnessPopup"
         style="position: absolute; left: 50%; transform: translateX(-50%) translateY(-100px); top: 10px; background: #fff; padding: 12px 24px; border-radius: 4px; box-shadow: 0 4px 15px rgba(217, 108, 51, 0.2); display: flex; align-items: center; gap: 12px; border: 2px solid var(--primary); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; opacity: 0; pointer-events: none;">
@@ -2458,27 +2984,44 @@
         </div>
     </div>
     <div class="header-left">
-        <div class="logo-box" onclick="goBack()"
+        <div class="logo-box" onclick="location.reload()"
             style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-            <div class="logo-icon" style="width: 36px; height: 36px;">
-                <img src="../icon.png" alt="Chitkara" style="width: 100%; height: 100%; object-fit: contain;">
+            <div class="logo-icon" style="height: 52px; display: flex; align-items: center;">
+                <img src="../Tests _ Chitkara_files/chitkara.a1beb7f0.png" alt="Chitkara"
+                    style="height: 52px; width: auto; object-fit: contain;">
             </div>
-            <div style="font-weight: 800; font-size: 1.2rem; color: #333;">EXAMPAD</div>
         </div>
-        <div class="nav-icons" style="margin-left: 30px;">
-            <div class="nav-icon" title="Refresh" onclick="location.reload()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 2v6h-6"></path>
-                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
-                    <path d="M3 22v-6h6"></path>
-                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-                </svg>
-            </div>
+        <div style="display: flex; align-items: center; gap: 52px; margin-left: 64px; height: 36px;">
+            <button onclick="location.href='./teacher-dashboard.html'" title="Dashboard"
+                style="background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; transition: background 0.2s;"
+                onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                <img src="../TESTPAD_WEBSITE__files/menu-1.svg" style="width: 38px; height: 38px;">
+            </button>
+            <button onclick="location.href='./teacher-dashboard.html#assessments'" title="Assessments"
+                style="background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; transition: background 0.2s;"
+                onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                <img src="../TESTPAD_WEBSITE__files/quiz.svg" style="width: 38px; height: 38px;">
+            </button>
+            <button onclick="location.href='./questionpool.html'" title="Question Pool"
+                style="background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; transition: background 0.2s;"
+                onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                <img src="../TESTPAD_WEBSITE__files/folder-2.svg" style="width: 38px; height: 38px;">
+            </button>
+            <button onclick="location.href='./livemonitor.html'" title="Analytics"
+                style="background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; transition: background 0.2s;"
+                onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                <img src="../TESTPAD_WEBSITE__files/playground-normal.svg" style="width: 38px; height: 38px;">
+            </button>
         </div>
     </div>
     <div class="header-right">
-        <i class="fas fa-home" style="color:#DE5B2B; font-size:24px; cursor:pointer; margin-right: 20px;"
+        <i class="fas fa-home" style="color:#DE5B2B; font-size:24px; cursor:pointer; margin-right: 16px;"
             onclick="showCreatorDashboard()" title="Creator Dashboard"></i>
+        <button id="creatorSettingsHeaderBtn" onclick="openCreatorSettingsModal()" title="Exam Creator Settings"
+            style="background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; transition: all 0.2s; margin-right: 16px; padding: 0;"
+            onmouseover="this.style.background='rgba(222, 104, 52, 0.12)'; this.style.transform='scale(1.05)';" onmouseout="this.style.background='transparent'; this.style.transform='scale(1)';">
+            <img src="../Testpad_pra_files_files/password.svg" alt="Settings" style="width: 28px; height: 28px; object-fit: contain;" onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
+        </button>
         <div class="profile-container">
             <div class="profile-stack" id="profileToggle"
                 onclick="document.getElementById('profileMenu').style.display = document.getElementById('profileMenu').style.display === 'block' ? 'none' : 'block';"
@@ -2504,18 +3047,18 @@
             </div>
             <!-- Profile Dropdown -->
             <div class="profile-menu" id="profileMenu"
-                style="position: absolute; top: 100%; right: 0; width: 200px; background: white; border-radius: 0; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); margin-top: 10px; padding: 10px; display: none; z-index: 2000; border: 1px solid #eee;">
+                style="position: absolute; top: 100%; right: 0; width: 210px; background: white; border-radius: 0; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); margin-top: 10px; padding: 10px; display: none; z-index: 2000; border: 1px solid #eee;">
                 <div class="menu-item" onclick="location.href='./profile.html'"
                     style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 0; color: #555; font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
                     <img src="../TESTPAD_WEBSITE__files/portrait_placeholder_circle.png"
                         style="width: 16px; height: 16px; margin-right: 8px;">
                     <span>My Profile</span>
                 </div>
-                <div class="menu-item" onclick="location.href='./preferences.html'"
+                <div class="menu-item" onclick="openCreatorSettingsModal(); document.getElementById('profileMenu').style.display='none';"
                     style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 0; color: #555; font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
-                    <img src="../TESTPAD_WEBSITE__files/password.svg"
-                        style="width: 16px; height: 16px; margin-right: 8px;">
-                    <span>Preferences</span>
+                    <img src="../Testpad_pra_files_files/password.svg"
+                        style="width: 16px; height: 16px; margin-right: 8px;" onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
+                    <span>Preferences & Settings</span>
                 </div>
                 <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
                 <div class="menu-item logout" onclick="handleLogout()"
@@ -2575,85 +3118,107 @@
                         <i class="far fa-copy"></i> Clone Existing Test
                     </button>
                 </div>
-
-                <div class="input-group">
-                    <label class="label">EXAM TITLE</label>
-                    <input type="text" id="examTitle" class="clean-input"
-                        style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 0; width: 100%; box-sizing: border-box;"
-                        placeholder="e.g. End Semester - Computer Science">
+                <div class="tri-orange-line">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
 
-                <div class="input-group">
-                    <label class="label">SUBTITLE / DESCRIPTION</label>
-                    <textarea id="examDescription" class="clean-textarea"
-                        style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 0; min-height:100px; width: 100%; box-sizing: border-box;"
-                        placeholder="Add instructions or overview..."></textarea>
-                </div>
+                <div style="display: flex; flex-direction: column; gap: 24px; margin-top: 16px;">
+                    <!-- Row 1: Title & Description -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px 32px;">
+                        <div class="input-group">
+                            <label class="label">EXAM TITLE</label>
+                            <input type="text" id="examTitle" class="clean-input"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box;"
+                                placeholder="e.g., Mid-Term Assessment 2026">
+                        </div>
 
-                <div class="form-grid"
-                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;">
-                    <div class="input-group">
-                        <label class="label">DURATION (MINUTES)</label>
-                        <input type="number" id="examDuration" class="clean-input" value="60"
-                            style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 0; width: 100%; box-sizing: border-box;">
+                        <div class="input-group">
+                            <label class="label">SUBTITLE / DESCRIPTION</label>
+                            <textarea id="examDescription" class="clean-textarea"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; min-height: 44px; height: 44px; width: 100%; box-sizing: border-box; resize: none;"
+                                placeholder="Brief instructions or subject info..."></textarea>
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label class="label">TOTAL CAPACITY (MARKS)</label>
-                        <input type="number" id="examTotalMarks" class="clean-input" value="100"
-                            style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 0; width: 100%; box-sizing: border-box;">
+
+                    <!-- Row 2: Duration, Capacity Marks, Academic Credits -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px 32px;">
+                        <div class="input-group">
+                            <label class="label">DURATION (MINUTES)</label>
+                            <input type="number" id="examDuration" class="clean-input" value="60"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div class="input-group">
+                            <label class="label">TOTAL CAPACITY (MARKS)</label>
+                            <input type="number" id="examTotalMarks" class="clean-input" value="100"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div class="input-group">
+                            <label class="label">ACADEMIC CREDITS</label>
+                            <input type="number" id="examCredits" class="clean-input" value="1" step="0.5"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box;">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label class="label">ACADEMIC CREDITS</label>
-                        <input type="number" id="examCredits" class="clean-input" value="1" step="0.5"
-                            style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 0; width: 100%; box-sizing: border-box;">
+
+                    <!-- Row 3: Negative Marking, Scheduled Start, Scheduled End -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px 32px;">
+                        <div class="input-group">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <label class="label" style="margin: 0;">NEGATIVE MARKING</label>
+                                <label class="custom-orange-check">
+                                    <input type="checkbox" id="enableNegativeMarking"
+                                        onchange="document.getElementById('negativeMarking').disabled = !this.checked; if(!this.checked) document.getElementById('negativeMarking').value = 0;">
+                                    <span class="custom-orange-box"></span>
+                                </label>
+                            </div>
+                            <input type="number" id="negativeMarking" class="clean-input" value="0" disabled step="0.25"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div class="input-group">
+                            <label class="label">SCHEDULED START</label>
+                            <input type="datetime-local" id="scheduleDate" class="clean-input"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box; cursor: pointer;">
+                        </div>
+                        <div class="input-group">
+                            <label class="label">SCHEDULED END</label>
+                            <input type="datetime-local" id="scheduleEndDate" class="clean-input"
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box; cursor: pointer;">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label class="label"
-                            style="display: flex; align-items: center; justify-content: space-between;">
-                            <span>NEGATIVE MARKING</span>
-                            <label class="sec-toggle" style="margin-left: 10px; transform: scale(0.8);">
-                                <input type="checkbox" id="enableNegativeMarking"
-                                    onchange="document.getElementById('negativeMarking').disabled = !this.checked; if(!this.checked) document.getElementById('negativeMarking').value = 0;">
+
+                    <!-- Row 4: Time Configuration & Multiple Exam Sets -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px 32px;">
+                        <div class="input-group">
+                            <label class="label" style="margin-bottom: 10px;">TIME CONFIGURATION</label>
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; background: transparent; padding: 4px 0;">
+                                <div class="custom-orange-check">
+                                    <input type="checkbox" id="isUniversalTime">
+                                    <span class="custom-orange-box"></span>
+                                </div>
+                                <span style="font-size: 0.95rem; font-weight: 700; color: #DE5B2B; font-family: 'Montserrat', sans-serif; letter-spacing: 0.4px;">UNIVERSAL TIME FRAME</span>
                             </label>
-                        </label>
-                        <input type="number" id="negativeMarking" class="clean-input" value="0" disabled step="0.25"
-                            style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 0; width: 100%; box-sizing: border-box;">
-                    </div>
-                    <div class="input-group">
-                        <label class="label">SCHEDULED START</label>
-                        <input type="datetime-local" id="scheduleDate" class="clean-input"
-                            style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 0; width: 100%; box-sizing: border-box; cursor: pointer;">
-                    </div>
-                    <div class="input-group">
-                        <label class="label">SCHEDULED END</label>
-                        <input type="datetime-local" id="scheduleEndDate" class="clean-input"
-                            style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 0; width: 100%; box-sizing: border-box; cursor: pointer;">
-                    </div>
-                    <div class="input-group">
-                        <label class="label">TIME CONFIGURATION</label>
-                        <label class="sec-toggle"
-                            style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(217, 108, 51, 0.05); padding:10px; border-radius: 0; border:1px dashed rgba(217, 108, 51, 0.3);">
-                            <input type="checkbox" id="isUniversalTime" style="width:18px; height:18px;">
-                            <span style="font-size:0.9rem; font-weight:700; color:#D96C33;">UNIVERSAL TIME FRAME</span>
-                        </label>
-                    </div>
-                    <div class="input-group">
-                        <label class="label">MULTIPLE EXAM SETS</label>
-                        <label class="sec-toggle"
-                            style="display:flex; align-items:center; gap:12px; cursor:pointer; background:rgba(52, 152, 219, 0.05); padding:10px; border-radius: 0; border:1px dashed rgba(52, 152, 219, 0.3);">
-                            <input type="checkbox" id="hasMultipleSets" style="width:18px; height:18px;"
-                                onchange="document.getElementById('numSetsContainer').style.display = this.checked ? 'block' : 'none';">
-                            <span style="font-size:0.9rem; font-weight:700; color:#3498db;">ENABLE MULTIPLE SETS</span>
-                        </label>
-                        <div id="numSetsContainer" style="display:none; margin-top: 10px;">
-                            <input type="number" id="numSets" class="clean-input" min="2" value="2"
-                                placeholder="Num Sets"
-                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: #fff; border: 1px solid #ccc; padding: 8px 12px; border-radius: 0; width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div class="input-group">
+                            <label class="label" style="margin-bottom: 10px;">MULTIPLE EXAM SETS</label>
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; background: transparent; padding: 4px 0;">
+                                <div class="custom-orange-check">
+                                    <input type="checkbox" id="hasMultipleSets"
+                                        onchange="document.getElementById('numSetsContainer').style.display = this.checked ? 'block' : 'none';">
+                                    <span class="custom-orange-box"></span>
+                                </div>
+                                <span style="font-size: 0.95rem; font-weight: 700; color: #3498db; font-family: 'Montserrat', sans-serif; letter-spacing: 0.4px;">ENABLE MULTIPLE SETS</span>
+                            </label>
+                            <div id="numSetsContainer" style="display:none; margin-top: 10px;">
+                                <input type="number" id="numSets" class="clean-input" min="2" value="2"
+                                    placeholder="Enter Number of Sets (e.g. 2, 3, 4)"
+                                    style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.95rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 10px 0; width: 100%; box-sizing: border-box;">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee;">
+                <div style="display: none !important;">
                     <div style="display:flex; align-items:center; gap:12px; margin-bottom: 20px;">
                         <i data-lucide="palette" style="color:#9b59b6; width: 24px; height: 24px;"></i>
                         <h3 style="margin:0; font-size: 1.1rem; font-family: 'Outfit';">Exam Visual Theme Designer</h3>
@@ -2685,95 +3250,65 @@
             <div class="form-card"
                 style="margin-top: 40px; border-left: 4px solid #2ecc71; padding-left: 24px !important; background:transparent;">
                 <div class="section-title">
-                    <i data-lucide="shield-check" style="color:#2ecc71; width: 28px; height: 28px;"></i> Integrity
-                    Shield & Policy
+                    <i data-lucide="shield-check" style="color:#2ecc71; width: 28px; height: 28px;"></i> Integrity Shield & Policy
+                </div>
+                <div class="tri-orange-line">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-                    <!-- 1. Policy Blocks -->
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <i data-lucide="clipboard-off"
-                                    style="color:var(--primary); width: 24px; height: 24px;"></i>
-                                <div
-                                    style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
-                                    Block Copy-Paste Activity</div>
-                            </div>
-                            <input type="checkbox" id="blockCopyPaste"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
-                        </label>
-
-                        <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <i data-lucide="camera-off"
-                                    style="color:var(--primary); width: 24px; height: 24px;"></i>
-                                <div
-                                    style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
-                                    Block PrintScreen & Snipping</div>
-                            </div>
-                            <input type="checkbox" id="blockScreenshot"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
-                        </label>
-
-                        <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <i data-lucide="type" style="color:var(--primary); width: 24px; height: 24px;"></i>
-                                <div
-                                    style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
-                                    Show Roll No Watermark</div>
-                            </div>
-                            <input type="checkbox" id="showWatermark" checked
-                                style="width:24px; height:24px; accent-color: var(--primary);">
-                        </label>
-
-                        <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:rgba(217, 108, 51, 0.05); padding:12px 16px; border-radius:0; border: 2px dashed rgba(217,108,51,0.4); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.4)'">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <i data-lucide="graduation-cap" style="color:#D96C33; width: 24px; height: 24px;"></i>
-                                <div
-                                    style="font-family: 'Montserrat', sans-serif; font-weight:700; font-size:0.95rem; color:#D96C33;">
-                                    PRACTICE TEST MODE</div>
-                            </div>
-                            <input type="checkbox" id="isPracticeTest" onchange="exams.isPracticeTest = this.checked"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
-                        </label>
-                    </div>
-
-                    <!-- 2. Fullscreen & Violations -->
-                    <div style="display:flex; flex-direction:column; background:#fffcfaf2; border: 2px solid rgba(217,108,51,0.15); padding:16px; border-radius:0; box-shadow: 0 4px 15px rgba(217,108,51,0.02); transition: all 0.2s;"
-                        onmouseover="this.style.borderColor='var(--primary)'"
-                        onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
-                        <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; width:100%;">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <i data-lucide="maximize" style="color:var(--primary); width: 24px; height: 24px;"></i>
-                                <div
-                                    style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
-                                    Enforce Strict Fullscreen</div>
-                            </div>
-                            <input type="checkbox" id="fullScreenRequired"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
-                        </label>
-                        <div
-                            style="margin-top:20px; padding-top:20px; border-top:2px dashed rgba(217,108,51,0.15); display:flex; flex-direction:column; gap:8px;">
-                            <label class="label"
-                                style="font-family: 'Montserrat', sans-serif; font-weight:700; font-size:0.75rem; color:#A01E17; margin:0;">MAX
-                                VIOLATIONS ALLOWED</label>
-                            <input type="number" id="maxTabSwitches" class="clean-input" value="3"
-                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 12px 16px; border-radius: 0; width: 100%; box-sizing: border-box;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px 36px; margin-top: 16px;">
+                    <!-- 1. Block Copy-Paste -->
+                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Block Copy-Paste Activity</span>
+                        <div class="custom-orange-check">
+                            <input type="checkbox" id="blockCopyPaste">
+                            <span class="custom-orange-box"></span>
                         </div>
+                    </label>
+
+                    <!-- 2. Block PrintScreen & Snipping -->
+                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Block PrintScreen & Snipping</span>
+                        <div class="custom-orange-check">
+                            <input type="checkbox" id="blockScreenshot">
+                            <span class="custom-orange-box"></span>
+                        </div>
+                    </label>
+
+                    <!-- 3. Show Roll No Watermark -->
+                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Show Roll No Watermark</span>
+                        <div class="custom-orange-check">
+                            <input type="checkbox" id="showWatermark" checked>
+                            <span class="custom-orange-box"></span>
+                        </div>
+                    </label>
+
+                    <!-- 4. Enforce Strict Fullscreen -->
+                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Enforce Strict Fullscreen</span>
+                        <div class="custom-orange-check">
+                            <input type="checkbox" id="fullScreenRequired">
+                            <span class="custom-orange-box"></span>
+                        </div>
+                    </label>
+
+                    <!-- 5. Practice Test Mode -->
+                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span style="font-family: 'Montserrat', sans-serif; font-weight:700; font-size:0.95rem; color:#DE5B2B;">PRACTICE TEST MODE</span>
+                        <div class="custom-orange-check">
+                            <input type="checkbox" id="isPracticeTest" onchange="exams.isPracticeTest = this.checked">
+                            <span class="custom-orange-box"></span>
+                        </div>
+                    </label>
+
+                    <!-- 6. Max Violations Allowed -->
+                    <div class="input-group" style="margin: 0;">
+                        <label class="label" style="font-family: 'Montserrat', sans-serif; font-weight:700; font-size:0.75rem; color:#A01E17; margin:0 0 2px 0; display:block;">MAX VIOLATIONS ALLOWED</label>
+                        <input type="number" id="maxTabSwitches" class="clean-input" value="3"
+                            style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 8px 0; width: 100%; box-sizing: border-box;">
                     </div>
                 </div>
             </div>
@@ -2783,6 +3318,11 @@
                 <div class="section-title">
                     <i data-lucide="user-check" style="color:#f39c12; width: 28px; height: 28px;"></i> Identity
                     Verification Architect
+                </div>
+                <div class="tri-orange-line">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
                 <p style="color:#666; font-size: 0.85rem; margin-bottom: 20px;">Define mandatory information students
                     must provide before starting the assessment (e.g. Blind Roll No, Section, Name).</p>
@@ -2820,6 +3360,11 @@
                     </div>
                     <button class="btn btn-ghost" onclick="promptAddSection()">+ Define New Section</button>
                 </div>
+                <div class="tri-orange-line">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
+                </div>
                 <p style="color:#777; font-size: 0.9rem; margin-bottom: 24px;">Add sections to categorize questions
                     (Objective, Subjective, Lab, etc.)</p>
                 <div id="sectionsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
@@ -2832,6 +3377,11 @@
                 <div class="section-title">
                     <i data-lucide="navigation-2" style="color:#3498db; width: 28px; height: 28px;"></i> Sectional
                     Navigation Policy
+                </div>
+                <div class="tri-orange-line">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
                     <div
@@ -2877,6 +3427,11 @@
             <div class="step-header">
                 <h2 class="step-title">Step 3: Network & IP Access Control</h2>
                 <p class="step-desc">Restrict this assessment to specific institutional networks or WiFi zones.</p>
+                <div class="tri-orange-line">
+                    <div style="background: #FFF1E7; flex: 2.5;"></div>
+                    <div style="background: #E6BCA5; flex: 3.5;"></div>
+                    <div style="background: #DE5B2B; flex: 5;"></div>
+                </div>
             </div>
 
             <div style="width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
@@ -3405,26 +3960,49 @@
                                                 class="fas fa-redo"></i></button>
                                         <div class="stb-divider"></div>
                                         <!-- Custom Font Dropdown -->
-                                        <div class="stb-custom-select" id="customFontPicker" tabindex="0" onblur="setTimeout(() => document.getElementById('fontSelectList').classList.remove('show'), 150)">
-                                            <div class="stb-select-header" onclick="document.getElementById('fontSelectList').classList.toggle('show')">
+                                        <div class="stb-custom-select" id="customFontPicker" tabindex="0"
+                                            onblur="setTimeout(() => document.getElementById('fontSelectList').classList.remove('show'), 150)">
+                                            <div class="stb-select-header"
+                                                onclick="document.getElementById('fontSelectList').classList.toggle('show')">
                                                 <span id="fontSelectLabel">Font Family</span>
-                                                <i class="fas fa-chevron-down" style="font-size:0.7rem; color:#888;"></i>
+                                                <i class="fas fa-chevron-down"
+                                                    style="font-size:0.7rem; color:#888;"></i>
                                             </div>
                                             <div class="stb-select-list" id="fontSelectList">
-                                                <div class="stb-select-item" style="font-family: Arial;" onclick="selectCustomFont('Arial', 'Arial')">Arial</div>
-                                                <div class="stb-select-item" style="font-family: 'Comic Sans MS';" onclick="selectCustomFont('Comic Sans MS', 'Comic Sans')">Comic Sans</div>
-                                                <div class="stb-select-item" style="font-family: 'Courier New';" onclick="selectCustomFont('Courier New', 'Courier New')">Courier New</div>
-                                                <div class="stb-select-item" style="font-family: Georgia;" onclick="selectCustomFont('Georgia', 'Georgia')">Georgia</div>
-                                                <div class="stb-select-item" style="font-family: Helvetica;" onclick="selectCustomFont('Helvetica', 'Helvetica')">Helvetica</div>
-                                                <div class="stb-select-item" style="font-family: 'Lucida Sans Unicode';" onclick="selectCustomFont('Lucida Sans Unicode', 'Lucida')">Lucida</div>
-                                                <div class="stb-select-item" style="font-family: Tahoma;" onclick="selectCustomFont('Tahoma', 'Tahoma')">Tahoma</div>
-                                                <div class="stb-select-item" style="font-family: 'Times New Roman';" onclick="selectCustomFont('Times New Roman', 'Times New Roman')">Times New Roman</div>
-                                                <div class="stb-select-item" style="font-family: 'Trebuchet MS';" onclick="selectCustomFont('Trebuchet MS', 'Trebuchet')">Trebuchet</div>
-                                                <div class="stb-select-item" style="font-family: Verdana;" onclick="selectCustomFont('Verdana', 'Verdana')">Verdana</div>
-                                                <div class="stb-select-item" style="font-family: Inter;" onclick="selectCustomFont('Inter', 'Inter')">Inter</div>
-                                                <div class="stb-select-item" style="font-family: Outfit;" onclick="selectCustomFont('Outfit', 'Outfit')">Outfit</div>
-                                                <div class="stb-select-item" style="font-family: Montserrat;" onclick="selectCustomFont('Montserrat', 'Montserrat')">Montserrat</div>
-                                                <div class="stb-select-item" style="font-family: Hind;" onclick="selectCustomFont('Hind', 'Hind')">Hind</div>
+                                                <div class="stb-select-item" style="font-family: Arial;"
+                                                    onclick="selectCustomFont('Arial', 'Arial')">Arial</div>
+                                                <div class="stb-select-item" style="font-family: 'Comic Sans MS';"
+                                                    onclick="selectCustomFont('Comic Sans MS', 'Comic Sans')">Comic Sans
+                                                </div>
+                                                <div class="stb-select-item" style="font-family: 'Courier New';"
+                                                    onclick="selectCustomFont('Courier New', 'Courier New')">Courier New
+                                                </div>
+                                                <div class="stb-select-item" style="font-family: Georgia;"
+                                                    onclick="selectCustomFont('Georgia', 'Georgia')">Georgia</div>
+                                                <div class="stb-select-item" style="font-family: Helvetica;"
+                                                    onclick="selectCustomFont('Helvetica', 'Helvetica')">Helvetica</div>
+                                                <div class="stb-select-item" style="font-family: 'Lucida Sans Unicode';"
+                                                    onclick="selectCustomFont('Lucida Sans Unicode', 'Lucida')">Lucida
+                                                </div>
+                                                <div class="stb-select-item" style="font-family: Tahoma;"
+                                                    onclick="selectCustomFont('Tahoma', 'Tahoma')">Tahoma</div>
+                                                <div class="stb-select-item" style="font-family: 'Times New Roman';"
+                                                    onclick="selectCustomFont('Times New Roman', 'Times New Roman')">
+                                                    Times New Roman</div>
+                                                <div class="stb-select-item" style="font-family: 'Trebuchet MS';"
+                                                    onclick="selectCustomFont('Trebuchet MS', 'Trebuchet')">Trebuchet
+                                                </div>
+                                                <div class="stb-select-item" style="font-family: Verdana;"
+                                                    onclick="selectCustomFont('Verdana', 'Verdana')">Verdana</div>
+                                                <div class="stb-select-item" style="font-family: Inter;"
+                                                    onclick="selectCustomFont('Inter', 'Inter')">Inter</div>
+                                                <div class="stb-select-item" style="font-family: Outfit;"
+                                                    onclick="selectCustomFont('Outfit', 'Outfit')">Outfit</div>
+                                                <div class="stb-select-item" style="font-family: Montserrat;"
+                                                    onclick="selectCustomFont('Montserrat', 'Montserrat')">Montserrat
+                                                </div>
+                                                <div class="stb-select-item" style="font-family: Hind;"
+                                                    onclick="selectCustomFont('Hind', 'Hind')">Hind</div>
                                             </div>
                                         </div>
                                         <select class="stb-select" style="width:90px;"
@@ -4029,13 +4607,16 @@
                         <i data-lucide="shield-alert" style="color:var(--primary); width: 28px; height: 28px;"></i>
                         Entry Control & Security
                     </div>
+                    <div class="tri-orange-line">
+                        <div style="background: #FFF1E7; flex: 2.5;"></div>
+                        <div style="background: #E6BCA5; flex: 3.5;"></div>
+                        <div style="background: #DE5B2B; flex: 5;"></div>
+                    </div>
 
                     <div
                         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px;">
                         <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <i data-lucide="monitor" style="color:var(--primary); width: 24px; height: 24px;"></i>
                                 <div>
@@ -4045,13 +4626,11 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="desktopOnly"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
+                                style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                         </label>
 
                         <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <i data-lucide="graduation-cap"
                                     style="color:var(--primary); width: 24px; height: 24px;"></i>
@@ -4062,13 +4641,11 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="isPracticeTest"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
+                                style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                         </label>
 
                         <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <i data-lucide="edit-3" style="color:var(--primary); width: 24px; height: 24px;"></i>
                                 <div>
@@ -4078,7 +4655,7 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="allowCtrlE"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
+                                style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                         </label>
                     </div>
 
@@ -4086,10 +4663,11 @@
                         <div class="input-group">
                             <label class="label">ENTRANCE PASSCODE</label>
                             <input type="text" id="examPasscode" class="clean-input" placeholder="e.g. EXAM2024"
-                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 4px;">
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box;">
                             <label
                                 style="display:flex; align-items:center; gap:8px; margin-top:12px; font-size:0.85rem; cursor:pointer;">
-                                <input type="checkbox" id="strictPasscode" style="width:18px; height:18px;" checked>
+                                <input type="checkbox" id="strictPasscode"
+                                    style="width:18px; height:18px; accent-color: var(--primary);" checked>
                                 <span style="color:#222; font-weight:700; font-family: 'Montserrat', sans-serif;">Strict
                                     Exact Match Required</span>
                             </label>
@@ -4098,13 +4676,13 @@
                         <div class="input-group">
                             <label class="label">MAX TAB SWITCHES</label>
                             <input type="number" id="maxTabSwitches" class="clean-input" value="3"
-                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 4px;">
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box;">
                         </div>
 
                         <div class="input-group" id="setAssignmentStrategyContainer" style="display:none;">
                             <label class="label">SET ASSIGNMENT STRATEGY</label>
                             <select id="setAssignmentStrategy" class="clean-input"
-                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 4px; width: 100%;">
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box;">
                                 <option value="random">Assign Randomly to Students</option>
                                 <option value="rollNumber">Assign based on Roll Number (Even/Odd/Modulo)</option>
                             </select>
@@ -4113,7 +4691,7 @@
                         <div class="input-group">
                             <label class="label">LATE ENTRY DEADLINE</label>
                             <input type="text" id="entryDeadline" class="clean-input" placeholder="Select Date & Time"
-                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 14px 18px; border-radius: 4px; cursor: pointer;">
+                                style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; width: 100%; box-sizing: border-box; cursor: pointer;">
                             <script>
                                 document.addEventListener('DOMContentLoaded', () => {
                                     flatpickr("#entryDeadline", {
@@ -4128,28 +4706,24 @@
                         <div
                             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
                             <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                                onmouseover="this.style.borderColor='var(--primary)'"
-                                onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                                style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
                                         Show Results/Answers to Student after Submission</div>
                                 </div>
                                 <input type="checkbox" id="showResults" checked
-                                    style="width:24px; height:24px; accent-color: var(--primary);">
+                                    style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                             </label>
                             <label class="sec-toggle"
-                                style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                                onmouseover="this.style.borderColor='var(--primary)'"
-                                onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                                style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
                                         Upload and Publish Marks after Test</div>
                                 </div>
                                 <input type="checkbox" id="autoPublishResults" checked
-                                    style="width:24px; height:24px; accent-color: var(--primary);">
+                                    style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                             </label>
                         </div>
                     </div>
@@ -4162,11 +4736,14 @@
                         <i data-lucide="cpu" style="color:#2ecc71; width: 28px; height: 28px;"></i> Advanced Proctoring
                         (AI)
                     </div>
+                    <div class="tri-orange-line">
+                        <div style="background: #FFF1E7; flex: 2.5;"></div>
+                        <div style="background: #E6BCA5; flex: 3.5;"></div>
+                        <div style="background: #DE5B2B; flex: 5;"></div>
+                    </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
                         <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <i class="fas fa-video" style="color:var(--primary); width: 20px;"></i>
                                 <div>
@@ -4176,13 +4753,11 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="webcamEnabled"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
+                                style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                         </label>
 
                         <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <i class="fas fa-microphone" style="color:var(--primary); width: 20px;"></i>
                                 <div>
@@ -4192,13 +4767,11 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="micEnabled"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
+                                style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                         </label>
 
                         <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <i class="fas fa-lock" style="color:var(--primary); width: 20px;"></i>
                                 <div>
@@ -4208,14 +4781,12 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="lockSections"
-                                style="width:24px; height:24px; accent-color: var(--primary);"
+                                style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;"
                                 onchange="exams.sectionLockEnabled = this.checked; if(document.getElementById('sectionLockEnabled')) document.getElementById('sectionLockEnabled').checked = this.checked;">
                         </label>
 
                         <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <i class="fas fa-network-wired" style="color:var(--primary); width: 20px;"></i>
                                 <div>
@@ -4225,7 +4796,7 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="vpnBlocked"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
+                                style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                         </label>
                     </div>
                 </div>
@@ -4237,11 +4808,14 @@
                         <i data-lucide="clipboard-check" style="color:#f39c12; width: 28px; height: 28px;"></i>
                         Evaluation Configuration
                     </div>
+                    <div class="tri-orange-line">
+                        <div style="background: #FFF1E7; flex: 2.5;"></div>
+                        <div style="background: #E6BCA5; flex: 3.5;"></div>
+                        <div style="background: #DE5B2B; flex: 5;"></div>
+                    </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
                         <label class="sec-toggle"
-                            style="display:flex; justify-content:space-between; align-items:center; background:#fffcfaf2; padding:12px 16px; border-radius:0; border: 2px solid rgba(217,108,51,0.15); cursor:pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(217,108,51,0.02);"
-                            onmouseover="this.style.borderColor='var(--primary)'"
-                            onmouseout="this.style.borderColor='rgba(217,108,51,0.15)'">
+                            style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <i class="fas fa-marker" style="color:var(--primary);"></i>
                                 <div>
@@ -4251,7 +4825,7 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="manualGrading"
-                                style="width:24px; height:24px; accent-color: var(--primary);">
+                                style="width:22px; height:22px; accent-color: var(--primary); cursor:pointer;">
                         </label>
                         <p
                             style="font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600; color: #777; margin-top: 8px;">
@@ -4267,14 +4841,20 @@
                         <i data-lucide="send" style="color:var(--primary); width: 28px; height: 28px;"></i> Final
                         Release Configuration
                     </div>
+                    <div class="tri-orange-line">
+                        <div style="background: #FFF1E7; flex: 2.5;"></div>
+                        <div style="background: #E6BCA5; flex: 3.5;"></div>
+                        <div style="background: #DE5B2B; flex: 5;"></div>
+                    </div>
                     <p style="font-size:0.9rem; color:#666; margin-bottom:24px;">Please Review your settings before
                         taking this
                         assessment live.</p>
 
                     <div
                         style="position: relative; background: #fff url('../assets/BGNEW01.png') center/cover; padding: 30px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); overflow: hidden; font-family: 'Mulish', sans-serif;">
-                        
-                        <div id="testIdentityWatermark" style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 0; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTIwJz48dGV4dCB4PSc1MCUnIHk9JzUwJScgdHJhbnNmb3JtPSdyb3RhdGUoLTIwIDkwIDYwKScgdGV4dC1hbmNob3I9J21pZGRsZScgZm9udC1mYW1pbHk9J0FyaWFsLCBzYW5zLXNlcmlmJyBmb250LXNpemU9JzIyJyBmb250LXdlaWdodD0nYm9sZCcgZmlsbD0nIzAwMCc+RVhBTVBBRDwvdGV4dD48L3N2Zz4='); background-repeat: repeat; transition: all 0.3s ease;">
+
+                        <div id="testIdentityWatermark"
+                            style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 0; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTIwJz48dGV4dCB4PSc1MCUnIHk9JzUwJScgdHJhbnNmb3JtPSdyb3RhdGUoLTIwIDkwIDYwKScgdGV4dC1hbmNob3I9J21pZGRsZScgZm9udC1mYW1pbHk9J0FyaWFsLCBzYW5zLXNlcmlmJyBmb250LXNpemU9JzIyJyBmb250LXdlaWdodD0nYm9sZCcgZmlsbD0nIzAwMCc+RVhBTVBBRDwvdGV4dD48L3N2Zz4='); background-repeat: repeat; transition: all 0.3s ease;">
                         </div>
 
                         <div style="display:flex; flex-direction:column; gap:24px; position: relative; z-index: 1;">
@@ -4294,7 +4874,9 @@
                                         style="font-size:1.2rem; font-weight:800; color:#2d3748; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
                                         <i class="fas fa-fingerprint" style="color: var(--primary);"></i> TEST IDENTITY
                                     </span>
-                                    <span style="font-size:0.9rem; color:#718096; font-weight:600; padding-left: 26px;">Custom unique URL slug</span>
+                                    <span
+                                        style="font-size:0.9rem; color:#718096; font-weight:600; padding-left: 26px;">Custom
+                                        unique URL slug</span>
                                 </div>
                                 <input type="text" id="customTestId" placeholder="e.g. ping456net789"
                                     style="padding: 14px 20px; border: 2px solid rgba(217, 108, 51, 0.2); background: rgba(255, 255, 255, 0.85); border-radius: 8px; font-family: 'Mulish', sans-serif; color: var(--primary); font-weight: 800; width: 340px; outline: none; text-align: right; font-size: 1.5rem; letter-spacing: 0.5px; transition: all 0.3s ease; user-select: text !important; pointer-events: auto !important; box-shadow: 0 4px 12px rgba(0,0,0,0.04); backdrop-filter: blur(4px);"
@@ -6160,7 +6742,7 @@
         }
     }
 
-    // Custom Modal System
+    // Custom Modal System with Arrow Key Preference Navigation
     function showModal({ title, desc, content, confirmText = 'Confirm', onConfirm, hideCancel = false }) {
         const overlay = document.getElementById('customModalOverlay');
         document.getElementById('modalTitle').textContent = title;
@@ -6174,16 +6756,74 @@
 
         overlay.style.display = 'flex';
 
+        // Default preference selection: 'confirm' (Right) vs 'cancel' (Left)
+        let activeSelection = 'confirm';
+        
+        function updateModalFocus() {
+            if (activeSelection === 'confirm') {
+                confirmBtn.focus();
+                confirmBtn.style.outline = '3px solid #DE5B2B';
+                confirmBtn.style.outlineOffset = '2px';
+                confirmBtn.style.boxShadow = '0 0 12px rgba(222, 91, 43, 0.4)';
+                if (cancelBtn) {
+                    cancelBtn.style.outline = 'none';
+                    cancelBtn.style.boxShadow = 'none';
+                }
+            } else if (activeSelection === 'cancel' && !hideCancel) {
+                cancelBtn.focus();
+                cancelBtn.style.outline = '3px solid #64748b';
+                cancelBtn.style.outlineOffset = '2px';
+                cancelBtn.style.boxShadow = '0 0 10px rgba(100, 116, 139, 0.3)';
+                confirmBtn.style.outline = 'none';
+                confirmBtn.style.boxShadow = 'none';
+            }
+        }
+
+        setTimeout(updateModalFocus, 50);
+
         const cleanup = () => {
             overlay.style.display = 'none';
+            if (confirmBtn) {
+                confirmBtn.style.outline = 'none';
+                confirmBtn.style.boxShadow = 'none';
+            }
+            if (cancelBtn) {
+                cancelBtn.style.outline = 'none';
+                cancelBtn.style.boxShadow = 'none';
+            }
             document.removeEventListener('keydown', modalKeyHandler);
         };
 
         const modalKeyHandler = (e) => {
-            if (e.key === 'Enter') {
+            // Ignore arrow key interception if typing inside a text input in the modal
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') && e.target.type !== 'checkbox' && e.target.type !== 'radio') {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cleanup();
+                }
+                return;
+            }
+
+            if (e.key === 'ArrowLeft') {
                 e.preventDefault();
-                confirmBtn.click();
+                if (!hideCancel) {
+                    activeSelection = 'cancel';
+                    updateModalFocus();
+                }
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                activeSelection = 'confirm';
+                updateModalFocus();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (activeSelection === 'cancel' && !hideCancel) {
+                    cleanup();
+                } else {
+                    if (onConfirm) onConfirm();
+                    cleanup();
+                }
             } else if (e.key === 'Escape') {
+                e.preventDefault();
                 cleanup();
             }
         };
@@ -6191,7 +6831,7 @@
         document.addEventListener('keydown', modalKeyHandler);
 
         cancelBtn.onclick = cleanup;
-        confirmBtn.onclick = () => { onConfirm(); cleanup(); };
+        confirmBtn.onclick = () => { if (onConfirm) onConfirm(); cleanup(); };
     }
 
     function promptAddSection() {
@@ -6490,7 +7130,41 @@
             if (profileMenu && profileMenu.classList.contains('active')) {
                 profileMenu.classList.remove('active');
             }
+            if (!e.target.closest('.custom-select-wrapper')) {
+                document.querySelectorAll('.custom-id-dropdown').forEach(m => m.style.display = 'none');
+                document.querySelectorAll('[id^="idTypeIcon_"]').forEach(ic => ic.style.transform = 'rotate(0deg)');
+            }
         };
+    }
+
+    function getIdentityTypeLabel(type) {
+        switch (type) {
+            case 'integer': return 'Integer';
+            case 'dropdown': return 'Dropdown Selection';
+            case 'testcode': return 'Test Code (Match Exactly)';
+            case 'text':
+            default: return 'Subjective Text';
+        }
+    }
+
+    function toggleIdentityTypeDropdown(index, event) {
+        if (event) event.stopPropagation();
+        const menu = document.getElementById(`idTypeMenu_${index}`);
+        const icon = document.getElementById(`idTypeIcon_${index}`);
+        const isVisible = menu && menu.style.display === 'block';
+
+        document.querySelectorAll('.custom-id-dropdown').forEach(m => m.style.display = 'none');
+        document.querySelectorAll('[id^="idTypeIcon_"]').forEach(ic => ic.style.transform = 'rotate(0deg)');
+
+        if (!isVisible && menu) {
+            menu.style.display = 'block';
+            if (icon) icon.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    function selectIdentityType(index, type, event) {
+        if (event) event.stopPropagation();
+        updateIdentityField(index, 'type', type);
     }
 
     function updateIdentityFieldsList() {
@@ -6498,48 +7172,68 @@
         if (!container) return;
 
         if (!exams.identityFields || exams.identityFields.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:20px; color:#999; font-size:0.8rem; background:#fcfcfc; border:1px dashed #eee; border-radius: 0;">No identity verification questions defined.</div>';
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:#888; font-size:0.85rem; font-family:\'Montserrat\', sans-serif; font-weight:600; background:transparent; border:1.5px dashed rgba(217, 108, 51, 0.3); border-radius: 0;">No identity verification questions defined. Click below to add.</div>';
             return;
         }
 
         container.innerHTML = exams.identityFields.map((f, i) => `
-            <div style="display:grid; grid-template-columns: 1.5fr 1fr 1.5fr 80px 40px; gap:16px; align-items:end; background:#fff; border:1px solid #eee; padding:16px; border-radius: 0;">
+            <div style="display:grid; grid-template-columns: 1.5fr 1.2fr 1.5fr 80px 40px; gap:16px; align-items:end; background:transparent; border:none; padding:14px 0; border-bottom: 1px solid rgba(217, 108, 51, 0.15); border-radius: 0;">
                 <div class="input-group" style="margin:0;">
                     <label class="label" style="font-size:0.65rem;">FIELD LABEL / QUESTION</label>
-                    <input type="text" value="${f.label}" onchange="updateIdentityField(${i}, 'label', this.value)" class="clean-input" style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 12px 16px; border-radius: 0; width: 100%; box-sizing: border-box;" placeholder="e.g. Blind Roll Number">
+                    <input type="text" value="${f.label}" onchange="updateIdentityField(${i}, 'label', this.value)" class="clean-input" style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; border-radius: 0; width: 100%; box-sizing: border-box;" placeholder="e.g. Blind Roll Number">
                 </div>
-                <div class="input-group" style="margin:0;">
+                <div class="input-group custom-select-wrapper" style="margin:0; position: relative;" id="idTypeWrap_${i}">
                     <label class="label" style="font-size:0.65rem;">INPUT TYPE</label>
-                    <select onchange="updateIdentityField(${i}, 'type', this.value)" class="clean-input" style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 12px 16px; border-radius: 0; width: 100%; box-sizing: border-box;">
-                        <option value="text" ${f.type === 'text' ? 'selected' : ''}>Subjective Text</option>
-                        <option value="integer" ${f.type === 'integer' ? 'selected' : ''}>Integer</option>
-                        <option value="dropdown" ${f.type === 'dropdown' ? 'selected' : ''}>Dropdown Selection</option>
-                        <option value="testcode" ${f.type === 'testcode' ? 'selected' : ''}>Test Code (Match Exactly)</option>
-                    </select>
+                    <div onclick="toggleIdentityTypeDropdown(${i}, event)" style="display:flex; justify-content:space-between; align-items:center; font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #1a1a1b; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; cursor: pointer; user-select: none;">
+                        <span>${getIdentityTypeLabel(f.type)}</span>
+                        <i class="fas fa-chevron-down" style="font-size: 0.75rem; color: var(--primary); transition: transform 0.2s;" id="idTypeIcon_${i}"></i>
+                    </div>
+                    <div id="idTypeMenu_${i}" class="custom-id-dropdown" style="display: none; position: absolute; top: calc(100% + 2px); left: 0; min-width: 220px; background: #ffffff; border: 1px solid rgba(217, 108, 51, 0.25); border-radius: 6px; box-shadow: 0 10px 25px rgba(217, 108, 51, 0.12); z-index: 1000; overflow: hidden; padding: 4px 0;">
+                        <div onclick="selectIdentityType(${i}, 'text', event)" class="id-drop-item" style="padding: 10px 14px; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: ${f.type === 'text' ? 'var(--primary)' : '#333'}; background: ${f.type === 'text' ? 'rgba(217, 108, 51, 0.08)' : 'transparent'}; transition: all 0.15s;" onmouseover="this.style.background='#FFF5F0'; this.style.color='var(--primary)';" onmouseout="this.style.background='${f.type === 'text' ? 'rgba(217, 108, 51, 0.08)' : 'transparent'}'; this.style.color='${f.type === 'text' ? 'var(--primary)' : '#333'}';">
+                            <i class="fas fa-font" style="width: 16px; color: var(--primary);"></i>
+                            <span>Subjective Text</span>
+                            ${f.type === 'text' ? '<i class="fas fa-check" style="margin-left:auto; font-size: 0.75rem; color:var(--primary);"></i>' : ''}
+                        </div>
+                        <div onclick="selectIdentityType(${i}, 'integer', event)" class="id-drop-item" style="padding: 10px 14px; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: ${f.type === 'integer' ? 'var(--primary)' : '#333'}; background: ${f.type === 'integer' ? 'rgba(217, 108, 51, 0.08)' : 'transparent'}; transition: all 0.15s;" onmouseover="this.style.background='#FFF5F0'; this.style.color='var(--primary)';" onmouseout="this.style.background='${f.type === 'integer' ? 'rgba(217, 108, 51, 0.08)' : 'transparent'}'; this.style.color='${f.type === 'integer' ? 'var(--primary)' : '#333'}';">
+                            <i class="fas fa-hashtag" style="width: 16px; color: var(--primary);"></i>
+                            <span>Integer</span>
+                            ${f.type === 'integer' ? '<i class="fas fa-check" style="margin-left:auto; font-size: 0.75rem; color:var(--primary);"></i>' : ''}
+                        </div>
+                        <div onclick="selectIdentityType(${i}, 'dropdown', event)" class="id-drop-item" style="padding: 10px 14px; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: ${f.type === 'dropdown' ? 'var(--primary)' : '#333'}; background: ${f.type === 'dropdown' ? 'rgba(217, 108, 51, 0.08)' : 'transparent'}; transition: all 0.15s;" onmouseover="this.style.background='#FFF5F0'; this.style.color='var(--primary)';" onmouseout="this.style.background='${f.type === 'dropdown' ? 'rgba(217, 108, 51, 0.08)' : 'transparent'}'; this.style.color='${f.type === 'dropdown' ? 'var(--primary)' : '#333'}';">
+                            <i class="fas fa-list-ul" style="width: 16px; color: var(--primary);"></i>
+                            <span>Dropdown Selection</span>
+                            ${f.type === 'dropdown' ? '<i class="fas fa-check" style="margin-left:auto; font-size: 0.75rem; color:var(--primary);"></i>' : ''}
+                        </div>
+                        <div onclick="selectIdentityType(${i}, 'testcode', event)" class="id-drop-item" style="padding: 10px 14px; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: ${f.type === 'testcode' ? 'var(--primary)' : '#333'}; background: ${f.type === 'testcode' ? 'rgba(217, 108, 51, 0.08)' : 'transparent'}; transition: all 0.15s;" onmouseover="this.style.background='#FFF5F0'; this.style.color='var(--primary)';" onmouseout="this.style.background='${f.type === 'testcode' ? 'rgba(217, 108, 51, 0.08)' : 'transparent'}'; this.style.color='${f.type === 'testcode' ? 'var(--primary)' : '#333'}';">
+                            <i class="fas fa-key" style="width: 16px; color: var(--primary);"></i>
+                            <span>Test Code (Match Exactly)</span>
+                            ${f.type === 'testcode' ? '<i class="fas fa-check" style="margin-left:auto; font-size: 0.75rem; color:var(--primary);"></i>' : ''}
+                        </div>
+                    </div>
                 </div>
                 <div class="input-group" style="margin:0;">
                     <label class="label" style="font-size:0.65rem;">${f.type === 'dropdown' ? 'OPTIONS' : (f.type === 'testcode' ? 'REQUIRED CODE' : 'PLACEHOLDER')}</label>
                     ${f.type === 'dropdown' ? `
-                        <div style="border: 2px solid #ccc; background: #fff; padding: 8px; min-height: 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;">
+                        <div style="border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); background: transparent; padding: 8px 0; min-height: 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;">
                             <div style="display: flex; flex-wrap: wrap; gap: 6px; max-height: 80px; overflow-y: auto; padding-right: 4px;">
                                 ${(f.value || '').split(',').map(o => o.trim()).filter(o => o).map((opt, optIndex) => `
-                                    <span style="background: #f1f3f4; padding: 4px 8px; font-size: 0.8rem; font-family: 'Montserrat', sans-serif; font-weight: 600; display: flex; align-items: center; gap: 6px; border-radius: 4px;">
+                                    <span style="background: rgba(217, 108, 51, 0.1); color: #8B3A14; padding: 4px 8px; font-size: 0.8rem; font-family: 'Montserrat', sans-serif; font-weight: 600; display: flex; align-items: center; gap: 6px; border-radius: 4px; border: 1px solid rgba(217, 108, 51, 0.2);">
                                         ${opt}
                                         <i class="fas fa-times" style="cursor: pointer; color: #d93025; font-size: 0.85rem;" onclick="removeIdentityFieldOption(${i}, ${optIndex})"></i>
                                     </span>
                                 `).join('')}
                             </div>
-                            <input type="text" id="addIdentityOpt_${i}" onkeypress="if(event.key === 'Enter') { event.preventDefault(); addIdentityFieldOption(${i}, this.value); this.value=''; }" style="border: none; outline: none; padding: 4px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.85rem; width: 100%; background: transparent;" placeholder="Type option and press Enter">
+                            <input type="text" id="addIdentityOpt_${i}" onkeypress="if(event.key === 'Enter') { event.preventDefault(); addIdentityFieldOption(${i}, this.value); this.value=''; }" style="border: none; outline: none; padding: 4px 0; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.85rem; width: 100%; background: transparent; color:#000;" placeholder="Type option and press Enter">
                         </div>
                     ` : `
-                        <input type="text" value="${f.value || ''}" onchange="updateIdentityField(${i}, 'value', this.value)" class="clean-input" style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: #fff; border: 2px solid #ccc; padding: 12px 16px; border-radius: 0; width: 100%; box-sizing: border-box;" placeholder="${f.type === 'testcode' ? '' : 'PLACEHOLDER'}">
+                        <input type="text" value="${f.value || ''}" onchange="updateIdentityField(${i}, 'value', this.value)" class="clean-input" style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 0.9rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 12px 0; border-radius: 0; width: 100%; box-sizing: border-box;" placeholder="${f.type === 'testcode' ? '' : 'PLACEHOLDER'}">
                     `}
                 </div>
                 <div class="input-group" style="margin:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:8px;">
                     <label class="label" style="font-size:0.65rem;">MANDATORY</label>
-                    <input type="checkbox" onchange="updateIdentityField(${i}, 'required', this.checked)" ${f.required !== false ? 'checked' : ''} style="width:18px; height:18px; margin-top:8px; cursor:pointer;">
+                    <input type="checkbox" onchange="updateIdentityField(${i}, 'required', this.checked)" ${f.required !== false ? 'checked' : ''} style="width:20px; height:20px; margin-top:8px; accent-color: var(--primary); cursor:pointer;">
                 </div>
-                <button onclick="removeIdentityField(${i})" style="width:40px; height:40px; background:#FEF3F2; color:#F04438; border:1px solid #FEE4E2; border-radius: 0; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                <button onclick="removeIdentityField(${i})" style="width:36px; height:36px; background:rgba(240,68,56,0.08); color:#F04438; border:1px solid rgba(240,68,56,0.2); border-radius: 4px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;" onmouseover="this.style.background='#FEE4E2'" onmouseout="this.style.background='rgba(240,68,56,0.08)'" title="Delete Question">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>
@@ -6566,7 +7260,7 @@
         exams.identityFields[index].value = opts.join(', ');
         updateIdentityFieldsList();
         autoSave();
-        
+
         // Focus the input back after rerender
         setTimeout(() => {
             const input = document.getElementById(`addIdentityOpt_${index}`);
@@ -6960,59 +7654,59 @@
             let totalGoal = (exams.pools && exams.pools[s] && exams.pools[s].totalGoal) ? exams.pools[s].totalGoal : secQuestions.length;
 
             return `
-                <div class="accordion-card" style="margin-bottom: 24px; border-radius: 0; border: 1px solid #e0e0e0; background: #fff; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.03); padding: 0 !important;">
+                <div class="accordion-card" style="margin-bottom: 24px; border-radius: 0; border: 1px solid rgba(217, 108, 51, 0.2); background: #fff; overflow: hidden; box-shadow: 0 4px 12px rgba(217, 108, 51, 0.04); padding: 0 !important;">
                     <!-- Accordion Header with ALL Options -->
-                    <div style="background: var(--primary); color: white; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; gap: 20px;">
+                    <div style="background: #FFF4ED; color: #1a1a1b; border-bottom: 1px solid rgba(217, 108, 51, 0.15); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; gap: 20px;">
                         
                         <!-- Left: Title & Rename -->
                         <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-                            <div style="font-weight: 800; font-size: 1.4rem;">
+                            <div style="font-weight: 800; font-size: 1.3rem; color: #1a1a1b; font-family: 'Montserrat', sans-serif;">
                                 ${s} - Section ${i + 1}
                             </div>
-                            <button onclick="renameSectionPrompt('${s}', ${i})" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; width: 32px; height: 32px; border-radius: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Rename Section" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+                            <button onclick="renameSectionPrompt('${s}', ${i})" style="background: #ffffff; border: 1px solid rgba(217, 108, 51, 0.3); color: var(--primary); width: 32px; height: 32px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(217, 108, 51, 0.08);" title="Rename Section" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';" onmouseout="this.style.background='#ffffff'; this.style.color='var(--primary)';">
                                 <i class="fas fa-edit"></i>
                             </button>
                         </div>
                         
                         <!-- Middle: Randomize Config -->
-                        <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.1); padding: 6px 16px; border-radius: 0; border: 1px solid rgba(255,255,255,0.1);">
-                            <label style="font-size:0.8rem; font-weight:700; color:white; display:flex; align-items:center; gap:8px; cursor:pointer; margin:0; letter-spacing: 0.5px;">
+                        <div style="display: flex; align-items: center; gap: 15px; background: #ffffff; padding: 8px 16px; border-radius: 6px; border: 1px solid rgba(217, 108, 51, 0.25); box-shadow: 0 2px 6px rgba(217, 108, 51, 0.05);">
+                            <label style="font-size:0.8rem; font-weight:700; color:#A03E12; display:flex; align-items:center; gap:8px; cursor:pointer; margin:0; letter-spacing: 0.5px; font-family: 'Montserrat', sans-serif;">
                                 <input type="checkbox" id="randEnabled_${i}" ${(exams.pools && exams.pools[s] && exams.pools[s].enabled) || exams.hasMultipleSets ? 'checked' : ''} 
                                     ${exams.hasMultipleSets ? 'disabled' : ''}
-                                    onchange="toggleRandomization('${s}', this.checked, ${i})" style="width:16px; height:16px; cursor:pointer;">
+                                    onchange="toggleRandomization('${s}', this.checked, ${i})" style="width:16px; height:16px; accent-color: var(--primary); cursor:pointer;">
                                 RANDOMIZE
                             </label>
                             
-                            <div id="randConfig_${i}" style="display:${(exams.pools && exams.pools[s] && exams.pools[s].enabled) || exams.hasMultipleSets ? 'flex' : 'none'}; align-items:center; gap:12px; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.2);">
+                            <div id="randConfig_${i}" style="display:${(exams.pools && exams.pools[s] && exams.pools[s].enabled) || exams.hasMultipleSets ? 'flex' : 'none'}; align-items:center; gap:12px; padding-left: 15px; border-left: 1px solid rgba(217, 108, 51, 0.2);">
                                 <div style="display:flex; align-items:center; gap:6px;">
-                                    <span style="font-size:0.75rem; font-weight:700; opacity: 0.9;">POOL:</span>
+                                    <span style="font-size:0.75rem; font-weight:700; color:#A03E12; font-family: 'Montserrat', sans-serif;">POOL:</span>
                                     <input type="number" value="${(exams.pools && exams.pools[s] && exams.pools[s].totalGoal) || 0}" 
-                                        style="width:40px; height:24px; border-radius:4px; border:none; font-weight:800; text-align:center; color:#cf8469; background:#fff; font-size: 0.8rem; outline: none;" 
+                                        style="width:48px; height:26px; border-radius:4px; border: 1px solid rgba(217, 108, 51, 0.3); font-weight:800; text-align:center; color:#DE5B2B; background:#FFF5F0; font-size: 0.85rem; outline: none; font-family: 'Montserrat', sans-serif;" 
                                         onchange="updatePoolMeta('${s}', 'totalGoal', this.value)">
                                 </div>
                                 <div style="display:flex; align-items:center; gap:6px;">
-                                    <span style="font-size:0.75rem; font-weight:700; opacity: 0.9;">PICK:</span>
+                                    <span style="font-size:0.75rem; font-weight:700; color:#A03E12; font-family: 'Montserrat', sans-serif;">PICK:</span>
                                     <input type="number" value="${(exams.pools && exams.pools[s] && (exams.pools[s].pickCount !== undefined ? exams.pools[s].pickCount : exams.pools[s])) || 0}" 
-                                        style="width:40px; height:24px; border-radius:4px; border:none; font-weight:800; text-align:center; color:#cf8469; background:#fff; font-size: 0.8rem; outline: none;" 
+                                        style="width:48px; height:26px; border-radius:4px; border: 1px solid rgba(217, 108, 51, 0.3); font-weight:800; text-align:center; color:#DE5B2B; background:#FFF5F0; font-size: 0.85rem; outline: none; font-family: 'Montserrat', sans-serif;" 
                                         onchange="updatePoolMeta('${s}', 'pickCount', this.value)">
                                 </div>
                             </div>
                         </div>
 
                         <!-- Right: Actions & Expand -->
-                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end;">
-                            <button onclick="duplicateSection(${i})" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; width: 36px; height: 36px; border-radius: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Duplicate Section" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+                        <div style="display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end;">
+                            <button onclick="duplicateSection(${i})" style="background: #ffffff; border: 1px solid rgba(217, 108, 51, 0.3); color: var(--primary); width: 36px; height: 36px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(217, 108, 51, 0.08);" title="Duplicate Section" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';" onmouseout="this.style.background='#ffffff'; this.style.color='var(--primary)';">
                                 <i class="far fa-copy"></i>
                             </button>
                             ${exams.sections.length > 1 ? `
-                                <button onclick="removeSection(${i})" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; width: 36px; height: 36px; border-radius: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Remove Section" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+                                <button onclick="removeSection(${i})" style="background: #ffffff; border: 1px solid rgba(240, 68, 56, 0.3); color: #F04438; width: 36px; height: 36px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(240, 68, 56, 0.08);" title="Remove Section" onmouseover="this.style.background='#F04438'; this.style.color='#fff';" onmouseout="this.style.background='#ffffff'; this.style.color='#F04438';">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             ` : ''}
                             
-                            <div onclick="toggleSectionActions(${i})" style="cursor: pointer; display: flex; align-items: center; gap: 10px; margin-left: 10px; padding: 8px 16px; background: rgba(0,0,0,0.15); border-radius: 0; border: 1px solid rgba(0,0,0,0.1); transition: all 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.25)'" onmouseout="this.style.background='rgba(0,0,0,0.15)'">
-                                <span style="font-size: 0.95rem; font-weight: 600;">${secQuestions.length}/${totalGoal > 0 ? totalGoal : secQuestions.length} Questions</span>
-                                <i class="fas fa-chevron-down" id="secActionIcon_${i}" style="transition: transform 0.3s ease;"></i>
+                            <div onclick="toggleSectionActions(${i})" style="cursor: pointer; display: flex; align-items: center; gap: 10px; margin-left: 6px; padding: 8px 16px; background: #ffffff; border-radius: 6px; border: 1px solid rgba(217, 108, 51, 0.35); color: #A03E12; transition: all 0.2s; box-shadow: 0 2px 6px rgba(217, 108, 51, 0.06);" onmouseover="this.style.borderColor='var(--primary)'; this.style.background='#FFF5F0';" onmouseout="this.style.borderColor='rgba(217, 108, 51, 0.35)'; this.style.background='#ffffff';">
+                                <span style="font-size: 0.9rem; font-weight: 700; font-family: 'Montserrat', sans-serif;">${secQuestions.length}/${totalGoal > 0 ? totalGoal : secQuestions.length} Questions</span>
+                                <i class="fas fa-chevron-down" id="secActionIcon_${i}" style="color: var(--primary); font-size: 0.8rem; transition: transform 0.3s ease;"></i>
                             </div>
                         </div>
                     </div>
@@ -7130,11 +7824,29 @@
         let subjectiveCount = 0;
         let objectiveCount = 0;
 
+        const sections = exams.sections && exams.sections.length > 0 ? exams.sections : ['General'];
+        const secMap = {};
         exams.questions.forEach(q => {
-            totalMarks += parseInt(q.marks || 0);
+            const s = q.section || 'General';
+            if (!secMap[s]) secMap[s] = [];
+            secMap[s].push(q);
             if (q.type === 'coding') codingCount++;
             else if (q.type === 'subjective') subjectiveCount++;
             else objectiveCount++;
+        });
+
+        // Calculate total marks considering randomized section pools
+        sections.forEach(s => {
+            const secQuestions = secMap[s] || [];
+            const poolConfig = exams.pools && exams.pools[s];
+            const poolEnabled = poolConfig && (poolConfig.enabled === true || poolConfig.enabled === 'true');
+            const pickCount = poolEnabled ? parseInt(poolConfig.pickCount || 0) : 0;
+            if (poolEnabled && pickCount > 0 && pickCount < secQuestions.length) {
+                const avgMark = secQuestions.reduce((sum, q) => sum + parseInt(q.marks || 0), 0) / (secQuestions.length || 1);
+                totalMarks += Math.round(avgMark * pickCount);
+            } else {
+                totalMarks += secQuestions.reduce((sum, q) => sum + parseInt(q.marks || 0), 0);
+            }
         });
 
         const statsEl = document.getElementById('examStatsSummary');
@@ -7890,6 +8602,17 @@
             return;
         }
 
+        // Check if account security passcode is enabled
+        const secConfig = getCreatorSecurityConfig();
+        if (secConfig && secConfig.enabled && secConfig.password) {
+            openCreatorSecurityPromptModal();
+            return;
+        }
+
+        executePublishExam();
+    }
+
+    function executePublishExam() {
         showProcessing();
         setTimeout(() => {
             try {
@@ -8955,21 +9678,58 @@
         });
     }
 
-    function showToast(msg) {
-        const toast = document.createElement('div');
-        toast.style.position = 'fixed';
-        toast.style.bottom = '80px';
-        toast.style.right = '40px';
-        toast.style.background = '#333';
-        toast.style.color = '#fff';
-        toast.style.padding = '12px 24px';
-        toast.style.borderRadius = '8px';
-        toast.style.fontFamily = 'Inter';
-        toast.style.fontSize = '0.9rem';
-        toast.style.zIndex = '11000';
-        toast.textContent = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+    function showToast(msg, type = 'info') {
+        const existing = document.getElementById('highFidelityBanner') || document.getElementById('examCreatorToast');
+        if (existing) existing.remove();
+
+        const banner = document.createElement('div');
+        banner.id = 'examCreatorToast';
+
+        let bg, color, shadow;
+        const lowerMsg = (msg || '').toLowerCase();
+        if (type === 'success' || lowerMsg.includes('success') || lowerMsg.includes('saved') || lowerMsg.includes('created') || lowerMsg.includes('downloaded') || lowerMsg.includes('synchronized') || lowerMsg.includes('synced') || lowerMsg.includes('cloned') || lowerMsg.includes('duplicated') || lowerMsg.includes('inserted') || lowerMsg.includes('added')) {
+            bg = '#dcfce7'; color = '#166534'; shadow = '0 10px 25px rgba(22, 101, 52, 0.1)';
+        } else if (type === 'warning' || lowerMsg.includes('warning') || lowerMsg.includes('caution')) {
+            bg = '#FEF3C7'; color = '#92400E'; shadow = '0 10px 25px rgba(146, 64, 14, 0.1)';
+        } else if (type === 'error' || lowerMsg.includes('error') || lowerMsg.includes('cannot') || lowerMsg.includes('failed') || lowerMsg.includes('required') || lowerMsg.includes('invalid') || lowerMsg.includes('strictly') || lowerMsg.includes('empty') || lowerMsg.includes('missing') || lowerMsg.includes('select') || lowerMsg.includes('at least')) {
+            bg = '#fee2e2'; color = '#991b1b'; shadow = '0 10px 25px rgba(153, 27, 27, 0.1)';
+        } else {
+            bg = '#EFF8FF'; color = '#175CD3'; shadow = '0 10px 25px rgba(23, 92, 211, 0.1)';
+        }
+
+        banner.style = `
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${bg};
+            color: ${color};
+            padding: 14px 44px;
+            border-radius: 0 0 12px 12px;
+            font-family: 'Hind', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 500;
+            text-align: center;
+            z-index: 1000000;
+            box-shadow: ${shadow};
+            border: none;
+            outline: none;
+            animation: bannerSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            line-height: 1.4;
+            min-width: 440px;
+            max-width: 94vw;
+            pointer-events: auto;
+        `;
+
+        banner.innerHTML = msg || `Notification`;
+        document.body.appendChild(banner);
+
+        setTimeout(() => {
+            if (banner && banner.parentElement) {
+                banner.style.animation = 'bannerSlideUp 0.35s ease-in forwards';
+                setTimeout(() => banner.remove(), 350);
+            }
+        }, 3000);
     }
 
     function createNewExam() {
@@ -9717,43 +10477,480 @@
         });
     };
 
-    function applyCreatorWatermark() {
+    /* =========================================================
+       EXAM CREATOR SETTINGS, THEME & SECURITY ENGINE
+       ========================================================= */
+
+    let currentSelectedBg = 'default';
+    let currentSelectedFont = 'Mulish';
+
+    function getTeacherAccountIdentifier() {
         try {
-            const user = auth.getCurrentUser();
-            if (!user) return;
-            const enrollmentId = user.rollNo || user.email || user.id;
-            const safeRoll = (enrollmentId || '').toString().replace(/[^a-zA-Z0-9-@.]/g, '');
-            if (!safeRoll) return;
+            if (typeof auth !== 'undefined' && auth && auth.getCurrentUser) {
+                const user = auth.getCurrentUser();
+                if (user) return (user.id || user.email || user.rollNo || 'teacher_default').toString();
+            }
+        } catch (e) {}
+        return 'teacher_default';
+    }
+
+    function getCreatorSettings() {
+        const accId = getTeacherAccountIdentifier();
+        const stored = localStorage.getItem('TESTPAD_creator_settings_' + accId);
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed && typeof parsed === 'object') {
+                    return {
+                        background: parsed.background || 'default',
+                        font: parsed.font || 'Mulish',
+                        security: {
+                            enabled: !!(parsed.security && parsed.security.enabled),
+                            password: (parsed.security && parsed.security.password) || ''
+                        }
+                    };
+                }
+            } catch (e) {}
+        }
+        return {
+            background: 'default',
+            font: 'Mulish',
+            security: {
+                enabled: false,
+                password: ''
+            }
+        };
+    }
+
+    function saveCreatorSettings(settings) {
+        const accId = getTeacherAccountIdentifier();
+        localStorage.setItem('TESTPAD_creator_settings_' + accId, JSON.stringify(settings));
+        localStorage.setItem('TESTPAD_creator_bg_' + accId, settings.background);
+        localStorage.setItem('TESTPAD_creator_font_' + accId, settings.font);
+        localStorage.setItem('TESTPAD_creator_security_' + accId, JSON.stringify(settings.security));
+    }
+
+    function getCreatorSecurityConfig() {
+        const settings = getCreatorSettings();
+        return settings.security || { enabled: false, password: '' };
+    }
+
+    function getCreatorWatermarkUrl() {
+        try {
+            let identifier = 'EXAMPAD';
+            if (typeof auth !== 'undefined' && auth && auth.getCurrentUser) {
+                const user = auth.getCurrentUser();
+                if (user) {
+                    identifier = user.rollNo || user.name || user.email || user.id || 'EXAMPAD';
+                }
+            }
+            const safeRoll = identifier.toString().replace(/[^a-zA-Z0-9-@. ]/g, '').trim() || 'EXAMPAD';
 
             const svg = `
             <svg xmlns="http://www.w3.org/2000/svg" width="280" height="180">
-                <text x="50%" y="50%" transform="rotate(-30 140 90)" fill="rgba(222, 91, 43, 0.15)" font-size="26" font-family="Arial, sans-serif" font-weight="500" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">
+                <text x="50%" y="50%" transform="rotate(-30 140 90)" fill="rgba(222, 91, 43, 0.12)" font-size="26" font-family="Arial, sans-serif" font-weight="600" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">
                     ${safeRoll}
                 </text>
             </svg>`;
 
             const encoded = btoa(svg);
-            const dataUrl = `url('data:image/svg+xml;base64,${encoded}')`;
+            return `url('data:image/svg+xml;base64,${encoded}')`;
+        } catch (e) {
+            return '';
+        }
+    }
 
-            let style = document.getElementById('creatorWatermarkStyle');
-            if (!style) {
-                style = document.createElement('style');
-                style.id = 'creatorWatermarkStyle';
-                document.head.appendChild(style);
-            }
+    function applyCreatorBackground(bgType) {
+        const secBg = document.getElementById('globalSecurityBg');
+        let style = document.getElementById('creatorBackgroundStyle');
+        if (!style) {
+            style = document.createElement('style');
+            style.id = 'creatorBackgroundStyle';
+            document.head.appendChild(style);
+        }
 
+        // Clean up legacy watermark style to prevent image collision
+        const oldWm = document.getElementById('creatorWatermarkStyle');
+        if (oldWm) oldWm.remove();
+
+        const dataUrl = getCreatorWatermarkUrl();
+
+        if (bgType === 'white') {
+            if (secBg) secBg.style.setProperty('display', 'none', 'important');
             style.innerHTML = `
-                body, .wizard-container, .workspace, .step, .pane-left, .pane-right, .form-card, #creatorDashboardView, .dashboard-table-wrap {
+                html, body {
+                    background: #ffffff !important;
+                    background-color: #ffffff !important;
                     background-image: ${dataUrl} !important;
                     background-repeat: repeat !important;
                     background-attachment: fixed !important;
                 }
+                .workspace, .wizard-container, .wizard-step, .form-card, #creatorDashboardView, .dashboard-table-wrap, .split-builder, .builder-left, .builder-right, .designer-sidebar, .sidebar, .split-resizer {
+                    background: transparent !important;
+                    background-color: transparent !important;
+                }
+                .security-bg-container {
+                    display: none !important;
+                }
             `;
+        } else if (bgType === 'bgnew01') {
+            if (secBg) secBg.style.setProperty('display', 'none', 'important');
+            style.innerHTML = `
+                html, body {
+                    background-color: #f8fafc !important;
+                    background-image: ${dataUrl ? `${dataUrl}, ` : ''}url('../BGNEW01.png') !important;
+                    background-size: ${dataUrl ? '280px 180px, cover' : 'cover'} !important;
+                    background-repeat: ${dataUrl ? 'repeat, no-repeat' : 'no-repeat'} !important;
+                    background-position: center, center !important;
+                    background-attachment: fixed, fixed !important;
+                }
+                .workspace, .wizard-container, .wizard-step, .form-card, #creatorDashboardView, .dashboard-table-wrap, .split-builder, .builder-left, .builder-right, .designer-sidebar, .sidebar, .split-resizer {
+                    background: transparent !important;
+                    background-color: transparent !important;
+                }
+                .security-bg-container {
+                    display: none !important;
+                }
+            `;
+        } else {
+            // Default Orange Theme
+            if (secBg) secBg.style.removeProperty('display');
+            style.innerHTML = `
+                html, body {
+                    background-color: #fdfaf8 !important;
+                    background-image: ${dataUrl} !important;
+                    background-repeat: repeat !important;
+                    background-attachment: fixed !important;
+                }
+                .workspace, .wizard-container, .wizard-step, .form-card, #creatorDashboardView, .dashboard-table-wrap, .split-builder, .builder-left, .builder-right, .designer-sidebar, .sidebar, .split-resizer {
+                    background: transparent !important;
+                    background-color: transparent !important;
+                }
+                .security-bg-container {
+                    display: block !important;
+                }
+            `;
+        }
+    }
+
+    function applyCreatorFont(fontName) {
+        let fontCss = "'Mulish', sans-serif";
+        if (fontName === 'Arial') {
+            fontCss = "Arial, Helvetica, sans-serif";
+        } else if (fontName === 'Hind') {
+            fontCss = "'Hind', sans-serif";
+        } else {
+            fontCss = "'Mulish', sans-serif";
+        }
+
+        let style = document.getElementById('creatorFontStyle');
+        if (!style) {
+            style = document.createElement('style');
+            style.id = 'creatorFontStyle';
+            document.head.appendChild(style);
+        }
+
+        style.innerHTML = `
+            :root {
+                --app-font-family: ${fontCss};
+            }
+            body, html, .wizard-container, .workspace, .form-card, .section-title, .label, 
+            input:not([type="color"]):not([type="range"]):not(.ace_text-input), 
+            select, textarea, button, .btn, .step-indicator, .profile-name, .profile-role, 
+            .menu-item, table, td, th, h1, h2, h3, h4, h5, p, span, div:not(.stb-icon-btn):not(.ql-syntax) {
+                font-family: ${fontCss} !important;
+            }
+            .fas, .far, .fal, .fab, .fa {
+                font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "FontAwesome" !important;
+            }
+            .fab {
+                font-family: "Font Awesome 6 Brands", "Font Awesome 5 Brands" !important;
+            }
+            code, pre, .ql-syntax, .monaco-editor, .ace_editor, .monaco-editor * {
+                font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+            }
+            .settings-modal-card, #creatorSettingsModalOverlay, #creatorSecurityPromptModal,
+            .settings-modal-card * , #creatorSecurityPromptModal * {
+                font-family: 'Mulish', sans-serif !important;
+            }
+        `;
+    }
+
+    function openCreatorSettingsModal() {
+        const overlay = document.getElementById('creatorSettingsModalOverlay');
+        if (!overlay) {
+            console.error("creatorSettingsModalOverlay element not found!");
+            return;
+        }
+        
+        try {
+            const settings = getCreatorSettings();
+            currentSelectedBg = settings.background || 'default';
+            currentSelectedFont = settings.font || 'Mulish';
+
+            selectBgOption(currentSelectedBg, false);
+            selectFontOption(currentSelectedFont, false);
+
+            const secCheckbox = document.getElementById('creatorSecurityCheckbox');
+            const secPass = document.getElementById('creatorSecurityPass');
+            const secConfirm = document.getElementById('creatorSecurityConfirmPass');
+
+            if (secCheckbox) {
+                secCheckbox.checked = !!(settings.security && settings.security.enabled);
+                toggleSecurityInputs(secCheckbox.checked);
+            }
+            if (secPass) secPass.value = (settings.security && settings.security.password) || '';
+            if (secConfirm) secConfirm.value = (settings.security && settings.security.password) || '';
+
+            validateSecurityPasswordRules();
+        } catch (e) {
+            console.error("Error setting up creator settings modal:", e);
+        }
+
+        overlay.style.setProperty('display', 'flex', 'important');
+        overlay.style.opacity = '1';
+        overlay.style.visibility = 'visible';
+    }
+
+    function closeCreatorSettingsModal() {
+        const overlay = document.getElementById('creatorSettingsModalOverlay');
+        if (overlay) {
+            overlay.style.setProperty('display', 'none', 'important');
+        }
+    }
+
+    function selectBgOption(bgType, liveApply = true) {
+        currentSelectedBg = bgType;
+        document.querySelectorAll('.bg-option-card').forEach(card => card.classList.remove('active'));
+        
+        if (bgType === 'white') {
+            document.getElementById('bgOptWhite')?.classList.add('active');
+        } else if (bgType === 'bgnew01') {
+            document.getElementById('bgOptBgnew')?.classList.add('active');
+        } else {
+            document.getElementById('bgOptDefault')?.classList.add('active');
+        }
+
+        if (liveApply) {
+            applyCreatorBackground(bgType);
+        }
+    }
+
+    function selectFontOption(fontName, liveApply = true) {
+        currentSelectedFont = fontName;
+        document.querySelectorAll('.font-option-card').forEach(card => card.classList.remove('active'));
+
+        if (fontName === 'Arial') {
+            document.getElementById('fontOptArial')?.classList.add('active');
+        } else if (fontName === 'Hind') {
+            document.getElementById('fontOptHind')?.classList.add('active');
+        } else {
+            document.getElementById('fontOptMulish')?.classList.add('active');
+        }
+
+        if (liveApply) {
+            applyCreatorFont(fontName);
+        }
+    }
+
+    function toggleSecurityInputs(checked) {
+        const container = document.getElementById('securityInputsContainer');
+        if (container) {
+            container.style.display = checked ? 'block' : 'none';
+        }
+        if (checked) {
+            validateSecurityPasswordRules();
+        }
+    }
+
+    function togglePassVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        if (!input) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (icon) {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        } else {
+            input.type = 'password';
+            if (icon) {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    }
+
+    function validateSecurityPasswordRules() {
+        const pass = document.getElementById('creatorSecurityPass')?.value || '';
+        const confirm = document.getElementById('creatorSecurityConfirmPass')?.value || '';
+
+        const hasLength = pass.length >= 8;
+        const hasLetter = /[a-zA-Z]/.test(pass);
+        const hasNumber = /[0-9]/.test(pass);
+        const hasSymbol = /[^a-zA-Z0-9]/.test(pass);
+        const isMatch = pass.length > 0 && pass === confirm;
+
+        updateRuleBadge('ruleLength', hasLength, 'Min 8 characters');
+        updateRuleBadge('ruleLetter', hasLetter, 'Letters (a-z, A-Z)');
+        updateRuleBadge('ruleNumber', hasNumber, 'Numbers (0-9)');
+        updateRuleBadge('ruleSymbol', hasSymbol, 'Special symbol (!@#$%^&*)');
+        updateRuleBadge('ruleMatch', isMatch, 'Passwords match');
+
+        return hasLength && hasLetter && hasNumber && hasSymbol && isMatch;
+    }
+
+    function updateRuleBadge(elId, isPassed, text) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        if (isPassed) {
+            el.style.color = '#16a34a';
+            el.innerHTML = `<i class="fas fa-check-circle" style="color: #16a34a;"></i> ${text}`;
+        } else {
+            el.style.color = '#94a3b8';
+            el.innerHTML = `<i class="fas fa-times-circle" style="color: #94a3b8;"></i> ${text}`;
+        }
+    }
+
+    function saveAndApplyCreatorPreferences() {
+        const secCheckbox = document.getElementById('creatorSecurityCheckbox');
+        const isSecurityEnabled = secCheckbox ? secCheckbox.checked : false;
+        let password = '';
+
+        if (isSecurityEnabled) {
+            const pass = document.getElementById('creatorSecurityPass')?.value || '';
+            const confirm = document.getElementById('creatorSecurityConfirmPass')?.value || '';
+
+            if (pass.length < 8) {
+                showToast('Security password must be at least 8 characters long.', 'error');
+                return;
+            }
+            if (!/[a-zA-Z]/.test(pass)) {
+                showToast('Security password must contain letters.', 'error');
+                return;
+            }
+            if (!/[0-9]/.test(pass)) {
+                showToast('Security password must contain numbers.', 'error');
+                return;
+            }
+            if (!/[^a-zA-Z0-9]/.test(pass)) {
+                showToast('Security password must contain at least one special symbol.', 'error');
+                return;
+            }
+            if (pass !== confirm) {
+                showToast('Security passwords do not match.', 'error');
+                return;
+            }
+            password = pass;
+        }
+
+        const settings = {
+            background: currentSelectedBg || 'default',
+            font: currentSelectedFont || 'Mulish',
+            security: {
+                enabled: isSecurityEnabled,
+                password: password
+            }
+        };
+
+        saveCreatorSettings(settings);
+        applyCreatorBackground(settings.background);
+        applyCreatorFont(settings.font);
+
+        closeCreatorSettingsModal();
+        showToast('Settings saved and applied successfully for this account!', 'success');
+    }
+
+    function loadCreatorPreferences() {
+        const settings = getCreatorSettings();
+        applyCreatorBackground(settings.background || 'default');
+        applyCreatorFont(settings.font || 'Mulish');
+    }
+
+    /* STEP 5 SECURITY PROMPT VERIFICATION */
+    function openCreatorSecurityPromptModal() {
+        const modal = document.getElementById('creatorSecurityPromptModal');
+        const input = document.getElementById('creatorPromptPasscode');
+        const errEl = document.getElementById('promptPassError');
+        if (input) {
+            input.value = '';
+            input.style.borderColor = '#cbd5e1';
+        }
+        if (errEl) errEl.style.display = 'none';
+        if (modal) modal.style.display = 'flex';
+        setTimeout(() => input?.focus(), 100);
+    }
+
+    function closeCreatorSecurityPromptModal() {
+        const modal = document.getElementById('creatorSecurityPromptModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function verifyAndExecutePublish() {
+        const input = document.getElementById('creatorPromptPasscode');
+        const errEl = document.getElementById('promptPassError');
+        const enteredPass = input ? input.value : '';
+        const secConfig = getCreatorSecurityConfig();
+
+        if (enteredPass && enteredPass === secConfig.password) {
+            if (errEl) errEl.style.display = 'none';
+            closeCreatorSecurityPromptModal();
+            showToast('Security authorization confirmed!', 'success');
+            executePublishExam();
+        } else {
+            if (errEl) errEl.style.display = 'block';
+            if (input) {
+                input.style.borderColor = '#ef4444';
+                input.focus();
+                input.select();
+            }
+            showToast('Authorization Failed: Incorrect security passcode', 'error');
+        }
+    }
+
+    function applyCreatorWatermark() {
+        try {
+            const settings = getCreatorSettings();
+            applyCreatorBackground(settings.background || 'default');
         } catch (e) {
             console.error('Watermark error:', e);
         }
     }
 
+    window.openCreatorSettingsModal = openCreatorSettingsModal;
+    window.closeCreatorSettingsModal = closeCreatorSettingsModal;
+    window.selectBgOption = selectBgOption;
+    window.selectFontOption = selectFontOption;
+    window.toggleSecurityInputs = toggleSecurityInputs;
+    window.togglePassVisibility = togglePassVisibility;
+    window.validateSecurityPasswordRules = validateSecurityPasswordRules;
+    window.saveAndApplyCreatorPreferences = saveAndApplyCreatorPreferences;
+    window.loadCreatorPreferences = loadCreatorPreferences;
+    window.openCreatorSecurityPromptModal = openCreatorSecurityPromptModal;
+    window.closeCreatorSecurityPromptModal = closeCreatorSecurityPromptModal;
+    window.verifyAndExecutePublish = verifyAndExecutePublish;
+
+    // Ensure direct DOM binding
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('creatorSettingsHeaderBtn');
+        if (btn) {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openCreatorSettingsModal();
+            };
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeCreatorSettingsModal();
+            closeCreatorSecurityPromptModal();
+        }
+    });
+
+    loadCreatorPreferences();
     initPage();
     startSessionTimer();
     initResizer();

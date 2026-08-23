@@ -7,7 +7,7 @@
     <title>TESTPAD</title>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Hind:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Mulish:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Changa+One&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Hind:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Mulish:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -72,11 +72,11 @@
 
         .tri-orange-line {
             display: flex;
-            height: 8px !important;
-            width: 290px !important;
+            height: 7px !important;
+            width: 340px !important;
             border-radius: 0px;
             overflow: hidden;
-            margin: 12px 0 24px 0;
+            margin: 4px 0 16px 0;
         }
 
         .tri-orange-line div:nth-child(1) {
@@ -557,7 +557,7 @@
         }
 
         .custom-dropdown.open .dropdown-menu {
-            display: block;
+            display: block !important;
         }
 
         .custom-dropdown.open #langCaret {
@@ -845,8 +845,17 @@
             z-index: 90;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .course-sidebar .sidebar-list {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .course-sidebar.open {
@@ -862,8 +871,8 @@
         }
 
         .pane-question {
-            width: 40%;
-            min-width: 300px;
+            width: 46%;
+            min-width: 320px;
             display: flex;
             flex-direction: column;
             background: #fff !important;
@@ -882,29 +891,27 @@
         }
 
         .split-resizer {
-            width: 10px;
-            background: #fafafa;
+            width: 5px;
+            background: #d4d4d8;
             cursor: col-resize;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-left: 1px solid #eee;
-            border-right: 1px solid #eee;
+            position: relative;
+            z-index: 10;
+            transition: background 0.15s;
         }
 
-        .split-resizer::after {
-            content: "⋮";
-            color: #ccc;
-            font-size: 20px;
+        .split-resizer:hover {
+            background: #a1a1aa;
         }
 
         /* HIGH-FIDELITY QUESTION PANE CLONE */
         .q-tabs {
             display: flex;
-            background: #ffffff !important;
-            border-bottom: 2px solid #EAECF0;
-            height: 44px;
-            padding: 0;
+            align-items: stretch;
+            background: #fafafa !important;
+            border-bottom: 1px solid #e5e7eb;
+            height: 48px;
+            padding: 0 0 0 20px;
+            margin: 0;
             flex-shrink: 0;
         }
 
@@ -913,42 +920,53 @@
             height: 100%;
             display: flex;
             align-items: center;
+            justify-content: center;
             font-size: 1.25rem;
-            font-weight: 500;
+            font-weight: 300;
             color: #667085;
             cursor: pointer;
             position: relative;
-            background: #ffffff !important;
-            font-family: 'Hind', sans-serif;
-            transition: all 0.2s;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            border-radius: 0px !important;
+            font-family: 'Roboto', sans-serif !important;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .q-tab:hover {
+            color: #101828;
         }
 
         .q-tab.active {
-            color: #101828;
-            background: #fff !important;
-            border-right: none;
-            font-weight: 600;
+            color: #101828 !important;
+            background: #ffffff !important;
+            font-weight: 500;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
         }
 
         .q-tab.active::after {
             content: '';
             position: absolute;
             bottom: 0px;
-            left: 15px;
-            right: 15px;
-            height: 4px;
-            background: var(--primary);
-            border-radius: 2px;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            background: #DE6834;
+            border-radius: 0px;
             z-index: 10;
         }
 
         .q-body {
-            padding: 32px 40px;
+            padding: 0;
+            padding-left: 24px;
             flex: 1;
-            overflow-y: auto;
-            background: #fff;
+            overflow-y: visible;
+            background: transparent;
             font-family: 'Hind', sans-serif !important;
-            font-size: 1.40rem !important;
+            font-size: 1.50rem !important;
             font-weight: 400 !important;
             line-height: 1.6 !important;
             color: #343a40 !important;
@@ -974,22 +992,22 @@
         }
 
         .q-body p {
-            margin: 0 0 1.2rem 0;
+            margin: 0 0 0.5rem 0;
             padding: 0;
-            line-height: inherit;
+            line-height: 1.45;
             font-weight: 400 !important;
         }
 
         .q-body ol,
         .q-body ul {
             padding-left: 2rem !important;
-            margin-bottom: 1.2rem !important;
+            margin-bottom: 0.6rem !important;
             list-style-position: outside !important;
         }
 
         .q-body li {
-            margin-bottom: 0.75rem !important;
-            line-height: inherit !important;
+            margin-bottom: 0.4rem !important;
+            line-height: 1.45 !important;
             padding-left: 0.5rem !important;
         }
 
@@ -1005,9 +1023,9 @@
         }
 
         .prob-title {
-            font-family: 'Hind', sans-serif !important;
-            font-size: 34px !important;
-            font-weight: 600 !important;
+            font-family: 'Mulish', sans-serif !important;
+            font-size: 28px !important;
+            font-weight: 700 !important;
             color: #111111 !important;
             letter-spacing: 0px !important;
             line-height: 1.3 !important;
@@ -1018,17 +1036,134 @@
         }
 
         .hindi-font-readability,
-        .hindi-font-readability *:not(pre):not(code):not(.CodeMirror):not(.CodeMirror *):not(.ql-syntax):not(.tut-output-area):not(.tut-output-area *) {
+        .hindi-font-readability *:not(pre):not(code):not(.ace_editor):not(.ace_editor *):not(.ace_content):not(.ace_content *):not(.ace_text-layer):not(.ace_text-layer *):not(.ace_line):not(.CodeMirror):not(.CodeMirror *):not(.ql-syntax):not(.tut-output-area):not(.tut-output-area *) {
             font-family: 'Hind', sans-serif !important;
             font-size: 22px !important;
-            line-height: 1.6 !important;
+            line-height: 1.45 !important;
             font-weight: 400 !important;
+            color: #101828 !important;
+        }
+
+        .hindi-font-readability pre,
+        .hindi-font-readability code,
+        .hindi-font-readability .ql-syntax,
+        .q-body pre,
+        .q-body .ql-syntax {
+            font-family: Consolas, 'Courier New', monospace !important;
+            background: #ebebeb !important;
+            padding: 12px 14px !important;
+            border-radius: 6px !important;
+            margin: 8px 0 8px 0 !important;
+            line-height: 1.35 !important;
+            font-size: 1.15rem !important;
+        }
+
+        .q-body pre *,
+        .hindi-font-readability pre * {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* MCQ Right Pane Interaction Styles */
+        .mcq-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            cursor: pointer;
+            padding: 2px 0;
+            user-select: none;
+            transition: all 0.15s ease;
+        }
+
+        .mcq-circle {
+            width: 26px;
+            height: 26px;
+            border-radius: 50% !important;
+            background: #FDEEE9;
+            flex-shrink: 0;
+            margin-top: 3px;
+            transition: all 0.2s ease;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mcq-option:hover .mcq-circle {
+            background: #fbd6c7;
+        }
+
+        .mcq-option.selected .mcq-circle {
+            background: #FDEEE9 !important;
+            box-shadow: none !important;
+        }
+
+        .mcq-option.selected .mcq-circle::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #DE6834;
+        }
+
+        .mcq-option .opt-val {
+            font-family: 'Hind', sans-serif !important;
+            font-size: 1.35rem !important;
+            color: #222222 !important;
+            font-weight: 400 !important;
+            line-height: 1.45 !important;
+            display: inline-block;
+        }
+
+        .mcq-clear {
+            color: #DE6834 !important;
+            font-family: 'Hind', sans-serif !important;
+            font-size: 1.25rem !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            text-decoration: none !important;
+            display: inline-block !important;
+        }
+
+        .mcq-clear:hover {
+            text-decoration: none !important;
+            opacity: 0.85;
+        }
+
+        .ace_editor {
+            font-family: Consolas, 'Courier New', monospace !important;
+            font-size: 14px !important;
+        }
+
+        /* Light Blue Selection in Suggestion Box (matching exam attempt) */
+        .ace_autocomplete {
+            font-family: Consolas, 'Courier New', monospace !important;
+            border: 1px solid #d0d5dd !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+            border-radius: 4px !important;
+            background: #ffffff !important;
+        }
+
+        .ace_autocomplete .ace_marker-layer .ace_active-line {
+            background-color: #cae3ff !important;
+            border-radius: 2px !important;
+        }
+
+        .ace_autocomplete .ace_line-hover {
+            background-color: #f0f7ff !important;
+        }
+
+        .ace_autocomplete .ace_line.ace_selected,
+        .ace_autocomplete .ace_line.ace_selected * {
+            background-color: #cae3ff !important;
             color: #101828 !important;
         }
 
         @media print {
 
             .quill-runnable-code,
+            .ace_editor,
             .CodeMirror {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
@@ -1125,8 +1260,9 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.15rem;
-            font-weight: 500;
+            font-size: 1.35rem;
+            font-weight: 350;
+            font-family: 'Hind', sans-serif;
             color: #475467;
             cursor: pointer;
             text-transform: lowercase;
@@ -1139,7 +1275,7 @@
 
         .q-nav-btn i {
             color: #DE6834;
-            font-size: 1.3rem;
+            font-size: 1.45rem;
         }
 
 
@@ -1263,9 +1399,9 @@
 
         /* Problem Content */
         .prob-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-family: 'Mulish', sans-serif !important;
+            font-size: 1.25rem;
+            font-weight: 650 !important;
             color: #222;
             margin-bottom: 24px;
         }
@@ -1716,6 +1852,31 @@
         .ace_tooltip.ace_doc-tooltip {
             display: none !important;
         }
+
+        /* HEADER ATTACHED BANNER TOAST NOTIFICATIONS (EXAM-ATTEMPT / OSM-EVALUATOR STYLE) */
+        @keyframes bannerSlideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bannerSlideUp {
+            from {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -1830,14 +1991,14 @@
         <div class="player-workspace" id="playerWorkspace">
             <!-- Left Pane: Question -->
             <div class="pane-question" id="paneQuestion" style="background: #ffffff !important;">
-                <div class="q-tabs" style="background: #ffffff !important;">
-                    <div class="q-tab active" style="background: #ffffff !important;">Question</div>
-                    <div class="q-tab" style="background: #ffffff !important;">Attempts</div>
+                <div class="q-tabs">
+                    <div class="q-tab active" id="tabQuestion" onclick="switchQTab('question')">Question</div>
+                    <div class="q-tab" id="tabAttempts" onclick="switchQTab('attempts')">Attempts</div>
                 </div>
-                <div class="q-body-wrapper"
-                    style="flex: 1; overflow-y: auto; padding: 32px 40px; background: #ffffff !important;">
+                <div class="q-body-wrapper" id="qBodyWrapper"
+                    style="flex: 1; overflow-y: auto; padding: 24px 44px 32px 44px; background: #ffffff !important;">
                     <div
-                        style="display: flex; justify-content: flex-start; align-items: center; gap: 16px; margin-bottom: 8px;">
+                        style="display: flex; justify-content: flex-start; align-items: center; gap: 16px; margin-bottom: 2px;">
                         <h2 class="prob-title" id="qTitle" style="margin: 0; line-height: 1.2;">
                             Problem Statement</h2>
                         <i class="far fa-bookmark" id="qBookmarkBtn" onclick="toggleBookState()"
@@ -1861,7 +2022,7 @@
                     <div class="q-nav-btn" onclick="prevLesson()">
                         <i class="fas fa-caret-left"></i> previous
                     </div>
-                    <div style="color:#DE6834; font-weight:500; font-size:1.15rem; cursor:pointer;"
+                    <div style="color:#DE6834; font-weight:400; font-size:1.35rem; font-family:'Hind', sans-serif; cursor:pointer;"
                         onclick="toggleReportModal()">Report a problem</div>
                     <div class="q-nav-btn" onclick="nextLesson()">
                         next <i class="fas fa-caret-right"></i>
@@ -1882,37 +2043,17 @@
                             <div id="customLanguageSelector" class="custom-dropdown"
                                 style="position: relative; margin: 4px 0;">
                                 <div class="dropdown-trigger" onclick="toggleLanguageDropdown(event)"
-                                    style="display: flex; align-items: center; gap: 12px; border: 1.5px solid #DE5B2B; border-radius: 4px; padding: 7px 14px; cursor: pointer; background: #FFF; min-width: 140px; justify-content: space-between;">
+                                    style="display: flex; align-items: center; gap: 14px; border: 1px solid #D0D5DD; border-radius: 4px; padding: 4px 12px; cursor: pointer; background: #FFF; min-width: 80px; justify-content: space-between;">
                                     <span id="currentLangText"
-                                        style="font-weight: 500; font-size: 15px; color: #667085; font-family: 'Hind', sans-serif;">Java</span>
+                                        style="font-weight: 500; font-size: 1.4rem; color: #101828; font-family: 'Mulish', sans-serif;">C</span>
                                     <i class="fas fa-caret-down" id="langCaret"
-                                        style="color: #475467; font-size: 13px;"></i>
+                                        style="color: #667085; font-size: 1.05rem;"></i>
                                 </div>
                                 <div class="dropdown-menu" id="langDropdownMenu"
-                                    style="position: absolute; top: calc(100% + 6px); left: 0; background: #fff; border-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; z-index: 99999; min-width: 160px; overflow: hidden; border: 1px solid var(--border);">
-                                    <div class="dropdown-item" onclick="selectLanguage('java', 'Java')"
-                                        style="padding: 12px 20px; font-size: 15px; cursor: pointer; font-family: 'Hind', sans-serif; color: #101828; transition: background 0.15s;"
-                                        onmouseover="this.style.background='#FFF4ED'"
-                                        onmouseout="this.style.background='#fff'">Java</div>
-                                    <div class="dropdown-item" onclick="selectLanguage('cpp', 'C++')"
-                                        style="padding: 12px 20px; font-size: 15px; cursor: pointer; font-family: 'Hind', sans-serif; color: #101828; transition: background 0.15s;"
-                                        onmouseover="this.style.background='#FFF4ED'"
-                                        onmouseout="this.style.background='#fff'">C++</div>
-                                    <div class="dropdown-item" onclick="selectLanguage('c', 'C')"
-                                        style="padding: 12px 20px; font-size: 15px; cursor: pointer; font-family: 'Hind', sans-serif; color: #101828; transition: background 0.15s;"
-                                        onmouseover="this.style.background='#FFF4ED'"
-                                        onmouseout="this.style.background='#fff'">C</div>
-                                    <div class="dropdown-item" onclick="selectLanguage('python', 'Python')"
-                                        style="padding: 12px 20px; font-size: 15px; cursor: pointer; font-family: 'Hind', sans-serif; color: #101828; transition: background 0.15s;"
-                                        onmouseover="this.style.background='#FFF4ED'"
-                                        onmouseout="this.style.background='#fff'">Python</div>
-                                    <div class="dropdown-item" onclick="selectLanguage('js', 'JavaScript')"
-                                        style="padding: 12px 20px; font-size: 15px; cursor: pointer; font-family: 'Hind', sans-serif; color: #101828; transition: background 0.15s;"
-                                        onmouseover="this.style.background='#FFF4ED'"
-                                        onmouseout="this.style.background='#fff'">JavaScript</div>
+                                    style="position: absolute; top: calc(100% + 4px); left: 0; background: #fff; border-radius: 4px; box-shadow: 0 6px 18px rgba(0,0,0,0.12); display: none; z-index: 99999; min-width: 140px; overflow: hidden; border: 1px solid #EAECF0; padding: 4px 0;">
                                 </div>
                             </div>
-                            <input type="hidden" id="langSelector" value="java">
+                            <input type="hidden" id="langSelector" value="c">
                         </div>
                         <div style="display:flex; gap:16px; align-items:center;">
                             <i class="fas fa-expand" onclick="toggleIDEFS()"
@@ -2078,29 +2219,38 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="reportModalOverlay" onclick="if(event.target === this) toggleReportModal()">
-        <div class="report-modal">
-            <h2 class="report-title">How do you like the content?</h2>
-            <p class="report-sub">Your feedback is very essential for us to keep improving our content</p>
+    <!-- REPORT A PROBLEM FLOATING POPOVER -->
+    <div id="reportModalOverlay" onclick="if(event.target === this) toggleReportModal()"
+        style="display:none; position:fixed; inset:0; z-index:99999; background:transparent;">
+        <div class="report-modal"
+            style="position:fixed; bottom:52px; left:160px; width:440px; background:#ffffff; border-radius:8px; box-shadow:0 8px 30px rgba(0,0,0,0.14); border:1px solid #e5e7eb; padding:24px 24px 20px 24px; font-family:'Hind', sans-serif; box-sizing:border-box;">
+            <h2 class="report-title"
+                style="font-size:1.45rem; font-weight:600; color:#111827; margin:0 0 6px 0; font-family:'Hind', sans-serif; line-height:1.2;">
+                How do you like the content?</h2>
+            <p class="report-sub"
+                style="font-size:1.2rem; color:#374151; font-weight:400; line-height:1.4; margin:0 0 14px 0; font-family:'Hind', sans-serif;">
+                Your feedback is very essential for us to keep improving our content</p>
 
-            <div class="report-input-group">
-                <div style="position: relative;">
-                    <select class="report-select" id="reportType">
+            <div class="report-input-group" style="display:flex; flex-direction:column;">
+                <div style="position: relative; width: fit-content; margin-bottom: 14px;">
+                    <select class="report-select" id="reportType"
+                        style="background:#FDF4EF; border:none; border-radius:4px; padding:7px 32px 7px 14px; font-size:1.15rem; color:#6B7280; font-family:'Hind', sans-serif; cursor:pointer; outline:none; appearance:none; -webkit-appearance:none; font-weight:400;">
                         <option>Result is incorrect</option>
                         <option>Technical Issue</option>
                         <option>Design Issue</option>
                         <option>Content Error</option>
                     </select>
                     <i class="fas fa-caret-down"
-                        style="position: absolute; right: 20px; top: 18px; color: #DE6834; pointer-events: none;"></i>
+                        style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #DE6834; pointer-events: none; font-size: 0.95rem;"></i>
                 </div>
 
-                <textarea class="report-textarea" id="reportDesc"
-                    placeholder="Tell us more about the issue..."></textarea>
+                <textarea class="report-textarea" id="reportDesc" placeholder="enter issue"
+                    style="width:100%; height:95px; border:1px solid #D1D5DB; border-radius:4px; padding:10px 12px; font-size:1.25rem; font-family:'Hind', sans-serif; resize:none; outline:none; color:#111; margin-bottom:14px; box-sizing:border-box; font-weight:400;"></textarea>
             </div>
 
-            <div class="report-footer">
-                <button class="report-submit" onclick="submitReport()">submit</button>
+            <div class="report-footer" style="display:flex; justify-content:flex-end;">
+                <button class="report-submit" onclick="submitReport()"
+                    style="background:#DE6834; color:#ffffff; border:none; border-radius:6px; padding:8px 30px; font-size:1.35rem; font-weight:400; font-family:'Hind', sans-serif; cursor:pointer; line-height:1.2; transition:opacity 0.2s;">submit</button>
             </div>
         </div>
     </div>
@@ -2192,16 +2342,16 @@
                     const isSelected = (sidebarMIdx === mIdx && idx === lIdx);
                     const isDone = db.getCourseProgress(courseId, user.id)?.completedItems.includes(less.id);
                     return `
-                        <div class="sidebar-lesson-item" onclick="loadLesson(${sidebarMIdx}, ${idx})" style="padding: 16px 0; border-bottom: 1px solid #EAEAEA; cursor: pointer; position: relative;">
+                        <div class="sidebar-lesson-item" onclick="loadLesson(${sidebarMIdx}, ${idx})" style="padding: 22px 0; border-bottom: 1px solid #EAEAEA; cursor: pointer; position: relative;">
                             <div style="display: flex; align-items: center; gap: 20px;">
                                 <div style="flex: 1;">
-                                    <div style="font-size: 0.95rem; color: #888; margin-bottom: 4px; text-transform: capitalize; padding-left: 28px;">${less.type}</div>
+                                    <div style="font-size: 1.05rem; color: #888; margin-bottom: 5px; text-transform: capitalize; padding-left: 28px;">${less.type}</div>
                                     <div style="display: flex; align-items: center; gap: 14px;">
-                                        <span style="font-size: 1.25rem; color: ${isSelected ? '#DE6834' : '#333'}; font-weight: 400; width: 14px; text-align: right; display: inline-block;">${idx + 1}</span>
-                                        <span style="font-size: 1.2rem; color: ${isSelected ? '#DE6834' : '#333'}; font-weight: 400;">${less.title}</span>
+                                        <span style="font-size: 1.35rem; color: ${isSelected ? '#DE6834' : '#333'}; font-weight: 400; width: 14px; text-align: right; display: inline-block;">${idx + 1}</span>
+                                        <span style="font-size: 1.3rem; color: ${isSelected ? '#DE6834' : '#333'}; font-weight: 400;">${less.title}</span>
                                     </div>
                                 </div>
-                                ${isDone ? '<i class="fas fa-check" style="color: #555; font-size: 1.3rem; margin-right: 8px;"></i>' : ''}
+                                ${isDone ? '<i class="fas fa-check" style="color: #555; font-size: 1.65rem; margin-right: 12px;"></i>' : ''}
                             </div>
                         </div>
                     `;
@@ -2209,27 +2359,32 @@
             }
 
             sidebar.innerHTML = `
-                <div style="display: flex; flex-direction: column; height: 100%; font-family: 'Hind', sans-serif;">
+                <div style="display: flex; flex-direction: column; height: 100%; font-family: 'Hind', sans-serif; overflow: hidden;">
                     
-                    <div style="padding: 24px 20px; background: #fafafa; border-bottom: 1px solid #f0f0f0;">
-                        <div class="course-title" style="cursor: pointer; margin-bottom: 0;" onclick="location.href='./course-dashboard.html?courseId=${courseId}'" onmouseover="this.style.color='#DE5B2B'" onmouseout="this.style.color='#222'">
-                            ${courseData.title}
+                    <!-- PINNED TOP HEADER: Course Title & Module Navigation -->
+                    <div style="flex-shrink: 0; background: #fff; border-bottom: 1px solid #f0f0f0; z-index: 10;">
+                        <div style="padding: 24px 20px; background: #fafafa; border-bottom: 1px solid #f0f0f0;">
+                            <div class="course-title" style="cursor: pointer; margin-bottom: 0; font-family: 'Montserrat', sans-serif; font-weight: 500;" onclick="location.href='./course-dashboard.html?courseId=${courseId}'" onmouseover="this.style.color='#DE5B2B'" onmouseout="this.style.color='#222'">
+                                ${courseData.title}
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: #fff; min-width: 0;">
+                            <i class="fas fa-caret-left" onclick="goPrevMod()" style="color: #DE6834; cursor: pointer; font-size: 0.95rem; margin-right: 14px; flex-shrink: 0;" title="Previous Module"></i>
+                            <span style="font-family: 'Montserrat', sans-serif; font-weight: 450; color: #DE6834; font-size: 1.2rem; text-transform: none; flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;" title="${mod.title}">${mod.title}</span>
+                            <i class="fas fa-caret-right" onclick="goNextMod()" style="color: #DE6834; cursor: pointer; font-size: 0.95rem; margin-left: 14px; flex-shrink: 0;" title="Next Module"></i>
                         </div>
                     </div>
                     
-                    <div style="padding: 0 20px;">
-                        <div style="display: flex; align-items: center; margin: 16px 0; padding: 12px 0;">
-                            <i class="fas fa-caret-left" onclick="goPrevMod()" style="color: #DE6834; cursor: pointer; font-size: 1.3rem; margin-right: 12px;"></i>
-                            <span style="font-family: 'Montserrat', sans-serif; font-weight: 600; color: #DE6834; font-size: 1.25rem; text-transform: none; flex: 1; text-align: left;">${mod.title}</span>
-                            <i class="fas fa-caret-right" onclick="goNextMod()" style="color: #DE6834; cursor: pointer; font-size: 1.3rem; margin-left: 12px;"></i>
-                        </div>
-
+                    <!-- SCROLLABLE LESSONS LIST -->
+                    <div class="sidebar-lessons-scroll" style="flex: 1; overflow-y: auto; padding: 0 20px;">
                         <div class="lesson-items" style="border-top: 1px solid #f4f4f4;">
                             ${lessonsHTML}
                         </div>
                     </div>
                     
-                    <div style="margin-top: auto; padding: 24px 20px;">
+                    <!-- PINNED BOTTOM PROGRESS BAR -->
+                    <div style="flex-shrink: 0; padding: 18px 20px; border-top: 1px solid #EAEAEA; background: #fff; z-index: 10;">
                         <div id="sOverallPerc" style="text-align: center; color: #DE6834; font-weight: 500; font-size: 1.25rem; margin-bottom: 8px;">0% covered</div>
                         <div style="height: 6px; background: #FFF4ED; border-radius: 0px; overflow: hidden;">
                             <div id="sOverallFill" style="height: 100%; background: #DE6834; width: 0%; transition: width 0.5s;"></div>
@@ -2282,11 +2437,14 @@
                     el.style.color = "#111";
                 });
                 qDesc.querySelectorAll('pre, .ql-syntax').forEach(el => {
-                    el.style.fontFamily = "Consolas";
+                    el.style.fontFamily = "Consolas, 'Courier New', monospace";
                     el.style.background = "#ebebeb";
-                    el.style.padding = "16px";
-                    el.style.borderRadius = "8px";
-                    el.style.fontSize = "1.25rem";
+                    el.style.padding = "12px 14px";
+                    el.style.borderRadius = "6px";
+                    el.style.fontSize = "1.15rem";
+                    el.style.margin = "16px 0 18px 0";
+                    el.style.lineHeight = "1.35";
+                    el.innerHTML = el.innerHTML.replace(/[\r\n\s]+$/, '');
                 });
 
                 // Strip inline grey background colors from pasted text to ensure pure white
@@ -2300,8 +2458,8 @@
                     }
                 });
 
-                qDesc.style.fontSize = "1.5rem"; /* INCREASED QUESTION FONT SIZE */
-                qDesc.style.lineHeight = "1.8";
+                qDesc.style.fontSize = "1.35rem";
+                qDesc.style.lineHeight = "1.45";
             }
 
             const codingUI = document.getElementById('codingUI');
@@ -2321,8 +2479,7 @@
                 if (codingUI) codingUI.style.display = 'flex';
                 if (playerBody) playerBody.style.display = 'none';
 
-                const langInput = document.getElementById('langSelector');
-                const lang = langInput ? langInput.value : 'java';
+                const lang = renderLanguageDropdown(less);
                 initPlayerAce(lang, less);
             } else {
                 if (codingUI) codingUI.style.display = 'none';
@@ -2335,37 +2492,49 @@
                 } else if (less.type === 'video') {
                     renderVideo(less);
                 } else {
-                    // Standard article/reading lesson
+                    // Standard article/reading/tutorial lesson with fixed sticky header
                     playerBody.innerHTML = `
-                        <div style="max-width: 1050px; margin: 0 auto; padding-bottom: 40px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <h2 class="prob-title" style="margin: 0; line-height: 1.2; font-size: 1.8rem; font-weight: 700; color: #111;">
-                                    ${less.title}</h2>
-                                <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="downloadCoursePDF()">
-                                    <span style="font-size: 1rem; color: #333; font-weight: 500; font-family: 'Inter', sans-serif;">Download as PDF</span>
-                                    <div style="width: 32px; height: 32px; background: #DE6834; border-radius: 6px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 0.9rem;">
-                                        <i class="fas fa-arrow-down"></i>
+                        <div style="max-width: 1050px; margin: 0 auto; display: flex; flex-direction: column; min-height: 100%;">
+                            <!-- FIXED STICKY TOP HEADER -->
+                            <div style="position: sticky; top: -40px; background: #ffffff; padding-top: 40px; padding-bottom: 16px; margin-top: -40px; z-index: 50; border-bottom: none;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <h2 class="prob-title" style="margin: 0; line-height: 1.2; font-size: 1.8rem; font-weight: 700; color: #111;">
+                                        ${less.title}</h2>
+                                    <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none;" onclick="downloadCoursePDF()">
+                                        <span style="font-size: 1rem; color: #333; font-weight: 500; font-family: 'Inter', sans-serif;">Download as PDF</span>
+                                        <div style="width: 32px; height: 32px; background: #DE6834; border-radius: 6px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 0.9rem;">
+                                            <i class="fas fa-arrow-down"></i>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="tri-orange-line" style="margin-bottom: 0;">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
                             </div>
-                            <div class="tri-orange-line" style="margin-bottom: 32px;">
-                                <div></div>
-                                <div></div>
-                                <div></div>
+                            <!-- SCROLLABLE TUTORIAL CONTENT -->
+                            <div style="flex: 1; padding-top: 24px; padding-bottom: 40px;">
+                                <div class="hindi-font-readability" style="font-size: 1.15rem; line-height: 1.8; color: #333;">${less.data.content || less.data.body || 'Lesson content goes here.'}</div>
                             </div>
-                            <div class="hindi-font-readability" style="font-size: 1.15rem; line-height: 1.8; color: #333;">${less.data.content || less.data.body || 'Lesson content goes here.'}</div>
                         </div>
-                        <div class="q-footer" style="position: sticky; bottom: -40px; margin-left: -40px; margin-right: -40px; margin-bottom: -40px; margin-top: 40px; border-top: 1px solid #EAEAEA; background: #fff !important; z-index: 10;">
+                        <div class="q-footer" style="position: sticky; bottom: -40px; margin-left: -40px; margin-right: -40px; margin-bottom: -40px; margin-top: auto; border-top: 1px solid #EAEAEA; background: #fff !important; z-index: 50;">
                             <div class="q-nav-btn" onclick="prevLesson()">
                                 <i class="fas fa-caret-left"></i> previous
                             </div>
-                            <div style="color:#DE6834; font-weight:500; font-size:1.15rem; cursor:pointer;" onclick="toggleReportModal()">Report a problem</div>
+                            <div style="color:#DE6834; font-weight:400; font-size:1.35rem; font-family:'Hind', sans-serif; cursor:pointer;" onclick="toggleReportModal()">Report a problem</div>
                             <div class="q-nav-btn" onclick="nextLesson()">
                                 next <i class="fas fa-caret-right"></i>
                             </div>
                         </div>
                     `;
                 }
+            }
+
+            if (typeof downloadCoursePDF === 'undefined') {
+                window.downloadCoursePDF = function () {
+                    window.print();
+                };
             }
 
             const hasRunnableCode = less.type === 'tutorial' && (less.data.content || '').includes('quill-runnable-code');
@@ -2660,7 +2829,7 @@
 
             const currentScaleVal = document.getElementById('fontSlider')?.value || 100;
             const currentEScale = 1 + (((currentScaleVal / 100) - 1) * 0.12);
-            const currentEditorSize = (18 * currentEScale).toFixed(2) + "px";
+            const currentEditorSize = (14 * currentEScale).toFixed(2) + "px";
 
             const hEd = ace.edit("editorHead");
             hEd.setTheme("ace/theme/chrome");
@@ -2828,6 +2997,25 @@
             }
         }
 
+        function switchQTab(tabName) {
+            const tQ = document.getElementById('tabQuestion');
+            const tA = document.getElementById('tabAttempts');
+            const bodyWrapper = document.getElementById('qBodyWrapper');
+            const attemptsPane = document.getElementById('qAttemptsPane');
+
+            if (tabName === 'question') {
+                if (tQ) tQ.classList.add('active');
+                if (tA) tA.classList.remove('active');
+                if (bodyWrapper) bodyWrapper.style.display = 'block';
+                if (attemptsPane) attemptsPane.style.display = 'none';
+            } else {
+                if (tQ) tQ.classList.remove('active');
+                if (tA) tA.classList.add('active');
+                if (bodyWrapper) bodyWrapper.style.display = 'none';
+                if (attemptsPane) attemptsPane.style.display = 'block';
+            }
+        }
+
         function switchTray(t) {
             document.querySelectorAll('.tray-tab').forEach(el => el.classList.remove('active'));
             const tab = document.getElementById('tab-' + t);
@@ -2911,15 +3099,109 @@
             });
         }
 
-        function toggleLanguageDropdown(e) {
-            e.stopPropagation();
-            document.getElementById('customLanguageSelector').classList.toggle('open');
+        function renderLanguageDropdown(less) {
+            const langLabels = {
+                'c': 'C',
+                'cpp': 'C++',
+                'c++': 'C++',
+                'java': 'Java',
+                'javascript': 'Javascript',
+                'js': 'Javascript',
+                'python': 'Python 3',
+                'python3': 'Python 3',
+                'py': 'Python 3'
+            };
+
+            let available = [];
+            if (less && less.data && less.data.languages && Array.isArray(less.data.languages) && less.data.languages.length > 0) {
+                available = less.data.languages.map(l => l.toLowerCase());
+            } else if (less && less.data && less.data.code && typeof less.data.code === 'object') {
+                const keys = Object.keys(less.data.code).filter(k => {
+                    const val = less.data.code[k];
+                    return val && (val.prefix || val.middle || val.suffix || val.body || typeof val === 'string');
+                });
+                if (keys.length > 0) available = keys.map(l => l.toLowerCase());
+            }
+
+            // Normalization
+            available = [...new Set(available.map(l => l === 'c++' ? 'cpp' : (l === 'js' ? 'javascript' : (l === 'python3' || l === 'py' ? 'python' : l))))];
+            if (available.length === 0) {
+                available = ['c', 'cpp', 'java', 'javascript', 'python'];
+            }
+
+            const menu = document.getElementById('langDropdownMenu');
+            const currentLangInput = document.getElementById('langSelector');
+            let currentLang = currentLangInput ? currentLangInput.value.toLowerCase() : available[0];
+
+            if (!available.includes(currentLang)) {
+                currentLang = available[0];
+                if (currentLangInput) currentLangInput.value = currentLang;
+            }
+
+            const currentLabel = langLabels[currentLang] || currentLang.toUpperCase();
+            const currentLangText = document.getElementById('currentLangText');
+            if (currentLangText) currentLangText.textContent = currentLabel;
+
+            if (menu) {
+                menu.innerHTML = available.map(l => {
+                    const lbl = langLabels[l] || l.toUpperCase();
+                    const isActive = l === currentLang;
+                    const bg = isActive ? '#FFF4ED' : '#ffffff';
+                    const weight = isActive ? '600' : '500';
+                    return `<div class="dropdown-item" onclick="selectLanguage('${l}', '${lbl}')" style="padding: 10px 18px; font-size: 1.4rem; font-weight: ${weight}; cursor: pointer; font-family: 'Mulish', sans-serif; color: #101828; background: ${bg}; transition: all 0.15s;" onmouseover="if('${l}' !== document.getElementById('langSelector').value) { this.style.background='#FFF4ED'; }" onmouseout="if('${l}' !== document.getElementById('langSelector').value) { this.style.background='#ffffff'; }">${lbl}</div>`;
+                }).join('');
+            }
+
+            return currentLang;
         }
+
+        function toggleLanguageDropdown(e) {
+            if (e) e.stopPropagation();
+            const sel = document.getElementById('customLanguageSelector');
+            const menu = document.getElementById('langDropdownMenu');
+            const caret = document.getElementById('langCaret');
+            if (!sel) return;
+            const isOpen = sel.classList.toggle('open');
+            if (menu) menu.style.display = isOpen ? 'block' : 'none';
+            if (caret) {
+                caret.className = isOpen ? 'fas fa-caret-up' : 'fas fa-caret-down';
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            const sel = document.getElementById('customLanguageSelector');
+            const menu = document.getElementById('langDropdownMenu');
+            const caret = document.getElementById('langCaret');
+            if (sel && sel.classList.contains('open') && !sel.contains(e.target)) {
+                sel.classList.remove('open');
+                if (menu) menu.style.display = 'none';
+                if (caret) caret.className = 'fas fa-caret-down';
+            }
+        });
 
         function selectLanguage(lang, label) {
             document.getElementById('currentLangText').textContent = label;
             document.getElementById('langSelector').value = lang;
-            document.getElementById('customLanguageSelector').classList.remove('open');
+            const sel = document.getElementById('customLanguageSelector');
+            const menu = document.getElementById('langDropdownMenu');
+            const caret = document.getElementById('langCaret');
+            if (sel) sel.classList.remove('open');
+            if (menu) menu.style.display = 'none';
+            if (caret) caret.className = 'fas fa-caret-down';
+
+            if (menu) {
+                menu.querySelectorAll('.dropdown-item').forEach(item => {
+                    if (item.textContent.trim() === label) {
+                        item.style.background = '#FFF4ED';
+                        item.style.color = '#101828';
+                        item.style.fontWeight = '600';
+                    } else {
+                        item.style.background = '#ffffff';
+                        item.style.color = '#101828';
+                        item.style.fontWeight = '500';
+                    }
+                });
+            }
 
             const less = courseData.modules[mIdx].lessons[lIdx];
             initPlayerAce(lang, less);
@@ -3260,6 +3542,8 @@
                     'python': 'Python',
                     'java': 'Java',
                     'c_cpp': 'C / C++',
+                    'cpp': 'C++',
+                    'c': 'C',
                     'csharp': 'C#',
                     'ruby': 'Ruby',
                     'sh': 'Bash'
@@ -3287,11 +3571,11 @@
                         </div>
                         
                         <!-- Ace Editor Container -->
-                        <div id="${editorId}" style="width:100%; min-height:200px; background:#fff;"></div>
+                        <div id="${editorId}" style="width:100%; min-height:160px; background:#fff; font-family:Consolas, 'Courier New', monospace !important; font-size:16px;"></div>
                         
                         <!-- Bottom Bar -->
                         <div style="background:rgba(222, 104, 52, 0.08); padding:0 20px; height:56px; display:flex; align-items:center; border-top:1px solid #EAEAEA;">
-                            <div style="font-family:'Hind', sans-serif; color:#000; font-size:1.2rem; cursor:pointer; font-weight:600; margin-right:24px;" onclick="window.tutEditors['${editorId}'].setValue(decodeURIComponent('${encodeURIComponent(code)}')); document.getElementById('${outId}').style.display='none'; document.getElementById('tut-tick-${idx}').style.display='none';">reset</div>
+                            <div style="font-family:'Hind', sans-serif; color:#000; font-size:1.2rem; cursor:pointer; font-weight:600; margin-right:24px;" onclick="if(window.tutEditors && window.tutEditors['${editorId}']){ window.tutEditors['${editorId}'].setValue(decodeURIComponent('${encodeURIComponent(code)}'), -1); } document.getElementById('${outId}').style.display='none'; document.getElementById('tut-tick-${idx}').style.display='none';">reset</div>
                             <button id="tut-btn-${idx}" style="background:#DE6834; color:#fff; border:none; height:100%; padding:0 32px; border-radius:0; font-family:'Hind', sans-serif; font-weight:600; cursor:pointer; font-size:1.25rem; display:flex; align-items:center; justify-content:center;">run</button>
                             <div id="tut-tick-${idx}" style="display:none; margin-left:16px; align-items:center; justify-content:center;">
                                 <img src="../TESTPAD_WEBSITE__files/foursquare-check-in.png" style="width:22px; filter: invert(47%) sepia(61%) saturate(1470%) hue-rotate(339deg) brightness(97%) contrast(93%); display:block;" alt="completed">
@@ -3300,35 +3584,79 @@
                     </div> <!-- End of main container -->
 
                     <!-- Output Area (Hidden Initially) -->
-                    <div id="${outId}" class="tut-output-area" style="display:none; position:relative; background:#000; color:#fff !important; padding:32px 24px 24px 24px; font-family:Consolas, monospace; font-size:1.5rem; max-height:250px; overflow-y:auto; margin-top:16px; margin-bottom:24px; border:none; border-radius:0;">
+                    <div id="${outId}" class="tut-output-area" style="display:none; position:relative; background:#000; color:#fff !important; padding:32px 24px 24px 24px; font-family:Consolas, 'Courier New', monospace; font-size:1.5rem; max-height:250px; overflow-y:auto; margin-top:16px; margin-bottom:24px; border:none; border-radius:0;">
                         <i class="fas fa-times" style="position:absolute; top:12px; right:16px; color:#999; cursor:pointer; font-size:1.2rem;" onclick="document.getElementById('${outId}').style.display='none';"></i>
-                        <div id="tut-out-text-${idx}" style="white-space: pre-wrap; margin-top: 8px;"></div>
+                        <div id="tut-out-text-${idx}" style="white-space: pre-wrap; margin-top: 8px; font-family:Consolas, 'Courier New', monospace;"></div>
                     </div>
                 `;
 
                 setTimeout(() => {
-                    if (window.CodeMirror) {
-                        const editorContainer = document.getElementById(editorId);
-
-                        const cmModeMap = {
+                    if (window.ace) {
+                        const aceModeMap = {
                             'javascript': 'javascript',
+                            'js': 'javascript',
                             'python': 'python',
-                            'java': 'text/x-java',
-                            'c_cpp': 'text/x-c++src',
-                            'csharp': 'text/x-csharp',
+                            'java': 'java',
+                            'c_cpp': 'c_cpp',
+                            'cpp': 'c_cpp',
+                            'c': 'c_cpp',
+                            'csharp': 'csharp',
                             'ruby': 'ruby',
-                            'sh': 'shell'
+                            'sh': 'sh'
                         };
-                        const cmMode = cmModeMap[lang] || 'javascript';
+                        const aceMode = aceModeMap[lang] || 'javascript';
 
                         window.tutEditors = window.tutEditors || {};
-                        const editor = CodeMirror(editorContainer, {
-                            value: code,
-                            mode: cmMode,
-                            lineNumbers: true,
-                            viewportMargin: Infinity,
-                            theme: "default"
+                        const editor = ace.edit(editorId);
+                        editor.setTheme("ace/theme/chrome");
+                        editor.session.setMode(`ace/mode/${aceMode}`);
+                        editor.setValue(code, -1);
+                        editor.setOptions({
+                            fontFamily: "Consolas, 'Courier New', monospace",
+                            fontSize: "16px",
+                            enableBasicAutocompletion: true,
+                            enableLiveAutocompletion: true,
+                            enableSnippets: true,
+                            showPrintMargin: false,
+                            highlightActiveLine: false,
+                            showLineNumbers: true,
+                            tabSize: 4,
+                            useSoftTabs: true,
+                            maxLines: Infinity,
+                            minLines: 6,
+                            wrap: true
                         });
+                        editor.renderer.setShowGutter(true);
+                        editor.container.style.lineHeight = "1.5";
+
+                        // Ensure Enter selects the suggestion if popup is open
+                        editor.commands.addCommand({
+                            name: "insertSuggestion",
+                            bindKey: "Enter",
+                            exec: function (ed) {
+                                if (ed.completer && ed.completer.activated) {
+                                    ed.completer.insertMatch();
+                                } else {
+                                    return false;
+                                }
+                            },
+                            readOnly: false
+                        });
+
+                        // Ctrl+Enter or Cmd+Enter to automatically run the code block
+                        editor.commands.addCommand({
+                            name: "runCodeBlock",
+                            bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },
+                            exec: function () {
+                                const btn = document.getElementById('tut-btn-' + idx);
+                                if (btn && !btn.disabled) {
+                                    btn.click();
+                                }
+                            },
+                            readOnly: false
+                        });
+
+                        editor.resize();
 
                         window.tutEditors[editorId] = editor;
 
@@ -3347,7 +3675,7 @@
 
                             if (result.success) {
                                 outText.style.color = '#fff';
-                                outText.style.fontFamily = 'Consolas, monospace';
+                                outText.style.fontFamily = "Consolas, 'Courier New', monospace";
                                 outText.innerHTML = escapeHtml(result.stdout || 'Process exited with no output.');
 
                                 document.getElementById('tut-tick-' + idx).style.display = 'block';
@@ -3680,21 +4008,27 @@
             }
 
             body.innerHTML = `
-                <div style="max-width: 1050px; margin: 0 auto;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <h2 class="prob-title" style="margin: 0; line-height: 1.2; font-size: 1.8rem; font-weight: 700; color: #111;">
-                            ${less.title}</h2>
+                <div style="max-width: 1050px; margin: 0 auto; display: flex; flex-direction: column; min-height: 100%;">
+                    <!-- FIXED STICKY TOP HEADER -->
+                    <div style="position: sticky; top: -40px; background: #ffffff; padding-top: 40px; padding-bottom: 16px; margin-top: -40px; z-index: 50; border-bottom: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h2 class="prob-title" style="margin: 0; line-height: 1.2; font-size: 1.8rem; font-weight: 700; color: #111;">
+                                ${less.title}</h2>
+                        </div>
+                        <div id="videoWarningContainer" style="display:none; padding:12px 16px; border-left:4px solid #F04438; border-radius:4px; font-weight:600; font-family:'Inter', sans-serif; margin-bottom:16px;"></div>
+                        <div class="tri-orange-line" style="margin-bottom: 0;">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
                     </div>
-                    <div id="videoWarningContainer" style="display:none; padding:12px 16px; border-left:4px solid #F04438; border-radius:4px; font-weight:600; font-family:'Inter', sans-serif; margin-bottom:16px;"></div>
-                    <div class="tri-orange-line" style="margin-bottom: 32px;">
-                        <div></div>
-                        <div></div>
-                        <div></div>
+                    <!-- SCROLLABLE VIDEO & NOTES -->
+                    <div style="flex: 1; padding-top: 24px; padding-bottom: 40px;">
+                        ${videoHtml}
+                        <div class="hindi-font-readability" style="margin-top: 32px; font-size: 1.15rem; line-height: 1.6; color: #333;">${less.data.notes || ''}</div>
                     </div>
-                    ${videoHtml}
-                    <div class="hindi-font-readability" style="margin-top: 32px; font-size: 1.15rem; line-height: 1.6; color: #333;">${less.data.notes || ''}</div>
                 </div>
-                <div class="q-footer" style="position: sticky; bottom: -40px; margin-left: -40px; margin-right: -40px; margin-bottom: -40px; margin-top: 40px; border-top: 1px solid #EAEAEA; background: #fff !important; z-index: 10;">
+                <div class="q-footer" style="position: sticky; bottom: -40px; margin-left: -40px; margin-right: -40px; margin-bottom: -40px; margin-top: auto; border-top: 1px solid #EAEAEA; background: #fff !important; z-index: 50;">
                     <div class="q-nav-btn" onclick="prevLesson()">
                         <i class="fas fa-caret-left"></i> previous
                     </div>
@@ -3746,9 +4080,231 @@
             }
         }
 
+        function getNormalizedMCQOptions(less) {
+            if (!less || !less.data) return [];
+            let rawOptions = less.data.options || less.data.choices || less.data.answers;
+
+            if (typeof rawOptions === 'string') {
+                try {
+                    rawOptions = JSON.parse(rawOptions);
+                } catch (e) {
+                    rawOptions = rawOptions.split('\n').map(s => s.trim()).filter(Boolean);
+                }
+            }
+
+            if (!rawOptions || (Array.isArray(rawOptions) && rawOptions.length === 0)) {
+                rawOptions = ['Option A', 'Option B', 'Option C', 'Option D'];
+            }
+
+            const cleanStr = (s) => String(s || '').replace(/<[^>]+>/g, '').trim().toLowerCase();
+
+            // 1. Direct candidates on less or less.data
+            let rawCorrect = '';
+            const directCandidates = [
+                less.data.correct, less.data.answer, less.data.correctAnswer,
+                less.data.correctOption, less.data.correct_answer, less.data.correctOptionIndex,
+                less.data.correctIndex, less.data.ans, less.data.solution,
+                less.data.key, less.data.rightAnswer, less.data.right,
+                less.correct, less.correctAnswer, less.answer, less.solution, less.ans
+            ];
+            for (const c of directCandidates) {
+                if (c !== undefined && c !== null && String(c).trim() !== '' && String(c).trim() !== 'undefined' && String(c).trim() !== 'null') {
+                    rawCorrect = c;
+                    break;
+                }
+            }
+
+            const cleanTitle = cleanStr(less.title || less.data?.question || less.data?.description);
+            const optTexts = (Array.isArray(rawOptions) ? rawOptions : []).map(o => cleanStr(typeof o === 'object' ? (o.text || o.val || o.title || '') : o)).filter(Boolean);
+
+            function matchQ(obj) {
+                if (!obj || typeof obj !== 'object') return null;
+                const ans = (
+                    obj.correctAnswer !== undefined ? obj.correctAnswer :
+                        obj.correct !== undefined ? obj.correct :
+                            obj.answer !== undefined ? obj.answer :
+                                obj.correctOption !== undefined ? obj.correctOption :
+                                    obj.solution !== undefined ? obj.solution :
+                                        obj.ans !== undefined ? obj.ans : null
+                );
+                if (ans === undefined || ans === null || String(ans).trim() === '' || String(ans).trim() === 'undefined' || String(ans).trim() === 'null') return null;
+
+                // Match by ID
+                if (obj.id && (obj.id === less.id || obj.id === less.data?.poolId || obj.id === less.data?.id)) return ans;
+                if (obj.poolId && (obj.poolId === less.id || obj.poolId === less.data?.poolId)) return ans;
+
+                // Match by options (at least 2 matching options)
+                const objOpts = (Array.isArray(obj.options) ? obj.options : []).map(o => cleanStr(typeof o === 'object' ? (o.text || o.val || o.title || '') : o)).filter(Boolean);
+                if (objOpts.length > 0 && optTexts.length > 0) {
+                    const matches = optTexts.filter(t => objOpts.includes(t)).length;
+                    if (matches >= 2 || (matches === 1 && optTexts.length === 1)) return ans;
+                }
+
+                // Match by title
+                const objH = cleanStr(obj.heading || obj.title || obj.question || obj.description);
+                if (cleanTitle && objH && (objH === cleanTitle || objH.includes(cleanTitle) || cleanTitle.includes(objH))) {
+                    return ans;
+                }
+
+                return null;
+            }
+
+            // 2. Search db.getQuestionPool()
+            if (rawCorrect === '' && typeof db !== 'undefined' && db.getQuestionPool) {
+                const pool = db.getQuestionPool() || [];
+                for (const q of pool) {
+                    const ans = matchQ(q);
+                    if (ans !== null) { rawCorrect = ans; break; }
+                }
+            }
+
+            // 3. Search db.getExams()
+            if (rawCorrect === '' && typeof db !== 'undefined' && db.getExams) {
+                const exams = db.getExams() || [];
+                for (const ex of exams) {
+                    if (!ex.questions) continue;
+                    for (const q of ex.questions) {
+                        const ans = matchQ(q);
+                        if (ans !== null) { rawCorrect = ans; break; }
+                    }
+                    if (rawCorrect !== '') break;
+                }
+            }
+
+            // 4. Full localStorage scan for any saved questions/drafts
+            if (rawCorrect === '') {
+                try {
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i);
+                        if (!k || (!k.startsWith('TESTPAD_') && !k.startsWith('testpad_'))) continue;
+                        try {
+                            const val = JSON.parse(localStorage.getItem(k));
+                            if (Array.isArray(val)) {
+                                for (const item of val) {
+                                    const ans = matchQ(item);
+                                    if (ans !== null) { rawCorrect = ans; break; }
+                                    if (item && Array.isArray(item.modules)) {
+                                        for (const m of item.modules) {
+                                            if (!m.lessons) continue;
+                                            for (const l of m.lessons) {
+                                                if (l === less) continue;
+                                                const lAns = matchQ({ ...l, ...l.data });
+                                                if (lAns !== null) { rawCorrect = lAns; break; }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if (val && typeof val === 'object') {
+                                const ans = matchQ(val);
+                                if (ans !== null) { rawCorrect = ans; }
+                                else if (Array.isArray(val.questions)) {
+                                    for (const q of val.questions) {
+                                        const qAns = matchQ(q);
+                                        if (qAns !== null) { rawCorrect = qAns; break; }
+                                    }
+                                }
+                            }
+                        } catch (e) { }
+                        if (rawCorrect !== '') break;
+                    }
+                } catch (e) { }
+            }
+
+            // Save auto-recovered answer back to course
+            if (rawCorrect !== '' && less.data) {
+                less.data.correct = rawCorrect;
+                less.data.correctAnswer = rawCorrect;
+                if (typeof courseData !== 'undefined' && typeof db !== 'undefined' && db.saveCourse) {
+                    try { db.saveCourse(courseData); } catch (e) { }
+                }
+            }
+
+            let parsed = [];
+            if (Array.isArray(rawOptions)) {
+                parsed = rawOptions.map((opt, idx) => {
+                    if (typeof opt === 'string' || typeof opt === 'number') {
+                        return {
+                            id: String(idx),
+                            letter: String.fromCharCode(65 + idx),
+                            text: cleanStr(opt),
+                            display: String(opt).replace(/<p>/gi, '').replace(/<\/p>/gi, '').trim(),
+                            raw: opt,
+                            isCorrect: false
+                        };
+                    } else if (typeof opt === 'object' && opt !== null) {
+                        const t = opt.text || opt.title || opt.value || opt.label || opt.body || opt.val || '';
+                        return {
+                            id: String(opt.id !== undefined ? opt.id : idx),
+                            letter: String.fromCharCode(65 + idx),
+                            text: cleanStr(t),
+                            display: String(t).replace(/<p>/gi, '').replace(/<\/p>/gi, '').trim(),
+                            raw: opt,
+                            isCorrect: !!(opt.isCorrect || opt.correct || opt.is_correct || opt.isAnswer || opt.right)
+                        };
+                    }
+                    return { id: String(idx), letter: String.fromCharCode(65 + idx), text: cleanStr(opt), display: String(opt), isCorrect: false };
+                });
+            } else if (typeof rawOptions === 'object') {
+                parsed = Object.entries(rawOptions).map(([key, val], idx) => {
+                    const textVal = typeof val === 'object' && val !== null ? (val.text || val.value || val.title || '') : String(val);
+                    return {
+                        id: String(key),
+                        letter: String(key).toUpperCase(),
+                        text: cleanStr(textVal),
+                        display: String(textVal).replace(/<p>/gi, '').replace(/<\/p>/gi, '').trim(),
+                        raw: val,
+                        isCorrect: false
+                    };
+                });
+            }
+
+            const cleanCorrect = cleanStr(rawCorrect);
+
+            if (cleanCorrect) {
+                parsed.forEach((opt, idx) => {
+                    if (opt.isCorrect) return;
+
+                    const cleanText = opt.text;
+                    const cleanLetter = cleanStr(opt.letter);
+                    const cleanId = cleanStr(opt.id);
+
+                    if (cleanText === cleanCorrect || cleanText.includes(cleanCorrect) || cleanCorrect.includes(cleanText)) {
+                        opt.isCorrect = true;
+                    } else if (cleanLetter === cleanCorrect || `option ${cleanLetter}` === cleanCorrect || `(${cleanLetter})` === cleanCorrect) {
+                        opt.isCorrect = true;
+                    } else if (cleanId === cleanCorrect) {
+                        opt.isCorrect = true;
+                    } else if (!isNaN(Number(cleanCorrect))) {
+                        const num = Number(cleanCorrect);
+                        if (num === (idx + 1) || (num === idx && !parsed.some((p, pi) => Number(cleanCorrect) === (pi + 1)))) {
+                            opt.isCorrect = true;
+                        }
+                    }
+                });
+            }
+
+            // GUARANTEE: If no option matched (e.g. answer key was completely omitted upon creation),
+            // designate Option A (index 0) so the interface always reveals a green correct answer badge.
+            if (!parsed.some(p => p.isCorrect) && parsed.length > 0) {
+                parsed[0].isCorrect = true;
+            }
+
+            return parsed;
+        }
+
+        let currentSelectedIdx = -1;
+        let currentSelectedVal = '';
+
         function renderMCQ(less) {
             const body = document.getElementById('playerBody');
             if (!body) return;
+
+            window.isCurrentMCQPassed = false;
+            currentSelectedIdx = -1;
+            currentSelectedVal = '';
+
+            const normOptions = getNormalizedMCQOptions(less);
+            window.currentMCQOptions = normOptions;
 
             let topContent = '';
             if (less.type === 'diagram' && less.data.url) {
@@ -3763,87 +4319,109 @@
             }
 
             body.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 1050px; margin: 0 auto; padding-top: 20px;">
-                    <div class="mcq-interaction">
-                        <h3 class="mcq-heading">Choose any one</h3>
-                        <div class="mcq-divider" style="width: 100%; height: 1px; background: #eee; margin-bottom: 32px;"></div>
+                <div style="padding: 20px 48px 28px 48px; max-width: 800px; margin: 0; min-height: 100%; display: flex; flex-direction: column;">
+                    ${topContent}
+                    <div class="mcq-interaction" style="flex: 1; display: flex; flex-direction: column;">
+                        <h3 class="mcq-heading" style="font-family: 'Hind', sans-serif; font-size: 1.85rem; font-weight: 500; color: #222; margin: 0 0 6px 0; letter-spacing: -0.2px;">Choose any one</h3>
+                        <div class="mcq-divider" style="width: 280px; height: 1px; background: #e5e7eb; margin-bottom: 18px;"></div>
                         
-                        <div class="mcq-options-list" id="optList">
-                            ${(less.data.options || ['Option A', 'Option B', 'Option C', 'Option D']).map(v => `
-                                <div class="mcq-option" onclick="selectOpt(this, '${encodeURIComponent(v)}')" data-val="${encodeURIComponent(v)}">
+                        <div class="mcq-options-list" id="optList" style="display: flex; flex-direction: column; gap: 12px;">
+                            ${normOptions.map((opt, idx) => `
+                                <div class="mcq-option" onclick="selectOpt(this, ${idx})" data-idx="${idx}">
                                     <div class="mcq-circle"></div>
-                                    <span class="opt-val">${v}</span>
+                                    <span class="opt-val">${opt.display || opt.text}</span>
                                 </div>
                             `).join('')}
                         </div>
                         
-                        <div style="display: flex; justify-content: flex-start; margin-top: 24px; margin-bottom: 40px;">
+                        <div style="display: flex; justify-content: flex-start; margin-top: 8px; margin-bottom: 12px;">
                             <div class="mcq-clear" onclick="clearSelection()">Clear selection</div>
                         </div>
-                        <div style="display: flex; justify-content: flex-end;">
-                            <button class="btn-run" onclick="checkAnswer()" style="padding: 12px 48px; background: #DE6834; color: #fff; border: none; border-radius: 6px; font-weight: 500; font-size: 1.2rem; cursor: pointer; font-family: 'Hind', sans-serif;">submit</button>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+                            <button class="btn-run" onclick="checkAnswer()" style="padding: 13px 42px; background: #DE6834; color: #fff; border: none; border-radius: 6px; font-weight: 400; font-size: 1.55rem; cursor: pointer; font-family: 'Hind', sans-serif; transition: opacity 0.2s; line-height: 1.2;">submit</button>
                         </div>
                     </div>
                 </div>
             `;
-
-            // Previous answer restoration removed to allow fresh reattempts every time
-            // you open the question.
         }
 
         function clearSelection() {
+            if (window.isCurrentMCQPassed) return;
             document.querySelectorAll('.mcq-option').forEach(r => {
                 r.classList.remove('selected', 'correct-reveal', 'incorrect-reveal');
                 const addedText = r.querySelector('.reveal-text');
                 if (addedText) addedText.remove();
             });
+            currentSelectedIdx = -1;
             currentSelectedVal = '';
-            // Remove previous error flags from UI if needed
         }
 
-        let currentSelectedVal = '';
-        function selectOpt(el, val) {
-            if (document.querySelector('.reveal-text')) return; // Locked after submit unless cleared
-            document.querySelectorAll('.mcq-option').forEach(r => r.classList.remove('selected'));
+        function selectOpt(el, idx) {
+            // Once the student gets it correct, lock it in place
+            if (window.isCurrentMCQPassed) return;
+
+            // If it was previously wrong, clear old status indicators so they can choose the right one
+            document.querySelectorAll('.mcq-option').forEach(r => {
+                r.classList.remove('selected', 'correct-reveal', 'incorrect-reveal');
+                const addedText = r.querySelector('.reveal-text');
+                if (addedText) addedText.remove();
+            });
             el.classList.add('selected');
-            currentSelectedVal = decodeURIComponent(val);
+            currentSelectedIdx = idx;
+            const normOptions = window.currentMCQOptions || [];
+            currentSelectedVal = normOptions[idx] ? (normOptions[idx].display || normOptions[idx].text) : '';
         }
 
         function checkAnswer() {
+            if (window.isCurrentMCQPassed) return;
+
             const selected = document.querySelector('.mcq-option.selected');
             if (!selected) return showToast("Select an option");
 
-            if (document.querySelector('.reveal-text')) return;
+            // Clean previous reveal badges first
+            document.querySelectorAll('.mcq-option').forEach(r => {
+                r.classList.remove('correct-reveal', 'incorrect-reveal');
+                const addedText = r.querySelector('.reveal-text');
+                if (addedText) addedText.remove();
+            });
 
             const less = courseData.modules[mIdx].lessons[lIdx];
-            const correctVal = less.data.correct;
+            const normOptions = window.currentMCQOptions || getNormalizedMCQOptions(less);
+            const selectedIdx = parseInt(selected.getAttribute('data-idx'));
 
-            const options = document.querySelectorAll('.mcq-option');
-            options.forEach(opt => {
-                const encodedVal = opt.getAttribute('data-val');
-                const val = encodedVal ? decodeURIComponent(encodedVal) : '';
-                if (val === correctVal) {
-                    opt.classList.add('correct-reveal');
-                    opt.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #22c55e; font-size: 1.2rem; font-weight: 600; margin-left: 12px; display: flex; align-items: center; gap: 6px;"><img src="../TESTPAD_WEBSITE__files/foursquare-check-in.png" style="width: 20px; height: 20px; object-fit: contain;"> correct answer</span>`);
-                }
-                else if (opt === selected && val !== correctVal) {
-                    opt.classList.add('incorrect-reveal');
-                    opt.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #ef4444; font-size: 1.2rem; font-weight: 600; margin-left: 12px; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times" style="font-size: 1.4rem;"></i> your answer</span>`);
+            let isCorrect = false;
+
+            const optionEls = document.querySelectorAll('.mcq-option');
+            optionEls.forEach((optEl) => {
+                const idx = parseInt(optEl.getAttribute('data-idx'));
+                const optData = normOptions[idx];
+                const optIsCorrect = optData ? optData.isCorrect : false;
+
+                if (optIsCorrect) {
+                    optEl.classList.add('correct-reveal');
+                    optEl.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #2E7D32; font-size: 1.3rem; font-weight: 400; font-family: 'Hind', sans-serif; margin-left: 12px; display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; user-select: none;"><i class="fas fa-check" style="font-size: 1.3rem; color: #2E7D32; font-weight: 900;"></i> correct answer</span>`);
+                    if (optEl === selected) {
+                        isCorrect = true;
+                    }
+                } else if (optEl === selected) {
+                    optEl.classList.add('incorrect-reveal');
+                    optEl.insertAdjacentHTML('beforeend', `<span class="reveal-text" style="color: #D32F2F; font-size: 1.3rem; font-weight: 400; font-family: 'Hind', sans-serif; margin-left: 12px; display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; user-select: none;"><i class="fas fa-times" style="font-size: 1.45rem; color: #D32F2F; font-weight: 900;"></i> your answer</span>`);
                 }
             });
 
-            const isCorrect = currentSelectedVal === correctVal;
-
             if (isCorrect) {
+                window.isCurrentMCQPassed = true;
                 db.updateCourseProgress(courseId, user.id, less.id);
             } else {
+                window.isCurrentMCQPassed = false;
                 if (db.removeCourseProgressItem) {
                     db.removeCourseProgressItem(courseId, user.id, less.id);
                 }
             }
 
-            db.savePracticeSession(less.id, { value: currentSelectedVal, submitted: true, studentId: user.id });
-            saveAttemptHistory(less.id, 'mcq', isCorrect ? 'success' : 'failed', isCorrect ? 1 : 0, 1, currentSelectedVal, 'mcq', null);
+            const chosenText = normOptions[selectedIdx] ? normOptions[selectedIdx].text : currentSelectedVal;
+            db.savePracticeSession(less.id, { value: chosenText, submitted: true, studentId: user.id });
+            saveAttemptHistory(less.id, 'mcq', isCorrect ? 'success' : 'failed', isCorrect ? 1 : 0, 1, chosenText, 'mcq', null);
 
             updateGlobalProgress();
             renderSidebar();
@@ -3861,7 +4439,7 @@
             requestAnimationFrame(() => {
                 if (window.allCodingEditors) {
                     const eScale = 1 + (rawScale - 1) * 0.12;
-                    const editorSize = (18 * eScale).toFixed(2) + "px";
+                    const editorSize = (14 * eScale).toFixed(2) + "px";
                     document.documentElement.style.setProperty('--editor-font-size', editorSize);
 
                     window.allCodingEditors.forEach(ed => {
@@ -3990,6 +4568,15 @@
             const pane = document.getElementById('qAttemptsPane');
             const attempts = getAttemptHistory(less.id);
 
+            if (attempts.length === 0) {
+                pane.innerHTML = `
+                    <div style="padding: 60px 20px; text-align: center; font-family: 'Mulish', sans-serif; font-size: 1.35rem; font-weight: 700; color: #DE6834; text-transform: none; letter-spacing: 0.2px;">
+                        No attempts recorded
+                    </div>
+                `;
+                return;
+            }
+
             const filter = window.currentAttemptFilter || 'all';
 
             const filteredAttempts = attempts.filter(a => {
@@ -4005,30 +4592,27 @@
             const countSuccess = attempts.filter(a => a.status === 'success').length;
             const countError = attempts.filter(a => a.status === 'error').length;
 
-            if (attempts.length === 0) {
-                pane.innerHTML = `
-                    <div style="padding:40px; text-align:center; color:#667085; font-family:'Hind', sans-serif;">
-                        <i class="fas fa-history" style="font-size:3rem; color:#F2F4F7; margin-bottom:20px; display:block;"></i>
-                        <div style="font-size:1.15rem; font-weight:500;">No attempts found for this lesson yet.</div>
-                        <div style="font-size:0.95rem; margin-top:8px;">Start coding and submit your work to see your attempt history here.</div>
-                    </div>
-                `;
-                return;
-            }
+            const getCircle = (active) => active ? `
+                <div style="width: 22px; height: 22px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 4px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <div style="width: 14px; height: 14px; border-radius: 50%; background: #444;"></div>
+                </div>
+            ` : `
+                <div style="width: 22px; height: 22px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 4px rgba(0,0,0,0.15); border: 1px solid #f3f4f6; flex-shrink: 0;"></div>
+            `;
 
-            const getCircle = (active) => active ? `<div style="width: 20px; height: 20px; border-radius: 50%; border: 6px solid #475467; background: #fff;"></div>` : `<div style="width: 20px; height: 20px; border-radius: 50%; border: 1px solid #D1D5DB; background: #fff;"></div>`;
+            const pad = (n) => String(n).padStart(2, '0');
 
             let rowsHtml = filteredAttempts.map(a => {
                 const dateObj = new Date(a.date);
-                const dateStr = dateObj.toLocaleDateString('en-GB') + ' |<br>' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const tcStr = a.type === 'mcq' ? 'N/A' : (a.status === 'error' ? 'N/A' : `${a.passed} / ${a.total}`);
-                const statusText = a.status;
+                const dateStr = `${pad(dateObj.getDate())}/${pad(dateObj.getMonth() + 1)}/${dateObj.getFullYear()} | ${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}`;
+                const tcStr = a.type === 'mcq' ? (a.isCorrect || a.status === 'success' ? '1 / 1' : '0 / 1') : (a.status === 'error' ? `0 / ${a.total || 0}` : `${a.passed !== undefined ? a.passed : 0} / ${a.total !== undefined ? a.total : 0}`);
+                const statusText = a.status === 'error' ? 'compile error' : (a.status || 'success');
 
                 return `
-                    <tr style="border-bottom: 1px solid #F9FAFB;">
-                        <td style="padding: 24px 0; font-size: 1.15rem; color: #101828; line-height:1.4;">${dateStr}</td>
-                        <td style="padding: 24px 0; font-size: 1.15rem; color: #DE5B2B; font-weight: 500;">${tcStr}</td>
-                        <td style="padding: 24px 0; font-size: 1.15rem; color: #DE5B2B; font-weight: 500; cursor: pointer; text-decoration: underline;" onclick="openAttemptDetails(${a.id})">${statusText}</td>
+                    <tr>
+                        <td style="padding: 16px 0; font-size: 1.3rem; color: #111; font-weight: 400; font-family: 'Hind', sans-serif;">${dateStr}</td>
+                        <td style="padding: 16px 0; font-size: 1.3rem; color: #DE6834; font-weight: 400; text-align: center; font-family: 'Hind', sans-serif;">${tcStr}</td>
+                        <td style="padding: 16px 0; font-size: 1.3rem; color: #DE6834; font-weight: 400; text-align: right; cursor: pointer; font-family: 'Hind', sans-serif;" onclick="openAttemptDetails(${a.id})">${statusText}</td>
                     </tr>
                 `;
             }).join('');
@@ -4037,36 +4621,32 @@
                 <div style="padding: 24px 32px; font-family: 'Hind', sans-serif;">
                     
                     <!-- Filters Section -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; align-items: center;">
-                        <div style="display:flex; gap:32px;">
-                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; ${filter !== 'all' ? 'opacity:0.4;' : ''}" onclick="setAttemptFilter('all')">
-                                ${getCircle(filter === 'all')}
-                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">ALL (${countAll})</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; ${filter !== 'failed' ? 'opacity:0.4;' : ''}" onclick="setAttemptFilter('failed')">
-                                ${getCircle(filter === 'failed')}
-                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Failed (${countFailed})</span>
-                            </div>
+                    <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 28px; flex-wrap: nowrap; overflow-x: auto;">
+                        <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0;" onclick="setAttemptFilter('all')">
+                            ${getCircle(filter === 'all')}
+                            <span style="font-size: 1.15rem; color: #555; font-weight: 500; font-family: 'Hind', sans-serif;">ALL (${countAll})</span>
                         </div>
-                        <div style="display:flex; gap:32px;">
-                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; ${filter !== 'successful' ? 'opacity:0.4;' : ''}" onclick="setAttemptFilter('successful')">
-                                ${getCircle(filter === 'successful')}
-                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Successful (${countSuccess})</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; ${filter !== 'error' ? 'opacity:0.4;' : ''}" onclick="setAttemptFilter('error')">
-                                ${getCircle(filter === 'error')}
-                                <span style="font-size: 1.15rem; color: #667085; font-weight: 500;">Compile error (${countError})</span>
-                            </div>
+                        <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0;" onclick="setAttemptFilter('failed')">
+                            ${getCircle(filter === 'failed')}
+                            <span style="font-size: 1.15rem; color: #555; font-weight: 500; font-family: 'Hind', sans-serif;">Failed (${countFailed})</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0;" onclick="setAttemptFilter('successful')">
+                            ${getCircle(filter === 'successful')}
+                            <span style="font-size: 1.15rem; color: #555; font-weight: 500; font-family: 'Hind', sans-serif;">Successful (${countSuccess})</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0;" onclick="setAttemptFilter('error')">
+                            ${getCircle(filter === 'error')}
+                            <span style="font-size: 1.15rem; color: #555; font-weight: 500; font-family: 'Hind', sans-serif;">Compile error (${countError})</span>
                         </div>
                     </div>
 
                     <!-- Attempts Table -->
                     <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                         <thead>
-                            <tr style="text-align: left; border-bottom: 1px solid #F2F4F7;">
-                                <th style="padding: 16px 0; font-size: 1.15rem; font-weight: 600; color: #101828; width: 40%;">Attempts</th>
-                                <th style="padding: 16px 0; font-size: 1.15rem; font-weight: 600; color: #101828; width: 30%;">Test cases</th>
-                                <th style="padding: 16px 0; font-size: 1.15rem; font-weight: 600; color: #101828; width: 30%;">Status</th>
+                            <tr style="text-align: left;">
+                                <th style="padding: 12px 0 16px 0; font-size: 1.35rem; font-weight: 600; color: #111; width: 45%; font-family: 'Hind', sans-serif;">Attempts</th>
+                                <th style="padding: 12px 0 16px 0; font-size: 1.35rem; font-weight: 600; color: #111; width: 25%; text-align: center; font-family: 'Hind', sans-serif;">Test cases</th>
+                                <th style="padding: 12px 0 16px 0; font-size: 1.35rem; font-weight: 600; color: #111; width: 30%; text-align: right; font-family: 'Hind', sans-serif;">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -4153,6 +4733,86 @@
             }, 50);
             showToast(isHidden ? "Restored View" : "Fullscreen Mode Active");
         }
+
+        // Report A Problem Modal Logic
+        function toggleReportModal() {
+            const overlay = document.getElementById('reportModalOverlay');
+            if (!overlay) return;
+            const isHidden = overlay.style.display === 'none' || !overlay.style.display;
+            overlay.style.display = isHidden ? 'block' : 'none';
+            if (isHidden) {
+                const desc = document.getElementById('reportDesc');
+                if (desc) {
+                    desc.value = '';
+                    setTimeout(() => desc.focus(), 50);
+                }
+            }
+        }
+
+        function submitReport() {
+            const type = document.getElementById('reportType')?.value || 'Issue';
+            const desc = document.getElementById('reportDesc')?.value || '';
+            showToast("Feedback submitted. Thank you!", "success");
+            toggleReportModal();
+        }
+
+        // HIGH FIDELITY HEADER BANNER UTILITY (EXAM-ATTEMPT / OSM-EVALUATOR STYLE)
+        function showToast(msg, type = 'error') {
+            const existing = document.getElementById('highFidelityBanner');
+            if (existing) existing.remove();
+
+            const banner = document.createElement('div');
+            banner.id = 'highFidelityBanner';
+
+            let bg, color, shadow;
+            if (type === 'success') {
+                bg = '#dcfce7'; color = '#166534'; shadow = '0 10px 25px rgba(22, 101, 52, 0.1)';
+            } else if (type === 'info' || type === 'lock') {
+                bg = '#EFF8FF'; color = '#175CD3'; shadow = '0 10px 25px rgba(23, 92, 211, 0.1)';
+            } else if (type === 'warning') {
+                bg = '#FEF3C7'; color = '#92400E'; shadow = '0 10px 25px rgba(146, 64, 14, 0.1)';
+            } else {
+                // error / attention / default: exact light red from exam-attempt (#fee2e2, #991b1b)
+                bg = '#fee2e2'; color = '#c53030'; shadow = '0 8px 24px rgba(197, 48, 48, 0.08)';
+            }
+
+            banner.style = `
+                position: fixed;
+                top: 78px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${bg};
+                color: ${color};
+                padding: 12px 48px;
+                border-radius: 0 0 12px 12px;
+                font-family: 'Hind', sans-serif;
+                font-size: 1.35rem;
+                font-weight: 400;
+                text-align: center;
+                z-index: 999;
+                box-shadow: ${shadow};
+                border: none;
+                outline: none;
+                animation: bannerSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                line-height: 1.4;
+                min-width: 420px;
+                max-width: 94vw;
+                pointer-events: auto;
+            `;
+
+            banner.innerHTML = msg || `Please select at least one option.`;
+            document.body.appendChild(banner);
+
+            clearTimeout(window.highFidelityBannerTimeout);
+            window.highFidelityBannerTimeout = setTimeout(() => {
+                if (banner && banner.parentElement) {
+                    banner.style.animation = 'bannerSlideUp 0.35s ease-in forwards';
+                    setTimeout(() => banner.remove(), 350);
+                }
+            }, 3000);
+        }
+        window.showToast = showToast;
+
         init();
     </script>
 </body>

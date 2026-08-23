@@ -28,6 +28,30 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Hind', sans-serif;
+            scrollbar-width: thin !important;
+            scrollbar-color: #64748B #F1F5F9 !important;
+        }
+
+        /* Custom Sleek Grey Scrollbars - Globally Applied */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+            border-left: 1px solid #CBD5E1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #64748B;
+            border-radius: 6px;
+            border: 2px solid #F1F5F9;
+            min-height: 40px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
         }
 
         body {
@@ -173,59 +197,73 @@
         .large-avatar {
             width: 120px;
             height: 120px;
-            background: var(--primary);
-            color: white;
+            width: 110px;
+            height: 110px;
+            background: #D9622D;
+            color: #ffffff;
             border-radius: 50%;
-            margin: 0 auto 24px;
+            margin: 0 auto 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            font-weight: 800;
-            font-family: 'Outfit';
-            border: 8px solid #DBEAFE;
+            font-size: 3.3rem;
+            font-weight: 700;
+            font-family: 'Hind', sans-serif;
+            border: none;
+            box-shadow: 0 4px 14px rgba(217, 98, 45, 0.25);
         }
 
         .profile-name {
-            font-family: 'Outfit';
-            font-size: 1.5rem;
+            font-family: 'Hind', sans-serif;
+            font-size: 1.55rem;
             font-weight: 700;
             color: var(--text-main);
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 20px;
+            letter-spacing: 0.02em;
         }
 
         .sidebar-section {
-            margin-top: 24px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #EAECF0;
             text-align: left;
         }
 
         .sidebar-section h3 {
-            font-size: 1.1rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            color: var(--text-main);
+            color: #101828;
             margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
+            padding-bottom: 0;
+            border-bottom: none;
+            font-family: 'Hind', sans-serif;
         }
 
         .sidebar-item {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-bottom: 16px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
 
         .sidebar-item label {
-            font-size: 0.85rem;
-            color: #98A2B3;
+            font-size: 1.05rem;
+            color: #667085;
             font-weight: 500;
+            width: 130px;
+            flex-shrink: 0;
+            font-family: 'Hind', sans-serif;
         }
 
         .sidebar-item span {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
+            font-size: 1.05rem;
+            color: #101828;
             font-weight: 600;
+            font-family: 'Hind', sans-serif;
+            word-break: break-all;
         }
 
         .stats-item {
@@ -535,6 +573,200 @@
             height: 36px;
             border-radius: 4px;
             display: flex;
+        /* Inner Attempt Table */
+        .attempts-sub-row {
+            background: #fff;
+        }
+
+        .inner-table-container {
+            padding: 24px 80px;
+        }
+
+        .inner-table {
+            background: #F9FAFB;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .inner-th {
+            background: transparent;
+            padding: 20px;
+            text-align: center;
+            font-weight: 700;
+            color: #475467;
+            font-size: 1.1rem;
+        }
+
+        .inner-td {
+            padding: 16px 20px;
+            text-align: center;
+            background: #fff;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+
+        /* Modal Preview */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .preview-left {
+            flex: 1;
+            padding: 40px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .preview-right {
+            flex: 1;
+            padding: 40px;
+            background: #fff;
+            overflow-y: auto;
+        }
+
+        .q-type-label {
+            background: #f2f4f7;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #667085;
+            text-transform: uppercase;
+        }
+
+        .mcq-option-preview {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .radio-btn {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #D0D5DD;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radio-btn.checked {
+            border-color: #1E40AF;
+        }
+
+        .radio-btn.checked::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #1E40AF;
+            border-radius: 50%;
+        }
+
+        .correct-tag {
+            color: var(--success);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 20px;
+        }
+
+        pre {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .btn-solution {
+            background: #1E40AF;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .console-tab {
+            margin-top: 24px;
+            background: #000;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100px;
+        }
+
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .btn-view-attempt {
+            background: #fff;
+            border: 1px dashed #D0D5DD;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
@@ -599,6 +831,18 @@
                     </div>
                 </div>
 
+                <div class="sidebar-section">
+                    <h3>General Info</h3>
+                    <div class="sidebar-item">
+                        <label style="width: 175px;">Marks Obtained:</label>
+                        <span id="sideMarks">0 / 0</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <label style="width: 175px;">Questions Attempted:</label>
+                        <span id="sideAttempted">0 / 0</span>
+                    </div>
+                </div>
+
             </div>
         </aside>
 
@@ -638,11 +882,10 @@
                 else if (val.hasOwnProperty('response')) val = val.response;
                 else if (val.hasOwnProperty('value')) val = val.value;
             }
-            // Drill down further if it's still nested
             while (val !== null && typeof val === 'object' && val.hasOwnProperty('value')) {
                 val = val.value;
             }
-            if (typeof val === 'object' && val !== null) return null; // Avoid returning [object Object]
+            if (typeof val === 'object' && val !== null) return null;
             return val;
         }
 
@@ -658,7 +901,7 @@
             const isManualReleased = exam.resultsPublished === true;
             
             // If results are held by teacher and current user is student
-            if (!isAutoPublish && !isManualReleased && currentUser.role === 'student') {
+            if (!isAutoPublish && !isManualReleased && currentUser && currentUser.role === 'student') {
                 document.body.innerHTML = `
                     <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#F9FAFB; font-family:'Outfit', sans-serif;">
                         <img src="https://api.learntechww.com/college_icon/logo1733989968823.jpg" style="height:60px; margin-bottom:40px;">
@@ -679,28 +922,48 @@
                 return;
             }
 
-            allExamAttempts = db.getAttemptHistory(currentUser.id, exam.id);
+            allExamAttempts = (currentUser && exam) ? db.getAttemptHistory(currentUser.id, exam.id) : [];
 
-            // Sync Header & Sidebar
-            const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
-            document.getElementById('topUserName').textContent = currentUser.name;
-            document.getElementById('topAvatar').textContent = initials;
-            document.getElementById('sideName').textContent = currentUser.name.toUpperCase();
-            document.getElementById('sideAvatar').textContent = initials;
+            // Sync Header & Sidebar with first letter only for avatar
+            const studentName = currentUser ? currentUser.name : 'Student';
+            const firstLetter = studentName.trim().charAt(0).toUpperCase();
+            document.getElementById('topUserName').textContent = studentName;
+            document.getElementById('topAvatar').textContent = firstLetter;
+            document.getElementById('sideName').textContent = studentName.toUpperCase();
+            document.getElementById('sideAvatar').textContent = firstLetter;
+            
             const identity = currentAttempt.identityResponses || {};
             
-            // Strictly use attempt-based data, no autofilling from profile if missing
-            const rollNo = identity['Roll Number'] || identity['roll_number'] || identity['RollNo'] || currentAttempt.studentRollNo || 'N/A';
-            const group = identity['Select Group'] || identity['Section'] || identity['section'] || identity['Group'] || 'N/A';
-            const email = identity['Email'] || identity['email'] || currentUser.email || 'N/A';
+            // Strictly use attempt-based data: roll number, id = roll number, group (if filled in mandatory questions else N.A.)
+            const rollNo = identity['Roll Number'] || identity['roll number'] || identity['roll_number'] || identity['RollNo'] || currentAttempt.studentRollNo || (currentUser?.rollNo) || 'N.A.';
+            const studentId = rollNo;
+            const group = identity['Select Group'] || identity['select group'] || identity['Group'] || identity['group'] || identity['Section'] || identity['section'] || 'N.A.';
+            const email = identity['Email'] || identity['email'] || (currentUser ? currentUser.email : 'N.A.');
 
             document.getElementById('sideEmail').textContent = email;
             document.getElementById('sideRoll').textContent = rollNo;
-            document.getElementById('sideId').textContent = rollNo;
+            document.getElementById('sideId').textContent = studentId;
             document.getElementById('sideGroup').textContent = group;
 
             const scoreObj = db.calculateScore(currentAttempt);
             document.getElementById('finalScoreVal').textContent = `${scoreObj.score} / ${scoreObj.totalMarks}`;
+            if (document.getElementById('sideMarks')) {
+                document.getElementById('sideMarks').textContent = `${scoreObj.score} / ${scoreObj.totalMarks}`;
+            }
+
+            const assignedQuestions = db.getAttemptQuestions ? db.getAttemptQuestions(currentAttempt, exam) : (exam?.questions || []);
+            if (document.getElementById('sideAttempted')) {
+                let attemptedCount = 0;
+                if (currentAttempt.responses) {
+                    assignedQuestions.forEach(q => {
+                        const resp = Array.isArray(currentAttempt.responses) ? currentAttempt.responses.find(r => r && (r.questionId === q.id || r.id === q.id)) : currentAttempt.responses[q.id];
+                        if (resp && ((typeof resp === 'string' && resp.trim() !== '') || (typeof resp === 'object' && (resp.value || resp.selectedOption !== undefined || resp.manualMark !== undefined)))) {
+                            attemptedCount++;
+                        }
+                    });
+                }
+                document.getElementById('sideAttempted').textContent = `${attemptedCount} / ${assignedQuestions.length}`;
+            }
 
             renderSections();
         }
@@ -709,29 +972,32 @@
             const container = document.getElementById('sectionsContainer');
             container.innerHTML = '';
 
+            const assignedQuestions = db.getAttemptQuestions ? db.getAttemptQuestions(currentAttempt, exam) : (exam?.questions || []);
+
             // Group questions by section
             const sections = exam.sections?.length > 0 ? exam.sections : ['General'];
             sections.forEach((s, sIdx) => {
-                const sQuestions = exam.questions.filter(q => (q.section || 'General') === s);
+                const sQuestions = assignedQuestions.filter(q => (q.section || 'General') === s);
                 if (sQuestions.length === 0) return;
 
                 const sectionScore = sQuestions.reduce((sum, q) => {
-                    const resp = Array.isArray(currentAttempt.responses) ? currentAttempt.responses.find(r => r.questionId === q.id) : currentAttempt.responses[q.id];
+                    const resp = Array.isArray(currentAttempt.responses) ? currentAttempt.responses.find(r => r && (r.questionId === q.id || r.id === q.id)) : (currentAttempt.responses ? currentAttempt.responses[q.id] : null);
                     if (!resp) return sum;
                     let mark = 0;
                     const extractedVal = extractResponse(resp);
-                    if (resp.manualMark !== undefined) mark = parseFloat(resp.manualMark);
+                    const qMarks = (parseFloat(q.marks) !== undefined && !isNaN(parseFloat(q.marks))) ? parseFloat(q.marks) : 1;
+                    if (resp.manualMark !== undefined && resp.manualMark !== null && resp.manualMark !== '') mark = parseFloat(resp.manualMark) || 0;
                     else if (q.type === 'coding' && resp.results) {
                         const passed = resp.results.filter(r => r.status === 'pass').length;
                         const total = resp.results.length;
-                        if (total > 0) mark = parseFloat(((passed / total) * q.marks).toFixed(1));
+                        if (total > 0) mark = parseFloat(((passed / total) * qMarks).toFixed(1));
                     } else if (q.type !== 'coding' && q.type !== 'subjective' && q.type !== 'file_upload') {
-                        if (db.checkAnswer(q, extractedVal)) mark = q.marks;
+                        if (db.checkAnswer(q, extractedVal)) mark = qMarks;
                     }
                     return sum + mark;
                 }, 0);
                 
-                const sectionTotal = sQuestions.reduce((sum, q) => sum + (q.marks || 0), 0);
+                const sectionTotal = sQuestions.reduce((sum, q) => sum + ((parseFloat(q.marks) !== undefined && !isNaN(parseFloat(q.marks))) ? parseFloat(q.marks) : 1), 0);
 
                 const card = document.createElement('div');
                 card.className = 'section-card';
@@ -796,11 +1062,11 @@
 
             let mark = 0;
             if (resp) {
-                if (resp.manualMark !== undefined) mark = parseFloat(resp.manualMark);
+                if (resp.manualMark !== undefined && resp.manualMark !== null && resp.manualMark !== '') mark = parseFloat(resp.manualMark) || 0;
                 else if (q.type === 'coding' && resp.results) {
-                    mark = (Array.isArray(resp.results)) ? resp.results.filter(r => r.status === 'pass').reduce((s, r) => s + (r.marks || 0), 0) : 0;
+                    mark = (Array.isArray(resp.results)) ? resp.results.filter(r => r.status === 'pass').reduce((s, r) => s + ((parseFloat(r.marks) !== undefined && !isNaN(parseFloat(r.marks))) ? parseFloat(r.marks) : 0), 0) : 0;
                 } else {
-                    mark = db.checkAnswer(q, resp) ? (q.marks || 0) : 0;
+                    mark = db.checkAnswer(q, resp) ? ((parseFloat(q.marks) !== undefined && !isNaN(parseFloat(q.marks))) ? parseFloat(q.marks) : 1) : 0;
                 }
             }
             
@@ -812,9 +1078,9 @@
                 (extractedVal !== null && extractedVal !== undefined && extractedVal !== '') || 
                 !!resp.code || 
                 !!resp.submitted || 
-                !!resp.runCount ||
-                (Array.isArray(resp.results) && resp.results.length > 0) ||
-                (Object.keys(resp).length > 0 && resp.hasOwnProperty('value'))
+                !!resp.runCount || 
+                (Array.isArray(resp.results) && resp.results.length > 0) || 
+                (Object.keys(resp).length > 0 && (resp.hasOwnProperty('value') || resp.hasOwnProperty('selectedOption')))
             );
             
             const statusLabel = isManual ? 'pending' : (isAttempted ? 'submitted' : 'not attempted');
@@ -851,7 +1117,7 @@
                                 </thead>
                                 <tbody>
                                     ${allExamAttempts.map(a => {
-                                        const r = a.responses[q.id];
+                                        const r = a.responses ? (Array.isArray(a.responses) ? a.responses.find(item => item && (item.questionId === q.id || item.id === q.id)) : a.responses[q.id]) : null;
                                         if(!r) return '';
                                         const results = r.results || [];
                                         return `
@@ -939,7 +1205,6 @@
             // Build a unified results array from the question's master test cases
             const masterTests = q.testCases || [];
             const results = masterTests.map((mt, mi) => {
-                // Try to find a recorded result for this master test
                 const recorded = (resp?.results && resp.results[mi]) ? resp.results[mi] : null;
                 return {
                     ...mt,
@@ -953,7 +1218,6 @@
             document.getElementById('modalTitle').textContent = "Question Attempt Preview";
             const body = document.getElementById('modalBody');
             body.innerHTML = '';
-
             const left = document.createElement('div');
             left.className = 'preview-left';
             left.innerHTML = `

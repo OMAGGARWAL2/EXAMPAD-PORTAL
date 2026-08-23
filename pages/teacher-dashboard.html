@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TESTPAD</title>
-    <!-- Google Fonts: Inter and Outfit -->
+    <!-- Google Fonts: Mulish, Inter and Outfit -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,7 +29,7 @@
             --radius-md: 12px;
             --radius-lg: 16px;
             --shadow-premium: 0 10px 40px rgba(0, 0, 0, 0.06);
-            --sidebar-width: 320px;
+            --sidebar-width: 560px;
         }
 
         * {
@@ -60,7 +60,7 @@
         h3,
         .logo-text,
         .nav-btn {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Mulish', 'Inter', sans-serif;
         }
 
         /* --- HEADER --- */
@@ -80,13 +80,13 @@
         .header-left {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 48px;
         }
 
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             cursor: pointer;
             text-decoration: none;
             transition: opacity 0.2s;
@@ -97,8 +97,8 @@
         }
 
         .logo-square {
-            width: 40px;
-            height: 40px;
+            width: 52px;
+            height: 52px;
             background: transparent;
             border-radius: 0;
             display: flex;
@@ -114,7 +114,7 @@
         }
 
         .logo-text {
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: var(--text-main);
             letter-spacing: -0.5px;
@@ -123,14 +123,14 @@
         .header-nav {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-left: 20px;
+            gap: 57px;
+            margin-left: 40px;
         }
 
         .nav-icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -139,7 +139,12 @@
             transition: all 0.2s;
             background: transparent;
             border: none;
-            font-size: 1.1rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-icon-btn img {
+            width: 32px !important;
+            height: 32px !important;
         }
 
         .nav-icon-btn:hover {
@@ -155,39 +160,45 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 32px;
         }
 
         .plus-btn {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-soft);
+            width: 48px;
+            height: 72px;
+            background: #fff5f0;
             color: var(--primary);
-            border: 1px solid #FDA29B;
-            border-radius: 8px;
+            border: none;
+            border-left: 1px solid #f0f0f0;
+            border-right: 1px solid #f0f0f0;
+            border-radius: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.2s;
         }
 
         .plus-btn:hover {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
+            background: #ffece5;
+            color: var(--primary);
         }
 
         .grid-btn {
-            width: 40px;
-            height: 40px;
+            width: 54px;
+            height: 54px;
             color: var(--secondary);
             border: none;
             background: transparent;
-            font-size: 1.1rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 14px;
+        }
+
+        .grid-btn img {
+            width: 32px !important;
+            height: 32px !important;
         }
 
         .grid-btn:hover {
@@ -209,15 +220,17 @@
         }
 
         .user-name {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-main);
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-family: 'Mulish', sans-serif;
+            color: #444;
             text-transform: uppercase;
         }
 
         .user-role {
             font-size: 0.75rem;
-            font-weight: 700;
+            font-weight: 800;
+            font-family: 'Mulish', sans-serif;
             color: var(--primary);
             text-transform: uppercase;
         }
@@ -274,87 +287,133 @@
         }
 
         .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #344054;
+            font-family: 'Mulish', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #222222;
         }
 
         .section-title span {
             font-weight: 400;
-            color: var(--secondary);
+            color: #888888;
             font-size: 1.1rem;
             margin-left: 8px;
         }
 
         .search-container {
             position: relative;
-            width: 320px;
+            width: 240px;
         }
 
         .search-container i {
             position: absolute;
-            left: 14px;
+            left: 6px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--secondary);
+            color: #999999;
             font-size: 0.9rem;
         }
 
         .search-input {
             width: 100%;
-            padding: 10px 14px 10px 40px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.875rem;
+            padding: 6px 8px 6px 28px;
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            border-radius: 0;
+            font-size: 0.9rem;
             outline: none;
-            transition: all 0.2s;
-            background: #fff;
+            transition: border-color 0.2s;
+            background: transparent;
+            font-family: 'Mulish', sans-serif;
+            color: #222222;
         }
 
-        .search-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-soft);
+        .btn-detail-action {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            color: #344054;
+            height: 46px;
+            padding: 0 24px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px;
+            font-family: 'Mulish', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        .btn-detail-action:hover {
+            background: #f9fafb;
+            border-color: #d0d5dd;
+            color: #1d2939;
+        }
+
+        .card-details-panel,
+        .card-details-panel * {
+            font-family: 'Mulish', sans-serif !important;
         }
 
         .assessments-grid {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
         }
 
         /* --- ASSESSMENT CARD --- */
         .assessment-card {
             background: #fff;
-            border: 1px solid var(--border);
+            border: 1px solid #f0f0f0;
             border-radius: 16px;
             padding: 24px;
             display: flex;
             align-items: center;
             gap: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
             position: relative;
             overflow-x: auto;
             overflow-y: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
         }
 
         .assessment-card:hover {
-            box-shadow: var(--shadow-premium);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
             border-color: var(--primary);
             transform: translateY(-4px);
         }
 
+        .assessment-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .assessment-card:hover::before {
+            opacity: 1;
+        }
+
         .card-icon-area {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             background: var(--primary-soft);
             color: var(--primary);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             flex-shrink: 0;
         }
 
@@ -363,30 +422,35 @@
         }
 
         .card-title {
+            font-family: 'Mulish', sans-serif;
             font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 6px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
         }
 
         .card-meta {
             display: flex;
             align-items: center;
-            gap: 20px;
-            font-size: 0.9rem;
+            gap: 36px;
+            font-size: 0.95rem;
             color: var(--text-tertiary);
         }
 
         .card-meta span {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 12px;
+        }
+
+        .card-meta span i {
+            font-size: 1.3rem;
         }
 
         .status-pill {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -405,9 +469,9 @@
 
         .stats-group {
             display: flex;
-            gap: 30px;
-            margin-left: 40px;
-            padding-left: 40px;
+            gap: 44px;
+            margin-left: 48px;
+            padding-left: 48px;
             border-left: 1px solid var(--border);
         }
 
@@ -417,13 +481,13 @@
 
         .stat-value {
             display: block;
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--text-main);
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-tertiary);
             text-transform: uppercase;
@@ -431,14 +495,15 @@
 
         .card-actions {
             display: flex;
-            gap: 8px;
-            margin-left: 30px;
+            gap: 24px;
+            margin-left: 44px;
+            align-items: center;
         }
 
         .btn-action {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -447,7 +512,11 @@
             color: var(--secondary);
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 1rem;
+            font-size: 1.45rem;
+        }
+
+        .btn-action i {
+            font-size: 1.45rem;
         }
 
         .btn-action:hover {
@@ -461,11 +530,15 @@
             color: #fff;
             border: none;
             width: auto;
-            padding: 0 20px;
+            height: 52px;
+            padding: 0 24px;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             letter-spacing: 0.5px;
+            gap: 14px;
+            display: inline-flex;
+            align-items: center;
         }
 
         .btn-action.primary:hover {
@@ -480,11 +553,15 @@
             color: var(--primary);
             border: 1px solid #FDA29B;
             width: auto;
-            padding: 0 16px;
+            height: 52px;
+            padding: 0 22px;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             letter-spacing: 0.5px;
+            gap: 14px;
+            display: inline-flex;
+            align-items: center;
         }
 
         .btn-action.light-orange:hover {
@@ -496,11 +573,21 @@
         }
 
         /* --- SIDEBAR --- */
+        .sidebar-content,
+        .side-panel {
+            padding: 40px 25px;
+            background: #ffffff !important;
+            overflow-y: auto;
+            overflow-x: hidden !important;
+        }
+
+        .side-section-title,
         .sidebar-heading {
             font-size: 1.3rem;
             font-weight: 500;
             color: #333;
             margin-bottom: 25px;
+            font-family: 'Mulish', sans-serif;
         }
 
         .side-cards {
@@ -521,12 +608,11 @@
             transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
             overflow: hidden;
-            border: none;
         }
 
         .quick-link-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         .ql-title {
@@ -546,7 +632,7 @@
         }
 
         .ql-icon {
-            font-size: 2rem;
+            font-size: 2rem !important;
             opacity: 0.3;
             position: absolute;
             right: 20px;
@@ -577,40 +663,153 @@
             background-color: #344054;
         }
 
+        /* Hide sidebar & grid horizontal scrollbars */
+        .sidebar-content::-webkit-scrollbar,
+        .side-panel::-webkit-scrollbar,
+        .custom-horiz-scroll::-webkit-scrollbar,
+        #quickLinksGrid::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            background: transparent !important;
+        }
+
+        .sidebar-content,
+        .side-panel,
+        .custom-horiz-scroll,
+        #quickLinksGrid {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+
+        /* --- PRECISE TOOLTIPS --- */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]:hover::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000000;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            font-family: 'Mulish', sans-serif;
+            white-space: nowrap;
+            z-index: 10000;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+            pointer-events: none;
+            line-height: 1.25;
+        }
+
+        [data-tooltip]:hover::after {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 8px 0 8px;
+            border-style: solid;
+            border-color: #000000 transparent transparent transparent;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        [data-tooltip-bottom] {
+            position: relative;
+        }
+
+        [data-tooltip-bottom]:hover::before {
+            content: attr(data-tooltip-bottom);
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000000;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            font-family: 'Mulish', sans-serif;
+            white-space: nowrap;
+            z-index: 10000;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+            pointer-events: none;
+            line-height: 1.25;
+        }
+
+        [data-tooltip-bottom]:hover::after {
+            content: '';
+            position: absolute;
+            top: calc(100% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 8px 8px 8px;
+            border-style: solid;
+            border-color: transparent transparent #000000 transparent;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
         /* --- NOTIFICATION SYSTEM --- */
         #toast-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 10px;
-            z-index: 9999;
+            z-index: 10001;
+            pointer-events: none;
         }
 
         .toast {
-            min-width: 300px;
+            min-width: 320px;
             background: #101828;
-            color: #fff;
-            padding: 16px 24px;
+            color: #ffffff;
+            padding: 12px 22px;
             border-radius: 12px;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
-            gap: 15px;
-            animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            gap: 12px;
+            font-family: 'Mulish', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            pointer-events: auto;
+            animation: slideDownToast 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .toast.success {
-            border-left: 4px solid #4caf50;
+            border-left: 4px solid #10b981;
         }
 
         .toast.error {
-            border-left: 4px solid #f44336;
+            border-left: 4px solid #ef4444;
         }
 
         .toast.info {
             border-left: 4px solid #2e90fa;
+        }
+
+        @keyframes slideDownToast {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         @keyframes slideInRight {
@@ -748,11 +947,73 @@
             border: 2px solid transparent;
             background-clip: padding-box;
         }
+
+        /* --- RIGHT CLICK CONTEXT MENU (Orange & White Premium Theme - Clean Soft Edges) --- */
+        #leftPaneContextMenu {
+            animation: ctxMenuFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            border-radius: 2px !important;
+        }
+
+        @keyframes ctxMenuFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(-4px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .ctx-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 8px 12px;
+            border-radius: 2px !important;
+            cursor: pointer;
+            color: #374151;
+            font-family: 'Mulish', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .ctx-item i {
+            transition: transform 0.15s ease;
+            font-size: 1.05rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .ctx-item:hover {
+            background: #fff5f0 !important;
+            color: #df5a22 !important;
+            transform: translateX(2px);
+        }
+
+        .ctx-item:hover i {
+            transform: scale(1.12);
+        }
+
+        .ctx-item:active {
+            background: #ffe4d6 !important;
+            transform: translateX(1px);
+        }
     </style>
 
     <style>
-        ::selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
-        ::-moz-selection { background: rgba(251, 146, 60, 0.3) !important; color: inherit; }
+        ::selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background: rgba(251, 146, 60, 0.3) !important;
+            color: inherit;
+        }
     </style>
 </head>
 
@@ -764,20 +1025,20 @@
                 <div class="logo-square">
                     <img src="../TESTPAD_WEBSITE__files/chitkara.png" alt="CHITKARA">
                 </div>
-                <div class="logo-text">TESTPAD</div>
+                <div class="logo-text"></div>
             </div>
             <div class="header-nav">
-                <button class="nav-icon-btn active" title="Dashboard"
+                <button class="nav-icon-btn active" data-tooltip-bottom="Dashboard"
                     onclick="location.href='./teacher-dashboard.html'">
                     <img src="../TESTPAD_WEBSITE__files/menu-1.svg" style="width: 20px; height: 20px;">
                 </button>
-                <button class="nav-icon-btn" title="Assessments" onclick="scrollToAssessments()">
+                <button class="nav-icon-btn" data-tooltip-bottom="Assessments" onclick="scrollToAssessments()">
                     <img src="../TESTPAD_WEBSITE__files/quiz.svg" style="width: 20px; height: 20px;">
                 </button>
-                <button class="nav-icon-btn" title="Question Pool" onclick="location.href='./questionpool.html'">
+                <button class="nav-icon-btn" data-tooltip-bottom="Question Pool" onclick="location.href='./questionpool.html'">
                     <img src="../TESTPAD_WEBSITE__files/folder-2.svg" style="width: 20px; height: 20px;">
                 </button>
-                <button class="nav-icon-btn" title="Analytics" onclick="location.href='./livemonitor.html'">
+                <button class="nav-icon-btn" data-tooltip-bottom="Analytics" onclick="location.href='./livemonitor.html'">
                     <img src="../TESTPAD_WEBSITE__files/playground-normal.svg" style="width: 20px; height: 20px;">
                 </button>
             </div>
@@ -788,22 +1049,38 @@
                 <i class="fas fa-search"></i>
                 <input type="text" class="search-input" placeholder="Quick Search..." id="globalSearch">
             </div>
-            <button class="plus-btn" onclick="createNewExam()" title="Launch New Assessment">
+            <button class="plus-btn" onclick="createNewExam()" data-tooltip-bottom="Launch New Assessment">
                 <i class="fas fa-plus"></i>
             </button>
-            <button class="grid-btn" onclick="showToast('View mode updated', 'info')"
-                style="display: flex; align-items: center; justify-content: center;">
-                <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png"
-                    style="width: 24px; height: 24px; opacity: 0.75; transition: all 0.2s;"
-                    onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
-            </button>
+            <div class="grid-menu-container" style="position: relative;">
+                <button class="grid-btn" id="gridMenuBtn" onclick="toggleGridMenu()"
+                    style="display: flex; align-items: center; justify-content: center;" data-tooltip-bottom="Apps">
+                    <img src="../Testpad_pra_files_files/icons8-squared-menu-90.png"
+                        style="width: 24px; height: 24px; opacity: 0.75; transition: all 0.2s;"
+                        onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
+                </button>
+                <div id="gridMenuDropdown" class="grid-menu-dropdown" style="display: none; position: absolute; top: calc(100% + 15px); right: 0; background: #ffffff; border: 1px solid #f0f0f0; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 16px; width: 320px; z-index: 1000; flex-direction: row; justify-content: space-between;">
+                    <div class="grid-item" onclick="scrollToAssessments()" style="display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; padding: 12px; border-radius: 8px; transition: all 0.2s; flex: 1; color: #475467;" onmouseover="this.style.backgroundColor='#fff5f0'; this.style.color='#F46036'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#475467'">
+                        <img src="../TESTPAD_WEBSITE__files/quiz.svg" style="width: 36px; height: 36px;">
+                        <span style="font-family: 'Mulish', sans-serif; font-size: 1rem; font-weight: 500;">Test</span>
+                    </div>
+                    <div class="grid-item" onclick="scrollToAssessments()" style="display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; padding: 12px; border-radius: 8px; transition: all 0.2s; flex: 1; color: #475467;" onmouseover="this.style.backgroundColor='#fff5f0'; this.style.color='#F46036'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#475467'">
+                        <img src="../TESTPAD_WEBSITE__files/folder-2.svg" style="width: 36px; height: 36px;">
+                        <span style="font-family: 'Mulish', sans-serif; font-size: 1rem; font-weight: 500;">Courses</span>
+                    </div>
+                    <div class="grid-item" onclick="location.href='./mybookmarks.html'" style="display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; padding: 12px; border-radius: 8px; transition: all 0.2s; flex: 1; color: #475467;" onmouseover="this.style.backgroundColor='#fff5f0'; this.style.color='#F46036'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#475467'">
+                        <img src="../Testpad_pra_files_files/iconmonstr-star-3.svg" style="width: 36px; height: 36px;">
+                        <span style="font-family: 'Mulish', sans-serif; font-size: 1rem; font-weight: 500;">Bookmarks</span>
+                    </div>
+                </div>
+            </div>
             <div class="profile-container" style="position: relative; margin-left: 10px;">
                 <div class="profile-bubble" id="profileToggle" onclick="toggleMenu()"
-                    style="cursor: pointer; display: flex; align-items: center; gap: 12px; background: #fff; padding: 6px 12px; border-radius: 30px; border: 1px solid #eee;">
+                    style="cursor: pointer; display: flex; align-items: center; gap: 12px;">
                     <div class="user-info" style="text-align: right;">
-                        <div class="user-name" id="userName" style="font-size: 0.9rem; font-weight: 700;">OM AGGARWAL
+                        <div class="user-name" id="userName">OM AGGARWAL
                         </div>
-                        <div class="user-role" style="color: var(--primary); font-size: 0.75rem; font-weight: 600;">
+                        <div class="user-role">
                             PROFESSOR</div>
                     </div>
                     <div class="avatar" id="userInitial"
@@ -841,14 +1118,18 @@
     </header>
 
     <div class="dashboard-container">
-        <main class="main-content" id="assessmentsSection">
+        <main class="main-content" id="assessmentsSection" oncontextmenu="handleLeftPaneContextMenu(event)">
             <div class="content-header">
-                <h2 class="section-title">Assessments <span id="examCount">(0)</span></h2>
-                <div class="bulk-actions" style="margin-left: auto; margin-right: 20px; display: flex; gap: 8px;">
-                    <button class="btn-action primary" style="background:#d32f2f;" onclick="endAllExams()"><i
-                            class="fas fa-stop-circle"></i> END ALL</button>
-                    <button class="btn-action primary" style="background:#FF8A00;" onclick="expireAllExams()"><i
-                            class="fas fa-calendar-times"></i> EXPIRE ALL</button>
+                <h2 class="section-title">My Assessments <span id="examCount">(0)</span></h2>
+                <div class="bulk-actions" style="margin-left: auto; margin-right: 16px; display: flex; gap: 10px;">
+                    <button class="btn-action-white"
+                        style="background:transparent; border:none; color:#344054; height: 34px; padding: 0 10px; font-size: 0.82rem; font-weight: 700; border-radius: 8px; font-family: 'Mulish', sans-serif; cursor: pointer; transition: all 0.2s; box-shadow: none; outline: none;"
+                        onmouseover="this.style.color='#d32f2f';" onmouseout="this.style.color='#344054';"
+                        onclick="endAllExams()">END ALL</button>
+                    <button class="btn-action-white"
+                        style="background:transparent; border:none; color:#344054; height: 34px; padding: 0 10px; font-size: 0.82rem; font-weight: 700; border-radius: 8px; font-family: 'Mulish', sans-serif; cursor: pointer; transition: all 0.2s; box-shadow: none; outline: none;"
+                        onmouseover="this.style.color='#FF8A00';" onmouseout="this.style.color='#344054';"
+                        onclick="expireAllExams()">EXPIRE ALL</button>
                 </div>
                 <div class="search-container">
                     <i class="fas fa-search"></i>
@@ -867,13 +1148,20 @@
 
             <div class="content-header" style="margin-top: 60px;">
                 <h2 class="section-title">My Courses <span id="courseCount">(0)</span></h2>
-                <div class="bulk-actions" style="margin-left: auto; display: flex; gap: 8px;">
-                    <button class="btn-action primary" style="background:#d32f2f;" onclick="expireAllCourses()">
-                        <i class="fas fa-calendar-times"></i> EXPIRE ALL
-                    </button>
-                    <button class="btn-action primary" onclick="location.href='./course-creator.html'">
-                        <i class="fas fa-plus"></i> NEW COURSE
-                    </button>
+                <div class="bulk-actions" style="margin-left: auto; margin-right: 16px; display: flex; gap: 10px;">
+                    <button class="btn-action-white"
+                        style="background:transparent; border:none; color:#344054; height: 34px; padding: 0 10px; font-size: 0.82rem; font-weight: 700; border-radius: 8px; font-family: 'Mulish', sans-serif; cursor: pointer; transition: all 0.2s; box-shadow: none; outline: none;"
+                        onmouseover="this.style.color='#d32f2f';" onmouseout="this.style.color='#344054';"
+                        onclick="expireAllCourses()">EXPIRE ALL</button>
+                    <button class="btn-action-white"
+                        style="background:transparent; border:none; color:#344054; height: 34px; padding: 0 10px; font-size: 0.82rem; font-weight: 700; border-radius: 8px; font-family: 'Mulish', sans-serif; cursor: pointer; transition: all 0.2s; box-shadow: none; outline: none;"
+                        onmouseover="this.style.color='var(--primary)';" onmouseout="this.style.color='#344054';"
+                        onclick="location.href='./course-creator.html'">NEW COURSE</button>
+                </div>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search courses..." id="courseSearchInput"
+                        onkeyup="filterCourses()">
                 </div>
             </div>
 
@@ -887,180 +1175,266 @@
 
             <div class="content-header" style="margin-top: 60px;">
                 <h2 class="section-title">My Competitive Exams <span id="competitiveExamCount">(0)</span></h2>
-                <div class="bulk-actions" style="margin-left: auto; display: flex; gap: 8px;">
-                    <button class="btn-action primary" style="background:#2563eb;"
-                        onclick="location.href='./comexam-creator.html'">
-                        <i class="fas fa-trophy"></i> CREATE COMPETITIVE EXAM
-                    </button>
+                <div class="bulk-actions" style="margin-left: auto; margin-right: 16px; display: flex; gap: 10px;">
+                    <button class="btn-action-white"
+                        style="background:transparent; border:none; color:#344054; height: 34px; padding: 0 10px; font-size: 0.82rem; font-weight: 700; border-radius: 8px; font-family: 'Mulish', sans-serif; cursor: pointer; transition: all 0.2s; box-shadow: none; outline: none;"
+                        onmouseover="this.style.color='#2563eb';" onmouseout="this.style.color='#344054';"
+                        onclick="location.href='./comexam-creator.html'">CREATE COMPETITIVE EXAM</button>
+                </div>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search competitive exams..."
+                        id="competitiveSearchInput" onkeyup="filterCompetitiveExams()">
                 </div>
             </div>
 
             <div class="assessments-grid" id="competitiveExamsList">
-                <div style="text-align: center; padding: 60px; color: var(--secondary);">
-                    <i class="fas fa-medal" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
-                    <p>No competitive exams designed yet.</p>
-                    <button onclick="location.href='./comexam-creator.html'" class="btn-action primary"
-                        style="background:#2563eb; margin-top: 20px; height: 44px;">CREATE COMPETITIVE EXAM</button>
+                <div
+                    style="text-align: center; padding: 40px; color: #888888; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 500;">
+                    Not created yet.
                 </div>
             </div>
         </main>
 
-        <aside class="sidebar-content">
-            <h3 class="sidebar-heading">Quick Actions</h3>
-            <div class="side-cards">
-                <div class="quick-link-card red" onclick="location.href='./course-creator.html'">
-                    <div class="ql-title">
-                        <span>New Course</span>
-                        <i class="fas fa-plus-circle" style="font-size:1.2rem;"></i>
-                    </div>
-                    <p class="ql-desc">Build and publish new learning tracks for your students.</p>
-                    <i class="fas fa-graduation-cap ql-icon"></i>
-                </div>
+        <aside class="sidebar-content side-panel" style="background: #ffffff !important;"
+            oncontextmenu="handleRightBarContextMenu(event)">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px;">
+                <h3 class="side-section-title" style="margin: 0; font-family: 'Mulish', sans-serif;">Quick Links</h3>
+                <button id="quickLinksToggleBtn" onclick="toggleQuickLinksGrid(event)"
+                    data-tooltip="Toggle All Quick Links"
+                    style="background: #fff5f0; color: #D92D20; border: 1px solid #fee4e2; border-radius: 20px; padding: 4px 14px; font-weight: 700; font-family: 'Mulish', sans-serif; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+                    onmouseover="this.style.background='#fef3f2'" onmouseout="this.style.background='#fff5f0'">
+                    <i class="fas fa-chevron-down" id="quickLinksChevron"></i>
+                </button>
+            </div>
 
-                <div class="quick-link-card blue" onclick="location.href='./questionpool.html'">
-                    <div class="ql-title">
-                        <span>Question Pool</span>
-                        <i class="fas fa-layer-group" style="font-size:1.2rem;"></i>
+            <div style="overflow-x: auto; padding-bottom: 12px; margin-right: -25px; padding-right: 25px;"
+                class="custom-horiz-scroll">
+                <div class="side-cards-grid" id="quickLinksGrid" style="display: flex; gap: 16px; width: 100%;">
+                    <!-- Default Visible Card 1: Question Pool (Mustard Yellow #c09a00) -->
+                    <div class="quick-link-card ql-card-item" onclick="location.href='./questionpool.html'"
+                        style="background-color: #c09a00; border-radius: 6px; padding: 32px 24px; color: white; display: flex; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Question<br>Pool</span>
+                            <i class="fas fa-question-circle" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Manage and curate universal questions for all assessments.</p>
                     </div>
-                    <p class="ql-desc">Manage and curate universal questions for all assessments.</p>
-                    <i class="fas fa-database ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card pink" onclick="location.href='./digitallib.html'">
-                    <div class="ql-title">
-                        <span>Library</span>
-                        <i class="fas fa-book-open" style="font-size:1.2rem;"></i>
+                    <!-- Default Visible Card 2: On Screen Marking (Olive Green #70a01b) -->
+                    <div class="quick-link-card ql-card-item" onclick="location.href='./osm-evaluator.html'"
+                        style="background-color: #70a01b; border-radius: 6px; padding: 32px 24px; color: white; display: flex; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">On
+                                Screen<br>Marking</span>
+                            <i class="fas fa-pen-nib" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Digitally evaluate and annotate scanned answer copies with precision.</p>
                     </div>
-                    <p class="ql-desc">Access educational resources and student reference materials.</p>
-                    <i class="fas fa-university ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card dark" onclick="location.href='./admit-card.html'">
-                    <div class="ql-title">
-                        <span>Admit Cards</span>
-                        <i class="fas fa-id-card" style="font-size:1.2rem;"></i>
+                    <!-- Extra Hidden Cards (Opened in 2-column grid when toggle pressed) -->
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./course-creator.html'"
+                        style="display: none; background-color: #3b5998; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">New<br>Course</span>
+                            <i class="fas fa-graduation-cap" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Build and publish new learning tracks for your students.</p>
                     </div>
-                    <p class="ql-desc">Generate and manage student admit cards for upcoming exams.</p>
-                    <i class="fas fa-print ql-icon"></i>
-                </div>
 
-
-                <div class="quick-link-card green" style="background-color: #0b5345;"
-                    onclick="location.href='./department-erp.html'">
-                    <div class="ql-title">
-                        <span>Chalkpad Admin</span>
-                        <i class="fas fa-user-shield" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./digitallib.html'"
+                        style="display: none; background-color: #f59e0b; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Digital<br>Library</span>
+                            <i class="fas fa-book-open" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Access educational resources and reference materials.</p>
                     </div>
-                    <p class="ql-desc">Configure subjects, fees, and education keys natively.</p>
-                    <i class="fas fa-cogs ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card blue" style="background-color: #1a5276;"
-                    onclick="location.href='./dailyattendance.html'">
-                    <div class="ql-title">
-                        <span>Roster Mark</span>
-                        <i class="fas fa-chalkboard-teacher" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./admit-card.html'"
+                        style="display: none; background-color: #dc2626; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Admit<br>Cards</span>
+                            <i class="fas fa-id-card" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Generate and manage student admit cards.</p>
                     </div>
-                    <p class="ql-desc">Mark daily attendance to auto-throttle 75% Admit rulings.</p>
-                    <i class="fas fa-check-double ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card blue" style="background-color: #6c3483;"
-                    onclick="location.href='./seating-timetable.html'">
-                    <div class="ql-title">
-                        <span>Time Table Generator</span>
-                        <i class="fas fa-calendar-alt" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./department-erp.html'"
+                        style="display: none; background-color: #0b5345; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Chalkpad<br>Admin</span>
+                            <i class="fas fa-user-shield" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Configure subjects and education keys natively.</p>
                     </div>
-                    <p class="ql-desc">Generate academic time tables and slot allocation for classes.</p>
-                    <i class="fas fa-th ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card dark" style="background-color: #d35400;"
-                    onclick="alert('Module Loading...')">
-                    <div class="ql-title">
-                        <span>Certificate Portal</span>
-                        <i class="fas fa-certificate" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./dailyattendance.html'"
+                        style="display: none; background-color: #1a5276; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Roster<br>Mark</span>
+                            <i class="fas fa-check-double" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Mark daily attendance to auto-throttle Admit rulings.</p>
                     </div>
-                    <p class="ql-desc">Upload, verify and issue student character & experience certificates.</p>
-                    <i class="fas fa-stamp ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card orange" onclick="location.href='./seating-timetable.html'">
-                    <div class="ql-title">
-                        <span>Seating Plan</span>
-                        <i class="fas fa-chair" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./seating-timetable.html'"
+                        style="display: none; background-color: #6c3483; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Time
+                                Table<br>Generator</span>
+                            <i class="fas fa-calendar-alt" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Generate academic time tables and slot allocation.</p>
                     </div>
-                    <p class="ql-desc">Algorithmic collision-free room allocation for exams.</p>
-                    <i class="fas fa-users ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card green" onclick="location.href='./sms-gateway.html'">
-                    <div class="ql-title">
-                        <span>SMS & WhatsApp Push</span>
-                        <i class="fab fa-whatsapp" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./smartqp.html'"
+                        style="display: none; background-color: #0d9488; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Smart
+                                QP<br>AI</span>
+                            <i class="fas fa-brain" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Auto-generate taxonomy-compliant question papers.</p>
                     </div>
-                    <p class="ql-desc">Push notifications for Admit cards, circulars, and announcements.</p>
-                    <i class="fas fa-paper-plane ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card green" onclick="location.href='./smartqp.html'"
-                    style="background-color: #0d9488;">
-                    <div class="ql-title">
-                        <span>Smart QP AI</span>
-                        <i class="fas fa-brain" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./livemonitor.html'"
+                        style="display: none; background-color: #D92D20; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Live<br>Monitor</span>
+                            <i class="fas fa-desktop" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Monitor student progress and integrity in real time.</p>
                     </div>
-                    <p class="ql-desc">Auto-generate taxonomy-compliant question papers using neural inference.</p>
-                    <i class="fas fa-microchip ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card green" onclick="location.href='./admit-card.html?tab=seating'">
-                    <div class="ql-title">
-                        <span>Seating Plan</span>
-                        <i class="fas fa-th" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./POST-CONTENT.html'"
+                        style="display: none; background-color: #0284c7; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">Post<br>Content</span>
+                            <i class="fas fa-bullhorn" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Publish official circulars, notices, and result announcements.</p>
                     </div>
-                    <p class="ql-desc">Configure and export automated seating arrangements for rooms.</p>
-                    <i class="fas fa-chair ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card orange" onclick="location.href='./livemonitor.html'">
-                    <div class="ql-title">
-                        <span>Live Monitor</span>
-                        <i class="fas fa-video" style="font-size:1.2rem;"></i>
+                    <div class="extra-quick-card ql-card-item" onclick="location.href='./generateqppdf.html'"
+                        style="display: none; background-color: #344054; border-radius: 6px; padding: 32px 24px; color: white; flex-direction: column; justify-content: space-between; width: 270px; min-width: 270px; min-height: 220px; flex-shrink: 0; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <span
+                                style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.2px; line-height: 1.2;">QP<br>Generator</span>
+                            <i class="fas fa-file-pdf" style="font-size: 2.0rem;"></i>
+                        </div>
+                        <p
+                            style="font-family: 'Mulish', sans-serif; font-size: 1.0rem; margin: 16px 0 0 0; opacity: 0.92; line-height: 1.4;">
+                            Generate official university examination papers.</p>
                     </div>
-                    <p class="ql-desc">Monitor student progress and integrity in real-time sessions.</p>
-                    <i class="fas fa-desktop ql-icon"></i>
-                </div>
 
-                <div class="quick-link-card green" onclick="location.href='./POST-CONTENT.html'">
-                    <div class="ql-title">
-                        <span>Post Content</span>
-                        <i class="fas fa-bullhorn" style="font-size:1.2rem;"></i>
-                    </div>
-                    <p class="ql-desc">Publish official circulars, notices, and result announcements.</p>
-                    <i class="fas fa-newspaper ql-icon"></i>
-                </div>
-
-                <div class="quick-link-card blue" style="background-color: #4B4E6D;"
-                    onclick="location.href='./osm-evaluator.html'">
-                    <div class="ql-title">
-                        <span>On Screen Marking</span>
-                        <i class="fas fa-pen-nib" style="font-size:1.2rem;"></i>
-                    </div>
-                    <p class="ql-desc">Digitally evaluate and annotate scanned answer copies with precision.</p>
-                    <i class="fas fa-file-signature ql-icon"></i>
-                </div>
-
-                <div class="quick-link-card dark" onclick="location.href='./generateqppdf.html'">
-                    <div class="ql-title">
-                        <span>QP Generator</span>
-                        <i class="fas fa-file-pdf" style="font-size:1.2rem;"></i>
-                    </div>
-                    <p class="ql-desc">Generate official university examination papers matching your uploaded template.
-                    </p>
-                    <i class="fas fa-print ql-icon" style="opacity: 0.2;"></i>
                 </div>
             </div>
         </aside>
+    </div>
+
+    <!-- Right-Click Context Menu Popup for Right Sidebar (Primary Red/Orange Theme) -->
+    <div id="rightBarContextMenu"
+        style="display: none; position: fixed; z-index: 10000; background: #ffffff; border-radius: 2px; box-shadow: 0 12px 36px rgba(0,0,0,0.18); border: 1px solid #fee4e2; padding: 14px; width: auto; transition: opacity 0.15s ease;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #fef3f2;">
+            <span
+                style="font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 0.85rem; color: #D92D20; letter-spacing: 0.3px;">Quick
+                Actions</span>
+            <span onclick="closeRightBarContextMenu()"
+                style="cursor: pointer; color: #9ca3af; font-size: 0.85rem; padding: 2px 6px;"
+                onmouseover="this.style.color='#D92D20'" onmouseout="this.style.color='#9ca3af'"><i
+                    class="fas fa-times"></i></span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+            <div onclick="location.href='./questionpool.html'" data-tooltip="Question Pool"
+                style="width: 58px; height: 58px; background: #fef3f2; border: 1px solid #fee4e2; border-radius: 2px; color: #D92D20; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#D92D20'; this.style.color='#ffffff';"
+                onmouseout="this.style.background='#fef3f2'; this.style.color='#D92D20';">
+                <i class="fas fa-question-circle" style="font-size: 1.6rem;"></i>
+            </div>
+            <div onclick="location.href='./osm-evaluator.html'" data-tooltip="On Screen Marking"
+                style="width: 58px; height: 58px; background: #fef3f2; border: 1px solid #fee4e2; border-radius: 2px; color: #D92D20; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#D92D20'; this.style.color='#ffffff';"
+                onmouseout="this.style.background='#fef3f2'; this.style.color='#D92D20';">
+                <i class="fas fa-pen-nib" style="font-size: 1.6rem;"></i>
+            </div>
+            <div onclick="location.href='./course-creator.html'" data-tooltip="Course Creator"
+                style="width: 58px; height: 58px; background: #fef3f2; border: 1px solid #fee4e2; border-radius: 2px; color: #D92D20; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#D92D20'; this.style.color='#ffffff';"
+                onmouseout="this.style.background='#fef3f2'; this.style.color='#D92D20';">
+                <i class="fas fa-graduation-cap" style="font-size: 1.6rem;"></i>
+            </div>
+            <div onclick="location.href='./digitallib.html'" data-tooltip="Digital Library"
+                style="width: 58px; height: 58px; background: #fef3f2; border: 1px solid #fee4e2; border-radius: 2px; color: #D92D20; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#D92D20'; this.style.color='#ffffff';"
+                onmouseout="this.style.background='#fef3f2'; this.style.color='#D92D20';">
+                <i class="fas fa-book-open" style="font-size: 1.6rem;"></i>
+            </div>
+            <div onclick="location.href='./admit-card.html'" data-tooltip="Admit Cards"
+                style="width: 58px; height: 58px; background: #fef3f2; border: 1px solid #fee4e2; border-radius: 2px; color: #D92D20; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#D92D20'; this.style.color='#ffffff';"
+                onmouseout="this.style.background='#fef3f2'; this.style.color='#D92D20';">
+                <i class="fas fa-id-card" style="font-size: 1.6rem;"></i>
+            </div>
+            <div onclick="location.href='./smartqp.html'" data-tooltip="Smart QP AI"
+                style="width: 58px; height: 58px; background: #fef3f2; border: 1px solid #fee4e2; border-radius: 2px; color: #D92D20; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#D92D20'; this.style.color='#ffffff';"
+                onmouseout="this.style.background='#fef3f2'; this.style.color='#D92D20';">
+                <i class="fas fa-brain" style="font-size: 1.6rem;"></i>
+            </div>
+            <div onclick="location.href='./livemonitor.html'" data-tooltip="Live Monitor"
+                style="width: 58px; height: 58px; background: #fef3f2; border: 1px solid #fee4e2; border-radius: 2px; color: #D92D20; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#D92D20'; this.style.color='#ffffff';"
+                onmouseout="this.style.background='#fef3f2'; this.style.color='#D92D20';">
+                <i class="fas fa-desktop" style="font-size: 1.6rem;"></i>
+            </div>
+            <div onclick="location.href='./POST-CONTENT.html'" data-tooltip="Post Content"
+                style="width: 58px; height: 58px; background: #fef3f2; border: 1px solid #fee4e2; border-radius: 2px; color: #D92D20; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#D92D20'; this.style.color='#ffffff';"
+                onmouseout="this.style.background='#fef3f2'; this.style.color='#D92D20';">
+                <i class="fas fa-bullhorn" style="font-size: 1.6rem;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right-Click Context Menu Popup for Left Main Pane (Orange & White Theme - Clean Soft Edges) -->
+    <div id="leftPaneContextMenu"
+        style="display: none; position: fixed; z-index: 10000; background: #ffffff; border-radius: 2px; box-shadow: 0 16px 40px rgba(223, 90, 34, 0.15), 0 4px 16px rgba(0,0,0,0.06); border: 1px solid #ffd8cc; padding: 6px; width: 265px; min-width: 250px; max-width: 310px; transition: opacity 0.15s ease;">
+        <div id="leftPaneContextMenuContent"></div>
     </div>
 
     <!-- Notification Systems -->
@@ -1088,34 +1462,348 @@
         const user = auth.getCurrentUser();
         let allExams = [];
 
+        function toggleQuickLinksGrid(e) {
+            if (e) e.stopPropagation();
+            const grid = document.getElementById('quickLinksGrid');
+            const extraCards = document.querySelectorAll('.extra-quick-card');
+            const allCardItems = document.querySelectorAll('.ql-card-item');
+            const chevron = document.getElementById('quickLinksChevron');
+            if (!extraCards.length) return;
+
+            let isExpanding = extraCards[0].style.display === 'none' || extraCards[0].style.display === '';
+
+            extraCards.forEach(card => {
+                card.style.display = isExpanding ? 'flex' : 'none';
+            });
+
+            if (grid) {
+                if (isExpanding) {
+                    grid.style.display = 'grid';
+                    grid.style.gridTemplateColumns = '1fr 1fr';
+                    allCardItems.forEach(card => {
+                        card.style.width = '100%';
+                        card.style.minWidth = '0';
+                    });
+                } else {
+                    grid.style.display = 'flex';
+                    grid.style.overflowX = 'auto';
+                    allCardItems.forEach(card => {
+                        card.style.width = '270px';
+                        card.style.minWidth = '270px';
+                    });
+                }
+            }
+
+            if (chevron) {
+                chevron.className = isExpanding ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+            }
+        }
+
+        function handleRightBarContextMenu(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const menu = document.getElementById('rightBarContextMenu');
+            if (!menu) return;
+
+            let mouseX = e.clientX;
+            let mouseY = e.clientY;
+
+            const winWidth = window.innerWidth;
+            const winHeight = window.innerHeight;
+            const menuWidth = 280;
+            const menuHeight = 240;
+
+            if (mouseX + menuWidth > winWidth) mouseX = winWidth - menuWidth - 15;
+            if (mouseY + menuHeight > winHeight) mouseY = winHeight - menuHeight - 15;
+
+            menu.style.left = mouseX + 'px';
+            menu.style.top = mouseY + 'px';
+            menu.style.display = 'block';
+        }
+
+        function closeRightBarContextMenu() {
+            const menu = document.getElementById('rightBarContextMenu');
+            if (menu) menu.style.display = 'none';
+        }
+
+        function handleLeftPaneContextMenu(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeRightBarContextMenu();
+            const menu = document.getElementById('leftPaneContextMenu');
+            const menuContent = document.getElementById('leftPaneContextMenuContent');
+            if (!menu || !menuContent) return;
+
+            // Check if right-clicked on an exam card or course card
+            const examCard = e.target.closest('[data-exam-id]');
+            const courseCard = e.target.closest('[data-course-id]');
+
+            if (examCard) {
+                const examId = examCard.getAttribute('data-exam-id');
+                const isCompetitive = examCard.getAttribute('data-is-competitive') === 'true';
+                const exam = (allExams && allExams.find(x => x.id === examId)) ||
+                             (baseRegularExams && baseRegularExams.find(x => x.id === examId)) ||
+                             (baseCompetitiveExams && baseCompetitiveExams.find(x => x.id === examId)) ||
+                             (window.db && db.getExamById ? db.getExamById(examId) : null);
+
+                const safeExamTitle = (exam ? (exam.title || 'Assessment') : 'Assessment').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const testIdBadge = exam && exam.testId ? `#${exam.testId}` : '';
+
+                menuContent.innerHTML = `
+                    <div style="background: #fff5f0; border-radius: 2px; padding: 10px 12px; margin-bottom: 6px; border: 1px solid #ffe4d6; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; flex-direction: column; gap: 2px; overflow: hidden; padding-right: 8px;">
+                            <span style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 0.82rem; color: #df5a22; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${safeExamTitle}">
+                                ${safeExamTitle}
+                            </span>
+                            <span style="font-family: 'Mulish', sans-serif; font-size: 0.72rem; font-weight: 700; color: #94a3b8;">
+                                TEST ${testIdBadge}
+                            </span>
+                        </div>
+                        <span onclick="closeLeftPaneContextMenu()" style="cursor: pointer; color: #df5a22; font-size: 0.95rem; padding: 2px 6px; border-radius: 2px; transition: background 0.15s;" onmouseover="this.style.background='#fed7aa'" onmouseout="this.style.background='transparent'"><i class="fas fa-times"></i></span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 3px;">
+                        <div onclick="closeLeftPaneContextMenu(); window.location.href='./livemonitor.html?examId=${examId}';" class="ctx-item">
+                            <i class="fas fa-desktop" style="color: #df5a22;"></i>
+                            <span>Live Monitor</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); ${isCompetitive ? `window.location.href='./competetiveresults.html?examId=${examId}';` : `window.location.href='./studentreports.html?examId=${examId}';`}" class="ctx-item">
+                            <i class="fas fa-chart-pie" style="color: #df5a22;"></i>
+                            <span>View Reports</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); ${isCompetitive ? `window.location.href='./competetiveresults.html?examId=${examId}';` : `window.location.href='./exam-evaluation.html?examId=${examId}';`}" class="ctx-item">
+                            <i class="fas fa-check-double" style="color: #df5a22;"></i>
+                            <span>Evaluate Submissions</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); editExam('${examId}');" class="ctx-item">
+                            <i class="fas fa-edit" style="color: #df5a22;"></i>
+                            <span>Edit Test</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); copyTestLink('${examId}', '${exam?.testId || ''}');" class="ctx-item">
+                            <i class="fas fa-link" style="color: #df5a22;"></i>
+                            <span>Copy Join Link</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); downloadExamPDF('${examId}');" class="ctx-item">
+                            <i class="fas fa-file-pdf" style="color: #df5a22;"></i>
+                            <span>Download PDF</span>
+                        </div>
+
+                        <div style="border-top: 1px solid #ffe4d6; margin: 4px 0;"></div>
+
+                        <div onclick="closeLeftPaneContextMenu(); endExam('${examId}');" class="ctx-item" style="color: #d32f2f;">
+                            <i class="fas fa-stop-circle" style="color: #d32f2f;"></i>
+                            <span>End This Test</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); expireExam('${examId}');" class="ctx-item" style="color: #FF8A00;">
+                            <i class="fas fa-calendar-times" style="color: #FF8A00;"></i>
+                            <span>Expire This Test</span>
+                        </div>
+                    </div>
+                `;
+            } else if (courseCard) {
+                const courseId = courseCard.getAttribute('data-course-id');
+                const course = baseCoursesList && baseCoursesList.find(c => c.id === courseId);
+                const safeCourseTitle = (course ? (course.title || 'Course') : 'Course').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+                menuContent.innerHTML = `
+                    <div style="background: #fff5f0; border-radius: 2px; padding: 10px 12px; margin-bottom: 6px; border: 1px solid #ffe4d6; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; flex-direction: column; gap: 2px; overflow: hidden; padding-right: 8px;">
+                            <span style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 0.82rem; color: #df5a22; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${safeCourseTitle}">
+                                ${safeCourseTitle}
+                            </span>
+                            <span style="font-family: 'Mulish', sans-serif; font-size: 0.72rem; font-weight: 700; color: #94a3b8;">
+                                COURSE (${course?.modules?.length || 0} Modules)
+                            </span>
+                        </div>
+                        <span onclick="closeLeftPaneContextMenu()" style="cursor: pointer; color: #df5a22; font-size: 0.95rem; padding: 2px 6px; border-radius: 2px; transition: background 0.15s;" onmouseover="this.style.background='#fed7aa'" onmouseout="this.style.background='transparent'"><i class="fas fa-times"></i></span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 3px;">
+                        <div onclick="closeLeftPaneContextMenu(); location.href='./course-creator.html?id=${courseId}';" class="ctx-item">
+                            <i class="fas fa-graduation-cap" style="color: #df5a22;"></i>
+                            <span>Edit Curriculum</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); toggleCardDetails(null, 'course-${courseId}');" class="ctx-item">
+                            <i class="fas fa-info-circle" style="color: #df5a22;"></i>
+                            <span>Toggle Details</span>
+                        </div>
+
+                        <div style="border-top: 1px solid #ffe4d6; margin: 4px 0;"></div>
+
+                        <div onclick="closeLeftPaneContextMenu(); expireCourse('${courseId}');" class="ctx-item" style="color: #FF8A00;">
+                            <i class="fas fa-ban" style="color: #FF8A00;"></i>
+                            <span>Expire This Course</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // General background right click
+                menuContent.innerHTML = `
+                    <div style="background: #fff5f0; border-radius: 2px; padding: 10px 12px; margin-bottom: 6px; border: 1px solid #ffe4d6; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 0.82rem; color: #df5a22; letter-spacing: 0.3px;">
+                            Quick Actions
+                        </span>
+                        <span onclick="closeLeftPaneContextMenu()" style="cursor: pointer; color: #df5a22; font-size: 0.95rem; padding: 2px 6px; border-radius: 2px; transition: background 0.15s;" onmouseover="this.style.background='#fed7aa'" onmouseout="this.style.background='transparent'"><i class="fas fa-times"></i></span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 3px;">
+                        <div onclick="closeLeftPaneContextMenu(); createNewExam();" class="ctx-item">
+                            <i class="fas fa-plus-circle" style="color: #df5a22;"></i>
+                            <span>New Assessment</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); location.href='./course-creator.html';" class="ctx-item">
+                            <i class="fas fa-graduation-cap" style="color: #df5a22;"></i>
+                            <span>New Course</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); location.href='./livemonitor.html';" class="ctx-item">
+                            <i class="fas fa-desktop" style="color: #df5a22;"></i>
+                            <span>Live Monitor</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); location.href='./exam-evaluation.html';" class="ctx-item">
+                            <i class="fas fa-check-double" style="color: #df5a22;"></i>
+                            <span>Evaluate Exams</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); location.href='./studentreports.html';" class="ctx-item">
+                            <i class="fas fa-chart-pie" style="color: #df5a22;"></i>
+                            <span>View Reports</span>
+                        </div>
+
+                        <div style="border-top: 1px solid #ffe4d6; margin: 4px 0;"></div>
+
+                        <div onclick="closeLeftPaneContextMenu(); endAllExams();" class="ctx-item" style="color: #d32f2f;">
+                            <i class="fas fa-stop-circle" style="color: #d32f2f;"></i>
+                            <span>End All Tests</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); expireAllExams();" class="ctx-item" style="color: #FF8A00;">
+                            <i class="fas fa-calendar-times" style="color: #FF8A00;"></i>
+                            <span>Expire All Tests</span>
+                        </div>
+
+                        <div onclick="closeLeftPaneContextMenu(); expireAllCourses();" class="ctx-item" style="color: #c4320a;">
+                            <i class="fas fa-ban" style="color: #c4320a;"></i>
+                            <span>Expire All Courses</span>
+                        </div>
+
+                        <div style="border-top: 1px solid #ffe4d6; margin: 4px 0;"></div>
+
+                        <div onclick="closeLeftPaneContextMenu(); handleLogout();" class="ctx-item" style="color: #d32f2f;">
+                            <i class="fas fa-sign-out-alt" style="color: #d32f2f;"></i>
+                            <span>Logout</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let mouseX = e.clientX;
+            let mouseY = e.clientY;
+
+            const winWidth = window.innerWidth;
+            const winHeight = window.innerHeight;
+            const menuWidth = 265;
+            const menuHeight = 360;
+
+            if (mouseX + menuWidth > winWidth) mouseX = winWidth - menuWidth - 15;
+            if (mouseY + menuHeight > winHeight) mouseY = Math.max(10, winHeight - menuHeight - 15);
+
+            menu.style.left = mouseX + 'px';
+            menu.style.top = mouseY + 'px';
+            menu.style.display = 'block';
+        }
+
+        function closeLeftPaneContextMenu() {
+            const menu = document.getElementById('leftPaneContextMenu');
+            if (menu) menu.style.display = 'none';
+        }
+
+        document.addEventListener('contextmenu', function (e) {
+            const mainContent = document.querySelector('.main-content');
+            const sidePanel = document.querySelector('.side-panel');
+
+            if (sidePanel && sidePanel.contains(e.target)) {
+                handleRightBarContextMenu(e);
+            } else if (mainContent && mainContent.contains(e.target)) {
+                handleLeftPaneContextMenu(e);
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            const contextMenu = document.getElementById('rightBarContextMenu');
+            if (contextMenu && contextMenu.style.display === 'block' && !contextMenu.contains(e.target)) {
+                closeRightBarContextMenu();
+            }
+            const leftMenu = document.getElementById('leftPaneContextMenu');
+            if (leftMenu && leftMenu.style.display === 'block' && !leftMenu.contains(e.target)) {
+                closeLeftPaneContextMenu();
+            }
+        });
+
         function init() {
             document.getElementById('userName').textContent = user.name || 'INSTRUCTOR';
-            document.getElementById('userInitial').textContent = (user.name || 'T').charAt(0).toUpperCase();
 
             loadData();
         }
 
+        let baseRegularExams = [];
+        let baseCompetitiveExams = [];
+        let baseCoursesList = [];
+
         function loadData() {
             allExams = db.getTeacherExams(user.id).filter(e => e.status !== 'expired');
-            const regularExams = allExams.filter(e => !e.isCompetitive);
-            const competitiveExams = allExams.filter(e => e.isCompetitive);
+            baseRegularExams = allExams.filter(e => !e.isCompetitive);
+            baseCompetitiveExams = allExams.filter(e => e.isCompetitive);
 
-            renderExams(regularExams, 'examsList', 'examCount');
-            renderExams(competitiveExams, 'competitiveExamsList', 'competitiveExamCount');
+            renderExams(baseRegularExams, 'examsList', 'examCount');
+            renderExams(baseCompetitiveExams, 'competitiveExamsList', 'competitiveExamCount');
 
-            const courses = db.getTeacherCourses ? db.getTeacherCourses(user.id).filter(c => c.status !== 'expired') : [];
-            renderCourses(courses);
-            document.getElementById('courseCount').textContent = `(${courses.length})`;
+            baseCoursesList = db.getTeacherCourses ? db.getTeacherCourses(user.id).filter(c => c.status !== 'expired') : [];
+            renderCourses(baseCoursesList);
+            document.getElementById('courseCount').textContent = `(${baseCoursesList.length})`;
+        }
+
+        function filterAssessments() {
+            const query = (document.getElementById('listSearch')?.value || '').toLowerCase();
+            const filtered = baseRegularExams.filter(e =>
+                (e.title && e.title.toLowerCase().includes(query)) ||
+                (e.testId && e.testId.toLowerCase().includes(query))
+            );
+            renderExams(filtered, 'examsList', 'examCount');
+        }
+
+        function filterCourses() {
+            const query = (document.getElementById('courseSearchInput')?.value || '').toLowerCase();
+            const filtered = baseCoursesList.filter(c =>
+                (c.title && c.title.toLowerCase().includes(query))
+            );
+            renderCourses(filtered);
+        }
+
+        function filterCompetitiveExams() {
+            const query = (document.getElementById('competitiveSearchInput')?.value || '').toLowerCase();
+            const filtered = baseCompetitiveExams.filter(e =>
+                (e.title && e.title.toLowerCase().includes(query)) ||
+                (e.testId && e.testId.toLowerCase().includes(query))
+            );
+            renderExams(filtered, 'competitiveExamsList', 'competitiveExamCount');
         }
 
         function renderCourses(courses) {
             const container = document.getElementById('coursesList');
             if (courses.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 60px; color: var(--secondary);">
-                        <i class="fas fa-graduation-cap" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
-                        <p>No courses published yet. Share your knowledge!</p>
-                        <button onclick="location.href='./course-creator.html'" class="btn-action primary" style="margin-top: 20px; height: 44px;">CREATE YOUR FIRST COURSE</button>
+                    <div style="text-align: center; padding: 40px; color: #888888; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 500;">
+                        Not created yet.
                     </div>
                 `;
                 return;
@@ -1124,31 +1812,54 @@
             container.innerHTML = courses.map(c => {
                 const status = c.status || 'published';
                 const isDraft = status === 'draft';
+                const safeTitle = (c.title || 'Untitled Course').replace(/"/g, '&quot;');
+                const progressPct = c.avgProgress || 0;
+
                 return `
-                    <div class="assessment-card ${isDraft ? 'draft-card' : ''}" onclick="location.href='./course-creator.html?id=${c.id}'">
-                        <div class="card-icon-area" style="background: ${isDraft ? '#FEF3F2' : '#ECFDF3'}; color: ${isDraft ? '#B42318' : '#027A48'};">
-                            <i class="fas ${isDraft ? 'fa-pencil-ruler' : 'fa-book-reader'}"></i>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-title" style="font-family:'Outfit'; font-weight:700;">${c.title || 'Untitled Course'}</div>
-                            <div class="card-meta">
-                                <span><i class="far fa-folder"></i> ${c.modules?.length || 0} Modules</span>
-                                <span><i class="far fa-users"></i> ${c.studentCount || 0} Students</span>
-                                <div class="status-pill" style="display:inline-block; background:${isDraft ? '#FEF3F2' : '#ECFDF3'}; color:${isDraft ? '#B42318' : '#12B76A'}; border:1px solid ${isDraft ? '#FCA5A1' : '#ABEFC6'}; font-size:0.6rem; padding:1px 8px; border-radius:12px; font-weight:800; text-transform:uppercase; margin-left:8px;">${status}</div>
+                    <div class="learning-module-card ${isDraft ? 'draft-card' : ''}" data-course-id="${c.id}" style="background: #ffffff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 22px 28px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 10px; position: relative; transition: all 0.25s ease; cursor: pointer;" onclick="location.href='./course-creator.html?id=${c.id}'">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+                            <h3 data-tooltip="${safeTitle}" style="font-family: 'Mulish', sans-serif; font-size: 1.25rem; font-weight: 600; color: #111111; margin: 0; line-height: 1.35; flex: 1;">
+                                ${c.title || 'Untitled Course'}
+                            </h3>
+                            <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;" onclick="event.stopPropagation();">
+                                <div class="icon-btn-box" data-tooltip="Open Course" onclick="event.stopPropagation(); location.href='./course-creator.html?id=${c.id}'" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#f9fafb;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
+                                    <img src="../TESTPAD_WEBSITE__files/menu-1.svg" alt="Open" style="width: 24px; height: 24px;" />
+                                </div>
+                                <div class="icon-btn-box" id="expandBtn-course-${c.id}" data-tooltip="Details & Actions" onclick="event.stopPropagation(); toggleCardDetails(event, 'course-${c.id}')" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#f9fafb; transition: transform 0.25s ease;" onmouseover="this.style.background='#fef3f2'" onmouseout="this.style.background='#f9fafb'">
+                                    <i class="fas fa-chevron-down" style="color:#666; font-size: 0.95rem;"></i>
+                                </div>
                             </div>
                         </div>
-                        <div class="stats-group">
-                            <div class="stat-item">
-                                <span class="stat-value">${c.avgProgress || 0}%</span>
-                                <span class="stat-label">Avg. Completion</span>
-                            </div>
+
+                        <div style="font-family: 'Mulish', sans-serif; font-size: 0.9rem; color: #777777; font-weight: 400; display: flex; align-items: center; gap: 12px;">
+                            <span>${c.modules?.length || 0} Modules</span>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn-action light-orange" onclick="event.stopPropagation(); expireCourse('${c.id}')" title="Expire Course"><i class="fas fa-calendar-times"></i></button>
-                            <button class="btn-action" title="View Students" onclick="event.stopPropagation();"><i class="fas fa-user-friends"></i></button>
-                            <button class="btn-action primary" style="background:${isDraft ? '#D96C33' : '#12B76A'};" onclick="event.stopPropagation(); location.href='./course-creator.html?id=${c.id}'">
-                                ${isDraft ? 'CONTINUE DESIGN' : 'EDIT CURRICULUM'}
-                            </button>
+
+                        <div data-tooltip="${progressPct}% avg completion" style="display: flex; align-items: center; gap: 16px; margin-top: 4px; width: 100%;">
+                            <div style="width: 280px; max-width: 60%; height: 7px; min-height: 7px; max-height: 7px; background: #f5c6b6; border-radius: 0; overflow: hidden; position: relative;">
+                                <div style="width: ${progressPct}%; height: 100%; min-height: 7px; background: #df5a22; border-radius: 0; transition: width 0.6s ease;"></div>
+                            </div>
+                            <span style="font-family: 'Mulish', sans-serif; font-size: 0.88rem; color: #888888; font-weight: 500;">${progressPct}% completion</span>
+                        </div>
+
+                        <div id="details-course-${c.id}" class="card-details-panel" style="display: none; margin-top: 18px; padding-top: 18px; border-top: 1px solid #f3f4f6; cursor: default; font-family: 'Mulish', sans-serif;" onclick="event.stopPropagation();">
+                            <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 24px;">
+                                <span class="status-pill" style="display:inline-block; background:${isDraft ? '#fef3f2' : '#ecfdf5'}; color:${isDraft ? '#b42318' : '#047857'}; border:1px solid ${isDraft ? '#fca5a1' : '#a7f3d0'}; font-size:0.85rem; padding:6px 14px; border-radius:12px; font-weight:700; text-transform:uppercase; font-family: 'Mulish', sans-serif;">${status}</span>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; font-family: 'Mulish', sans-serif; font-size: 1.05rem; color: #374151; line-height: 1.6;">
+                                <div><strong>Modules:</strong> ${c.modules?.length || 0}</div>
+                                <div><strong>Students Enrolled:</strong> ${c.studentCount || 0}</div>
+                                <div><strong>Avg. Completion:</strong> ${c.avgProgress || 0}%</div>
+                            </div>
+
+                            <div style="display: flex; gap: 14px 18px; flex-wrap: wrap; align-items: center;">
+                                <button class="btn-detail-action" onclick="event.stopPropagation(); expireCourse('${c.id}')" title="Expire Course">EXPIRE</button>
+                                <button class="btn-detail-action" title="View Students" onclick="event.stopPropagation();">STUDENTS</button>
+                                <button class="btn-detail-action" onclick="event.stopPropagation(); location.href='./course-creator.html?id=${c.id}'">
+                                    ${isDraft ? 'CONTINUE DESIGN' : 'EDIT CURRICULUM'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1159,23 +1870,11 @@
             const container = document.getElementById(containerId);
             document.getElementById(countId).textContent = `(${exams.length})`;
             if (exams.length === 0) {
-                if (containerId === 'competitiveExamsList') {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 60px; color: var(--secondary);">
-                            <i class="fas fa-medal" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
-                            <p>No competitive exams designed yet.</p>
-                            <button onclick="location.href='./comexam-creator.html'" class="btn-action primary" style="background:#2563eb; margin-top: 20px; height: 44px;">CREATE COMPETITIVE EXAM</button>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 60px; color: var(--secondary);">
-                            <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
-                            <p>No assessments found in your repository.</p>
-                            <button onclick="createNewExam()" class="btn-action primary" style="margin-top: 20px; height: 44px;">LAUNCH NEW ASSESSMENT</button>
-                        </div>
-                    `;
-                }
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #888888; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 500;">
+                        Not created yet.
+                    </div>
+                `;
                 return;
             }
 
@@ -1193,70 +1892,117 @@
 
                 const marks = exam.totalMarks || 0;
                 const sectionsCount = exam.sections ? exam.sections.length : 0;
-
                 let questionsCount = exam.questions ? exam.questions.length : 0;
 
+                const progressPct = participation > 0 ? Math.round((submitted / participation) * 100) : 0;
+                const safeTitle = (exam.title || 'Assessment').replace(/"/g, '&quot;');
+
                 return `
-                    <div class="assessment-card" onclick="openAssessment('${exam.id}')">
-                        <div class="card-icon-area" style="${exam.isCompetitive ? 'background:#eff6ff; color:#2563eb;' : ''}">
-                            <i class="fas ${exam.isCompetitive ? 'fa-trophy' : 'fa-scroll'}"></i>
-                        </div>
-                        <div class="card-body" style="min-width: 280px; flex: 1;">
-                            <div class="card-title">${exam.title} <span style="font-family:'JetBrains Mono'; color:var(--primary); font-size:0.75rem; font-weight:800; background:var(--primary-soft); padding:2px 6px; border-radius:4px; margin-left:8px; border: 1px solid #FDA29B;">#${exam.testId}</span></div>
-                            <div class="card-meta" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem;">
-                                <div><span class="status-pill ${status}" style="margin-right: 8px;">${status}</span></div>
-                                <div style="display:flex; flex-wrap:wrap; gap: 12px; margin-top: 4px; color:#475569;">
-                                    <span><i class="far fa-calendar-plus" style="color:#10b981; margin-right:4px;"></i> <strong>Start:</strong> ${startDateStr} ${startTimeStr}</span>
-                                    <span><i class="far fa-calendar-check" style="color:#ef4444; margin-right:4px;"></i> <strong>End:</strong> ${endDateStr} ${endTimeStr}</span>
+                    <div class="learning-module-card" data-exam-id="${exam.id}" data-is-competitive="${exam.isCompetitive ? 'true' : 'false'}" style="background: #ffffff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 22px 28px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 10px; position: relative; transition: all 0.25s ease; cursor: pointer;" onclick="openAssessment('${exam.id}')">
+                        <!-- Top Header Row: Title + 2 Icons -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+                            <h3 data-tooltip="${safeTitle}" style="font-family: 'Mulish', sans-serif; font-size: 1.25rem; font-weight: 600; color: #111111; margin: 0; line-height: 1.35; flex: 1;">
+                                ${exam.title}
+                            </h3>
+                            <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;" onclick="event.stopPropagation();">
+                                <!-- Icon 1: Enter / Edit Test -->
+                                <div class="icon-btn-box" data-tooltip="Enter Assessment" onclick="event.stopPropagation(); openAssessment('${exam.id}')" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#f9fafb;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
+                                    <img src="../TESTPAD_WEBSITE__files/menu-1.svg" alt="Enter" style="width: 24px; height: 24px;" />
+                                </div>
+                                <!-- Icon 2: Expand Details Toggle (^) -->
+                                <div class="icon-btn-box" id="expandBtn-${exam.id}" data-tooltip="Details & Actions" onclick="event.stopPropagation(); toggleCardDetails(event, '${exam.id}')" style="width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#f9fafb; transition: transform 0.25s ease;" onmouseover="this.style.background='#fef3f2'" onmouseout="this.style.background='#f9fafb'">
+                                    <i class="fas fa-chevron-down" style="color:#666; font-size: 0.95rem;"></i>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="stats-group" style="padding: 0 16px; border-left: none; gap: 20px;">
-                            <div class="stat-item">
-                                <span class="stat-value" style="font-size:1.1rem; color:#0f172a;">${marks}</span>
-                                <span class="stat-label">Marks</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" style="font-size:1.1rem; color:#0f172a;">${sectionsCount}</span>
-                                <span class="stat-label">Sections</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" style="font-size:1.1rem; color:#0f172a;">${questionsCount}</span>
-                                <span class="stat-label">Qns</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" style="font-size:1.1rem; color:#0f172a;">${exam.duration}m</span>
-                                <span class="stat-label">Time</span>
-                            </div>
+
+                        <!-- Subtitle Meta Row -->
+                        <div style="font-family: 'Mulish', sans-serif; font-size: 0.9rem; color: #777777; font-weight: 400; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <span>${sectionsCount} Sections (${questionsCount} Qns)</span>
                         </div>
 
-                        <div class="stats-group" style="padding: 0 24px; gap: 20px; border-right: none;">
-                            <div class="stat-item">
-                                <span class="stat-value" style="font-size:1.1rem;">${participation}</span>
-                                <span class="stat-label">Joins</span>
+                        <!-- Progress Bar Row -->
+                        <div data-tooltip="${submitted} done out of ${participation} total joins" style="display: flex; align-items: center; gap: 16px; margin-top: 4px; width: 100%;">
+                            <div style="width: 280px; max-width: 60%; height: 7px; min-height: 7px; max-height: 7px; background: #f5c6b6; border-radius: 0; overflow: hidden; position: relative;">
+                                <div style="width: ${progressPct}%; height: 100%; min-height: 7px; background: #df5a22; border-radius: 0; transition: width 0.6s ease;"></div>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-value" style="font-size:1.1rem;">${submitted}</span>
-                                <span class="stat-label">Done</span>
-                            </div>
+                            <span style="font-family: 'Mulish', sans-serif; font-size: 0.88rem; color: #888888; font-weight: 500;">${submitted}/${participation} Submissions (${progressPct}%)</span>
                         </div>
 
-                        <div class="card-actions">
-                            <button class="btn-action" onclick="event.stopPropagation(); editExam('${exam.id}')" title="Edit Structure"><i class="fas fa-edit"></i></button>
-                            <button class="btn-action" onclick="event.stopPropagation(); downloadExamPDF('${exam.id}')" title="Download Test PDF"><i class="fas fa-file-pdf"></i></button>
-                            <button class="btn-action" onclick="event.stopPropagation(); window.location.href='./livemonitor.html?examId=${exam.id}'" title="Live Monitor"><i class="fas fa-broadcast-tower"></i></button>
-                            <button class="btn-action light-orange" onclick="event.stopPropagation(); expireExam('${exam.id}')" title="Expire Test (Remove from student dashboards)"><i class="fas fa-calendar-times"></i> EXPIRE</button>
-                            <button class="btn-action light-orange" onclick="event.stopPropagation(); endExam('${exam.id}')" title="End Test Right Now"><i class="fas fa-stop-circle"></i> END TEST</button>
-                            ${exam.isCompetitive ? 
-                                `<button class="btn-action primary" style="background:#2563eb;" onclick="event.stopPropagation(); window.location.href='./competetiveresults.html?examId=${exam.id}'">VIEW RESULTS <i class="fas fa-poll"></i></button>` :
-                                `<button class="btn-action light-orange" onclick="event.stopPropagation(); window.location.href='./exam-evaluation.html?examId=${exam.id}'">EVALUATE <i class="fas fa-clipboard-check"></i></button>
-                                 <button class="btn-action light-orange" onclick="event.stopPropagation(); openAssessment('${exam.id}')">REPORT <i class="fas fa-arrow-right"></i></button>`
-                            }
+                        <!-- Expandable Details Section (Shown when ^ is clicked) -->
+                        <div id="details-${exam.id}" class="card-details-panel" style="display: none; margin-top: 18px; padding-top: 18px; border-top: 1px solid #f3f4f6; cursor: default; font-family: 'Mulish', sans-serif;" onclick="event.stopPropagation();">
+                            <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 24px;">
+                                <span style="font-family:'Mulish', sans-serif; color: #4b5563; font-size: 0.95rem; font-weight: 700; background: #f3f4f6; padding: 6px 14px; border-radius: 6px; border: 1px solid #e5e7eb;">Test ID: #${exam.testId}</span>
+                                <span class="status-pill ${status}" style="font-size: 0.85rem; padding: 6px 14px; font-family: 'Mulish', sans-serif;">${status}</span>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; font-family: 'Mulish', sans-serif; font-size: 1.05rem; color: #374151; line-height: 1.6;">
+                                <div><strong>Start:</strong> ${startDateStr} ${startTimeStr}</div>
+                                <div><strong>End:</strong> ${endDateStr} ${endTimeStr}</div>
+                                <div><strong>Marks:</strong> ${marks}</div>
+                                <div><strong>Duration:</strong> ${exam.duration}m</div>
+                                <div><strong>Joins:</strong> ${participation}</div>
+                                <div><strong>Submissions:</strong> ${submitted}</div>
+                            </div>
+
+                            <div style="display: flex; gap: 14px 18px; flex-wrap: wrap; align-items: center;">
+                                <button class="btn-detail-action" onclick="event.stopPropagation(); copyTestLink('${exam.id}', '${exam.testId}')" title="Copy Test Join Link">COPY LINK</button>
+                                <button class="btn-detail-action" onclick="event.stopPropagation(); expireExam('${exam.id}')" title="Expire Assessment">EXPIRE</button>
+                                <button class="btn-detail-action" onclick="event.stopPropagation(); endExam('${exam.id}')" title="End Assessment Now">END</button>
+                                ${exam.isCompetitive ?
+                        `<button class="btn-detail-action" onclick="event.stopPropagation(); window.location.href='./competetiveresults.html?examId=${exam.id}'">RESULTS</button>` :
+                        `<button class="btn-detail-action" onclick="event.stopPropagation(); window.location.href='./exam-evaluation.html?examId=${exam.id}'">EVALUATE</button>
+                                     <button class="btn-detail-action" onclick="event.stopPropagation(); openAssessment('${exam.id}')">REPORT</button>`
+                    }
+                                <button class="btn-detail-action" onclick="event.stopPropagation(); window.location.href='./livemonitor.html?examId=${exam.id}'" title="Live Monitor">MONITOR</button>
+                                <button class="btn-detail-action" onclick="event.stopPropagation(); editExam('${exam.id}')" title="Edit Structure">EDIT</button>
+                                <button class="btn-detail-action" onclick="event.stopPropagation(); downloadExamPDF('${exam.id}')" title="Download PDF">PDF</button>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        function toggleCardDetails(event, examId) {
+            if (event) event.stopPropagation();
+            const details = document.getElementById(`details-${examId}`);
+            const expandBtn = document.getElementById(`expandBtn-${examId}`);
+            if (!details) return;
+
+            const isHidden = details.style.display === 'none' || details.style.display === '';
+            details.style.display = isHidden ? 'block' : 'none';
+
+            if (expandBtn) {
+                const icon = expandBtn.querySelector('i');
+                if (icon) {
+                    icon.className = isHidden ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+                }
+                expandBtn.style.background = isHidden ? '#fef3f2' : '#f9fafb';
+            }
+        }
+
+        function copyTestLink(examId, testId) {
+            const link = `${window.location.origin}/pages/joinvialink.html?testId=${testId || examId}`;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(() => {
+                    showToast('Assessment link copied to clipboard!', 'success');
+                }).catch(() => {
+                    fallbackCopyText(link);
+                });
+            } else {
+                fallbackCopyText(link);
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const input = document.createElement('input');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showToast('Assessment link copied to clipboard!', 'success');
         }
 
         // --- UI ACTIONS ---
@@ -1494,11 +2240,11 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            let icon = type === 'success' ? 'check-circle' : (type === 'error' ? 'exclamation-circle' : 'info-circle');
-            toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${msg}</span>`;
+            let iconName = type === 'success' ? 'check' : (type === 'error' ? 'times' : 'info');
+            toast.innerHTML = `<span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:#ffffff; color:#101828; font-size:0.75rem; flex-shrink:0;"><i class="fas fa-${iconName}"></i></span><span>${msg}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
-                toast.style.animation = 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards';
+                toast.style.animation = 'slideDownToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
@@ -1535,7 +2281,29 @@
             }
         }
 
-        document.addEventListener('keydown', function(event) {
+        function toggleGridMenu() {
+            const dropdown = document.getElementById('gridMenuDropdown');
+            if (dropdown.style.display === 'none') {
+                dropdown.style.display = 'flex';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        }
+        
+        // Close grid menu when clicking outside
+        window.addEventListener('click', function(e) {
+            const gridContainer = document.querySelector('.grid-menu-container');
+            const gridDropdown = document.getElementById('gridMenuDropdown');
+            if (gridDropdown && gridContainer && !gridContainer.contains(e.target)) {
+                gridDropdown.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeLeftPaneContextMenu();
+                closeRightBarContextMenu();
+            }
             if ((event.key === 'l' || event.key === 'L') && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
                 auth.logout();
                 location.href = '../index.html';

@@ -329,13 +329,11 @@
             transform: rotate(0deg) scale(1.05);
         }
 
-        
 
-        
 
-        .portal-card:hover 
 
-        .portal-card::before {
+
+        .portal-card:hover .portal-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -684,7 +682,10 @@
                 }
 
                 if (window.db) db.createSession(student.id, 'student');
-                window.location.href = `./pages/exam-attempt.html?examId=${latestExam.id}&quickStart=true&vialink=true&auto=true`;
+                let res = db.startAttempt(latestExam.id, student.id, true);
+                const att = res.attempt || res.existingAttempt;
+                if (att) sessionStorage.removeItem(`exam_started_${att.id}`);
+                window.location.href = `./pages/exam-attempt.html?examId=${latestExam.id}&quickStart=true&vialink=true&reattempt=true`;
             } catch (e) {
                 console.error("Quick Start failed:", e);
                 alert("Quick Start failed.");
@@ -701,14 +702,14 @@
         }
 
         // Quick login shortcuts
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
             const key = e.key.toLowerCase();
             if (key === 'c' || key === 'i') {
                 const users = JSON.parse(localStorage.getItem('TESTPAD_users')) || [];
                 const history = JSON.parse(localStorage.getItem('TESTPAD_login_history')) || [];
-                
+
                 const loginAndRedirect = (user, url) => {
                     if (!user) return;
                     const sessions = JSON.parse(localStorage.getItem('TESTPAD_sessions')) || [];

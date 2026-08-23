@@ -25,6 +25,15 @@ const aiRoutes = require("./routes/ai");
 // Register Routes
 app.use("/api", aiRoutes);
 
+// Explicit route handlers for TESTVIEW & COURSETRAY
+app.get(['/TESTVIEW.html', '/testview.html', '/pages/TESTVIEW.html', '/pages/testview.html', '/TESTVIEW', '/testview'], (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'TESTVIEW.html'));
+});
+
+app.get(['/COURSETRAY.html', '/coursetray.html', '/pages/COURSETRAY.html', '/pages/coursetray.html', '/COURSETRAY', '/coursetray'], (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'COURSETRAY.html'));
+});
+
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname)));
 

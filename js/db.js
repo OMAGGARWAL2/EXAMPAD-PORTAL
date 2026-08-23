@@ -262,6 +262,52 @@ class ExampadDB {
                 existingAttempt.tabSwitchCount = 0;
                 existingAttempt.examStarted = false;
                 existingAttempt.isReattempt = true;
+
+                // Re-run randomization if exam exists
+                const exam = this.getExamById(examId);
+                if (exam) {
+                    const shuffleArray = (array) => {
+                        const shuffled = [...array];
+                        for (let i = shuffled.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                        }
+                        return shuffled;
+                    };
+                    const allQuestions = exam.questions || [];
+                    const sectionsMap = {};
+                    allQuestions.forEach(q => {
+                        const s = q.section || 'General';
+                        if (!sectionsMap[s]) sectionsMap[s] = [];
+                        sectionsMap[s].push(q);
+                    });
+                    const sections = exam.sections && exam.sections.length > 0 ? exam.sections : ['General'];
+                    let selectedQuestions = [];
+                    sections.forEach(sName => {
+                        const secPool = sectionsMap[sName] || [];
+                        const poolConfig = exam.pools ? exam.pools[sName] : null;
+                        const poolEnabled = poolConfig && (poolConfig.enabled === true || poolConfig.enabled === 'true');
+                        const poolSize = poolEnabled ? parseInt(poolConfig.pickCount || 0) : 0;
+                        let pickedFromSection = [];
+                        if (poolEnabled && poolSize > 0 && poolSize < secPool.length) {
+                            pickedFromSection = shuffleArray(secPool).slice(0, poolSize);
+                        } else {
+                            pickedFromSection = shuffleArray(secPool);
+                        }
+                        pickedFromSection = pickedFromSection.map(q => {
+                            if (q.type === 'mcq' && q.shuffleOptions && q.options) {
+                                return { ...q, options: shuffleArray(q.options) };
+                            }
+                            return q;
+                        });
+                        selectedQuestions.push(...pickedFromSection);
+                    });
+                    if (selectedQuestions.length > 0) {
+                        existingAttempt.selectedQuestions = selectedQuestions;
+                        existingAttempt.selectedQuestionIds = selectedQuestions.map(q => q.id);
+                    }
+                }
+
                 localStorage.setItem('TESTPAD_attempts', JSON.stringify(attempts));
                 return { success: true, attempt: existingAttempt, message: 'Re-started existing attempt' };
             }
@@ -424,10 +470,15 @@ class ExampadDB {
     submitAttempt(attemptId) {
         const attempt = this.getAttempt(attemptId);
         if (attempt) {
+            const scoreObj = this.calculateScore(attempt);
             const update = {
                 endTime: new Date().toISOString(),
                 status: 'submitted',
-                score: this.calculateScore(attempt)
+                score: scoreObj.score,
+                totalMarks: scoreObj.totalMarks,
+                percentage: scoreObj.percentage,
+                sectionBreakdown: scoreObj.sectionBreakdown,
+                scoreDetails: scoreObj
             };
             return this.updateAttempt(attemptId, update);
         }
@@ -583,50 +634,104 @@ class ExampadDB {
         return Math.random().toString(36).substr(2, 6).toUpperCase();
     }
 
+    getAttemptQuestions(attempt, exam) {
+        if (!attempt) return (exam && exam.questions) ? exam.questions : [];
+        if (attempt.selectedQuestions && Array.isArray(attempt.selectedQuestions) && attempt.selectedQuestions.length > 0) {
+            return attempt.selectedQuestions;
+        }
+        const ex = exam || (attempt.examId ? this.getExamById(attempt.examId) : null);
+        const pool = this.getQuestionPool() || [];
+        const qIds = attempt.selectedQuestionIds || attempt.questionIds;
+        if (qIds && Array.isArray(qIds) && qIds.length > 0) {
+            return qIds.map(id => {
+                const poolQ = pool.find(p => String(p.id) === String(id) || String(p.poolId) === String(id));
+                const localQ = ex?.questions?.find(q => String(q.id) === String(id));
+                const merged = { ...(localQ || {}), ...(poolQ || {}) };
+                return (merged.id || merged.title) ? merged : null;
+            }).filter(Boolean);
+        }
+        return (ex && ex.questions) ? ex.questions : [];
+    }
+
     calculateScore(attempt) {
         const exam = this.getExamById(attempt.examId);
-        if (!exam) return { score: 0, totalMarks: 0, percentage: 0 };
+        if (!exam) return { score: 0, totalMarks: 0, percentage: 0, sectionBreakdown: {} };
 
         let score = 0;
         let totalMarks = 0;
         let isPendingManualReview = false;
-        const assignedIds = attempt.questionIds || exam.questions.map(q => q.id);
-        const questionsToScore = exam.questions.filter(q => assignedIds.includes(q.id));
+        
+        // Strictly get the questions assigned to this student attempt (e.g. 20 picked questions)
+        const questionsToScore = this.getAttemptQuestions(attempt, exam);
+
+        // Section breakdown
+        const sectionBreakdown = {};
+        if (exam.sections && Array.isArray(exam.sections)) {
+            exam.sections.forEach(s => {
+                sectionBreakdown[s] = { score: 0, totalMarks: 0, percentage: 0, questionsCount: 0 };
+            });
+        }
 
         questionsToScore.forEach(question => {
-            const response = Array.isArray(attempt.responses) ? attempt.responses.find(r => r.questionId === question.id) : attempt.responses[question.id];
+            const secName = question.section || 'General';
+            if (!sectionBreakdown[secName]) {
+                sectionBreakdown[secName] = { score: 0, totalMarks: 0, percentage: 0, questionsCount: 0 };
+            }
+            sectionBreakdown[secName].questionsCount++;
+
+            const response = Array.isArray(attempt.responses) 
+                ? attempt.responses.find(r => r.questionId === question.id) 
+                : (attempt.responses ? attempt.responses[question.id] : null);
+            
             const isManualMarking = exam.security?.manualGrading;
             const needsManual = isManualMarking && (question.type === 'subjective' || question.type === 'file_upload');
             
+            let qScore = 0;
+            const qMax = (parseFloat(question.marks) !== undefined && !isNaN(parseFloat(question.marks))) ? parseFloat(question.marks) : 1;
+
             // 1. Check for manual mark first
-            if (response && response.manualMark !== undefined) {
-                score += parseFloat(response.manualMark);
+            if (response && response.manualMark !== undefined && response.manualMark !== null && response.manualMark !== '') {
+                qScore = parseFloat(response.manualMark) || 0;
             } else if (response) {
                 // 2. Automated scoring
                 if (question.type === 'coding' && response.results) {
                     const passedMarks = response.results
                         .filter(r => r.status === 'pass')
-                        .reduce((sum, r) => sum + (r.marks || 0), 0);
-                    score += passedMarks;
+                        .reduce((sum, r) => sum + (parseFloat(r.marks) || 0), 0);
+                    qScore = passedMarks;
                 } else if (!needsManual) {
                     if (this.checkAnswer(question, response)) {
-                        score += (question.marks || 0);
+                        qScore = qMax;
                     } else if (exam.negativeMarking && !['subjective', 'coding', 'file_upload', 'drawing'].includes(question.type)) {
-                        score -= (exam.negativeMarking / 100) * (question.marks || 0);
+                        qScore = - (parseFloat(exam.negativeMarking) / 100) * qMax;
                     }
                 } else {
                     isPendingManualReview = true;
                 }
             }
 
-            totalMarks += (question.marks || 0);
+            score += qScore;
+            totalMarks += qMax;
+
+            sectionBreakdown[secName].score += qScore;
+            sectionBreakdown[secName].totalMarks += qMax;
         });
 
+        // Compute percentage for each section
+        Object.keys(sectionBreakdown).forEach(sec => {
+            const s = sectionBreakdown[sec];
+            s.score = Math.max(0, s.score);
+            s.percentage = s.totalMarks > 0 ? ((s.score / s.totalMarks) * 100).toFixed(2) : 0;
+        });
+
+        const finalScore = Math.max(0, score);
         return {
-            score: Math.max(0, score),
+            score: finalScore,
             totalMarks,
-            percentage: totalMarks > 0 ? (score / totalMarks * 100).toFixed(2) : 0,
-            isPendingManualReview
+            percentage: totalMarks > 0 ? ((finalScore / totalMarks) * 100).toFixed(2) : 0,
+            isPendingManualReview,
+            sectionBreakdown,
+            assignedQuestions: questionsToScore
         };
     }
 
@@ -634,6 +739,11 @@ class ExampadDB {
         if (!rawResponse) return false;
         
         let response = rawResponse;
+        if (typeof response === 'object' && response !== null) {
+            if (response.hasOwnProperty('selectedOption')) response = response.selectedOption;
+            else if (response.hasOwnProperty('response')) response = response.response;
+            else if (response.hasOwnProperty('value')) response = response.value;
+        }
         // Drill down into nested value objects if they exist
         while (response !== null && typeof response === 'object' && response.hasOwnProperty('value')) {
             response = response.value;

@@ -5041,20 +5041,9 @@
             // --- SESSION FLOW CONTROL ---
             const sessionKey = isPractice ? (attemptId || 'practice') : attemptId;
 
-            // For first attempt (non-reattempts), we bypass security checks/verifications and start directly
-            if (!isReattempt) {
-                if (currentAttempt && !currentAttempt.examStarted) {
-                    currentAttempt.examStarted = true;
-                    if (attemptId && attemptId !== 'practice') {
-                        db.updateAttempt(attemptId, { examStarted: true });
-                    }
-                }
-                sessionStorage.setItem(`exam_started_${sessionKey}`, 'true');
-            }
-
             const hasStartedValue = currentAttempt.examStarted ? 'true' : sessionStorage.getItem(`exam_started_${sessionKey}`);
 
-            if (hasStartedValue === 'true') {
+            if (hasStartedValue === 'true' && !isReattempt) {
                 // Resume session immediately
                 const overlay = document.getElementById('securityCheckOverlay');
                 if (overlay) overlay.style.display = 'none';
@@ -5067,9 +5056,8 @@
                     enterFS();
                 }
             } else {
-                // New Session - Run verification steps (including roll number step)
+                // New Session - Run internal Step 2 and Step 3 verification
                 const overlay = document.getElementById('securityCheckOverlay');
-                // For both normal and vialink modes, we now run security checks (vialink will skip to step 2 internally)
                 if (overlay) overlay.style.display = 'flex';
                 runSecurityChecks();
             }
@@ -5407,17 +5395,21 @@
                 // Step 2: Explicitly show Roll No, Passcode, and Test Code
                 const container = document.getElementById('verificationFieldsContainer');
                 if (container) {
+                    const defaultRoll = (user ? (user.rollNo || user.id) : '') || sessionStorage.getItem('exam_roll_' + sessionKey) || '';
+                    const defaultCode = currentExam ? (currentExam.testId || currentExam.id || '') : '';
+                    const defaultPass = sessionStorage.getItem('pending_passcode') || (currentExam && currentExam.security ? currentExam.security.passcode : '') || '123456';
+
                     container.innerHTML = `
                         <div style="position: relative; margin-bottom: 18px;">
                             <label style="display: block; font-size: 1.15rem; color: #666; margin-bottom: 6px; font-weight: 600; font-family: 'Mulish', sans-serif;">email or roll number *</label>
-                            <input type="text" id="ident_field_roll" placeholder=""
+                            <input type="text" id="ident_field_roll" value="${defaultRoll}" placeholder=""
                                    style="width: 100%; padding: 10px 0; font-size: 1.15rem; color: #2d2d2d; border: none; border-bottom: 1px solid #e0e0e0; background: transparent; transition: all 0.2s; outline: none; font-family: 'Mulish', sans-serif; font-weight: 500;"
                                    onfocus="this.style.borderBottomColor='#de6834'" onblur="this.style.borderBottomColor='#e0e0e0'"
                                    onkeydown="if(event.key === 'Enter') finalizeSecurity()">
                         </div>
                         <div style="position: relative; margin-bottom: 18px;">
                             <label style="display: block; font-size: 1.15rem; color: #666; margin-bottom: 6px; font-weight: 600; font-family: 'Mulish', sans-serif;">passcode *</label>
-                            <input type="password" id="ident_field_passcode" placeholder=""
+                            <input type="password" id="ident_field_passcode" value="${defaultPass}" placeholder=""
                                    style="width: 100%; padding: 10px 0; font-size: 1.15rem; color: #2d2d2d; border: none; border-bottom: 1px solid #e0e0e0; background: transparent; transition: all 0.2s; outline: none; font-family: 'Mulish', sans-serif; font-weight: 500; padding-right: 35px; box-sizing: border-box;"
                                    onfocus="this.style.borderBottomColor='#de6834'" onblur="this.style.borderBottomColor='#e0e0e0'"
                                    onkeydown="if(event.key === 'Enter') finalizeSecurity()">
@@ -5429,7 +5421,7 @@
                         </div>
                         <div style="position: relative; margin-bottom: 18px;">
                             <label style="display: block; font-size: 1.15rem; color: #666; margin-bottom: 6px; font-weight: 600; font-family: 'Mulish', sans-serif;">test code *</label>
-                            <input type="text" id="ident_field_testcode" placeholder=""
+                            <input type="text" id="ident_field_testcode" value="${defaultCode}" placeholder=""
                                    style="width: 100%; padding: 10px 0; font-size: 1.15rem; color: #2d2d2d; border: none; border-bottom: 1px solid #e0e0e0; background: transparent; transition: all 0.2s; outline: none; font-family: 'Mulish', sans-serif; font-weight: 500;"
                                    onfocus="this.style.borderBottomColor='#de6834'" onblur="this.style.borderBottomColor='#e0e0e0'"
                                    onkeydown="if(event.key === 'Enter') finalizeSecurity()">

@@ -536,11 +536,12 @@
                     const attempt = attemptsData.find(a => a.id === attemptId);
                     const exam = db.getExamById(attempt.examId);
                     const scoreObj = db.calculateScore(attempt);
+                    const assignedQuestions = db.getAttemptQuestions ? db.getAttemptQuestions(attempt, exam) : (exam?.questions || []);
 
                     let questionsLog = '';
-                    exam.questions.forEach((q, qIndex) => {
-                        const response = attempt.responses[q.id];
-                        const studentAnswer = (typeof response === 'object') ? response.value : (response || 'EMPTY');
+                    assignedQuestions.forEach((q, qIndex) => {
+                        const response = attempt.responses ? (Array.isArray(attempt.responses) ? attempt.responses.find(r => r && (r.questionId === q.id || r.id === q.id)) : attempt.responses[q.id]) : null;
+                        const studentAnswer = (typeof response === 'object' && response !== null) ? (response.value || (response.selectedOption !== undefined ? response.selectedOption : 'EMPTY')) : (response || 'EMPTY');
                         const isCorrect = db.checkAnswer(q, response);
 
                         questionsLog += `
