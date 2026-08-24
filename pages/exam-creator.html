@@ -2575,8 +2575,8 @@
     .settings-mcq-option {
         display: flex;
         align-items: center;
-        gap: 18px;
-        padding: 12px 0;
+        gap: 20px;
+        padding: 14px 0;
         cursor: pointer;
         background: transparent !important;
         border: none !important;
@@ -2585,8 +2585,8 @@
     }
 
     .settings-mcq-circle {
-        width: 26px;
-        height: 26px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         background: #FFEBE1;
         border: none;
@@ -2599,14 +2599,14 @@
 
     .settings-mcq-option.active .settings-mcq-circle::after {
         content: '';
-        width: 13px;
-        height: 13px;
+        width: 14px;
+        height: 14px;
         background: #DE5B2B;
         border-radius: 50%;
     }
 
     .settings-mcq-label {
-        font-size: 1.15rem;
+        font-size: 1.35rem;
         font-weight: 400;
         color: #2d2d2d;
         line-height: 1.5;
@@ -2791,14 +2791,14 @@
 
         <!-- Modal Header -->
         <div
-            style="padding: 22px 32px 18px 32px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #ffffff;">
+            style="padding: 22px 36px 18px 36px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #ffffff;">
             <div>
                 <h2
-                    style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b; font-family: 'Mulish', sans-serif; letter-spacing: -0.2px;">
+                    style="margin: 0; font-size: 1.45rem; font-weight: 700; color: #1e293b; font-family: 'Mulish', sans-serif; letter-spacing: -0.2px;">
                     EXAM CREATOR SETTINGS</h2>
             </div>
             <button onclick="closeCreatorSettingsModal()"
-                style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e2e8f0; background: #ffffff; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 600; transition: all 0.2s;"
+                style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid #e2e8f0; background: #ffffff; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 600; transition: all 0.2s;"
                 onmouseover="this.style.background='#fee2e2'; this.style.color='#ef4444'; this.style.borderColor='#fca5a5';"
                 onmouseout="this.style.background='#ffffff'; this.style.color='#64748b'; this.style.borderColor='#e2e8f0';"
                 title="Close Settings">
@@ -2806,53 +2806,47 @@
             </button>
         </div>
 
-        <!-- Step Navigation Tabs (1, 2, 3) -->
+        <!-- Step Navigation Tabs (1, 2, 3) - No dashes between tabs -->
         <div
-            style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 14px 32px; border-bottom: 1px solid #f1f5f9; background: #ffffff;">
+            style="display: flex; align-items: center; justify-content: center; gap: 48px; padding: 18px 36px; border-bottom: 1px solid #f1f5f9; background: #ffffff;">
             <!-- Tab 1: Background -->
             <button type="button" class="settings-step-tab active" id="settingsTabBtn1" onclick="switchSettingsTab(1)"
-                style="display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
+                style="display: flex; align-items: center; gap: 12px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
                 <span class="step-num"
-                    style="width: 28px; height: 28px; border-radius: 50%; background: #DE6834; color: #ffffff; border: 1.5px solid #DE6834; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; transition: all 0.2s;">1</span>
+                    style="width: 34px; height: 34px; border-radius: 50%; background: #DE6834; color: #ffffff; border: 2px solid #DE6834; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: 700; transition: all 0.2s;">1</span>
                 <span class="step-label"
-                    style="font-size: 0.92rem; font-weight: 700; color: #1e293b; transition: all 0.2s;">Background</span>
+                    style="font-size: 1.15rem; font-weight: 700; color: #1e293b; transition: all 0.2s;">Background</span>
             </button>
-
-            <!-- Line connector -->
-            <div style="width: 36px; height: 1px; background: #e2e8f0;"></div>
 
             <!-- Tab 2: Typography -->
             <button type="button" class="settings-step-tab" id="settingsTabBtn2" onclick="switchSettingsTab(2)"
-                style="display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
+                style="display: flex; align-items: center; gap: 12px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
                 <span class="step-num"
-                    style="width: 28px; height: 28px; border-radius: 50%; background: #ffffff; color: #64748b; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">2</span>
+                    style="width: 34px; height: 34px; border-radius: 50%; background: #ffffff; color: #64748b; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: 600; transition: all 0.2s;">2</span>
                 <span class="step-label"
-                    style="font-size: 0.92rem; font-weight: 500; color: #64748b; transition: all 0.2s;">Typography &
+                    style="font-size: 1.15rem; font-weight: 500; color: #64748b; transition: all 0.2s;">Typography &
                     Font</span>
             </button>
 
-            <!-- Line connector -->
-            <div style="width: 36px; height: 1px; background: #e2e8f0;"></div>
-
             <!-- Tab 3: Security -->
             <button type="button" class="settings-step-tab" id="settingsTabBtn3" onclick="switchSettingsTab(3)"
-                style="display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
+                style="display: flex; align-items: center; gap: 12px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
                 <span class="step-num"
-                    style="width: 28px; height: 28px; border-radius: 50%; background: #ffffff; color: #64748b; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">3</span>
+                    style="width: 34px; height: 34px; border-radius: 50%; background: #ffffff; color: #64748b; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: 600; transition: all 0.2s;">3</span>
                 <span class="step-label"
-                    style="font-size: 0.92rem; font-weight: 500; color: #64748b; transition: all 0.2s;">Security
+                    style="font-size: 1.15rem; font-weight: 500; color: #64748b; transition: all 0.2s;">Security
                     Methods</span>
             </button>
         </div>
 
         <!-- Modal Body (Scrollable) -->
         <div
-            style="flex: 1; overflow-y: auto; padding: 36px 40px; background: #ffffff; font-family: 'Mulish', sans-serif;">
+            style="flex: 1; overflow-y: auto; padding: 36px 48px; background: #ffffff; font-family: 'Mulish', sans-serif;">
 
             <!-- PANE 1: BACKGROUND SELECTION -->
             <div id="settingsPane1" class="settings-pane" style="display: block;">
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.35rem; font-weight: 600; color: #1e293b;">
                         Choose Background for Exam-Creator
                     </h3>
                     <!-- Signature Tri-Orange Line -->
@@ -2864,7 +2858,7 @@
                     </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+                <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 24px;">
                     <!-- Option 1: Orange Background -->
                     <div class="settings-mcq-option bg-option-card" id="bgOptDefault"
                         onclick="selectBgOption('default')">
@@ -2889,7 +2883,7 @@
             <!-- PANE 2: TYPOGRAPHY & FONT -->
             <div id="settingsPane2" class="settings-pane" style="display: none;">
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.35rem; font-weight: 600; color: #1e293b;">
                         Typography & Global Font Option
                     </h3>
                     <!-- Signature Tri-Orange Line -->
@@ -2901,7 +2895,7 @@
                     </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+                <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 24px;">
                     <!-- Option 1: Mulish (Default) -->
                     <div class="settings-mcq-option font-option-card" id="fontOptMulish"
                         onclick="selectFontOption('Mulish')" style="font-family: 'Mulish', sans-serif;">
@@ -2928,7 +2922,7 @@
             <!-- PANE 3: SECURITY METHODS -->
             <div id="settingsPane3" class="settings-pane" style="display: none;">
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.35rem; font-weight: 600; color: #1e293b;">
                         Security Methods & Authorization
                     </h3>
                     <!-- Signature Tri-Orange Line -->
@@ -2943,54 +2937,54 @@
                 <div style="margin-top: 24px;">
                     <!-- Checkbox Toggle -->
                     <label
-                        style="display: flex; align-items: center; gap: 14px; cursor: pointer; user-select: none; margin: 0;">
+                        style="display: flex; align-items: center; gap: 16px; cursor: pointer; user-select: none; margin: 0;">
                         <input type="checkbox" id="creatorSecurityCheckbox"
                             onchange="toggleSecurityInputs(this.checked)"
-                            style="width: 20px; height: 20px; accent-color: #DE6834; cursor: pointer;">
+                            style="width: 22px; height: 22px; accent-color: #DE6834; cursor: pointer;">
                         <div>
-                            <div style="font-size: 1.05rem; font-weight: 500; color: #1e293b;">Enable Security Passcode before Finalising Test (Step 5)</div>
+                            <div style="font-size: 1.25rem; font-weight: 500; color: #1e293b;">Do you really want to keep passcode*</div>
                         </div>
                     </label>
 
                     <!-- Password Inputs Container -->
-                    <div id="securityInputsContainer"
-                        style="display: none; margin-top: 28px;">
+                    <div id="securityInputsContainer" style="display: none; margin-top: 32px;">
                         <div
-                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px;">
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px;">
                             <div>
                                 <label
-                                    style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase;">NEW PASSWORD</label>
+                                    style="display: block; font-size: 0.92rem; font-weight: 700; color: #475569; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">NEW PASSWORD</label>
                                 <div style="position: relative;">
                                     <input type="password" id="creatorSecurityPass"
                                         oninput="validateSecurityPasswordRules()"
                                         placeholder="Enter minimum 8 character password..."
-                                        style="width: 100%; height: 42px; padding: 0 54px 0 0; border-radius: 0; border: none; border-bottom: 2px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 500; box-sizing: border-box; outline: none; transition: border-color 0.2s; background: transparent;"
+                                        style="width: 100%; height: 48px; padding: 0 60px 0 0; border-radius: 0; border: none; border-bottom: 2px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 1.15rem; font-weight: 500; box-sizing: border-box; outline: none; transition: border-color 0.2s; background: transparent;"
                                         onfocus="this.style.borderBottomColor='#DE6834'"
                                         onblur="this.style.borderBottomColor='#cbd5e1'">
                                     <button type="button" id="passEyeIcon1"
                                         onclick="togglePassVisibility('creatorSecurityPass', 'passEyeIcon1')"
-                                        style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.8rem; font-weight: 600; padding: 4px 6px;">
+                                        style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.95rem; font-weight: 600; padding: 6px 8px;">
                                         Show
                                     </button>
                                 </div>
                             </div>
                             <div>
                                 <label
-                                    style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase;">CONFIRM SECURITY PASSWORD</label>
+                                    style="display: block; font-size: 0.92rem; font-weight: 700; color: #475569; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">CONFIRM SECURITY PASSWORD</label>
                                 <div style="position: relative; display: flex; align-items: center;">
                                     <input type="password" id="creatorSecurityConfirmPass"
                                         oninput="validateSecurityPasswordRules()"
                                         placeholder="Re-enter security password..."
-                                        style="width: 100%; height: 42px; padding: 0 85px 0 0; border-radius: 0; border: none; border-bottom: 2px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 500; box-sizing: border-box; outline: none; transition: border-color 0.2s; background: transparent;"
+                                        style="width: 100%; height: 48px; padding: 0 95px 0 0; border-radius: 0; border: none; border-bottom: 2px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 1.15rem; font-weight: 500; box-sizing: border-box; outline: none; transition: border-color 0.2s; background: transparent;"
                                         onfocus="this.style.borderBottomColor='#DE6834'"
                                         onblur="this.style.borderBottomColor='#cbd5e1'">
-                                    
+
                                     <!-- Green tick at end of blank when all conditions match -->
-                                    <span id="securityPassValidTick" style="display: none; position: absolute; right: 52px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border-radius: 50%; background: #16a34a; color: #ffffff; font-size: 13px; font-weight: 700; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(22, 163, 74, 0.25);">✓</span>
+                                    <span id="securityPassValidTick"
+                                        style="display: none; position: absolute; right: 58px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border-radius: 50%; background: #16a34a; color: #ffffff; font-size: 14px; font-weight: 700; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(22, 163, 74, 0.25);">✓</span>
 
                                     <button type="button" id="passEyeIcon2"
                                         onclick="togglePassVisibility('creatorSecurityConfirmPass', 'passEyeIcon2')"
-                                        style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.8rem; font-weight: 600; padding: 4px 6px;">
+                                        style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.95rem; font-weight: 600; padding: 6px 8px;">
                                         Show
                                     </button>
                                 </div>
@@ -3004,14 +2998,14 @@
 
         <!-- Modal Footer Actions -->
         <div
-            style="padding: 18px 36px; border-top: 1px solid #f1f5f9; background: #ffffff; display: flex; justify-content: space-between; align-items: center; font-family: 'Mulish', sans-serif;">
+            style="padding: 20px 48px; border-top: 1px solid #f1f5f9; background: #ffffff; display: flex; justify-content: space-between; align-items: center; font-family: 'Mulish', sans-serif;">
             <button onclick="closeCreatorSettingsModal()"
-                style="padding: 10px 24px; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: #475569; font-weight: 600; font-size: 0.9rem; cursor: pointer; font-family: 'Mulish', sans-serif; transition: all 0.2s;"
+                style="padding: 12px 28px; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: #475569; font-weight: 600; font-size: 1.05rem; cursor: pointer; font-family: 'Mulish', sans-serif; transition: all 0.2s;"
                 onmouseover="this.style.borderColor='#94a3b8'" onmouseout="this.style.borderColor='#cbd5e1'">
                 Cancel
             </button>
             <button onclick="saveAndApplyCreatorPreferences()"
-                style="padding: 11px 28px; border-radius: 8px; border: none; background: #DE6834; color: #fff; font-weight: 600; font-size: 0.95rem; cursor: pointer; font-family: 'Mulish', sans-serif; box-shadow: 0 4px 14px rgba(222, 104, 52, 0.25); transition: all 0.2s;"
+                style="padding: 12px 32px; border-radius: 8px; border: none; background: #DE6834; color: #fff; font-weight: 600; font-size: 1.08rem; cursor: pointer; font-family: 'Mulish', sans-serif; box-shadow: 0 4px 14px rgba(222, 104, 52, 0.25); transition: all 0.2s;"
                 onmouseover="this.style.background='#c85826'" onmouseout="this.style.background='#DE6834'">
                 Save & Apply Preferences
             </button>
