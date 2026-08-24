@@ -9,6 +9,7 @@ const aiController = require("../controllers/aiController");
  */
 router.post("/ask-ai", aiController.askAI);
 router.post("/generate-questions", aiController.generateQuestions);
+router.post("/test-api-key", aiController.testAPIKey);
 
 module.exports = router;
 

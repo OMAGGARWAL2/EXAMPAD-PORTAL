@@ -3338,7 +3338,21 @@
                     </div>
                 </div>
 
-                <!-- Dynamic Controls for MCQ -->
+                <!-- Universal Number of Questions Selection for ALL Types -->
+                <div>
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Number of Questions to Generate
+                    </label>
+                    <div style="display: flex; gap: 8px;">
+                        <div class="ai-num-pill active" id="aiQCountPill1" onclick="setAIQuestionCount(1, this)">1</div>
+                        <div class="ai-num-pill" id="aiQCountPill2" onclick="setAIQuestionCount(2, this)">2</div>
+                        <div class="ai-num-pill" id="aiQCountPill3" onclick="setAIQuestionCount(3, this)">3</div>
+                        <div class="ai-num-pill" id="aiQCountPill5" onclick="setAIQuestionCount(5, this)">5</div>
+                        <div class="ai-num-pill" id="aiQCountPill10" onclick="setAIQuestionCount(10, this)">10</div>
+                    </div>
+                </div>
+
+                <!-- MCQ Specific Options Count -->
                 <div id="aiMCQControls" style="display: flex; flex-direction: column; gap: 14px;">
                     <div>
                         <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">
@@ -3349,18 +3363,6 @@
                             <div class="ai-num-pill" onclick="setAIOptsCount(3, this)">3</div>
                             <div class="ai-num-pill active" onclick="setAIOptsCount(4, this)">4</div>
                             <div class="ai-num-pill" onclick="setAIOptsCount(5, this)">5</div>
-                        </div>
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">
-                            Number of Questions
-                        </label>
-                        <div style="display: flex; gap: 8px;">
-                            <div class="ai-num-pill active" onclick="setAIQuestionCount(1, this)">1</div>
-                            <div class="ai-num-pill" onclick="setAIQuestionCount(2, this)">2</div>
-                            <div class="ai-num-pill" onclick="setAIQuestionCount(3, this)">3</div>
-                            <div class="ai-num-pill" onclick="setAIQuestionCount(5, this)">5</div>
-                            <div class="ai-num-pill" onclick="setAIQuestionCount(10, this)">10</div>
                         </div>
                     </div>
                 </div>
@@ -3391,21 +3393,6 @@
                     </div>
                 </div>
 
-                <!-- Dynamic Controls for Other Types -->
-                <div id="aiGenericControls" style="display: none; flex-direction: column; gap: 14px;">
-                    <div>
-                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;">
-                            Number of Questions
-                        </label>
-                        <div style="display: flex; gap: 8px;">
-                            <div class="ai-num-pill active" onclick="setAIQuestionCount(1, this)">1</div>
-                            <div class="ai-num-pill" onclick="setAIQuestionCount(2, this)">2</div>
-                            <div class="ai-num-pill" onclick="setAIQuestionCount(3, this)">3</div>
-                            <div class="ai-num-pill" onclick="setAIQuestionCount(5, this)">5</div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Marks & Section Row -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                     <div>
@@ -3423,6 +3410,38 @@
                         <select id="aiGenSection"
                             style="width: 100%; height: 40px; padding: 0 12px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.92rem; font-weight: 600; box-sizing: border-box; outline: none; background: #ffffff; cursor: pointer;">
                         </select>
+                    </div>
+                </div>
+
+                <!-- Optional OpenAI API Key Configuration Section -->
+                <div style="background: #fffcf8; border: 1px solid rgba(222, 104, 52, 0.25); border-radius: 8px; padding: 10px 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleAIKeyConfig()">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="aiEngineStatusDot" style="width: 8px; height: 8px; border-radius: 50%; background: #16a34a; display: inline-block;"></span>
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #1e293b;" id="aiEngineStatusText">Engine: Built-in High-Speed Synthesizer</span>
+                        </div>
+                        <span style="font-size: 0.76rem; color: #DE6834; font-weight: 700;">
+                            <span id="aiKeyToggleLabel">API Key</span> <i class="fas fa-cog"></i>
+                        </span>
+                    </div>
+
+                    <div id="aiKeyConfigDrawer" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(222, 104, 52, 0.2);">
+                        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; text-transform: uppercase;">
+                            Custom OpenAI API Key (Optional)
+                        </label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="password" id="aiCustomApiKeyInput" placeholder="sk-proj-..."
+                                style="flex: 1; height: 34px; padding: 0 10px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-family: monospace; font-size: 0.82rem; outline: none;">
+                            <button type="button" onclick="saveAndTestCustomAIKey()"
+                                style="background: #DE6834; color: #ffffff; border: none; border-radius: 6px; padding: 0 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+                                Save
+                            </button>
+                            <button type="button" onclick="clearCustomAIKey()"
+                                style="background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 8px; font-size: 0.8rem; cursor: pointer;" title="Reset to Built-in Engine">
+                                ✕
+                            </button>
+                        </div>
+                        <div id="aiKeyFeedbackMsg" style="font-size: 0.76rem; margin-top: 4px; display: none;"></div>
                     </div>
                 </div>
 
@@ -11685,6 +11704,7 @@
                 .map(s => `<option value="${s}">${s}</option>`).join('');
         }
         renderAITopicsList();
+        updateAIEngineBadge();
         const overlay = document.getElementById('aiQuestionGeneratorModalOverlay');
         if (overlay) overlay.style.display = 'flex';
         setTimeout(() => document.getElementById('aiGenTopic')?.focus(), 150);
@@ -11796,6 +11816,444 @@
         showToast(`Selected topic: ${name}`, 'success');
     }
 
+    /* ==================== MULTI-PROBLEM DISTINCT CODING CATALOGS ==================== */
+    const CODING_BST_PROBLEMS = [
+        {
+            heading: "Lowest Common Ancestor in Binary Search Tree",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given a Binary Search Tree (BST) and two node values <code>p</code> and <code>q</code>, find the Lowest Common Ancestor (LCA) node value.</p><p>The lowest common ancestor is defined between two nodes <code>p</code> and <code>q</code> as the lowest node in T that has both <code>p</code> and <code>q</code> as descendants.</p><p><strong>Input Format:</strong><br>Line 1: Space-separated integers representing BST values.<br>Line 2: Two integers <code>p</code> and <code>q</code>.</p><p><strong>Output Format:</strong><br>Print a single integer representing the LCA value.</p><p><strong>Constraints:</strong><br>&bull; 2 &le; Number of nodes &le; 10<sup>5</sup><br>&bull; -10<sup>9</sup> &le; Node.val &le; 10<sup>9</sup><br>&bull; All node values are unique.</p>`,
+            sampleCases: [
+                { input: "6 2 8 0 4 7 9\n2 8", output: "6", marks: 2, isSample: true, explanation: "LCA of node 2 and node 8 is root node 6." },
+                { input: "6 2 8 0 4 7 9\n2 4", output: "2", marks: 2, isSample: true, explanation: "Since 4 is in right subtree of 2, LCA of 2 and 4 is 2." }
+            ],
+            hiddenCases: [
+                { input: "2 1 3\n1 3", output: "2", marks: 3, isSample: false },
+                { input: "5 3 6 2 4 1\n1 4", output: "3", marks: 3, isSample: false },
+                { input: "20 10 30 5 15 25 35\n5 15", output: "10", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '# Python 3\n', middle: 'def lowestCommonAncestor(root, p, q):\n    curr = root\n    while curr:\n        if p < curr.val and q < curr.val: curr = curr.left\n        elif p > curr.val and q > curr.val: curr = curr.right\n        else: return curr.val\n    return -1\n', suffix: '' },
+                Java: { prefix: 'public class Solution {\n', middle: '    public static int lowestCommonAncestor(TreeNode root, int p, int q) {\n        TreeNode curr = root;\n        while (curr != null) {\n            if (p < curr.val && q < curr.val) curr = curr.left;\n            else if (p > curr.val && q > curr.val) curr = curr.right;\n            else return curr.val;\n        }\n        return -1;\n    }\n', suffix: '}' },
+                'C++': { prefix: '', middle: 'int lowestCommonAncestor(TreeNode* root, int p, int q) {\n    TreeNode* curr = root;\n    while (curr) {\n        if (p < curr->val && q < curr->val) curr = curr->left;\n        else if (p > curr->val && q > curr->val) curr = curr->right;\n        else return curr->val;\n    }\n    return -1;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function lowestCommonAncestor(root, p, q) {\n    let curr = root;\n    while (curr) {\n        if (p < curr.val && q < curr.val) curr = curr.left;\n        else if (p > curr.val && q > curr.val) curr = curr.right;\n        else return curr.val;\n    }\n    return -1;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Validate Binary Search Tree (BST Invariant Check)",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given the root of a binary tree, determine if it is a valid binary search tree (BST).</p><p>A valid BST ensures left subtree nodes are strictly less and right subtree nodes strictly greater than parent key.</p>`,
+            sampleCases: [
+                { input: "2 1 3", output: "true", marks: 2, isSample: true, explanation: "Root 2 has left child 1 and right child 3, valid BST." },
+                { input: "5 1 4 null null 3 6", output: "false", marks: 2, isSample: true, explanation: "Root 5 has right child 4 with value 4 < 5, invalid." }
+            ],
+            hiddenCases: [
+                { input: "1 1", output: "false", marks: 3, isSample: false },
+                { input: "10 5 15 null null 6 20", output: "false", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def isValidBST(root, low=float("-inf"), high=float("inf")):\n    if not root: return True\n    if not (low < root.val < high): return False\n    return isValidBST(root.left, low, root.val) and isValidBST(root.right, root.val, high)\n', suffix: '' },
+                Java: { prefix: '', middle: '    public boolean isValidBST(TreeNode root) { return validate(root, null, null); }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'bool isValidBST(TreeNode* root, long long minV = LLONG_MIN, long long maxV = LLONG_MAX) {\n    if (!root) return true;\n    if (root->val <= minV || root->val >= maxV) return false;\n    return isValidBST(root->left, minV, root->val) && isValidBST(root->right, root->val, maxV);\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function isValidBST(root, min = -Infinity, max = Infinity) {\n    if (!root) return true;\n    if (root.val <= min || root.val >= max) return false;\n    return isValidBST(root.left, min, root.val) && isValidBST(root.right, root.val, max);\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Kth Smallest Element in a BST",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given the root of a binary search tree and an integer <code>k</code>, return the <code>k</code>th smallest value (1-indexed) of all the values of the nodes in the tree.</p>`,
+            sampleCases: [
+                { input: "3 1 4 null 2\n1", output: "1", marks: 2, isSample: true, explanation: "Inorder traversal [1, 2, 3, 4], 1st smallest is 1." }
+            ],
+            hiddenCases: [
+                { input: "5 3 6 2 4 null null 1\n3", output: "3", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def kthSmallest(root, k):\n    stack = []\n    curr = root\n    while stack or curr:\n        while curr: stack.append(curr); curr = curr.left\n        curr = stack.pop()\n        k -= 1\n        if k == 0: return curr.val\n        curr = curr.right\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int kthSmallest(TreeNode root, int k) {\n        Stack<TreeNode> st = new Stack<>();\n        TreeNode curr = root;\n        while (!st.isEmpty() || curr != null) {\n            while (curr != null) { st.push(curr); curr = curr.left; }\n            curr = st.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'int kthSmallest(TreeNode* root, int k) {\n    stack<TreeNode*> st; TreeNode* curr = root;\n    while (!st.empty() || curr) {\n        while (curr) { st.push(curr); curr = curr->left; }\n        curr = st.top(); st.pop();\n        if (--k == 0) return curr->val;\n        curr = curr->right;\n    }\n    return -1;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function kthSmallest(root, k) {\n    const st = []; let curr = root;\n    while (st.length || curr) {\n        while (curr) { st.push(curr); curr = curr.left; }\n        curr = st.pop();\n        if (--k === 0) return curr.val;\n        curr = curr.right;\n    }\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Construct Binary Search Tree from Preorder Traversal",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an array of integers <code>preorder</code>, which represents the preorder traversal of a BST, construct the tree and return its root.</p>`,
+            sampleCases: [
+                { input: "6\n8 5 1 7 10 12", output: "8 5 10 1 7 null 12", marks: 2, isSample: true, explanation: "Constructed BST correctly balances preorder values." }
+            ],
+            hiddenCases: [
+                { input: "3\n1 2 3", output: "1 null 2 null 3", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def bstFromPreorder(preorder):\n    def build(bound=float("inf")):\n        if not preorder or preorder[0] > bound: return None\n        val = preorder.pop(0)\n        root = TreeNode(val)\n        root.left = build(val)\n        root.right = build(bound)\n        return root\n    return build()\n', suffix: '' },
+                Java: { prefix: '', middle: '    int idx = 0;\n    public TreeNode bstFromPreorder(int[] pre) { return build(pre, Integer.MAX_VALUE); }\n    private TreeNode build(int[] pre, int bound) {\n        if (idx == pre.length || pre[idx] > bound) return null;\n        TreeNode root = new TreeNode(pre[idx++]);\n        root.left = build(pre, root.val);\n        root.right = build(pre, bound);\n        return root;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'TreeNode* bstFromPreorder(vector<int>& pre, int& idx, int bound = INT_MAX) {\n    if (idx == pre.size() || pre[idx] > bound) return NULL;\n    TreeNode* root = new TreeNode(pre[idx++]);\n    root->left = bstFromPreorder(pre, idx, root->val);\n    root->right = bstFromPreorder(pre, idx, bound);\n    return root;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function bstFromPreorder(pre) {\n    let idx = 0;\n    function build(bound = Infinity) {\n        if (idx === pre.length || pre[idx] > bound) return null;\n        const root = new TreeNode(pre[idx++]);\n        root.left = build(root.val);\n        root.right = build(bound);\n        return root;\n    }\n    return build();\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Delete Node in a BST (Two Children Case)",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given a root node reference of a BST and a key, delete the node with the given key in the BST.</p>`,
+            sampleCases: [
+                { input: "5 3 6 2 4 null 7\n3", output: "5 4 6 2 null null 7", marks: 2, isSample: true, explanation: "Node 3 deleted and replaced by inorder successor 4." }
+            ],
+            hiddenCases: [
+                { input: "5 2 6 4 7\n0", output: "5 2 6 4 7", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def deleteNode(root, key):\n    if not root: return None\n    if key < root.val: root.left = deleteNode(root.left, key)\n    elif key > root.val: root.right = deleteNode(root.right, key)\n    else:\n        if not root.left: return root.right\n        if not root.right: return root.left\n        succ = root.right\n        while succ.left: succ = succ.left\n        root.val = succ.val\n        root.right = deleteNode(root.right, succ.val)\n    return root\n', suffix: '' },
+                Java: { prefix: '', middle: '    public TreeNode deleteNode(TreeNode root, int key) {\n        if (root == null) return null;\n        if (key < root.val) root.left = deleteNode(root.left, key);\n        else if (key > root.val) root.right = deleteNode(root.right, key);\n        else {\n            if (root.left == null) return root.right;\n            if (root.right == null) return root.left;\n            TreeNode succ = root.right;\n            while (succ.left != null) succ = succ.left;\n            root.val = succ.val;\n            root.right = deleteNode(root.right, succ.val);\n        }\n        return root;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'TreeNode* deleteNode(TreeNode* root, int key) {\n    if (!root) return NULL;\n    if (key < root->val) root->left = deleteNode(root->left, key);\n    else if (key > root->val) root->right = deleteNode(root->right, key);\n    else {\n        if (!root->left) return root->right;\n        if (!root->right) return root->left;\n        TreeNode* succ = root->right; while (succ->left) succ = succ->left;\n        root->val = succ->val; root->right = deleteNode(root->right, succ->val);\n    }\n    return root;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function deleteNode(root, key) {\n    if (!root) return null;\n    if (key < root.val) root.left = deleteNode(root.left, key);\n    else if (key > root.val) root.right = deleteNode(root.right, key);\n    else {\n        if (!root.left) return root.right; if (!root.right) return root.left;\n        let s = root.right; while (s.left) s = s.left;\n        root.val = s.val; root.right = deleteNode(root.right, s.val);\n    }\n    return root;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Convert Sorted Array to Balanced BST",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an integer array <code>nums</code> where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.</p>`,
+            sampleCases: [
+                { input: "5\n-10 -3 0 5 9", output: "0 -3 9 -10 null 5", marks: 2, isSample: true, explanation: "Root is middle element 0, left is -3, right is 9." }
+            ],
+            hiddenCases: [
+                { input: "2\n1 3", output: "3 1", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def sortedArrayToBST(nums):\n    def build(l, r):\n        if l > r: return None\n        mid = (l + r) // 2\n        root = TreeNode(nums[mid])\n        root.left = build(l, mid - 1)\n        root.right = build(mid + 1, r)\n        return root\n    return build(0, len(nums) - 1)\n', suffix: '' },
+                Java: { prefix: '', middle: '    public TreeNode sortedArrayToBST(int[] nums) { return build(nums, 0, nums.length - 1); }\n    private TreeNode build(int[] nums, int l, int r) {\n        if (l > r) return null; int mid = l + (r - l) / 2;\n        TreeNode root = new TreeNode(nums[mid]);\n        root.left = build(nums, l, mid - 1); root.right = build(nums, mid + 1, r);\n        return root;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'TreeNode* sortedArrayToBST(vector<int>& nums, int l = 0, int r = -1) {\n    if (r == -1) r = nums.size() - 1;\n    if (l > r) return NULL;\n    int mid = l + (r - l) / 2; TreeNode* root = new TreeNode(nums[mid]);\n    root->left = sortedArrayToBST(nums, l, mid - 1); root->right = sortedArrayToBST(nums, mid + 1, r);\n    return root;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function sortedArrayToBST(nums) {\n    function build(l, r) {\n        if (l > r) return null; const mid = Math.floor((l + r) / 2);\n        const root = new TreeNode(nums[mid]);\n        root.left = build(l, mid - 1); root.right = build(mid + 1, r);\n        return root;\n    }\n    return build(0, nums.length - 1);\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Inorder Successor in BST",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given the root of a binary search tree and a node <code>p</code> in it, return the in-order successor of that node in the BST.</p>`,
+            sampleCases: [
+                { input: "2 1 3\n1", output: "2", marks: 2, isSample: true, explanation: "Inorder successor of 1 is 2." }
+            ],
+            hiddenCases: [
+                { input: "5 3 6 2 4 null null 1\n6", output: "null", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def inorderSuccessor(root, p):\n    succ = None; curr = root\n    while curr:\n        if p.val < curr.val: succ = curr; curr = curr.left\n        else: curr = curr.right\n    return succ\n', suffix: '' },
+                Java: { prefix: '', middle: '    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {\n        TreeNode succ = null;\n        while (root != null) {\n            if (p.val < root.val) { succ = root; root = root.left; } else root = root.right;\n        }\n        return succ;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {\n    TreeNode* succ = NULL;\n    while (root) {\n        if (p->val < root->val) { succ = root; root = root->left; } else root = root->right;\n    }\n    return succ;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function inorderSuccessor(root, p) {\n    let succ = null;\n    while (root) {\n        if (p.val < root.val) { succ = root; root = root.left; } else root = root.right;\n    }\n    return succ;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Trim a Binary Search Tree in Range [L, R]",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given the root of a binary search tree and the lowest and highest boundaries as <code>low</code> and <code>high</code>, trim the tree so that all its elements lie in <code>[low, high]</code>.</p>`,
+            sampleCases: [
+                { input: "1 0 2\n1 2", output: "1 null 2", marks: 2, isSample: true, explanation: "Node 0 is pruned because 0 < low (1)." }
+            ],
+            hiddenCases: [
+                { input: "3 0 4 null 2 null null 1\n1 3", output: "3 2 null 1", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def trimBST(root, low, high):\n    if not root: return None\n    if root.val < low: return trimBST(root.right, low, high)\n    if root.val > high: return trimBST(root.left, low, high)\n    root.left = trimBST(root.left, low, high)\n    root.right = trimBST(root.right, low, high)\n    return root\n', suffix: '' },
+                Java: { prefix: '', middle: '    public TreeNode trimBST(TreeNode root, int low, int high) {\n        if (root == null) return null;\n        if (root.val < low) return trimBST(root.right, low, high);\n        if (root.val > high) return trimBST(root.left, low, high);\n        root.left = trimBST(root.left, low, high); root.right = trimBST(root.right, low, high);\n        return root;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'TreeNode* trimBST(TreeNode* root, int low, int high) {\n    if (!root) return NULL;\n    if (root->val < low) return trimBST(root->right, low, high);\n    if (root->val > high) return trimBST(root->left, low, high);\n    root->left = trimBST(root->left, low, high); root->right = trimBST(root->right, low, high);\n    return root;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function trimBST(root, low, high) {\n    if (!root) return null;\n    if (root.val < low) return trimBST(root.right, low, high);\n    if (root.val > high) return trimBST(root.left, low, high);\n    root.left = trimBST(root.left, low, high); root.right = trimBST(root.right, low, high);\n    return root;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Recover Binary Search Tree (Two Swapped Nodes)",
+            title: `<p><strong>Problem Statement:</strong></p><p>You are given the root of a binary search tree (BST), where the values of exactly two nodes of the tree were swapped by mistake. Recover the tree without changing its structure.</p>`,
+            sampleCases: [
+                { input: "1 3 null null 2", output: "3 1 null null 2", marks: 2, isSample: true, explanation: "Nodes 1 and 3 were swapped. Swapping restores BST." }
+            ],
+            hiddenCases: [
+                { input: "3 1 4 null null 2", output: "2 1 4 null null 3", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def recoverTree(root):\n    first, second, prev = None, None, None\n    def inorder(node):\n        nonlocal first, second, prev\n        if not node: return\n        inorder(node.left)\n        if prev and node.val < prev.val:\n            if not first: first = prev\n            second = node\n        prev = node\n        inorder(node.right)\n    inorder(root)\n    if first and second: first.val, second.val = second.val, first.val\n', suffix: '' },
+                Java: { prefix: '', middle: '    TreeNode first = null, second = null, prev = null;\n    public void recoverTree(TreeNode root) {\n        inorder(root);\n        int temp = first.val; first.val = second.val; second.val = temp;\n    }\n    private void inorder(TreeNode node) {\n        if (node == null) return;\n        inorder(node.left);\n        if (prev != null && node.val < prev.val) { if (first == null) first = prev; second = node; }\n        prev = node; inorder(node.right);\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'TreeNode *first = NULL, *second = NULL, *prevNode = NULL;\nvoid recoverTree(TreeNode* root) { inorder(root); swap(first->val, second->val); }\nvoid inorder(TreeNode* root) {\n    if (!root) return;\n    inorder(root->left);\n    if (prevNode && root->val < prevNode->val) { if (!first) first = prevNode; second = root; }\n    prevNode = root; inorder(root->right);\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function recoverTree(root) {\n    let first = null, second = null, prev = null;\n    function inorder(node) {\n        if (!node) return;\n        inorder(node.left);\n        if (prev && node.val < prev.val) { if (!first) first = prev; second = node; }\n        prev = node; inorder(node.right);\n    }\n    inorder(root);\n    const tmp = first.val; first.val = second.val; second.val = tmp;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Range Sum of BST Nodes",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given the root node of a binary search tree and two integers <code>low</code> and <code>high</code>, return the sum of values of all nodes with a value in the inclusive range <code>[low, high]</code>.</p>`,
+            sampleCases: [
+                { input: "10 5 15 3 7 null 18\n7 15", output: "32", marks: 2, isSample: true, explanation: "Nodes in range [7, 15] are 7, 10, 15. Sum = 7 + 10 + 15 = 32." }
+            ],
+            hiddenCases: [
+                { input: "10 5 15 3 7 13 18 1 null 6\n6 10", output: "23", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def rangeSumBST(root, low, high):\n    if not root: return 0\n    if root.val < low: return rangeSumBST(root.right, low, high)\n    if root.val > high: return rangeSumBST(root.left, low, high)\n    return root.val + rangeSumBST(root.left, low, high) + rangeSumBST(root.right, low, high)\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int rangeSumBST(TreeNode root, int low, int high) {\n        if (root == null) return 0;\n        if (root.val < low) return rangeSumBST(root.right, low, high);\n        if (root.val > high) return rangeSumBST(root.left, low, high);\n        return root.val + rangeSumBST(root.left, low, high) + rangeSumBST(root.right, low, high);\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'int rangeSumBST(TreeNode* root, int low, int high) {\n    if (!root) return 0;\n    if (root->val < low) return rangeSumBST(root->right, low, high);\n    if (root->val > high) return rangeSumBST(root->left, low, high);\n    return root->val + rangeSumBST(root->left, low, high) + rangeSumBST(root->right, low, high);\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function rangeSumBST(root, low, high) {\n    if (!root) return 0;\n    if (root.val < low) return rangeSumBST(root.right, low, high);\n    if (root.val > high) return rangeSumBST(root.left, low, high);\n    return root.val + rangeSumBST(root.left, low, high) + rangeSumBST(root.right, low, high);\n}\n', suffix: '' }
+            }
+        }
+    ];
+
+    const CODING_ARRAY_PROBLEMS = [
+        {
+            heading: "Two Sum - Target Pair Indices",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to target.</p>`,
+            sampleCases: [
+                { input: "4\n2 7 11 15\n9", output: "0 1", marks: 2, isSample: true, explanation: "nums[0] + nums[1] = 2 + 7 = 9." }
+            ],
+            hiddenCases: [
+                { input: "3\n3 2 4\n6", output: "1 2", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def twoSum(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        if target - n in seen: return [seen[target - n], i]\n        seen[n] = i\n    return []\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int comp = target - nums[i];\n            if (map.containsKey(comp)) return new int[]{map.get(comp), i};\n            map.put(nums[i], i);\n        }\n        return new int[]{};\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'vector<int> twoSum(vector<int>& nums, int target) {\n    unordered_map<int, int> mp;\n    for (int i = 0; i < nums.size(); i++) {\n        int comp = target - nums[i];\n        if (mp.count(comp)) return {mp[comp], i};\n        mp[nums[i]] = i;\n    }\n    return {};\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function twoSum(nums, target) {\n    const map = new Map();\n    for (let i = 0; i < nums.length; i++) {\n        const comp = target - nums[i];\n        if (map.has(comp)) return [map.get(comp), i];\n        map.set(nums[i], i);\n    }\n    return [];\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "3Sum - Unique Triplets Summing to Zero",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an integer array <code>nums</code>, return all the unique triplets <code>[nums[i], nums[j], nums[k]]</code> such that they sum to zero.</p>`,
+            sampleCases: [
+                { input: "6\n-1 0 1 2 -1 -4", output: "[[-1, -1, 2], [-1, 0, 1]]", marks: 2, isSample: true, explanation: "Unique zero-sum triplets." }
+            ],
+            hiddenCases: [
+                { input: "3\n0 1 1", output: "[]", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def threeSum(nums):\n    nums.sort(); res = []\n    for i in range(len(nums) - 2):\n        if i > 0 and nums[i] == nums[i - 1]: continue\n        l, r = i + 1, len(nums) - 1\n        while l < r:\n            s = nums[i] + nums[l] + nums[r]\n            if s < 0: l += 1\n            elif s > 0: r -= 1\n            else:\n                res.append([nums[i], nums[l], nums[r]])\n                while l < r and nums[l] == nums[l + 1]: l += 1\n                while l < r and nums[r] == nums[r - 1]: r -= 1\n                l += 1; r -= 1\n    return res\n', suffix: '' },
+                Java: { prefix: '', middle: '    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums); List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s < 0) l++; else if (s > 0) r--;\n                else {\n                    res.add(Arrays.asList(nums[i], nums[l++], nums[r--]));\n                    while (l < r && nums[l] == nums[l - 1]) l++;\n                    while (l < r && nums[r] == nums[r + 1]) r--;\n                }\n            }\n        }\n        return res;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'vector<vector<int>> threeSum(vector<int>& nums) {\n    sort(nums.begin(), nums.end()); vector<vector<int>> res;\n    for (int i = 0; i < (int)nums.size() - 2; i++) {\n        if (i > 0 && nums[i] == nums[i - 1]) continue;\n        int l = i + 1, r = nums.size() - 1;\n        while (l < r) {\n            int s = nums[i] + nums[l] + nums[r];\n            if (s < 0) l++; else if (s > 0) r--;\n            else {\n                res.push_back({nums[i], nums[l++], nums[r--]});\n                while (l < r && nums[l] == nums[l - 1]) l++;\n                while (l < r && nums[r] == nums[r + 1]) r--;\n            }\n        }\n    }\n    return res;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function threeSum(nums) {\n    nums.sort((a, b) => a - b); const res = [];\n    for (let i = 0; i < nums.length - 2; i++) {\n        if (i > 0 && nums[i] === nums[i - 1]) continue;\n        let l = i + 1, r = nums.length - 1;\n        while (l < r) {\n            const s = nums[i] + nums[l] + nums[r];\n            if (s < 0) l++; else if (s > 0) r--;\n            else {\n                res.push([nums[i], nums[l++], nums[r--]]);\n                while (l < r && nums[l] === nums[l - 1]) l++;\n                while (l < r && nums[r] === nums[r + 1]) r--;\n            }\n        }\n    }\n    return res;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Container With Most Water",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given <code>n</code> vertical lines, find two lines that together with the x-axis form a container that stores the most water.</p>`,
+            sampleCases: [
+                { input: "9\n1 8 6 2 5 4 8 3 7", output: "49", marks: 2, isSample: true, explanation: "Max area is 49." }
+            ],
+            hiddenCases: [
+                { input: "2\n1 1", output: "1", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def maxArea(height):\n    l, r = 0, len(height) - 1; ans = 0\n    while l < r:\n        ans = max(ans, min(height[l], height[r]) * (r - l))\n        if height[l] < height[r]: l += 1\n        else: r -= 1\n    return ans\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int maxArea(int[] height) {\n        int l = 0, r = height.length - 1, max = 0;\n        while (l < r) {\n            max = Math.max(max, Math.min(height[l], height[r]) * (r - l));\n            if (height[l] < height[r]) l++; else r--;\n        }\n        return max;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'int maxArea(vector<int>& height) {\n    int l = 0, r = height.size() - 1, ans = 0;\n    while (l < r) {\n        ans = max(ans, min(height[l], height[r]) * (r - l));\n        if (height[l] < height[r]) l++; else r--;\n    }\n    return ans;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function maxArea(height) {\n    let l = 0, r = height.length - 1, ans = 0;\n    while (l < r) {\n        ans = Math.max(ans, Math.min(height[l], height[r]) * (r - l));\n        if (height[l] < height[r]) l++; else r--;\n    }\n    return ans;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Trapping Rainwater",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given <code>n</code> non-negative integers representing an elevation map, compute total trapped rainwater.</p>`,
+            sampleCases: [
+                { input: "12\n0 1 0 2 1 0 1 3 2 1 2 1", output: "6", marks: 2, isSample: true, explanation: "6 units of rainwater are trapped." }
+            ],
+            hiddenCases: [
+                { input: "6\n4 2 0 3 2 5", output: "9", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def trap(height):\n    l, r = 0, len(height) - 1; lMax, rMax, water = 0, 0, 0\n    while l < r:\n        if height[l] < height[r]:\n            if height[l] >= lMax: lMax = height[l]\n            else: water += lMax - height[l]\n            l += 1\n        else:\n            if height[r] >= rMax: rMax = height[r]\n            else: water += rMax - height[r]\n            r -= 1\n    return water\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int trap(int[] height) {\n        int l = 0, r = height.length - 1, lMax = 0, rMax = 0, water = 0;\n        while (l < r) {\n            if (height[l] < height[r]) {\n                if (height[l] >= lMax) lMax = height[l]; else water += lMax - height[l]; l++;\n            } else {\n                if (height[r] >= rMax) rMax = height[r]; else water += rMax - height[r]; r--;\n            }\n        }\n        return water;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'int trap(vector<int>& height) {\n    int l = 0, r = height.size() - 1, lMax = 0, rMax = 0, water = 0;\n    while (l < r) {\n        if (height[l] < height[r]) {\n            if (height[l] >= lMax) lMax = height[l]; else water += lMax - height[l]; l++;\n        } else {\n            if (height[r] >= rMax) rMax = height[r]; else water += rMax - height[r]; r--;\n        }\n    }\n    return water;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function trap(height) {\n    let l = 0, r = height.length - 1, lMax = 0, rMax = 0, water = 0;\n    while (l < r) {\n        if (height[l] < height[r]) {\n            if (height[l] >= lMax) lMax = height[l]; else water += lMax - height[l]; l++;\n        } else {\n            if (height[r] >= rMax) rMax = height[r]; else water += rMax - height[r]; r--;\n        }\n    }\n    return water;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Subarray Sum Equals K",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an array of integers <code>nums</code> and an integer <code>k</code>, return the total number of subarrays whose sum equals to <code>k</code>.</p>`,
+            sampleCases: [
+                { input: "3\n1 1 1\n2", output: "2", marks: 2, isSample: true, explanation: "Subarrays [1, 1] sum to 2." }
+            ],
+            hiddenCases: [
+                { input: "3\n1 2 3\n3", output: "2", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def subarraySum(nums, k):\n    counts = {0: 1}; curr, ans = 0, 0\n    for n in nums:\n        curr += n\n        ans += counts.get(curr - k, 0)\n        counts[curr] = counts.get(curr, 0) + 1\n    return ans\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int subarraySum(int[] nums, int k) {\n        Map<Integer, Integer> map = new HashMap<>(); map.put(0, 1);\n        int sum = 0, count = 0;\n        for (int n : nums) {\n            sum += n; count += map.getOrDefault(sum - k, 0);\n            map.put(sum, map.getOrDefault(sum, 0) + 1);\n        }\n        return count;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'int subarraySum(vector<int>& nums, int k) {\n    unordered_map<int, int> mp; mp[0] = 1; int sum = 0, count = 0;\n    for (int n : nums) { sum += n; if (mp.count(sum - k)) count += mp[sum - k]; mp[sum]++; }\n    return count;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function subarraySum(nums, k) {\n    const map = new Map([[0, 1]]); let sum = 0, count = 0;\n    for (const n of nums) {\n        sum += n; if (map.has(sum - k)) count += map.get(sum - k);\n        map.set(sum, (map.get(sum) || 0) + 1);\n    }\n    return count;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Maximum Subarray (Kadane's Algorithm)",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an integer array <code>nums</code>, find the contiguous subarray with the largest sum and return its sum.</p>`,
+            sampleCases: [
+                { input: "9\n-2 1 -3 4 -1 2 1 -5 4", output: "6", marks: 2, isSample: true, explanation: "[4, -1, 2, 1] has max sum = 6." }
+            ],
+            hiddenCases: [
+                { input: "1\n1", output: "1", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def maxSubArray(nums):\n    maxS, curr = nums[0], 0\n    for n in nums:\n        curr = max(n, curr + n); maxS = max(maxS, curr)\n    return maxS\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int maxSubArray(int[] nums) {\n        int max = nums[0], curr = 0;\n        for (int n : nums) { curr = Math.max(n, curr + n); max = Math.max(max, curr); }\n        return max;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'int maxSubArray(vector<int>& nums) {\n    int maxS = nums[0], curr = 0;\n    for (int n : nums) { curr = max(n, curr + n); maxS = max(maxS, curr); }\n    return maxS;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function maxSubArray(nums) {\n    let max = nums[0], curr = 0;\n    for (const n of nums) { curr = Math.max(n, curr + n); max = Math.max(max, curr); }\n    return max;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Product of Array Except Self",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an integer array <code>nums</code>, return an array <code>answer</code> such that <code>answer[i]</code> is equal to the product of all elements of <code>nums</code> except <code>nums[i]</code> without division.</p>`,
+            sampleCases: [
+                { input: "4\n1 2 3 4", output: "24 12 8 6", marks: 2, isSample: true, explanation: "Prefix and suffix products combined." }
+            ],
+            hiddenCases: [
+                { input: "5\n-1 1 0 -3 3", output: "0 0 9 0 0", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def productExceptSelf(nums):\n    n = len(nums); res = [1] * n; p = 1\n    for i in range(n): res[i] = p; p *= nums[i]\n    s = 1\n    for i in range(n - 1, -1, -1): res[i] *= s; s *= nums[i]\n    return res\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int[] productExceptSelf(int[] nums) {\n        int n = nums.length; int[] res = new int[n]; int p = 1;\n        for (int i = 0; i < n; i++) { res[i] = p; p *= nums[i]; }\n        int s = 1; for (int i = n - 1; i >= 0; i--) { res[i] *= s; s *= nums[i]; }\n        return res;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'vector<int> productExceptSelf(vector<int>& nums) {\n    int n = nums.size(); vector<int> res(n, 1); int p = 1;\n    for (int i = 0; i < n; i++) { res[i] = p; p *= nums[i]; }\n    int s = 1; for (int i = n - 1; i >= 0; i--) { res[i] *= s; s *= nums[i]; }\n    return res;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function productExceptSelf(nums) {\n    const n = nums.length, res = new Array(n).fill(1); let p = 1;\n    for (let i = 0; i < n; i++) { res[i] = p; p *= nums[i]; }\n    let s = 1; for (let i = n - 1; i >= 0; i--) { res[i] *= s; s *= nums[i]; }\n    return res;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Merge Intervals",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an array of <code>intervals</code>, merge all overlapping intervals into non-overlapping intervals.</p>`,
+            sampleCases: [
+                { input: "4\n1 3\n2 6\n8 10\n15 18", output: "[[1, 6], [8, 10], [15, 18]]", marks: 2, isSample: true, explanation: "[1, 3] and [2, 6] merged into [1, 6]." }
+            ],
+            hiddenCases: [
+                { input: "2\n1 4\n4 5", output: "[[1, 5]]", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def merge(intervals):\n    intervals.sort(key=lambda x: x[0]); m = []\n    for inv in intervals:\n        if not m or m[-1][1] < inv[0]: m.append(inv)\n        else: m[-1][1] = max(m[-1][1], inv[1])\n    return m\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0])); List<int[]> res = new ArrayList<>();\n        for (int[] inv : intervals) {\n            if (res.isEmpty() || res.get(res.size() - 1)[1] < inv[0]) res.add(inv);\n            else res.get(res.size() - 1)[1] = Math.max(res.get(res.size() - 1)[1], inv[1]);\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end()); vector<vector<int>> res;\n    for (auto& inv : intervals) {\n        if (res.empty() || res.back()[1] < inv[0]) res.push_back(inv);\n        else res.back()[1] = max(res.back()[1], inv[1]);\n    }\n    return res;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function merge(intervals) {\n    intervals.sort((a, b) => a[0] - b[0]); const res = [];\n    for (const inv of intervals) {\n        if (!res.length || res[res.length - 1][1] < inv[0]) res.push(inv);\n        else res[res.length - 1][1] = Math.max(res[res.length - 1][1], inv[1]);\n    }\n    return res;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Longest Consecutive Sequence",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an unsorted array of integers <code>nums</code>, return the length of the longest consecutive elements sequence in $O(n)$ time.</p>`,
+            sampleCases: [
+                { input: "6\n100 4 200 1 3 2", output: "4", marks: 2, isSample: true, explanation: "[1, 2, 3, 4] has length 4." }
+            ],
+            hiddenCases: [
+                { input: "10\n0 3 7 2 5 8 4 6 0 1", output: "9", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: '', middle: 'def longestConsecutive(nums):\n    st = set(nums); ans = 0\n    for n in st:\n        if n - 1 not in st:\n            l = 1\n            while n + l in st: l += 1\n            ans = max(ans, l)\n    return ans\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int longestConsecutive(int[] nums) {\n        Set<Integer> st = new HashSet<>(); for (int n : nums) st.add(n);\n        int ans = 0;\n        for (int n : st) {\n            if (!st.contains(n - 1)) {\n                int l = 1; while (st.contains(n + l)) l++;\n                ans = Math.max(ans, l);\n            }\n        }\n        return ans;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'int longestConsecutive(vector<int>& nums) {\n    unordered_set<int> st(nums.begin(), nums.end()); int ans = 0;\n    for (int n : st) {\n        if (!st.count(n - 1)) {\n            int l = 1; while (st.count(n + l)) l++; ans = max(ans, l);\n        }\n    }\n    return ans;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function longestConsecutive(nums) {\n    const st = new Set(nums); let ans = 0;\n    for (const n of st) {\n        if (!st.has(n - 1)) {\n            let l = 1; while (st.has(n + l)) l++; ans = Math.max(ans, l);\n        }\n    }\n    return ans;\n}\n', suffix: '' }
+            }
+        },
+        {
+            heading: "Sliding Window Maximum",
+            title: `<p><strong>Problem Statement:</strong></p><p>Given an array <code>nums</code> and window size <code>k</code>, return the max sliding window array.</p>`,
+            sampleCases: [
+                { input: "8\n1 3 -1 -3 5 3 6 7\n3", output: "3 3 5 5 6 7", marks: 2, isSample: true, explanation: "Max elements in each sliding window." }
+            ],
+            hiddenCases: [
+                { input: "1\n1\n1", output: "1", marks: 3, isSample: false }
+            ],
+            code: {
+                Python: { prefix: 'from collections import deque\n', middle: 'def maxSlidingWindow(nums, k):\n    q = deque(); res = []\n    for i, n in enumerate(nums):\n        while q and nums[q[-1]] <= n: q.pop()\n        q.append(i)\n        if q[0] <= i - k: q.popleft()\n        if i >= k - 1: res.append(nums[q[0]])\n    return res\n', suffix: '' },
+                Java: { prefix: '', middle: '    public int[] maxSlidingWindow(int[] nums, int k) {\n        Deque<Integer> q = new ArrayDeque<>(); int[] res = new int[nums.length - k + 1];\n        for (int i = 0; i < nums.length; i++) {\n            while (!q.isEmpty() && nums[q.peekLast()] <= nums[i]) q.pollLast();\n            q.offerLast(i);\n            if (q.peekFirst() <= i - k) q.pollFirst();\n            if (i >= k - 1) res[i - k + 1] = nums[q.peekFirst()];\n        }\n        return res;\n    }\n', suffix: '' },
+                'C++': { prefix: '', middle: 'vector<int> maxSlidingWindow(vector<int>& nums, int k) {\n    deque<int> q; vector<int> res;\n    for (int i = 0; i < nums.size(); i++) {\n        while (!q.empty() && nums[q.back()] <= nums[i]) q.pop_back();\n        q.push_back(i);\n        if (q.front() <= i - k) q.pop_front();\n        if (i >= k - 1) res.push_back(nums[q.front()]);\n    }\n    return res;\n}\n', suffix: '' },
+                JavaScript: { prefix: '', middle: 'function maxSlidingWindow(nums, k) {\n    const q = [], res = [];\n    for (let i = 0; i < nums.length; i++) {\n        while (q.length && nums[q[q.length - 1]] <= nums[i]) q.pop();\n        q.push(i);\n        if (q[0] <= i - k) q.shift();\n        if (i >= k - 1) res.push(nums[q[0]]);\n    }\n    return res;\n}\n', suffix: '' }
+            }
+        }
+    ];
+
+    /* ==================== AI API KEY MANAGEMENT ==================== */
+    function getStoredOpenAIKey() {
+        return localStorage.getItem('exampad_openai_key') || '';
+    }
+
+    function toggleAIKeyConfig() {
+        const drawer = document.getElementById('aiKeyConfigDrawer');
+        if (!drawer) return;
+        const isHidden = drawer.style.display === 'none' || drawer.style.display === '';
+        drawer.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+            const input = document.getElementById('aiCustomApiKeyInput');
+            if (input) input.value = getStoredOpenAIKey();
+        }
+    }
+
+    async function saveAndTestCustomAIKey() {
+        const input = document.getElementById('aiCustomApiKeyInput');
+        const key = input ? input.value.trim() : '';
+        const msgEl = document.getElementById('aiKeyFeedbackMsg');
+
+        if (!key) {
+            clearCustomAIKey();
+            return;
+        }
+
+        if (!key.startsWith('sk-')) {
+            if (msgEl) {
+                msgEl.style.display = 'block';
+                msgEl.style.color = '#ef4444';
+                msgEl.innerText = 'Key must start with sk-...';
+            }
+            return;
+        }
+
+        if (msgEl) {
+            msgEl.style.display = 'block';
+            msgEl.style.color = '#DE6834';
+            msgEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying API Key with OpenAI...';
+        }
+
+        try {
+            const resp = await fetch('/api/test-api-key', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ apiKey: key })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                localStorage.setItem('exampad_openai_key', key);
+                updateAIEngineBadge();
+                if (msgEl) {
+                    msgEl.style.color = '#16a34a';
+                    msgEl.innerText = '✓ OpenAI API Key Verified & Saved!';
+                }
+                showToast('OpenAI API Key verified and active for AI generation!', 'success');
+            } else {
+                if (msgEl) {
+                    msgEl.style.color = '#ef4444';
+                    msgEl.innerText = 'Verification Failed: ' + (data.error || 'Invalid API Key');
+                }
+                // Save anyway in case offline
+                localStorage.setItem('exampad_openai_key', key);
+                updateAIEngineBadge();
+            }
+        } catch (e) {
+            localStorage.setItem('exampad_openai_key', key);
+            updateAIEngineBadge();
+            if (msgEl) {
+                msgEl.style.color = '#16a34a';
+                msgEl.innerText = 'Saved (will be sent on generation requests)';
+            }
+        }
+    }
+
+    function clearCustomAIKey() {
+        localStorage.removeItem('exampad_openai_key');
+        const input = document.getElementById('aiCustomApiKeyInput');
+        if (input) input.value = '';
+        const msgEl = document.getElementById('aiKeyFeedbackMsg');
+        if (msgEl) {
+            msgEl.style.display = 'block';
+            msgEl.style.color = '#64748b';
+            msgEl.innerText = 'Reset to Built-in High-Speed Synthesizer.';
+        }
+        updateAIEngineBadge();
+        showToast('Reset to Built-in High-Speed Synthesizer', 'info');
+    }
+
+    function updateAIEngineBadge() {
+        const key = getStoredOpenAIKey();
+        const dot = document.getElementById('aiEngineStatusDot');
+        const text = document.getElementById('aiEngineStatusText');
+        const label = document.getElementById('aiKeyToggleLabel');
+
+        if (key && key.startsWith('sk-')) {
+            if (dot) dot.style.background = '#3b82f6';
+            if (text) text.innerText = 'Engine: Custom OpenAI (Connected)';
+            if (label) label.innerText = 'API Key Configured';
+        } else {
+            if (dot) dot.style.background = '#16a34a';
+            if (text) text.innerText = 'Engine: Built-in High-Speed Synthesizer';
+            if (label) label.innerText = 'API Key';
+        }
+    }
+
     function setAIGenType(type) {
         currentAIGenType = type;
         document.querySelectorAll('.ai-type-pill').forEach(p => p.classList.remove('active'));
@@ -11807,12 +12265,10 @@
 
         const mcqCtrl = document.getElementById('aiMCQControls');
         const codingCtrl = document.getElementById('aiCodingControls');
-        const genCtrl = document.getElementById('aiGenericControls');
         const marksInput = document.getElementById('aiGenMarks');
 
         if (mcqCtrl) mcqCtrl.style.display = (type === 'mcq') ? 'flex' : 'none';
         if (codingCtrl) codingCtrl.style.display = (type === 'coding') ? 'flex' : 'none';
-        if (genCtrl) genCtrl.style.display = (type !== 'mcq' && type !== 'coding') ? 'flex' : 'none';
 
         if (marksInput) {
             marksInput.value = (type === 'coding') ? 10 : (type === 'subjective' ? 5 : (type === 'assertion_reason' ? 2 : 1));
@@ -11827,8 +12283,8 @@
 
     function setAIQuestionCount(cnt, el) {
         currentAIQuestionCount = cnt;
-        el.parentElement.querySelectorAll('.ai-num-pill').forEach(p => p.classList.remove('active'));
-        el.classList.add('active');
+        document.querySelectorAll('[id^="aiQCountPill"]').forEach(p => p.classList.remove('active'));
+        if (el) el.classList.add('active');
     }
 
     function setAISampleTCCount(cnt, el) {
@@ -11853,6 +12309,7 @@
         const prompt = promptInput ? promptInput.value.trim() : '';
         const marks = parseInt(marksInput?.value) || 1;
         const section = secSelect ? secSelect.value : 'General';
+        const customKey = getStoredOpenAIKey();
 
         if (!topic && !prompt) {
             showToast('Please enter or select a topic for the AI to generate questions.', 'error');
@@ -11872,7 +12329,7 @@
         if (genState) genState.style.display = 'flex';
         if (btnGen) {
             btnGen.disabled = true;
-            btnGen.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Synthesizing Assessment Items...';
+            btnGen.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Assessment Items...';
         }
 
         const payload = {
@@ -11884,17 +12341,21 @@
             sampleTestCasesCount: currentAISampleTCCount,
             hiddenTestCasesCount: currentAIHiddenTCCount,
             marks: marks,
-            section: section
+            section: section,
+            apiKey: customKey
         };
 
         let generated = [];
 
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4000);
+            const timeoutId = setTimeout(() => controller.abort(), 6000);
+            const headers = { 'Content-Type': 'application/json' };
+            if (customKey) headers['x-openai-key'] = customKey;
+
             const resp = await fetch('/api/generate-questions', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify(payload),
                 signal: controller.signal
             });
@@ -11906,7 +12367,7 @@
                 }
             }
         } catch (e) {
-            console.log('Using integrated high-speed domain synthesizer:', e.message);
+            console.log('Using high-speed local domain synthesizer fallback:', e.message);
         }
 
         // Fast Client-Side Synthesis Fallback (Instantaneous & Guaranteed)
@@ -11953,7 +12414,7 @@
             if (tLower.includes('syllogism') || tLower.includes('statement & conclusion') || tLower.includes('categorical')) {
                 const syllogismSets = [
                     {
-                        heading: `Syllogism - Three Statements Deduction (Q${i + 1})`,
+                        heading: `Syllogism - Doctors & Scientists (Q${i + 1})`,
                         title: `<p><strong>Statements:</strong><br>1. All doctors are researchers.<br>2. Some researchers are scientists.<br>3. No scientist is an astrologer.</p><p><strong>Conclusions:</strong><br>I. Some researchers are not astrologers.<br>II. Some doctors are scientists.<br>III. No doctor is an astrologer.</p><p>Which of the conclusions logically follow(s) from the given statements?</p>`,
                         options: [
                             "Only Conclusion I follows",
@@ -11965,7 +12426,7 @@
                         correctAnswer: "Only Conclusion I follows"
                     },
                     {
-                        heading: `Syllogism - Universal Negative & Particular Premises (Q${i + 1})`,
+                        heading: `Syllogism - Tables & Furniture (Q${i + 1})`,
                         title: `<p><strong>Statements:</strong><br>1. No table is a chair.<br>2. All chairs are furniture.<br>3. Some furniture are wooden desks.</p><p><strong>Conclusions:</strong><br>I. Some furniture are not tables.<br>II. No wooden desk is a table.<br>III. Some wooden desks are chairs.</p><p>Select the correct deduction based strictly on the given premises:</p>`,
                         options: [
                             "Only Conclusion I follows",
@@ -11977,7 +12438,7 @@
                         correctAnswer: "Only Conclusion I follows"
                     },
                     {
-                        heading: `Syllogism - Possibility & Either-Or Case (Q${i + 1})`,
+                        heading: `Syllogism - Scalable Systems (Q${i + 1})`,
                         title: `<p><strong>Statements:</strong><br>1. Some algorithms are efficient.<br>2. All efficient programs are scalable.<br>3. No scalable system is vulnerable.</p><p><strong>Conclusions:</strong><br>I. All vulnerable systems being algorithms is a possibility.<br>II. No algorithm is vulnerable.<br>III. Some efficient programs are not vulnerable.</p><p>Evaluate the logical validity of the deductions:</p>`,
                         options: [
                             "Conclusions I and III follow",
@@ -11987,6 +12448,90 @@
                             "None of the conclusions follow"
                         ],
                         correctAnswer: "Conclusions I and III follow"
+                    },
+                    {
+                        heading: `Syllogism - Books & Journals (Q${i + 1})`,
+                        title: `<p><strong>Statements:</strong><br>1. All books are papers.<br>2. No paper is a magazine.<br>3. Some magazines are journals.</p><p><strong>Conclusions:</strong><br>I. No book is a magazine.<br>II. Some journals are not papers.<br>III. Some papers are books.</p>`,
+                        options: [
+                            "All Conclusions I, II, and III follow",
+                            "Only Conclusions I and II follow",
+                            "Only Conclusion I follows",
+                            "Only Conclusion III follows",
+                            "None follows"
+                        ],
+                        correctAnswer: "All Conclusions I, II, and III follow"
+                    },
+                    {
+                        heading: `Syllogism - Conductors & Metals (Q${i + 1})`,
+                        title: `<p><strong>Statements:</strong><br>1. Some metals are liquids.<br>2. All liquids are conductors.<br>3. No conductor is an insulator.</p><p><strong>Conclusions:</strong><br>I. Some conductors are metals.<br>II. No liquid is an insulator.<br>III. Some metals are not insulators.</p>`,
+                        options: [
+                            "All Conclusions I, II, and III follow",
+                            "Only Conclusions I and II follow",
+                            "Only Conclusion I follows",
+                            "Only Conclusions II and III follow",
+                            "None follows"
+                        ],
+                        correctAnswer: "All Conclusions I, II, and III follow"
+                    },
+                    {
+                        heading: `Syllogism - Either-Or Pairs (Q${i + 1})`,
+                        title: `<p><strong>Statements:</strong><br>1. Some pens are pencils.<br>2. No pencil is an eraser.<br>3. All erasers are sharpeners.</p><p><strong>Conclusions:</strong><br>I. Some pens are not erasers.<br>II. Some sharpeners are pencils.<br>III. No sharpener is a pencil.</p>`,
+                        options: [
+                            "Conclusion I and either II or III follows",
+                            "Only Conclusion I follows",
+                            "Only Conclusion II follows",
+                            "Conclusions I and II follow",
+                            "None follows"
+                        ],
+                        correctAnswer: "Conclusion I and either II or III follows"
+                    },
+                    {
+                        heading: `Syllogism - Only A Few Phones (Q${i + 1})`,
+                        title: `<p><strong>Statements:</strong><br>1. Only a few phones are laptops.<br>2. All laptops are gadgets.<br>3. No gadget is a television.</p><p><strong>Conclusions:</strong><br>I. Some phones are not laptops.<br>II. No laptop is a television.<br>III. All phones being gadgets is a possibility.</p>`,
+                        options: [
+                            "All Conclusions I, II, and III follow",
+                            "Only Conclusions I and II follow",
+                            "Only Conclusion I follows",
+                            "Only Conclusion III follows",
+                            "None of the conclusions follow"
+                        ],
+                        correctAnswer: "All Conclusions I, II, and III follow"
+                    },
+                    {
+                        heading: `Syllogism - Rivers & Oceans (Q${i + 1})`,
+                        title: `<p><strong>Statements:</strong><br>1. All rivers are oceans.<br>2. Some oceans are seas.<br>3. No sea is a lake.<br>4. All lakes are ponds.</p><p><strong>Conclusions:</strong><br>I. Some oceans are not lakes.<br>II. No river is a lake.<br>III. Some ponds are not seas.</p>`,
+                        options: [
+                            "Conclusions I and III follow",
+                            "Only Conclusion I follows",
+                            "Conclusions I and II follow",
+                            "All follow",
+                            "None follows"
+                        ],
+                        correctAnswer: "Conclusions I and III follow"
+                    },
+                    {
+                        heading: `Syllogism - Vehicles Chain (Q${i + 1})`,
+                        title: `<p><strong>Statements:</strong><br>1. No car is a bike.<br>2. Some bikes are trucks.<br>3. All trucks are vehicles.</p><p><strong>Conclusions:</strong><br>I. Some vehicles are bikes.<br>II. Some vehicles are not cars.<br>III. No car is a truck.</p>`,
+                        options: [
+                            "Conclusions I and II follow",
+                            "Only Conclusion I follows",
+                            "Only Conclusion II follows",
+                            "All follow",
+                            "None follows"
+                        ],
+                        correctAnswer: "Conclusions I and II follow"
+                    },
+                    {
+                        heading: `Syllogism - Multi-Class Logic (Q${i + 1})`,
+                        title: `<p><strong>Statements:</strong><br>1. All Alpha are Beta.<br>2. All Beta are Gamma.<br>3. No Gamma is Delta.<br>4. Some Delta are Epsilon.</p><p><strong>Conclusions:</strong><br>I. No Alpha is Delta.<br>II. Some Epsilon are not Gamma.<br>III. Some Gamma are Alpha.</p>`,
+                        options: [
+                            "All Conclusions I, II, and III follow",
+                            "Only Conclusions I and II follow",
+                            "Only Conclusion I follows",
+                            "Conclusions I and III follow",
+                            "None follows"
+                        ],
+                        correctAnswer: "All Conclusions I, II, and III follow"
                     }
                 ];
 
@@ -12007,90 +12552,53 @@
                     difficulty: diff
                 });
             }
-            // 2. CODING / PROGRAMMING PROBLEMS
+            // 2. CODING / PROGRAMMING PROBLEMS (10 Distinct Challenges per Topic)
             else if (cfg.type === 'coding') {
                 if (tLower.includes('tree') || tLower.includes('bst') || safePrompt.includes('ancestor') || safePrompt.includes('lca')) {
-                    const sampleCases = [
-                        { input: "6 2 8 0 4 7 9\n2 8", output: "6", marks: Math.max(1, Math.floor(marks / (numSample + numHidden))), isSample: true, explanation: "In the BST, LCA of node 2 and node 8 is root node 6." },
-                        { input: "6 2 8 0 4 7 9\n2 4", output: "2", marks: Math.max(1, Math.floor(marks / (numSample + numHidden))), isSample: true, explanation: "Since node 4 is in the right subtree of node 2, LCA of 2 and 4 is 2 itself." }
-                    ];
-                    while (sampleCases.length < numSample) sampleCases.push({ input: "10 5 15 3 7 12 18\n3 7", output: "5", marks: 2, isSample: true });
-                    const hiddenCases = [
-                        { input: "2 1 3\n1 3", output: "2", marks: Math.max(1, Math.floor(marks / (numSample + numHidden))), isSample: false },
-                        { input: "5 3 6 2 4 1\n1 4", output: "3", marks: Math.max(1, Math.floor(marks / (numSample + numHidden))), isSample: false },
-                        { input: "20 10 30 5 15 25 35\n5 15", output: "10", marks: Math.max(1, Math.floor(marks / (numSample + numHidden))), isSample: false }
-                    ].slice(0, numHidden);
-
+                    const p = CODING_BST_PROBLEMS[i % CODING_BST_PROBLEMS.length];
+                    const sampleCases = p.sampleCases.slice(0, numSample);
+                    const hiddenCases = p.hiddenCases.slice(0, numHidden);
                     questions.push({
                         id,
                         type: 'coding',
-                        heading: `Lowest Common Ancestor in Binary Search Tree`,
-                        title: `<p><strong>Problem Statement:</strong></p><p>Given a Binary Search Tree (BST) and two node values <code>p</code> and <code>q</code>, find the Lowest Common Ancestor (LCA) node value.</p><p>According to the definition of LCA: &ldquo;The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants.&rdquo;</p><p><strong>Input Format:</strong><br>Line 1: Space-separated integers representing BST values.<br>Line 2: Two integers <code>p</code> and <code>q</code>.</p><p><strong>Output Format:</strong><br>Print a single integer representing the LCA value.</p><p><strong>Constraints:</strong><br>&bull; 2 &le; Number of nodes &le; 10<sup>5</sup><br>&bull; -10<sup>9</sup> &le; Node.val &le; 10<sup>9</sup><br>&bull; All Node.val are unique.<br>&bull; <code>p</code> and <code>q</code> will exist in the BST.</p>`,
+                        heading: `${p.heading} (Q${i + 1})`,
+                        title: p.title,
                         marks: marks,
                         difficulty: diff,
                         languages: ['Python', 'Java', 'C++', 'JavaScript'],
-                        testCases: [...sampleCases.slice(0, numSample), ...hiddenCases],
-                        code: {
-                            Python: { prefix: '# Python 3\nclass TreeNode:\n    def __init__(self, x):\n        self.val = x\n        self.left = None\n        self.right = None\n\n', middle: 'def lowestCommonAncestor(root: TreeNode, p: int, q: int) -> int:\n    curr = root\n    while curr:\n        if p < curr.val and q < curr.val:\n            curr = curr.left\n        elif p > curr.val and q > curr.val:\n            curr = curr.right\n        else:\n            return curr.val\n    return -1\n', suffix: '' },
-                            Java: { prefix: 'import java.util.*;\nclass TreeNode { int val; TreeNode left, right; TreeNode(int x) { val = x; } }\npublic class Solution {\n', middle: '    public static int lowestCommonAncestor(TreeNode root, int p, int q) {\n        TreeNode curr = root;\n        while (curr != null) {\n            if (p < curr.val && q < curr.val) curr = curr.left;\n            else if (p > curr.val && q > curr.val) curr = curr.right;\n            else return curr.val;\n        }\n        return -1;\n    }\n', suffix: '}' },
-                            'C++': { prefix: '#include <iostream>\nusing namespace std;\nstruct TreeNode { int val; TreeNode *left; TreeNode *right; TreeNode(int x) : val(x), left(NULL), right(NULL) {} };\n', middle: 'int lowestCommonAncestor(TreeNode* root, int p, int q) {\n    TreeNode* curr = root;\n    while (curr) {\n        if (p < curr->val && q < curr->val) curr = curr->left;\n        else if (p > curr->val && q > curr->val) curr = curr->right;\n        else return curr->val;\n    }\n    return -1;\n}\n', suffix: '' },
-                            JavaScript: { prefix: '', middle: 'function lowestCommonAncestor(root, p, q) {\n    let curr = root;\n    while (curr) {\n        if (p < curr.val && q < curr.val) curr = curr.left;\n        else if (p > curr.val && q > curr.val) curr = curr.right;\n        else return curr.val;\n    }\n    return -1;\n}\n', suffix: '' }
-                        }
+                        testCases: [...sampleCases, ...hiddenCases],
+                        code: p.code
                     });
-                } else if (tLower.includes('array') || tLower.includes('two pointer') || tLower.includes('sliding window')) {
-                    const sampleCases = [
-                        { input: "4\n2 7 11 15\n9", output: "0 1", marks: 2, isSample: true, explanation: "nums[0] + nums[1] == 2 + 7 == 9, return indices [0, 1]." },
-                        { input: "3\n3 2 4\n6", output: "1 2", marks: 2, isSample: true, explanation: "nums[1] + nums[2] == 2 + 4 == 6, return indices [1, 2]." }
-                    ];
-                    while (sampleCases.length < numSample) sampleCases.push({ input: "2\n3 3\n6", output: "0 1", marks: 2, isSample: true });
-                    const hiddenCases = [
-                        { input: "5\n-3 4 3 90 2\n0", output: "0 2", marks: 2, isSample: false },
-                        { input: "6\n1 5 8 11 14 20\n25", output: "1 5", marks: 2, isSample: false },
-                        { input: "4\n1000 2000 3000 4000\n7000", output: "2 3", marks: 2, isSample: false }
-                    ].slice(0, numHidden);
-
+                } else if (tLower.includes('array') || tLower.includes('two pointer') || tLower.includes('sliding window') || tLower.includes('sum')) {
+                    const p = CODING_ARRAY_PROBLEMS[i % CODING_ARRAY_PROBLEMS.length];
+                    const sampleCases = p.sampleCases.slice(0, numSample);
+                    const hiddenCases = p.hiddenCases.slice(0, numHidden);
                     questions.push({
                         id,
                         type: 'coding',
-                        heading: `Two Sum - Target Pair Indices (${safeTopic})`,
-                        title: `<p><strong>Problem Statement:</strong></p><p>Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to target.</p><p>You may assume that each input has exactly one solution, and you may not use the same element twice.</p><p><strong>Input Format:</strong><br>Line 1: An integer <code>N</code>.<br>Line 2: <code>N</code> space-separated integers.<br>Line 3: An integer <code>target</code>.</p><p><strong>Output Format:</strong><br>Print two space-separated integers representing the indices.</p><p><strong>Constraints:</strong><br>&bull; 2 &le; N &le; 10<sup>5</sup><br>&bull; -10<sup>9</sup> &le; nums[i] &le; 10<sup>9</sup><br>&bull; Time Limit: 1.0s, Space Limit: 256MB</p>`,
+                        heading: `${p.heading} (Q${i + 1})`,
+                        title: p.title,
                         marks: marks,
                         difficulty: diff,
                         languages: ['Python', 'Java', 'C++', 'JavaScript'],
-                        testCases: [...sampleCases.slice(0, numSample), ...hiddenCases],
-                        code: {
-                            Python: { prefix: '# Python 3\n', middle: 'def twoSum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        comp = target - num\n        if comp in seen:\n            return [seen[comp], i]\n        seen[num] = i\n    return []\n', suffix: '' },
-                            Java: { prefix: 'import java.util.*;\npublic class Solution {\n', middle: '    public static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int comp = target - nums[i];\n            if (map.containsKey(comp)) return new int[]{map.get(comp), i};\n            map.put(nums[i], i);\n        }\n        return new int[]{};\n    }\n', suffix: '}' },
-                            'C++': { prefix: '#include <iostream>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\n', middle: 'vector<int> twoSum(vector<int>& nums, int target) {\n    unordered_map<int, int> mp;\n    for (int i = 0; i < nums.size(); i++) {\n        int comp = target - nums[i];\n        if (mp.find(comp) != mp.end()) return {mp[comp], i};\n        mp[nums[i]] = i;\n    }\n    return {};\n}\n', suffix: '' },
-                            JavaScript: { prefix: '', middle: 'function twoSum(nums, target) {\n    const map = new Map();\n    for (let i = 0; i < nums.length; i++) {\n        const comp = target - nums[i];\n        if (map.has(comp)) return [map.get(comp), i];\n        map.set(nums[i], i);\n    }\n    return [];\n}\n', suffix: '' }
-                        }
+                        testCases: [...sampleCases, ...hiddenCases],
+                        code: p.code
                     });
                 } else {
-                    const sampleCases = [
-                        { input: "5\n1 2 3 4 5", output: "15", marks: 2, isSample: true, explanation: "Sum of elements 1+2+3+4+5 = 15." },
-                        { input: "3\n10 -5 20", output: "25", marks: 2, isSample: true, explanation: "Sum of elements 10+(-5)+20 = 25." }
-                    ];
-                    while (sampleCases.length < numSample) sampleCases.push({ input: "1\n100", output: "100", marks: 2, isSample: true });
-                    const hiddenCases = [
-                        { input: "4\n-10 -20 -30 -40", output: "-100", marks: 2, isSample: false },
-                        { input: "5\n0 0 0 0 0", output: "0", marks: 2, isSample: false }
-                    ].slice(0, numHidden);
-
+                    const allCatalog = [...CODING_BST_PROBLEMS, ...CODING_ARRAY_PROBLEMS];
+                    const p = allCatalog[i % allCatalog.length];
+                    const sampleCases = p.sampleCases.slice(0, numSample);
+                    const hiddenCases = p.hiddenCases.slice(0, numHidden);
                     questions.push({
                         id,
                         type: 'coding',
-                        heading: `${safeTopic} - Algorithmic Task (${i + 1})`,
-                        title: `<p><strong>Problem Statement:</strong></p><p>Implement an optimized algorithm for <strong>${safeTopic}</strong> satisfying the constraints below.</p><p>${safePrompt ? '<strong>Requirements:</strong> ' + safePrompt : 'Your solution must handle edge cases and run within $O(N)$ time complexity.'}</p><p><strong>Input Format:</strong><br>Line 1: Integer <code>N</code>.<br>Line 2: <code>N</code> space-separated integers.</p><p><strong>Output Format:</strong><br>Print the computed output value.</p><p><strong>Constraints:</strong><br>&bull; 1 &le; N &le; 10<sup>5</sup><br>&bull; Time Limit: 1.0s, Space Limit: 256MB</p>`,
+                        heading: `${safeTopic} - ${p.heading} (Task ${i + 1})`,
+                        title: p.title,
                         marks: marks,
                         difficulty: diff,
                         languages: ['Python', 'Java', 'C++', 'JavaScript'],
-                        testCases: [...sampleCases.slice(0, numSample), ...hiddenCases],
-                        code: {
-                            Python: { prefix: '# Python 3\n', middle: 'def solve(n, arr):\n    return sum(arr)\n', suffix: '' },
-                            Java: { prefix: 'import java.util.*;\npublic class Solution {\n', middle: '    public static long solve(int n, int[] arr) {\n        long sum = 0;\n        for (int x : arr) sum += x;\n        return sum;\n    }\n', suffix: '}' },
-                            'C++': { prefix: '#include <iostream>\n#include <vector>\nusing namespace std;\n', middle: 'long long solve(int n, vector<int>& arr) {\n    long long sum = 0;\n    for (int x : arr) sum += x;\n    return sum;\n}\n', suffix: '' },
-                            JavaScript: { prefix: '', middle: 'function solve(n, arr) {\n    return arr.reduce((a, b) => a + b, 0);\n}\n', suffix: '' }
-                        }
+                        testCases: [...sampleCases, ...hiddenCases],
+                        code: p.code
                     });
                 }
             }
@@ -12129,6 +12637,28 @@
                             "LFU (Least Frequently Used) with Stack property"
                         ],
                         correctAnswer: "FIFO (First-In, First-Out)"
+                    },
+                    {
+                        heading: "OS - Critical Section & Peterson's Algorithm",
+                        title: `<p>Peterson's solution for mutual exclusion between two processes guarantees which of the following properties?</p>`,
+                        options: [
+                            "Mutual Exclusion, Progress, and Bounded Waiting",
+                            "Mutual Exclusion only without Bounded Waiting",
+                            "Progress only without Mutual Exclusion",
+                            "Deadlock prevention in multi-core distributed systems"
+                        ],
+                        correctAnswer: "Mutual Exclusion, Progress, and Bounded Waiting"
+                    },
+                    {
+                        heading: "OS - Disk Scheduling (SCAN vs C-SCAN)",
+                        title: `<p>What is the primary operational advantage of the <strong>C-SCAN (Circular SCAN)</strong> disk scheduling algorithm over standard SCAN?</p>`,
+                        options: [
+                            "Provides a more uniform and fair waiting time across all track cylinders",
+                            "Minimizes total rotational latency to zero",
+                            "Requires no hardware head movement tracking",
+                            "Always produces the minimum head movement compared to SSTF"
+                        ],
+                        correctAnswer: "Provides a more uniform and fair waiting time across all track cylinders"
                     }
                 ];
                 const sel = osMCQs[i % osMCQs.length];
@@ -12171,6 +12701,28 @@
                             "2/9"
                         ],
                         correctAnswer: "4/9"
+                    },
+                    {
+                        heading: "Aptitude - Compound Interest Quarterly Compounding",
+                        title: `<p>What is the compound interest earned on a principal of &#8377;10,000 at an annual rate of <strong>12%</strong> for 9 months compounded <strong>quarterly</strong>?</p>`,
+                        options: [
+                            "&#8377;927.27",
+                            "&#8377;900.00",
+                            "&#8377;950.50",
+                            "&#8377;1,020.00"
+                        ],
+                        correctAnswer: "&#8377;927.27"
+                    },
+                    {
+                        heading: "Permutations - Letter Arrangement with Constraints",
+                        title: `<p>In how many distinct ways can the letters of the word <strong>'ENGINEERING'</strong> be arranged such that all the 3 E's always occur together?</p>`,
+                        options: [
+                            "30,240",
+                            "15,120",
+                            "60,480",
+                            "7,560"
+                        ],
+                        correctAnswer: "30,240"
                     }
                 ];
                 const sel = mathMCQs[i % mathMCQs.length];
@@ -12180,11 +12732,20 @@
             }
             // 5. ASSERTION & REASON
             else if (cfg.type === 'assertion_reason') {
+                const assertReasonSets = [
+                    {
+                        title: `<p><strong>Assertion (A):</strong> In <strong>${safeTopic}</strong>, strict boundary validation is necessary to prevent runtime buffer overflows and logical corruption.</p><p><strong>Reason (R):</strong> Theoretical invariants governing ${safeTopic} mathematically define deterministic state transitions across all valid inputs.</p>`
+                    },
+                    {
+                        title: `<p><strong>Assertion (A):</strong> Asymptotic time complexity guarantees upper-bound execution limits for ${safeTopic} independent of hardware architecture.</p><p><strong>Reason (R):</strong> Big-O notation measures the growth rate of elementary computational steps as input size tends toward infinity.</p>`
+                    }
+                ];
+                const sel = assertReasonSets[i % assertReasonSets.length];
                 questions.push({
                     id,
                     type: 'assertion_reason',
                     heading: `${safeTopic} - Assertion & Reason (${i + 1})`,
-                    title: `<p><strong>Assertion (A):</strong> In the study of <strong>${safeTopic}</strong>, proper boundary analysis is essential to avoid runtime faults and logical inconsistencies.</p><p><strong>Reason (R):</strong> Theoretical invariants governing ${safeTopic} mathematically define state transitions across all valid inputs.</p><p>Choose the correct alternative:</p>`,
+                    title: sel.title + `<p>Choose the correct alternative:</p>`,
                     options: [
                         "Both (A) and (R) are true and (R) is the correct explanation of (A)",
                         "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)",
@@ -12202,7 +12763,7 @@
                     id,
                     type: 'subjective',
                     heading: `${safeTopic} - In-Depth Analysis (${i + 1})`,
-                    title: `<p>Provide a rigorous technical evaluation of <strong>${safeTopic}</strong>.</p><p>Your response must explain:</p><ol><li>Fundamental principles and structural design.</li><li>Performance implications, trade-offs, and edge constraints.</li><li>Practical industrial implementation as specified in: <em>${safePrompt || 'core standards'}</em>.</li></ol>`,
+                    title: `<p>Provide a rigorous technical evaluation of <strong>${safeTopic}</strong> (Question ${i + 1}).</p><p>Your response must explain:</p><ol><li>Fundamental principles and structural design.</li><li>Performance implications, trade-offs, and edge constraints.</li><li>Practical industrial implementation as specified in: <em>${safePrompt || 'core standards'}</em>.</li></ol>`,
                     keywords: [safeTopic.toLowerCase(), 'trade-off', 'efficiency', 'architecture', 'optimization', 'constraints'],
                     marks: marks || 5,
                     difficulty: diff
@@ -12210,12 +12771,13 @@
             }
             // 7. NUMERIC VALUE
             else if (cfg.type === 'numeric') {
+                const baseVal = ((i + 1) * 17) % 100 + 10;
                 questions.push({
                     id,
                     type: 'numeric',
                     heading: `${safeTopic} - Quantitative Evaluation (${i + 1})`,
-                    title: `<p>Compute the precise quantitative metric for <strong>${safeTopic}</strong> given standardized conditions: <em>${safePrompt || 'evaluation parameters'}</em>.</p>`,
-                    correctNumeric: (i + 1) * 12,
+                    title: `<p>Compute the precise quantitative metric for <strong>${safeTopic}</strong> given standardized conditions: <em>${safePrompt || 'evaluation parameter ' + (i + 1)}</em>.</p>`,
+                    correctNumeric: baseVal,
                     tolerance: 0.1,
                     marks: marks,
                     difficulty: diff
@@ -12223,20 +12785,47 @@
             }
             // 8. GENERAL MULTIPLE CHOICE
             else {
-                const generalOpts = [
-                    `Primary characteristic definition conforming to rigorous standards of ${safeTopic}`,
-                    `Subordinate property applicable exclusively under non-deterministic conditions`,
-                    `Inverse behavior invalidating foundational invariants of ${safeTopic}`,
-                    `Arbitrary boundary state violating execution safety rules`
-                ].slice(0, numOpts);
-
+                const generalMCQs = [
+                    {
+                        heading: `${safeTopic} - Fundamental Principles (${i + 1})`,
+                        title: `<p>Which of the following statements accurately characterizes <strong>${safeTopic}</strong>${safePrompt ? ' in the context of <em>' + safePrompt + '</em>' : ''}?</p>`,
+                        options: [
+                            `Primary characteristic definition conforming to rigorous standards of ${safeTopic}`,
+                            `Subordinate property applicable exclusively under non-deterministic conditions`,
+                            `Inverse behavior invalidating foundational invariants of ${safeTopic}`,
+                            `Arbitrary boundary state violating execution safety rules`
+                        ]
+                    },
+                    {
+                        heading: `${safeTopic} - Invariant Verification (${i + 1})`,
+                        title: `<p>In the architectural lifecycle of <strong>${safeTopic}</strong>, which invariant must remain strictly preserved across state transitions?</p>`,
+                        options: [
+                            `Structural consistency and deterministic state preservation`,
+                            `Unchecked asynchronous state mutation`,
+                            `Unbounded memory allocation during recursive execution`,
+                            `Arbitrary preemption of atomic critical operations`
+                        ]
+                    },
+                    {
+                        heading: `${safeTopic} - Optimization Strategy (${i + 1})`,
+                        title: `<p>What is the most effective optimization technique applied to <strong>${safeTopic}</strong> when scaling under high concurrency?</p>`,
+                        options: [
+                            `Decoupled asynchronous pipelining and spatial caching`,
+                            `Sequential linear polling without lock-free primitives`,
+                            `Full-table redundant scanning on every transaction`,
+                            `Synchronous blocking wait on external I/O channels`
+                        ]
+                    }
+                ];
+                const sel = generalMCQs[i % generalMCQs.length];
+                const opts = sel.options.slice(0, numOpts);
                 questions.push({
                     id,
                     type: 'mcq',
-                    heading: `${safeTopic} - Core Concept (${i + 1})`,
-                    title: `<p>Which of the following statements accurately characterizes <strong>${safeTopic}</strong>${safePrompt ? ' in the context of <em>' + safePrompt + '</em>' : ''}?</p>`,
-                    options: generalOpts,
-                    correctAnswer: generalOpts[0],
+                    heading: sel.heading,
+                    title: sel.title,
+                    options: opts,
+                    correctAnswer: opts[0],
                     marks: marks,
                     difficulty: diff
                 });
@@ -12402,6 +12991,10 @@
     window.setAIQuestionCount = setAIQuestionCount;
     window.setAISampleTCCount = setAISampleTCCount;
     window.setAIHiddenTCCount = setAIHiddenTCCount;
+    window.toggleAIKeyConfig = toggleAIKeyConfig;
+    window.saveAndTestCustomAIKey = saveAndTestCustomAIKey;
+    window.clearCustomAIKey = clearCustomAIKey;
+    window.updateAIEngineBadge = updateAIEngineBadge;
     window.executeAIGeneration = executeAIGeneration;
     window.removeAIGeneratedItem = removeAIGeneratedItem;
     window.clearAIGeneratedList = clearAIGeneratedList;
