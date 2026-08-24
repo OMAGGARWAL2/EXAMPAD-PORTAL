@@ -2818,18 +2818,22 @@
             <button onclick="closeCreatorSettingsModal()"
                 style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e2e8f0; background: #ffffff; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 600; transition: all 0.2s;"
                 onmouseover="this.style.background='#fee2e2'; this.style.color='#ef4444'; this.style.borderColor='#fca5a5';"
-                onmouseout="this.style.background='#ffffff'; this.style.color='#64748b'; this.style.borderColor='#e2e8f0';" title="Close Settings">
+                onmouseout="this.style.background='#ffffff'; this.style.color='#64748b'; this.style.borderColor='#e2e8f0';"
+                title="Close Settings">
                 ✕
             </button>
         </div>
 
         <!-- Step Navigation Tabs (1, 2, 3) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 14px 32px; border-bottom: 1px solid #f1f5f9; background: #ffffff;">
+        <div
+            style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 14px 32px; border-bottom: 1px solid #f1f5f9; background: #ffffff;">
             <!-- Tab 1: Background -->
             <button type="button" class="settings-step-tab active" id="settingsTabBtn1" onclick="switchSettingsTab(1)"
                 style="display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
-                <span class="step-num" style="width: 28px; height: 28px; border-radius: 50%; background: #DE6834; color: #ffffff; border: 1.5px solid #DE6834; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; transition: all 0.2s;">1</span>
-                <span class="step-label" style="font-size: 0.92rem; font-weight: 700; color: #1e293b; transition: all 0.2s;">Background</span>
+                <span class="step-num"
+                    style="width: 28px; height: 28px; border-radius: 50%; background: #DE6834; color: #ffffff; border: 1.5px solid #DE6834; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; transition: all 0.2s;">1</span>
+                <span class="step-label"
+                    style="font-size: 0.92rem; font-weight: 700; color: #1e293b; transition: all 0.2s;">Background</span>
             </button>
 
             <!-- Line connector -->
@@ -2838,8 +2842,11 @@
             <!-- Tab 2: Typography -->
             <button type="button" class="settings-step-tab" id="settingsTabBtn2" onclick="switchSettingsTab(2)"
                 style="display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
-                <span class="step-num" style="width: 28px; height: 28px; border-radius: 50%; background: #ffffff; color: #64748b; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">2</span>
-                <span class="step-label" style="font-size: 0.92rem; font-weight: 500; color: #64748b; transition: all 0.2s;">Typography & Font</span>
+                <span class="step-num"
+                    style="width: 28px; height: 28px; border-radius: 50%; background: #ffffff; color: #64748b; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">2</span>
+                <span class="step-label"
+                    style="font-size: 0.92rem; font-weight: 500; color: #64748b; transition: all 0.2s;">Typography &
+                    Font</span>
             </button>
 
             <!-- Line connector -->
@@ -2848,8 +2855,11 @@
             <!-- Tab 3: Security -->
             <button type="button" class="settings-step-tab" id="settingsTabBtn3" onclick="switchSettingsTab(3)"
                 style="display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;">
-                <span class="step-num" style="width: 28px; height: 28px; border-radius: 50%; background: #ffffff; color: #64748b; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">3</span>
-                <span class="step-label" style="font-size: 0.92rem; font-weight: 500; color: #64748b; transition: all 0.2s;">Security Methods</span>
+                <span class="step-num"
+                    style="width: 28px; height: 28px; border-radius: 50%; background: #ffffff; color: #64748b; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">3</span>
+                <span class="step-label"
+                    style="font-size: 0.92rem; font-weight: 500; color: #64748b; transition: all 0.2s;">Security
+                    Methods</span>
             </button>
         </div>
 
@@ -2860,13 +2870,12 @@
             <!-- PANE 1: BACKGROUND SELECTION -->
             <div id="settingsPane1" class="settings-pane" style="display: block;">
                 <div style="margin-bottom: 24px;">
-                    <h3
-                        style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
                         Choose Background for Exam-Creator
                     </h3>
                     <!-- Signature Tri-Orange Line -->
                     <div class="tri-orange-line"
-                        style="display:flex; height:5px; border-radius:3px; margin: 6px 0 0 0; width: 84px; overflow: hidden;">
+                        style="display: flex; height: 8px; width: 240px; border-radius: 0; margin: 8px 0 0 0; overflow: hidden;">
                         <div style="background: #FFF1E7; flex: 2.5;"></div>
                         <div style="background: #E6BCA5; flex: 3.5;"></div>
                         <div style="background: #DE5B2B; flex: 5;"></div>
@@ -2875,30 +2884,36 @@
 
                 <div style="display: flex; flex-direction: column; gap: 14px; max-width: 650px;">
                     <!-- Option 1: Orange Default -->
-                    <div class="circled-choice-card bg-option-card" id="bgOptDefault" onclick="selectBgOption('default')">
+                    <div class="circled-choice-card bg-option-card" id="bgOptDefault"
+                        onclick="selectBgOption('default')">
                         <div style="display: flex; align-items: center; gap: 14px;">
                             <div class="choice-radio-circle"></div>
                             <span style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">Orange Default</span>
                         </div>
-                        <span style="font-size: 0.72rem; font-weight: 600; color: #DE6834; background: rgba(222, 104, 52, 0.08); padding: 3px 10px; border-radius: 6px;">DEFAULT</span>
+                        <span
+                            style="font-size: 0.72rem; font-weight: 600; color: #DE6834; background: rgba(222, 104, 52, 0.08); padding: 3px 10px; border-radius: 6px;">DEFAULT</span>
                     </div>
 
                     <!-- Option 2: White #ffffff -->
                     <div class="circled-choice-card bg-option-card" id="bgOptWhite" onclick="selectBgOption('white')">
                         <div style="display: flex; align-items: center; gap: 14px;">
                             <div class="choice-radio-circle"></div>
-                            <span style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">Pure White (#ffffff)</span>
+                            <span style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">Pure White
+                                (#ffffff)</span>
                         </div>
-                        <span style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">CLEAN</span>
+                        <span
+                            style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">CLEAN</span>
                     </div>
 
                     <!-- Option 3: BGNEW01.png -->
                     <div class="circled-choice-card bg-option-card" id="bgOptBgnew" onclick="selectBgOption('bgnew01')">
                         <div style="display: flex; align-items: center; gap: 14px;">
                             <div class="choice-radio-circle"></div>
-                            <span style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">BGNEW01.png Pattern</span>
+                            <span style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">BGNEW01.png
+                                Pattern</span>
                         </div>
-                        <span style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">PATTERN</span>
+                        <span
+                            style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">PATTERN</span>
                     </div>
                 </div>
             </div>
@@ -2906,13 +2921,12 @@
             <!-- PANE 2: TYPOGRAPHY & FONT -->
             <div id="settingsPane2" class="settings-pane" style="display: none;">
                 <div style="margin-bottom: 24px;">
-                    <h3
-                        style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
                         Typography & Global Font Option
                     </h3>
                     <!-- Signature Tri-Orange Line -->
                     <div class="tri-orange-line"
-                        style="display:flex; height:5px; border-radius:3px; margin: 6px 0 0 0; width: 84px; overflow: hidden;">
+                        style="display: flex; height: 8px; width: 240px; border-radius: 0; margin: 8px 0 0 0; overflow: hidden;">
                         <div style="background: #FFF1E7; flex: 2.5;"></div>
                         <div style="background: #E6BCA5; flex: 3.5;"></div>
                         <div style="background: #DE5B2B; flex: 5;"></div>
@@ -2921,33 +2935,39 @@
 
                 <div style="display: flex; flex-direction: column; gap: 14px; max-width: 650px;">
                     <!-- Option 1: Mulish (Default) -->
-                    <div class="circled-choice-card font-option-card" id="fontOptMulish" onclick="selectFontOption('Mulish')"
-                        style="font-family: 'Mulish', sans-serif;">
+                    <div class="circled-choice-card font-option-card" id="fontOptMulish"
+                        onclick="selectFontOption('Mulish')" style="font-family: 'Mulish', sans-serif;">
                         <div style="display: flex; align-items: center; gap: 14px;">
                             <div class="choice-radio-circle"></div>
-                            <span style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: 'Mulish', sans-serif;">Mulish</span>
+                            <span
+                                style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: 'Mulish', sans-serif;">Mulish</span>
                         </div>
-                        <span style="font-size: 0.72rem; font-weight: 600; color: #DE6834; background: rgba(222, 104, 52, 0.08); padding: 3px 10px; border-radius: 6px;">DEFAULT</span>
+                        <span
+                            style="font-size: 0.72rem; font-weight: 600; color: #DE6834; background: rgba(222, 104, 52, 0.08); padding: 3px 10px; border-radius: 6px;">DEFAULT</span>
                     </div>
 
                     <!-- Option 2: Arial -->
-                    <div class="circled-choice-card font-option-card" id="fontOptArial" onclick="selectFontOption('Arial')"
-                        style="font-family: Arial, Helvetica, sans-serif;">
+                    <div class="circled-choice-card font-option-card" id="fontOptArial"
+                        onclick="selectFontOption('Arial')" style="font-family: Arial, Helvetica, sans-serif;">
                         <div style="display: flex; align-items: center; gap: 14px;">
                             <div class="choice-radio-circle"></div>
-                            <span style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: Arial, Helvetica, sans-serif;">Arial</span>
+                            <span
+                                style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: Arial, Helvetica, sans-serif;">Arial</span>
                         </div>
-                        <span style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">SYSTEM</span>
+                        <span
+                            style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">SYSTEM</span>
                     </div>
 
                     <!-- Option 3: Hind -->
-                    <div class="circled-choice-card font-option-card" id="fontOptHind" onclick="selectFontOption('Hind')"
-                        style="font-family: 'Hind', sans-serif;">
+                    <div class="circled-choice-card font-option-card" id="fontOptHind"
+                        onclick="selectFontOption('Hind')" style="font-family: 'Hind', sans-serif;">
                         <div style="display: flex; align-items: center; gap: 14px;">
                             <div class="choice-radio-circle"></div>
-                            <span style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: 'Hind', sans-serif;">Hind</span>
+                            <span
+                                style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: 'Hind', sans-serif;">Hind</span>
                         </div>
-                        <span style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">CLEAN</span>
+                        <span
+                            style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">CLEAN</span>
                     </div>
                 </div>
             </div>
@@ -2955,13 +2975,12 @@
             <!-- PANE 3: SECURITY METHODS -->
             <div id="settingsPane3" class="settings-pane" style="display: none;">
                 <div style="margin-bottom: 24px;">
-                    <h3
-                        style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 600; color: #1e293b;">
                         Security Methods & Authorization
                     </h3>
                     <!-- Signature Tri-Orange Line -->
                     <div class="tri-orange-line"
-                        style="display:flex; height:5px; border-radius:3px; margin: 6px 0 0 0; width: 84px; overflow: hidden;">
+                        style="display: flex; height: 8px; width: 240px; border-radius: 0; margin: 8px 0 0 0; overflow: hidden;">
                         <div style="background: #FFF1E7; flex: 2.5;"></div>
                         <div style="background: #E6BCA5; flex: 3.5;"></div>
                         <div style="background: #DE5B2B; flex: 5;"></div>
@@ -3033,15 +3052,20 @@
                             <div
                                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; font-size: 0.8rem; font-weight: 500;">
                                 <div id="ruleLength"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Min 8 characters</div>
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Min 8
+                                    characters</div>
                                 <div id="ruleLetter"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Letters (a-z, A-Z)</div>
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Letters
+                                    (a-z, A-Z)</div>
                                 <div id="ruleNumber"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Numbers (0-9)</div>
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Numbers
+                                    (0-9)</div>
                                 <div id="ruleSymbol"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Special symbol (!@#$%^&*)</div>
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Special
+                                    symbol (!@#$%^&*)</div>
                                 <div id="ruleMatch"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Passwords match</div>
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Passwords
+                                    match</div>
                             </div>
                         </div>
                     </div>
@@ -9328,7 +9352,7 @@
 
         showModal({
             title: 'PDF Generation Settings',
-            desc: 'Configure layout and metadata for the finalized exam document.',
+            desc: '',
             content: content,
             confirmText: 'Generate PDF',
             onConfirm: () => {
