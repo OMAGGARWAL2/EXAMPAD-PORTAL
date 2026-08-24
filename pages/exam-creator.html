@@ -11792,11 +11792,8 @@
             const isSelected = currentVal === t.name.toLowerCase();
             html += `
                 <div class="ai-topic-item ${isSelected ? 'selected' : ''}" onclick="selectAITopic('${t.name.replace(/'/g, "\\'")}', '${t.cat}', '${t.defaultType}')">
-                    <span style="display: flex; align-items: center; gap: 8px;">
-                        <i class="${t.icon || 'fas fa-book'}" style="color: ${isSelected ? '#DE6834' : '#94a3b8'}; width: 18px; text-align: center;"></i>
-                        <span>${t.name}</span>
-                    </span>
-                    ${isSelected ? '<i class="fas fa-check" style="color: #DE6834; font-size: 0.85rem;"></i>' : '<span style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase;">' + t.defaultType + '</span>'}
+                    <span style="font-weight: ${isSelected ? '700' : '600'}; font-size: 0.9rem;">${t.name}</span>
+                    ${isSelected ? '<i class="fas fa-check" style="color: #DE6834; font-size: 0.85rem;"></i>' : '<span style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.3px;">' + t.defaultType + '</span>'}
                 </div>
             `;
         });
