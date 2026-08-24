@@ -963,11 +963,10 @@
 
         .builder-left,
         .builder-right {
-            background: #ffffff;
+            background: transparent;
             border-radius: 0;
-            padding: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .form-card {
@@ -3582,8 +3581,10 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
                     <div
                         style="background: #FFF4ED; padding: 18px 24px; border-radius: 0; border: 1px solid rgba(217, 108, 51, 0.2); box-shadow: 0 4px 12px rgba(217, 108, 51, 0.04); transition: all 0.3s ease;">
-                        <label class="sec-toggle" style="display:flex; align-items:center; gap:16px; cursor:pointer; margin: 0;">
-                            <input type="checkbox" id="sectionLockEnabled" style="width:22px; height:22px; accent-color: var(--primary);"
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:16px; cursor:pointer; margin: 0;">
+                            <input type="checkbox" id="sectionLockEnabled"
+                                style="width:22px; height:22px; accent-color: var(--primary);"
                                 onchange="exams.sectionLockEnabled = this.checked; if(document.getElementById('lockSections')) document.getElementById('lockSections').checked = this.checked;">
                             <div>
                                 <span
@@ -3594,8 +3595,10 @@
                     </div>
                     <div
                         style="background: #FFF4ED; padding: 18px 24px; border-radius: 0; border: 1px solid rgba(217, 108, 51, 0.2); box-shadow: 0 4px 12px rgba(217, 108, 51, 0.04); transition: all 0.3s ease;">
-                        <label class="sec-toggle" style="display:flex; align-items:center; gap:16px; cursor:pointer; margin: 0;">
-                            <input type="checkbox" id="requireNetworkConfig" style="width:22px; height:22px; accent-color: var(--primary);"
+                        <label class="sec-toggle"
+                            style="display:flex; align-items:center; gap:16px; cursor:pointer; margin: 0;">
+                            <input type="checkbox" id="requireNetworkConfig"
+                                style="width:22px; height:22px; accent-color: var(--primary);"
                                 onchange="document.getElementById('ipRestrictionEnabled').checked = this.checked; if(this.checked) toggleIPConfig(true);">
                             <div>
                                 <span
@@ -3976,7 +3979,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                </div>
 
                 <div style="margin-top: 20px; display: flex; justify-content: space-between;">
                     <button class="btn btn-ghost" onclick="prevStep()">&larr; Back to Sections</button>
@@ -4022,7 +4025,7 @@
                         style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <!-- Center: Problem -->
                         <div class="builder-left"
-                            style="background: #ffffff; border-radius: 0; padding: 24px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                            style="background: transparent; border-radius: 0; padding: 16px; border: 1px solid rgba(0,0,0,0.05);">
                             <div class="question-id-wrapper">
                                 <div class="question-id-wrapper">
                                     <div
@@ -4588,7 +4591,7 @@
 
                         <!-- Right: Logic & Preview -->
                         <div class="builder-right"
-                            style="background: #ffffff; border-radius: 0; padding: 24px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; flex-direction: column;">
+                            style="background: transparent; border-radius: 0; padding: 16px; border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column;">
 
                             <!-- Panel Toggle -->
                             <div
