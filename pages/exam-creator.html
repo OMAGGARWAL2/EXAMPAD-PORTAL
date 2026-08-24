@@ -2796,9 +2796,6 @@
                 <h2
                     style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b; font-family: 'Mulish', sans-serif; letter-spacing: -0.2px;">
                     EXAM CREATOR SETTINGS</h2>
-                <span
-                    style="font-size: 0.82rem; color: #64748b; font-weight: 500; font-family: 'Mulish', sans-serif;">Configure
-                    workspace background, global typography, and account security</span>
             </div>
             <button onclick="closeCreatorSettingsModal()"
                 style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e2e8f0; background: #ffffff; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 600; transition: all 0.2s;"
@@ -2943,7 +2940,7 @@
                     </div>
                 </div>
 
-                <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 26px;">
+                <div style="margin-top: 24px;">
                     <!-- Checkbox Toggle -->
                     <label
                         style="display: flex; align-items: center; gap: 14px; cursor: pointer; user-select: none; margin: 0;">
@@ -2951,77 +2948,52 @@
                             onchange="toggleSecurityInputs(this.checked)"
                             style="width: 20px; height: 20px; accent-color: #DE6834; cursor: pointer;">
                         <div>
-                            <div style="font-size: 0.95rem; font-weight: 600; color: #1e293b;">Enable Security Passcode
-                                before Finalising Test (Step 5)</div>
+                            <div style="font-size: 1.05rem; font-weight: 500; color: #1e293b;">Enable Security Passcode before Finalising Test (Step 5)</div>
                         </div>
                     </label>
 
                     <!-- Password Inputs Container -->
                     <div id="securityInputsContainer"
-                        style="display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid #f1f5f9;">
+                        style="display: none; margin-top: 28px;">
                         <div
-                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px;">
                             <div>
                                 <label
-                                    style="display: block; font-size: 0.78rem; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase;">SET
-                                    SECURITY PASSWORD</label>
+                                    style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase;">NEW PASSWORD</label>
                                 <div style="position: relative;">
                                     <input type="password" id="creatorSecurityPass"
                                         oninput="validateSecurityPasswordRules()"
                                         placeholder="Enter minimum 8 character password..."
-                                        style="width: 100%; height: 42px; padding: 0 54px 0 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.9rem; font-weight: 500; box-sizing: border-box; outline: none; transition: border-color 0.2s; background: #ffffff;"
-                                        onfocus="this.style.borderColor='#DE6834'"
-                                        onblur="this.style.borderColor='#cbd5e1'">
+                                        style="width: 100%; height: 42px; padding: 0 54px 0 0; border-radius: 0; border: none; border-bottom: 2px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 500; box-sizing: border-box; outline: none; transition: border-color 0.2s; background: transparent;"
+                                        onfocus="this.style.borderBottomColor='#DE6834'"
+                                        onblur="this.style.borderBottomColor='#cbd5e1'">
                                     <button type="button" id="passEyeIcon1"
                                         onclick="togglePassVisibility('creatorSecurityPass', 'passEyeIcon1')"
-                                        style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.78rem; font-weight: 600; padding: 4px 6px;">
+                                        style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.8rem; font-weight: 600; padding: 4px 6px;">
                                         Show
                                     </button>
                                 </div>
                             </div>
                             <div>
                                 <label
-                                    style="display: block; font-size: 0.78rem; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase;">CONFIRM
-                                    SECURITY PASSWORD</label>
-                                <div style="position: relative;">
+                                    style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase;">CONFIRM SECURITY PASSWORD</label>
+                                <div style="position: relative; display: flex; align-items: center;">
                                     <input type="password" id="creatorSecurityConfirmPass"
                                         oninput="validateSecurityPasswordRules()"
                                         placeholder="Re-enter security password..."
-                                        style="width: 100%; height: 42px; padding: 0 54px 0 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.9rem; font-weight: 500; box-sizing: border-box; outline: none; transition: border-color 0.2s; background: #ffffff;"
-                                        onfocus="this.style.borderColor='#DE6834'"
-                                        onblur="this.style.borderColor='#cbd5e1'">
+                                        style="width: 100%; height: 42px; padding: 0 85px 0 0; border-radius: 0; border: none; border-bottom: 2px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 500; box-sizing: border-box; outline: none; transition: border-color 0.2s; background: transparent;"
+                                        onfocus="this.style.borderBottomColor='#DE6834'"
+                                        onblur="this.style.borderBottomColor='#cbd5e1'">
+                                    
+                                    <!-- Green tick at end of blank when all conditions match -->
+                                    <span id="securityPassValidTick" style="display: none; position: absolute; right: 52px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border-radius: 50%; background: #16a34a; color: #ffffff; font-size: 13px; font-weight: 700; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(22, 163, 74, 0.25);">✓</span>
+
                                     <button type="button" id="passEyeIcon2"
                                         onclick="togglePassVisibility('creatorSecurityConfirmPass', 'passEyeIcon2')"
-                                        style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.78rem; font-weight: 600; padding: 4px 6px;">
+                                        style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 0.8rem; font-weight: 600; padding: 4px 6px;">
                                         Show
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Rule Validation Badges -->
-                        <div
-                            style="margin-top: 18px; background: #ffffff; border-radius: 8px; padding: 14px 18px; border: 1px solid #e2e8f0;">
-                            <div
-                                style="font-size: 0.75rem; font-weight: 600; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Password Criteria:</div>
-                            <div
-                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; font-size: 0.8rem; font-weight: 500;">
-                                <div id="ruleLength"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Min 8
-                                    characters</div>
-                                <div id="ruleLetter"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Letters
-                                    (a-z, A-Z)</div>
-                                <div id="ruleNumber"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Numbers
-                                    (0-9)</div>
-                                <div id="ruleSymbol"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Special
-                                    symbol (!@#$%^&*)</div>
-                                <div id="ruleMatch"
-                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;">○ Passwords
-                                    match</div>
                             </div>
                         </div>
                     </div>
@@ -10977,25 +10949,13 @@
         const hasSymbol = /[^a-zA-Z0-9]/.test(pass);
         const isMatch = pass.length > 0 && pass === confirm;
 
-        updateRuleBadge('ruleLength', hasLength, 'Min 8 characters');
-        updateRuleBadge('ruleLetter', hasLetter, 'Letters (a-z, A-Z)');
-        updateRuleBadge('ruleNumber', hasNumber, 'Numbers (0-9)');
-        updateRuleBadge('ruleSymbol', hasSymbol, 'Special symbol (!@#$%^&*)');
-        updateRuleBadge('ruleMatch', isMatch, 'Passwords match');
-
-        return hasLength && hasLetter && hasNumber && hasSymbol && isMatch;
-    }
-
-    function updateRuleBadge(elId, isPassed, text) {
-        const el = document.getElementById(elId);
-        if (!el) return;
-        if (isPassed) {
-            el.style.color = '#16a34a';
-            el.innerHTML = `<span style="display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; background:#16a34a; color:#fff; font-size:10px; font-weight:700;">✓</span> ${text}`;
-        } else {
-            el.style.color = '#94a3b8';
-            el.innerHTML = `<span style="display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; border:1.5px solid #cbd5e1; color:#94a3b8; font-size:10px; font-weight:700;">○</span> ${text}`;
+        const allValid = hasLength && hasLetter && hasNumber && hasSymbol && isMatch;
+        const tickEl = document.getElementById('securityPassValidTick');
+        if (tickEl) {
+            tickEl.style.display = allValid ? 'flex' : 'none';
         }
+
+        return allValid;
     }
 
     function saveAndApplyCreatorPreferences() {
