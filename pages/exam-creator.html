@@ -2571,61 +2571,46 @@
         user-select: none;
     }
 
-    /* Clean Encircled Radio Choice Items */
-    .circled-choice-card {
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 16px 20px;
-        cursor: pointer;
+    /* Clean MCQ Style Option Selection (No box, no square, no hover) */
+    .settings-mcq-option {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        transition: all 0.2s ease;
+        gap: 18px;
+        padding: 12px 0;
+        cursor: pointer;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
         user-select: none;
     }
 
-    .circled-choice-card:hover {
-        border-color: #DE6834;
-        background: #ffffff;
-    }
-
-    .circled-choice-card.active {
-        border-color: #DE6834 !important;
-        background: #ffffff !important;
-        box-shadow: 0 0 0 1.5px rgba(222, 104, 52, 0.2) !important;
-    }
-
-    .choice-radio-circle {
-        width: 20px;
-        height: 20px;
+    .settings-mcq-circle {
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
-        border: 2px solid #cbd5e1;
-        background: #ffffff;
+        background: #FFEBE1;
+        border: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s ease;
         flex-shrink: 0;
-        box-sizing: border-box;
+        outline: none !important;
     }
 
-    .choice-radio-circle::after {
+    .settings-mcq-option.active .settings-mcq-circle::after {
         content: '';
-        width: 10px;
-        height: 10px;
+        width: 13px;
+        height: 13px;
+        background: #DE5B2B;
         border-radius: 50%;
-        background: #DE6834;
-        transform: scale(0);
-        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .circled-choice-card.active .choice-radio-circle {
-        border-color: #DE6834 !important;
-    }
-
-    .circled-choice-card.active .choice-radio-circle::after {
-        transform: scale(1);
+    .settings-mcq-label {
+        font-size: 1.15rem;
+        font-weight: 400;
+        color: #2d2d2d;
+        line-height: 1.5;
+        font-family: inherit;
     }
 
     .settings-step-tab {
@@ -2882,38 +2867,24 @@
                     </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 14px; max-width: 650px;">
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
                     <!-- Option 1: Orange Default -->
-                    <div class="circled-choice-card bg-option-card" id="bgOptDefault"
+                    <div class="settings-mcq-option bg-option-card" id="bgOptDefault"
                         onclick="selectBgOption('default')">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <div class="choice-radio-circle"></div>
-                            <span style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">Orange Default</span>
-                        </div>
-                        <span
-                            style="font-size: 0.72rem; font-weight: 600; color: #DE6834; background: rgba(222, 104, 52, 0.08); padding: 3px 10px; border-radius: 6px;">DEFAULT</span>
+                        <div class="settings-mcq-circle"></div>
+                        <span class="settings-mcq-label">Orange Default</span>
                     </div>
 
                     <!-- Option 2: White #ffffff -->
-                    <div class="circled-choice-card bg-option-card" id="bgOptWhite" onclick="selectBgOption('white')">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <div class="choice-radio-circle"></div>
-                            <span style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">Pure White
-                                (#ffffff)</span>
-                        </div>
-                        <span
-                            style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">CLEAN</span>
+                    <div class="settings-mcq-option bg-option-card" id="bgOptWhite" onclick="selectBgOption('white')">
+                        <div class="settings-mcq-circle"></div>
+                        <span class="settings-mcq-label">Pure White (#ffffff)</span>
                     </div>
 
                     <!-- Option 3: BGNEW01.png -->
-                    <div class="circled-choice-card bg-option-card" id="bgOptBgnew" onclick="selectBgOption('bgnew01')">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <div class="choice-radio-circle"></div>
-                            <span style="font-size: 0.98rem; font-weight: 600; color: #1e293b;">BGNEW01.png
-                                Pattern</span>
-                        </div>
-                        <span
-                            style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">PATTERN</span>
+                    <div class="settings-mcq-option bg-option-card" id="bgOptBgnew" onclick="selectBgOption('bgnew01')">
+                        <div class="settings-mcq-circle"></div>
+                        <span class="settings-mcq-label">BGNEW01.png Pattern</span>
                     </div>
                 </div>
             </div>
@@ -2933,41 +2904,26 @@
                     </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 14px; max-width: 650px;">
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
                     <!-- Option 1: Mulish (Default) -->
-                    <div class="circled-choice-card font-option-card" id="fontOptMulish"
+                    <div class="settings-mcq-option font-option-card" id="fontOptMulish"
                         onclick="selectFontOption('Mulish')" style="font-family: 'Mulish', sans-serif;">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <div class="choice-radio-circle"></div>
-                            <span
-                                style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: 'Mulish', sans-serif;">Mulish</span>
-                        </div>
-                        <span
-                            style="font-size: 0.72rem; font-weight: 600; color: #DE6834; background: rgba(222, 104, 52, 0.08); padding: 3px 10px; border-radius: 6px;">DEFAULT</span>
+                        <div class="settings-mcq-circle"></div>
+                        <span class="settings-mcq-label" style="font-family: 'Mulish', sans-serif;">Mulish</span>
                     </div>
 
                     <!-- Option 2: Arial -->
-                    <div class="circled-choice-card font-option-card" id="fontOptArial"
+                    <div class="settings-mcq-option font-option-card" id="fontOptArial"
                         onclick="selectFontOption('Arial')" style="font-family: Arial, Helvetica, sans-serif;">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <div class="choice-radio-circle"></div>
-                            <span
-                                style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: Arial, Helvetica, sans-serif;">Arial</span>
-                        </div>
-                        <span
-                            style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">SYSTEM</span>
+                        <div class="settings-mcq-circle"></div>
+                        <span class="settings-mcq-label" style="font-family: Arial, Helvetica, sans-serif;">Arial</span>
                     </div>
 
                     <!-- Option 3: Hind -->
-                    <div class="circled-choice-card font-option-card" id="fontOptHind"
+                    <div class="settings-mcq-option font-option-card" id="fontOptHind"
                         onclick="selectFontOption('Hind')" style="font-family: 'Hind', sans-serif;">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <div class="choice-radio-circle"></div>
-                            <span
-                                style="font-size: 1rem; font-weight: 600; color: #1e293b; font-family: 'Hind', sans-serif;">Hind</span>
-                        </div>
-                        <span
-                            style="font-size: 0.72rem; font-weight: 600; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">CLEAN</span>
+                        <div class="settings-mcq-circle"></div>
+                        <span class="settings-mcq-label" style="font-family: 'Hind', sans-serif;">Hind</span>
                     </div>
                 </div>
             </div>
