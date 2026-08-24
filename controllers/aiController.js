@@ -879,8 +879,9 @@ Format for Coding: [{"heading": "Unique Problem Title", "title": "<p><strong>Pro
 Format for Assertion-Reason: [{"heading": "Title", "title": "<p><strong>Assertion (A):</strong> ...</p><p><strong>Reason (R):</strong> ...</p>", "type": "assertion_reason", "options": ["Both (A) and (R) are true and (R) is the correct explanation of (A)", "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)", "(A) is true but (R) is false", "(A) is false but (R) is true"], "correctAnswer": "...", "marks": ${itemMarks}}]
 Return ONLY the raw JSON array. No markdown fences.`;
 
+                const modelName = process.env.OPENAI_MODEL || "gpt-4o-mini";
                 const completion = await client.chat.completions.create({
-                    model: "gpt-4o-mini",
+                    model: modelName,
                     messages: [
                         { role: "system", content: systemPrompt },
                         { role: "user", content: `Topic: ${safeTopic}\nPrompt instructions: ${prompt || 'Generate high-quality diverse questions'}\nType: ${safeType}\nCount: ${numCount}\nOptions count: ${numOpts}\nSample TC: ${numSample}\nHidden TC: ${numHidden}` }
