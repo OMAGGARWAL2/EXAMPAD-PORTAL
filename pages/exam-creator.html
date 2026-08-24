@@ -2512,13 +2512,27 @@
 <!-- ==================== EXAM CREATOR SETTINGS MODAL ==================== -->
 <style>
     @keyframes settingsModalPop {
-        0% { transform: scale(0.94) translateY(16px); opacity: 0; }
-        100% { transform: scale(1) translateY(0); opacity: 1; }
+        0% {
+            transform: scale(0.94) translateY(16px);
+            opacity: 0;
+        }
+
+        100% {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
     }
+
     @keyframes settingsFadeIn {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
     }
+
     .settings-modal-overlay {
         position: fixed !important;
         inset: 0 !important;
@@ -2532,6 +2546,7 @@
         padding: 20px !important;
         animation: settingsFadeIn 0.25s ease-out;
     }
+
     .security-modal-overlay {
         position: fixed !important;
         inset: 0 !important;
@@ -2545,48 +2560,57 @@
         padding: 20px !important;
         animation: settingsFadeIn 0.25s ease-out;
     }
+
     .settings-modal-card {
         animation: settingsModalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .bg-option-card {
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
         user-select: none;
     }
+
     .bg-option-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
         border-color: #cbd5e1 !important;
     }
+
     .bg-option-card.active {
         border-color: #DE6834 !important;
         background: #fffdfb !important;
         box-shadow: 0 0 0 2px rgba(222, 104, 52, 0.25), 0 10px 25px -5px rgba(222, 104, 52, 0.15) !important;
     }
+
     .bg-option-card.active .bg-check-badge {
         background: #DE6834 !important;
         border-color: #DE6834 !important;
         color: #fff !important;
     }
+
     .font-option-card {
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
         user-select: none;
     }
+
     .font-option-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
         border-color: #cbd5e1 !important;
     }
+
     .font-option-card.active {
         border-color: #DE6834 !important;
         background: #fffdfb !important;
         box-shadow: 0 0 0 2px rgba(222, 104, 52, 0.25), 0 10px 25px -5px rgba(222, 104, 52, 0.15) !important;
     }
+
     .settings-modal-card * {
         box-sizing: border-box;
     }
-    
+
     /* Sleek Modern Switch Toggles */
     .creator-stylish-toggle {
         display: flex;
@@ -2603,17 +2627,20 @@
         box-sizing: border-box;
         position: relative;
     }
+
     .creator-stylish-toggle:hover {
         border-color: #DE6834;
         background: #fffdfb;
         transform: translateY(-1px);
         box-shadow: 0 4px 14px rgba(222, 104, 52, 0.08);
     }
+
     .creator-stylish-toggle:has(input:checked) {
         border-color: #DE6834 !important;
         background: #fff9f5 !important;
         box-shadow: 0 4px 14px rgba(222, 104, 52, 0.12) !important;
     }
+
     .creator-toggle-text {
         font-size: 0.92rem;
         font-weight: 700;
@@ -2622,9 +2649,11 @@
         font-family: 'Montserrat', 'Mulish', sans-serif;
         transition: color 0.2s ease;
     }
+
     .creator-stylish-toggle:has(input:checked) .creator-toggle-text {
         color: #DE6834;
     }
+
     .creator-switch-track {
         position: relative;
         width: 48px;
@@ -2635,6 +2664,7 @@
         flex-shrink: 0;
         display: inline-block;
     }
+
     .creator-switch-track::after {
         content: '';
         position: absolute;
@@ -2647,6 +2677,7 @@
         transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
+
     .creator-stylish-toggle input[type="checkbox"] {
         position: absolute;
         opacity: 0;
@@ -2654,10 +2685,12 @@
         width: 0;
         height: 0;
     }
-    .creator-stylish-toggle input[type="checkbox"]:checked + .creator-switch-track {
+
+    .creator-stylish-toggle input[type="checkbox"]:checked+.creator-switch-track {
         background: #DE6834;
     }
-    .creator-stylish-toggle input[type="checkbox"]:checked + .creator-switch-track::after {
+
+    .creator-stylish-toggle input[type="checkbox"]:checked+.creator-switch-track::after {
         transform: translateX(22px);
     }
 
@@ -2671,6 +2704,7 @@
         position: relative;
         flex-shrink: 0;
     }
+
     .custom-orange-check input[type="checkbox"] {
         position: absolute;
         opacity: 0;
@@ -2678,6 +2712,7 @@
         height: 0;
         pointer-events: none;
     }
+
     .custom-orange-box {
         width: 20px;
         height: 20px;
@@ -2692,6 +2727,7 @@
         flex-shrink: 0;
         box-sizing: border-box;
     }
+
     .custom-orange-box::after {
         content: '';
         width: 10px;
@@ -2701,105 +2737,147 @@
         transform: scale(0);
         transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+
     .custom-orange-check:hover .custom-orange-box {
         border-color: #DE6834;
         box-shadow: 0 2px 6px rgba(222, 104, 52, 0.15);
     }
-    .custom-orange-check input[type="checkbox"]:checked + .custom-orange-box {
+
+    .custom-orange-check input[type="checkbox"]:checked+.custom-orange-box {
         border-color: #DE6834;
         background: #ffffff;
         box-shadow: 0 0 0 2px rgba(222, 104, 52, 0.15);
     }
-    .custom-orange-check input[type="checkbox"]:checked + .custom-orange-box::after {
+
+    .custom-orange-check input[type="checkbox"]:checked+.custom-orange-box::after {
         transform: scale(1);
     }
 </style>
 
 <div id="creatorSettingsModalOverlay" class="settings-modal-overlay" style="font-family: 'Mulish', sans-serif;">
-    <div class="settings-modal-card" style="background: #ffffff; width: 92vw; max-width: 1050px; height: 88vh; max-height: 850px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); display: flex; flex-direction: column; overflow: hidden; font-family: 'Mulish', sans-serif; border: 1px solid rgba(222, 104, 52, 0.15);">
-        
+    <div class="settings-modal-card"
+        style="background: #ffffff; width: 92vw; max-width: 1050px; height: 88vh; max-height: 850px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); display: flex; flex-direction: column; overflow: hidden; font-family: 'Mulish', sans-serif; border: 1px solid rgba(222, 104, 52, 0.15);">
+
         <!-- Modal Header -->
-        <div style="padding: 24px 32px 18px 32px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
+        <div
+            style="padding: 24px 32px 18px 32px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
             <div>
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(222, 104, 52, 0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <img src="../Testpad_pra_files_files/password.svg" style="width: 26px; height: 26px;" onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
+                    <div
+                        style="width: 44px; height: 44px; border-radius: 12px; background: rgba(222, 104, 52, 0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <img src="../Testpad_pra_files_files/password.svg" style="width: 26px; height: 26px;"
+                            onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
                     </div>
                     <div>
-                        <h2 style="margin: 0; font-size: 1.45rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; letter-spacing: -0.3px;">EXAM CREATOR SETTINGS</h2>
-                        <span style="font-size: 0.85rem; color: #64748b; font-weight: 600; font-family: 'Mulish', sans-serif;">Configure workspace background, account security, and global typography</span>
+                        <h2
+                            style="margin: 0; font-size: 1.45rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; letter-spacing: -0.3px;">
+                            EXAM CREATOR SETTINGS</h2>
+                        <span
+                            style="font-size: 0.85rem; color: #64748b; font-weight: 600; font-family: 'Mulish', sans-serif;">Configure
+                            workspace background, account security, and global typography</span>
                     </div>
                 </div>
             </div>
-            <button onclick="closeCreatorSettingsModal()" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s;" onmouseover="this.style.background='#fee2e2'; this.style.color='#ef4444';" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b';" title="Close Settings">
+            <button onclick="closeCreatorSettingsModal()"
+                style="width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s;"
+                onmouseover="this.style.background='#fee2e2'; this.style.color='#ef4444';"
+                onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b';" title="Close Settings">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
         <!-- Modal Body (Scrollable) -->
-        <div style="flex: 1; overflow-y: auto; padding: 28px 32px; display: flex; flex-direction: column; gap: 32px; font-family: 'Mulish', sans-serif;">
-            
+        <div
+            style="flex: 1; overflow-y: auto; padding: 28px 32px; display: flex; flex-direction: column; gap: 32px; font-family: 'Mulish', sans-serif;">
+
             <!-- SECTION 1: BACKGROUND SELECTION -->
             <div class="settings-section">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <h3 style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
+                    <h3
+                        style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-palette" style="color: #DE6834;"></i> Choose Background for Exam-Creator
                     </h3>
-                    <span style="font-size: 0.78rem; font-weight: 700; color: #DE6834; background: rgba(222, 104, 52, 0.1); padding: 4px 10px; border-radius: 20px;">Teacher Account Persistent</span>
+                    <span
+                        style="font-size: 0.78rem; font-weight: 700; color: #DE6834; background: rgba(222, 104, 52, 0.1); padding: 4px 10px; border-radius: 20px;">Teacher
+                        Account Persistent</span>
                 </div>
                 <!-- Signature Tri-Orange Line for Heading -->
-                <div class="tri-orange-line" style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
+                <div class="tri-orange-line"
+                    style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
                     <div style="background: #FFF1E7; flex: 2.5;"></div>
                     <div style="background: #E6BCA5; flex: 3.5;"></div>
                     <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
-                <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; font-weight: 600;">Choose the background design for your Exam Creator workspace. The selected background stays active across all sessions for this account.</p>
-                
+                <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; font-weight: 600;">Choose the
+                    background design for your Exam Creator workspace. The selected background stays active across all
+                    sessions for this account.</p>
+
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
                     <!-- Option 1: Orange Default -->
-                    <div class="bg-option-card" id="bgOptDefault" onclick="selectBgOption('default')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
-                        <div style="height: 96px; border-radius: 8px; background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid rgba(222, 104, 52, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; overflow: hidden;">
-                            <div style="width: 70px; height: 16px; background: #DE6834; border-radius: 4px; opacity: 0.85;"></div>
-                            <div style="position: absolute; bottom: 8px; right: 8px; font-size: 0.7rem; font-weight: 800; color: #DE6834; background: #fff; padding: 2px 8px; border-radius: 10px;">DEFAULT</div>
+                    <div class="bg-option-card" id="bgOptDefault" onclick="selectBgOption('default')"
+                        style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
+                        <div
+                            style="height: 96px; border-radius: 8px; background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid rgba(222, 104, 52, 0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; overflow: hidden;">
+                            <div
+                                style="width: 70px; height: 16px; background: #DE6834; border-radius: 4px; opacity: 0.85;">
+                            </div>
+                            <div
+                                style="position: absolute; bottom: 8px; right: 8px; font-size: 0.7rem; font-weight: 800; color: #DE6834; background: #fff; padding: 2px 8px; border-radius: 10px;">
+                                DEFAULT</div>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">Orange Default</h4>
-                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Standard warm theme background</span>
+                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">
+                                    Orange Default</h4>
+                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Standard warm theme
+                                    background</span>
                             </div>
-                            <div class="bg-check-badge" style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
+                            <div class="bg-check-badge"
+                                style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
                                 <i class="fas fa-check" style="font-size: 0.75rem;"></i>
                             </div>
                         </div>
                     </div>
 
                     <!-- Option 2: White #ffffff -->
-                    <div class="bg-option-card" id="bgOptWhite" onclick="selectBgOption('white')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
-                        <div style="height: 96px; border-radius: 8px; background: #ffffff; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.03);">
-                            <div style="font-size: 0.82rem; font-weight: 800; color: #334155; letter-spacing: 0.5px;">#FFFFFF SOLID WHITE</div>
+                    <div class="bg-option-card" id="bgOptWhite" onclick="selectBgOption('white')"
+                        style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
+                        <div
+                            style="height: 96px; border-radius: 8px; background: #ffffff; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.03);">
+                            <div style="font-size: 0.82rem; font-weight: 800; color: #334155; letter-spacing: 0.5px;">
+                                #FFFFFF SOLID WHITE</div>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">Pure White (#ffffff)</h4>
-                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Clean, minimal white canvas</span>
+                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">
+                                    Pure White (#ffffff)</h4>
+                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Clean, minimal white
+                                    canvas</span>
                             </div>
-                            <div class="bg-check-badge" style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
+                            <div class="bg-check-badge"
+                                style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
                                 <i class="fas fa-check" style="font-size: 0.75rem;"></i>
                             </div>
                         </div>
                     </div>
 
                     <!-- Option 3: BGNEW01.png -->
-                    <div class="bg-option-card" id="bgOptBgnew" onclick="selectBgOption('bgnew01')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
-                        <div style="height: 96px; border-radius: 8px; background: #f8fafc url('../BGNEW01.png') center/cover no-repeat; border: 1px solid #e2e8f0; display: flex; align-items: flex-end; justify-content: flex-end; padding: 8px; margin-bottom: 12px;">
-                            <span style="font-size: 0.7rem; font-weight: 800; color: #1e293b; background: rgba(255,255,255,0.92); padding: 2px 8px; border-radius: 4px;">BGNEW01.PNG</span>
+                    <div class="bg-option-card" id="bgOptBgnew" onclick="selectBgOption('bgnew01')"
+                        style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.25s; position: relative; background: #fff;">
+                        <div
+                            style="height: 96px; border-radius: 8px; background: #f8fafc url('../BGNEW01.png') center/cover no-repeat; border: 1px solid #e2e8f0; display: flex; align-items: flex-end; justify-content: flex-end; padding: 8px; margin-bottom: 12px;">
+                            <span
+                                style="font-size: 0.7rem; font-weight: 800; color: #1e293b; background: rgba(255,255,255,0.92); padding: 2px 8px; border-radius: 4px;">BGNEW01.PNG</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">BGNEW01.png Pattern</h4>
-                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Custom textured graphical wallpaper</span>
+                                <h4 style="margin: 0 0 4px 0; font-size: 0.98rem; font-weight: 800; color: #1e293b;">
+                                    BGNEW01.png Pattern</h4>
+                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Custom textured
+                                    graphical wallpaper</span>
                             </div>
-                            <div class="bg-check-badge" style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
+                            <div class="bg-check-badge"
+                                style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #fff;">
                                 <i class="fas fa-check" style="font-size: 0.75rem;"></i>
                             </div>
                         </div>
@@ -2810,45 +2888,76 @@
             <!-- SECTION 2: SECURITY METHODS (PASSWORD BEFORE FINALISE IN STEP 5) -->
             <div class="settings-section">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <h3 style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
+                    <h3
+                        style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-shield-alt" style="color: #DE6834;"></i> Security Methods & Authorization
                     </h3>
-                    <span style="font-size: 0.78rem; font-weight: 700; color: #0284c7; background: rgba(2, 132, 199, 0.1); padding: 4px 10px; border-radius: 20px;">Step 5 Protection</span>
+                    <span
+                        style="font-size: 0.78rem; font-weight: 700; color: #0284c7; background: rgba(2, 132, 199, 0.1); padding: 4px 10px; border-radius: 20px;">Step
+                        5 Protection</span>
                 </div>
                 <!-- Signature Tri-Orange Line for Heading -->
-                <div class="tri-orange-line" style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
+                <div class="tri-orange-line"
+                    style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
                     <div style="background: #FFF1E7; flex: 2.5;"></div>
                     <div style="background: #E6BCA5; flex: 3.5;"></div>
                     <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
-                
+
                 <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 22px;">
                     <!-- Checkbox Toggle -->
-                    <label style="display: flex; align-items: flex-start; gap: 14px; cursor: pointer; user-select: none;">
-                        <input type="checkbox" id="creatorSecurityCheckbox" onchange="toggleSecurityInputs(this.checked)" style="width: 22px; height: 22px; margin-top: 2px; accent-color: #DE6834; cursor: pointer;">
+                    <label
+                        style="display: flex; align-items: flex-start; gap: 14px; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="creatorSecurityCheckbox"
+                            onchange="toggleSecurityInputs(this.checked)"
+                            style="width: 22px; height: 22px; margin-top: 2px; accent-color: #DE6834; cursor: pointer;">
                         <div>
-                            <div style="font-size: 1rem; font-weight: 800; color: #1e293b;">Enable Security Passcode before Finalising Test (Step 5)</div>
-                            <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-top: 3px; line-height: 1.4;">When enabled, your security password is required every single time before deploying or finalizing an exam in Step 5.</div>
+                            <div style="font-size: 1rem; font-weight: 800; color: #1e293b;">Enable Security Passcode
+                                before Finalising Test (Step 5)</div>
+                            <div
+                                style="font-size: 0.85rem; color: #64748b; font-weight: 600; margin-top: 3px; line-height: 1.4;">
+                                When enabled, your security password is required every single time before deploying or
+                                finalizing an exam in Step 5.</div>
                         </div>
                     </label>
 
                     <!-- Password Inputs Container (shown when checkbox is enabled) -->
-                    <div id="securityInputsContainer" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #cbd5e1;">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div id="securityInputsContainer"
+                        style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #cbd5e1;">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                             <div>
-                                <label style="display: block; font-size: 0.82rem; font-weight: 800; color: #334155; margin-bottom: 8px; text-transform: uppercase;">SET SECURITY PASSWORD</label>
+                                <label
+                                    style="display: block; font-size: 0.82rem; font-weight: 800; color: #334155; margin-bottom: 8px; text-transform: uppercase;">SET
+                                    SECURITY PASSWORD</label>
                                 <div style="position: relative;">
-                                    <input type="password" id="creatorSecurityPass" oninput="validateSecurityPasswordRules()" placeholder="Enter minimum 8 character password..." style="width: 100%; height: 44px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 600; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#DE6834'" onblur="this.style.borderColor='#cbd5e1'">
-                                    <button type="button" onclick="togglePassVisibility('creatorSecurityPass', 'passEyeIcon1')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
+                                    <input type="password" id="creatorSecurityPass"
+                                        oninput="validateSecurityPasswordRules()"
+                                        placeholder="Enter minimum 8 character password..."
+                                        style="width: 100%; height: 44px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 600; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                                        onfocus="this.style.borderColor='#DE6834'"
+                                        onblur="this.style.borderColor='#cbd5e1'">
+                                    <button type="button"
+                                        onclick="togglePassVisibility('creatorSecurityPass', 'passEyeIcon1')"
+                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
                                         <i class="fas fa-eye" id="passEyeIcon1"></i>
                                     </button>
                                 </div>
                             </div>
                             <div>
-                                <label style="display: block; font-size: 0.82rem; font-weight: 800; color: #334155; margin-bottom: 8px; text-transform: uppercase;">CONFIRM SECURITY PASSWORD</label>
+                                <label
+                                    style="display: block; font-size: 0.82rem; font-weight: 800; color: #334155; margin-bottom: 8px; text-transform: uppercase;">CONFIRM
+                                    SECURITY PASSWORD</label>
                                 <div style="position: relative;">
-                                    <input type="password" id="creatorSecurityConfirmPass" oninput="validateSecurityPasswordRules()" placeholder="Re-enter security password..." style="width: 100%; height: 44px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 600; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#DE6834'" onblur="this.style.borderColor='#cbd5e1'">
-                                    <button type="button" onclick="togglePassVisibility('creatorSecurityConfirmPass', 'passEyeIcon2')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
+                                    <input type="password" id="creatorSecurityConfirmPass"
+                                        oninput="validateSecurityPasswordRules()"
+                                        placeholder="Re-enter security password..."
+                                        style="width: 100%; height: 44px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 0.95rem; font-weight: 600; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                                        onfocus="this.style.borderColor='#DE6834'"
+                                        onblur="this.style.borderColor='#cbd5e1'">
+                                    <button type="button"
+                                        onclick="togglePassVisibility('creatorSecurityConfirmPass', 'passEyeIcon2')"
+                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
                                         <i class="fas fa-eye" id="passEyeIcon2"></i>
                                     </button>
                                 </div>
@@ -2856,14 +2965,28 @@
                         </div>
 
                         <!-- Rule Validation Badges -->
-                        <div style="margin-top: 16px; background: #ffffff; border-radius: 8px; padding: 14px 18px; border: 1px solid #e2e8f0;">
-                            <div style="font-size: 0.78rem; font-weight: 800; color: #475569; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Password Criteria (Minimum 8 chars with letters, numbers & special character):</div>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: 0.82rem; font-weight: 700;">
-                                <div id="ruleLength" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Min 8 characters</div>
-                                <div id="ruleLetter" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Letters (a-z, A-Z)</div>
-                                <div id="ruleNumber" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Numbers (0-9)</div>
-                                <div id="ruleSymbol" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Special symbol (!@#$%^&*)</div>
-                                <div id="ruleMatch" style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i class="fas fa-times-circle"></i> Passwords match</div>
+                        <div
+                            style="margin-top: 16px; background: #ffffff; border-radius: 8px; padding: 14px 18px; border: 1px solid #e2e8f0;">
+                            <div
+                                style="font-size: 0.78rem; font-weight: 800; color: #475569; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Password Criteria (Minimum 8 chars with letters, numbers & special character):</div>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: 0.82rem; font-weight: 700;">
+                                <div id="ruleLength"
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i
+                                        class="fas fa-times-circle"></i> Min 8 characters</div>
+                                <div id="ruleLetter"
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i
+                                        class="fas fa-times-circle"></i> Letters (a-z, A-Z)</div>
+                                <div id="ruleNumber"
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i
+                                        class="fas fa-times-circle"></i> Numbers (0-9)</div>
+                                <div id="ruleSymbol"
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i
+                                        class="fas fa-times-circle"></i> Special symbol (!@#$%^&*)</div>
+                                <div id="ruleMatch"
+                                    style="color: #94a3b8; display: flex; align-items: center; gap: 6px;"><i
+                                        class="fas fa-times-circle"></i> Passwords match</div>
                             </div>
                         </div>
                     </div>
@@ -2873,45 +2996,64 @@
             <!-- SECTION 3: FONT OPTION -->
             <div class="settings-section">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <h3 style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
+                    <h3
+                        style="margin: 0; font-size: 1.18rem; font-weight: 800; color: #1e293b; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-font" style="color: #DE6834;"></i> Typography & Global Font Option
                     </h3>
-                    <span style="font-size: 0.78rem; font-weight: 700; color: #16a34a; background: rgba(222, 104, 52, 0.1); padding: 4px 10px; border-radius: 20px;">Account Persistent</span>
+                    <span
+                        style="font-size: 0.78rem; font-weight: 700; color: #16a34a; background: rgba(222, 104, 52, 0.1); padding: 4px 10px; border-radius: 20px;">Account
+                        Persistent</span>
                 </div>
                 <!-- Signature Tri-Orange Line for Heading -->
-                <div class="tri-orange-line" style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
+                <div class="tri-orange-line"
+                    style="display:flex; height:4px; border-radius:2px; margin: 10px 0 16px 0;">
                     <div style="background: #FFF1E7; flex: 2.5;"></div>
                     <div style="background: #E6BCA5; flex: 3.5;"></div>
                     <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
-                <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; font-weight: 600;">Choose the typography for Exam Creator. Default is Mulish, with Arial and Hind options. The selected font will be applied to the whole page forever for this account until changed.</p>
+                <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px; font-weight: 600;">Choose the
+                    typography for Exam Creator. Default is Mulish, with Arial and Hind options. The selected font will
+                    be applied to the whole page forever for this account until changed.</p>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
                     <!-- Option 1: Mulish (Default) -->
-                    <div class="font-option-card" id="fontOptMulish" onclick="selectFontOption('Mulish')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: 'Mulish', sans-serif;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div class="font-option-card" id="fontOptMulish" onclick="selectFontOption('Mulish')"
+                        style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: 'Mulish', sans-serif;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Mulish</h4>
-                            <span style="font-size: 0.7rem; font-weight: 800; color: #DE6834; background: rgba(222, 104, 52, 0.1); padding: 2px 8px; border-radius: 10px;">DEFAULT</span>
+                            <span
+                                style="font-size: 0.7rem; font-weight: 800; color: #DE6834; background: rgba(222, 104, 52, 0.1); padding: 2px 8px; border-radius: 10px;">DEFAULT</span>
                         </div>
-                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox jumps over the lazy dog. 1234567890</p>
+                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox
+                            jumps over the lazy dog. 1234567890</p>
                     </div>
 
                     <!-- Option 2: Arial -->
-                    <div class="font-option-card" id="fontOptArial" onclick="selectFontOption('Arial')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: Arial, sans-serif;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div class="font-option-card" id="fontOptArial" onclick="selectFontOption('Arial')"
+                        style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: Arial, sans-serif;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Arial</h4>
-                            <span style="font-size: 0.7rem; font-weight: 800; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 10px;">SYSTEM SANS</span>
+                            <span
+                                style="font-size: 0.7rem; font-weight: 800; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 10px;">SYSTEM
+                                SANS</span>
                         </div>
-                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox jumps over the lazy dog. 1234567890</p>
+                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox
+                            jumps over the lazy dog. 1234567890</p>
                     </div>
 
                     <!-- Option 3: Hind -->
-                    <div class="font-option-card" id="fontOptHind" onclick="selectFontOption('Hind')" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: 'Hind', sans-serif;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div class="font-option-card" id="fontOptHind" onclick="selectFontOption('Hind')"
+                        style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s; background: #fff; font-family: 'Hind', sans-serif;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Hind</h4>
-                            <span style="font-size: 0.7rem; font-weight: 800; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 10px;">CLEAN</span>
+                            <span
+                                style="font-size: 0.7rem; font-weight: 800; color: #64748b; background: #f1f5f9; padding: 2px 8px; border-radius: 10px;">CLEAN</span>
                         </div>
-                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox jumps over the lazy dog. 1234567890</p>
+                        <p style="font-size: 0.92rem; color: #475569; margin: 0; font-weight: 600;">The quick brown fox
+                            jumps over the lazy dog. 1234567890</p>
                     </div>
                 </div>
             </div>
@@ -2919,11 +3061,16 @@
         </div>
 
         <!-- Modal Footer Actions -->
-        <div style="padding: 18px 32px; border-top: 1px solid #f1f5f9; background: #f8fafc; display: flex; justify-content: space-between; align-items: center; font-family: 'Mulish', sans-serif;">
-            <button onclick="closeCreatorSettingsModal()" style="padding: 10px 22px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; color: #475569; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: 'Mulish', sans-serif; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
+        <div
+            style="padding: 18px 32px; border-top: 1px solid #f1f5f9; background: #f8fafc; display: flex; justify-content: space-between; align-items: center; font-family: 'Mulish', sans-serif;">
+            <button onclick="closeCreatorSettingsModal()"
+                style="padding: 10px 22px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; color: #475569; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: 'Mulish', sans-serif; transition: all 0.2s;"
+                onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
                 Cancel
             </button>
-            <button onclick="saveAndApplyCreatorPreferences()" style="padding: 11px 28px; border-radius: 8px; border: none; background: #DE6834; color: #fff; font-weight: 800; font-size: 0.95rem; cursor: pointer; font-family: 'Mulish', sans-serif; box-shadow: 0 4px 14px rgba(222, 104, 52, 0.35); transition: all 0.2s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.background='#c85826'" onmouseout="this.style.background='#DE6834'">
+            <button onclick="saveAndApplyCreatorPreferences()"
+                style="padding: 11px 28px; border-radius: 8px; border: none; background: #DE6834; color: #fff; font-weight: 800; font-size: 0.95rem; cursor: pointer; font-family: 'Mulish', sans-serif; box-shadow: 0 4px 14px rgba(222, 104, 52, 0.35); transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
+                onmouseover="this.style.background='#c85826'" onmouseout="this.style.background='#DE6834'">
                 <i class="fas fa-check"></i> Save & Apply Preferences
             </button>
         </div>
@@ -2932,14 +3079,19 @@
 
 <!-- ==================== STEP 5 SECURITY AUTHORIZATION PROMPT MODAL ==================== -->
 <div id="creatorSecurityPromptModal" class="security-modal-overlay" style="font-family: 'Mulish', sans-serif;">
-    <div style="background: #ffffff; width: 95%; max-width: 480px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden; font-family: 'Mulish', sans-serif; border: 1px solid rgba(222, 104, 52, 0.2); animation: settingsModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
-        <div style="padding: 22px 26px 16px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 14px;">
-            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(222, 104, 52, 0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                <img src="../Testpad_pra_files_files/password.svg" style="width: 26px; height: 26px;" onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
+    <div
+        style="background: #ffffff; width: 95%; max-width: 480px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden; font-family: 'Mulish', sans-serif; border: 1px solid rgba(222, 104, 52, 0.2); animation: settingsModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div
+            style="padding: 22px 26px 16px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 14px;">
+            <div
+                style="width: 44px; height: 44px; border-radius: 12px; background: rgba(222, 104, 52, 0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <img src="../Testpad_pra_files_files/password.svg" style="width: 26px; height: 26px;"
+                    onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
             </div>
             <div>
                 <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #1e293b;">Security Authorization</h3>
-                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Step 5 Finalization Passcode Required</span>
+                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Step 5 Finalization Passcode
+                    Required</span>
             </div>
         </div>
         <!-- Signature Tri-Orange Line -->
@@ -2949,20 +3101,30 @@
             <div style="background: #DE5B2B; flex: 5;"></div>
         </div>
         <div style="padding: 24px 26px;">
-            <p style="font-size: 0.9rem; color: #475569; margin: 0 0 16px 0; font-weight: 600; line-height: 1.4;">This account is protected with security authorization. Please enter your security passcode to finalize and publish this exam.</p>
+            <p style="font-size: 0.9rem; color: #475569; margin: 0 0 16px 0; font-weight: 600; line-height: 1.4;">This
+                account is protected with security authorization. Please enter your security passcode to finalize and
+                publish this exam.</p>
             <div style="position: relative; margin-bottom: 8px;">
-                <input type="password" id="creatorPromptPasscode" placeholder="Enter your 8+ char security password..." style="width: 100%; height: 46px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 1rem; font-weight: 700; box-sizing: border-box; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#DE6834'" onblur="this.style.borderColor='#cbd5e1'" onkeydown="if(event.key==='Enter') verifyAndExecutePublish();">
-                <button type="button" onclick="togglePassVisibility('creatorPromptPasscode', 'promptPassEyeIcon')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
+                <input type="password" id="creatorPromptPasscode" placeholder="Enter your 8+ char security password..."
+                    style="width: 100%; height: 46px; padding: 0 40px 0 14px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-family: 'Mulish', sans-serif; font-size: 1rem; font-weight: 700; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                    onfocus="this.style.borderColor='#DE6834'" onblur="this.style.borderColor='#cbd5e1'"
+                    onkeydown="if(event.key==='Enter') verifyAndExecutePublish();">
+                <button type="button" onclick="togglePassVisibility('creatorPromptPasscode', 'promptPassEyeIcon')"
+                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; padding: 4px;">
                     <i class="fas fa-eye" id="promptPassEyeIcon"></i>
                 </button>
             </div>
-            <div id="promptPassError" style="display: none; color: #ef4444; font-size: 0.82rem; font-weight: 700; margin-top: 8px;">
+            <div id="promptPassError"
+                style="display: none; color: #ef4444; font-size: 0.82rem; font-weight: 700; margin-top: 8px;">
                 <i class="fas fa-exclamation-circle"></i> Incorrect security password. Please try again.
             </div>
         </div>
-        <div style="padding: 16px 26px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px;">
-            <button onclick="closeCreatorSecurityPromptModal()" style="padding: 9px 18px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; color: #64748b; font-weight: 700; font-size: 0.85rem; cursor: pointer;">Cancel</button>
-            <button onclick="verifyAndExecutePublish()" style="padding: 9px 24px; border-radius: 8px; border: none; background: #DE6834; color: #fff; font-weight: 800; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 12px rgba(222, 104, 52, 0.3);">
+        <div
+            style="padding: 16px 26px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px;">
+            <button onclick="closeCreatorSecurityPromptModal()"
+                style="padding: 9px 18px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; color: #64748b; font-weight: 700; font-size: 0.85rem; cursor: pointer;">Cancel</button>
+            <button onclick="verifyAndExecutePublish()"
+                style="padding: 9px 24px; border-radius: 8px; border: none; background: #DE6834; color: #fff; font-weight: 800; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 12px rgba(222, 104, 52, 0.3);">
                 <i class="fas fa-lock-open" style="margin-right: 6px;"></i> Authorize & Finalise
             </button>
         </div>
@@ -3019,8 +3181,11 @@
             onclick="showCreatorDashboard()" title="Creator Dashboard"></i>
         <button id="creatorSettingsHeaderBtn" onclick="openCreatorSettingsModal()" title="Exam Creator Settings"
             style="background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; transition: all 0.2s; margin-right: 16px; padding: 0;"
-            onmouseover="this.style.background='rgba(222, 104, 52, 0.12)'; this.style.transform='scale(1.05)';" onmouseout="this.style.background='transparent'; this.style.transform='scale(1)';">
-            <img src="../Testpad_pra_files_files/password.svg" alt="Settings" style="width: 28px; height: 28px; object-fit: contain;" onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
+            onmouseover="this.style.background='rgba(222, 104, 52, 0.12)'; this.style.transform='scale(1.05)';"
+            onmouseout="this.style.background='transparent'; this.style.transform='scale(1)';">
+            <img src="../Testpad_pra_files_files/password.svg" alt="Settings"
+                style="width: 28px; height: 28px; object-fit: contain;"
+                onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
         </button>
         <div class="profile-container">
             <div class="profile-stack" id="profileToggle"
@@ -3054,10 +3219,12 @@
                         style="width: 16px; height: 16px; margin-right: 8px;">
                     <span>My Profile</span>
                 </div>
-                <div class="menu-item" onclick="openCreatorSettingsModal(); document.getElementById('profileMenu').style.display='none';"
+                <div class="menu-item"
+                    onclick="openCreatorSettingsModal(); document.getElementById('profileMenu').style.display='none';"
                     style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 0; color: #555; font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
                     <img src="../Testpad_pra_files_files/password.svg"
-                        style="width: 16px; height: 16px; margin-right: 8px;" onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
+                        style="width: 16px; height: 16px; margin-right: 8px;"
+                        onerror="this.src='../TESTPAD_WEBSITE__files/password.svg'">
                     <span>Preferences & Settings</span>
                 </div>
                 <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
@@ -3110,7 +3277,7 @@
                 <div class="section-title"
                     style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <i data-lucide="fingerprint" style="color:var(--primary); width: 28px; height: 28px;"></i>
+                        <!-- <i data-lucide="fingerprint" style="color:var(--primary); width: 28px; height: 28px;"></i> -->
                         Assessment Identity
                     </div>
                     <button class="btn btn-ghost" onclick="showCloneModal()"
@@ -3126,7 +3293,8 @@
 
                 <div style="display: flex; flex-direction: column; gap: 24px; margin-top: 16px;">
                     <!-- Row 1: Title & Description -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px 32px;">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px 32px;">
                         <div class="input-group">
                             <label class="label">EXAM TITLE</label>
                             <input type="text" id="examTitle" class="clean-input"
@@ -3143,7 +3311,8 @@
                     </div>
 
                     <!-- Row 2: Duration, Capacity Marks, Academic Credits -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px 32px;">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px 32px;">
                         <div class="input-group">
                             <label class="label">DURATION (MINUTES)</label>
                             <input type="number" id="examDuration" class="clean-input" value="60"
@@ -3162,9 +3331,11 @@
                     </div>
 
                     <!-- Row 3: Negative Marking, Scheduled Start, Scheduled End -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px 32px;">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px 32px;">
                         <div class="input-group">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                            <div
+                                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
                                 <label class="label" style="margin: 0;">NEGATIVE MARKING</label>
                                 <label class="custom-orange-check">
                                     <input type="checkbox" id="enableNegativeMarking"
@@ -3188,26 +3359,33 @@
                     </div>
 
                     <!-- Row 4: Time Configuration & Multiple Exam Sets -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px 32px;">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px 32px;">
                         <div class="input-group">
                             <label class="label" style="margin-bottom: 10px;">TIME CONFIGURATION</label>
-                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; background: transparent; padding: 4px 0;">
+                            <label
+                                style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; background: transparent; padding: 4px 0;">
                                 <div class="custom-orange-check">
                                     <input type="checkbox" id="isUniversalTime">
                                     <span class="custom-orange-box"></span>
                                 </div>
-                                <span style="font-size: 0.95rem; font-weight: 700; color: #DE5B2B; font-family: 'Montserrat', sans-serif; letter-spacing: 0.4px;">UNIVERSAL TIME FRAME</span>
+                                <span
+                                    style="font-size: 0.95rem; font-weight: 700; color: #DE5B2B; font-family: 'Montserrat', sans-serif; letter-spacing: 0.4px;">UNIVERSAL
+                                    TIME FRAME</span>
                             </label>
                         </div>
                         <div class="input-group">
                             <label class="label" style="margin-bottom: 10px;">MULTIPLE EXAM SETS</label>
-                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; background: transparent; padding: 4px 0;">
+                            <label
+                                style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; background: transparent; padding: 4px 0;">
                                 <div class="custom-orange-check">
                                     <input type="checkbox" id="hasMultipleSets"
                                         onchange="document.getElementById('numSetsContainer').style.display = this.checked ? 'block' : 'none';">
                                     <span class="custom-orange-box"></span>
                                 </div>
-                                <span style="font-size: 0.95rem; font-weight: 700; color: #3498db; font-family: 'Montserrat', sans-serif; letter-spacing: 0.4px;">ENABLE MULTIPLE SETS</span>
+                                <span
+                                    style="font-size: 0.95rem; font-weight: 700; color: #3498db; font-family: 'Montserrat', sans-serif; letter-spacing: 0.4px;">ENABLE
+                                    MULTIPLE SETS</span>
                             </label>
                             <div id="numSetsContainer" style="display:none; margin-top: 10px;">
                                 <input type="number" id="numSets" class="clean-input" min="2" value="2"
@@ -3250,7 +3428,8 @@
             <div class="form-card"
                 style="margin-top: 40px; border-left: 4px solid #2ecc71; padding-left: 24px !important; background:transparent;">
                 <div class="section-title">
-                    <i data-lucide="shield-check" style="color:#2ecc71; width: 28px; height: 28px;"></i> Integrity Shield & Policy
+                    <!-- <i data-lucide="shield-check" style="color:#2ecc71; width: 28px; height: 28px;"></i> -->
+                    Integrity Shield & Policy
                 </div>
                 <div class="tri-orange-line">
                     <div style="background: #FFF1E7; flex: 2.5;"></div>
@@ -3258,10 +3437,14 @@
                     <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px 36px; margin-top: 16px;">
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px 36px; margin-top: 16px;">
                     <!-- 1. Block Copy-Paste -->
-                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
-                        <span style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Block Copy-Paste Activity</span>
+                    <label
+                        style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span
+                            style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Block
+                            Copy-Paste Activity</span>
                         <div class="custom-orange-check">
                             <input type="checkbox" id="blockCopyPaste">
                             <span class="custom-orange-box"></span>
@@ -3269,8 +3452,11 @@
                     </label>
 
                     <!-- 2. Block PrintScreen & Snipping -->
-                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
-                        <span style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Block PrintScreen & Snipping</span>
+                    <label
+                        style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span
+                            style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Block
+                            PrintScreen & Snipping</span>
                         <div class="custom-orange-check">
                             <input type="checkbox" id="blockScreenshot">
                             <span class="custom-orange-box"></span>
@@ -3278,8 +3464,11 @@
                     </label>
 
                     <!-- 3. Show Roll No Watermark -->
-                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
-                        <span style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Show Roll No Watermark</span>
+                    <label
+                        style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span
+                            style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Show
+                            Roll No Watermark</span>
                         <div class="custom-orange-check">
                             <input type="checkbox" id="showWatermark" checked>
                             <span class="custom-orange-box"></span>
@@ -3287,8 +3476,11 @@
                     </label>
 
                     <!-- 4. Enforce Strict Fullscreen -->
-                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
-                        <span style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Enforce Strict Fullscreen</span>
+                    <label
+                        style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span
+                            style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">Enforce
+                            Strict Fullscreen</span>
                         <div class="custom-orange-check">
                             <input type="checkbox" id="fullScreenRequired">
                             <span class="custom-orange-box"></span>
@@ -3296,8 +3488,11 @@
                     </label>
 
                     <!-- 5. Practice Test Mode -->
-                    <label style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
-                        <span style="font-family: 'Montserrat', sans-serif; font-weight:700; font-size:0.95rem; color:#DE5B2B;">PRACTICE TEST MODE</span>
+                    <label
+                        style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:10px 0; border:none; cursor:pointer; user-select:none;">
+                        <span
+                            style="font-family: 'Montserrat', sans-serif; font-weight:700; font-size:0.95rem; color:#DE5B2B;">PRACTICE
+                            TEST MODE</span>
                         <div class="custom-orange-check">
                             <input type="checkbox" id="isPracticeTest" onchange="exams.isPracticeTest = this.checked">
                             <span class="custom-orange-box"></span>
@@ -3306,7 +3501,9 @@
 
                     <!-- 6. Max Violations Allowed -->
                     <div class="input-group" style="margin: 0;">
-                        <label class="label" style="font-family: 'Montserrat', sans-serif; font-weight:700; font-size:0.75rem; color:#A01E17; margin:0 0 2px 0; display:block;">MAX VIOLATIONS ALLOWED</label>
+                        <label class="label"
+                            style="font-family: 'Montserrat', sans-serif; font-weight:700; font-size:0.75rem; color:#A01E17; margin:0 0 2px 0; display:block;">MAX
+                            VIOLATIONS ALLOWED</label>
                         <input type="number" id="maxTabSwitches" class="clean-input" value="3"
                             style="font-family:'Montserrat', sans-serif; font-weight:600; font-size: 1rem; color: #000; background: transparent; border: none; border-bottom: 2px solid rgba(222, 91, 43, 0.4); padding: 8px 0; width: 100%; box-sizing: border-box;">
                     </div>
@@ -3316,16 +3513,15 @@
             <div class="form-card"
                 style="margin-top: 40px; border-left: 4px solid #f39c12; padding-left: 24px !important; background:transparent;">
                 <div class="section-title">
-                    <i data-lucide="user-check" style="color:#f39c12; width: 28px; height: 28px;"></i> Identity
-                    Verification Architect
+                    <!-- <i data-lucide="user-check" style="color:#f39c12; width: 28px; height: 28px;"></i> -->
+                    Identity Verification Architect
                 </div>
                 <div class="tri-orange-line">
                     <div style="background: #FFF1E7; flex: 2.5;"></div>
                     <div style="background: #E6BCA5; flex: 3.5;"></div>
                     <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
-                <p style="color:#666; font-size: 0.85rem; margin-bottom: 20px;">Define mandatory information students
-                    must provide before starting the assessment (e.g. Blind Roll No, Section, Name).</p>
+                <p style="color:#666; font-size: 0.85rem; margin-bottom: 20px;"></p>
 
                 <div id="identityFieldsList"
                     style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
@@ -3355,8 +3551,8 @@
             <div class="form-card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div class="section-title">
-                        <i data-lucide="layers" style="color:var(--primary); width: 28px; height: 28px;"></i> Sectional
-                        Architecture
+                        <!-- <i data-lucide="layers" style="color:var(--primary); width: 28px; height: 28px;"></i> -->
+                        Sectional Architecture
                     </div>
                     <button class="btn btn-ghost" onclick="promptAddSection()">+ Define New Section</button>
                 </div>
@@ -3365,18 +3561,17 @@
                     <div style="background: #E6BCA5; flex: 3.5;"></div>
                     <div style="background: #DE5B2B; flex: 5;"></div>
                 </div>
-                <p style="color:#777; font-size: 0.9rem; margin-bottom: 24px;">Add sections to categorize questions
-                    (Objective, Subjective, Lab, etc.)</p>
-                <div id="sectionsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                <div id="sectionsList" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+                </div>
             </div>
 
             <!-- Sectional Navigation Policy -->
             <div class="form-card"
-                style="margin-top: 40px; border-left: 4px solid #3498db; padding-left: 24px !important; background:transparent;"
+                style="margin-top: 40px; border-left: 4px solid var(--primary); padding-left: 24px !important; background:transparent;"
                 id="sectionLockCard">
                 <div class="section-title">
-                    <i data-lucide="navigation-2" style="color:#3498db; width: 28px; height: 28px;"></i> Sectional
-                    Navigation Policy
+                    <!-- <i data-lucide="navigation-2" style="color:var(--primary); width: 28px; height: 28px;"></i> -->
+                    Sectional Navigation Policy
                 </div>
                 <div class="tri-orange-line">
                     <div style="background: #FFF1E7; flex: 2.5;"></div>
@@ -3385,30 +3580,26 @@
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
                     <div
-                        style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 24px; border-radius: 0; border: 1px solid #dee2e6; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;">
-                        <label class="sec-toggle" style="display:flex; align-items:center; gap:16px; cursor:pointer;">
-                            <input type="checkbox" id="sectionLockEnabled" style="width:24px; height:24px;"
+                        style="background: #FFF4ED; padding: 18px 24px; border-radius: 0; border: 1px solid rgba(217, 108, 51, 0.2); box-shadow: 0 4px 12px rgba(217, 108, 51, 0.04); transition: all 0.3s ease;">
+                        <label class="sec-toggle" style="display:flex; align-items:center; gap:16px; cursor:pointer; margin: 0;">
+                            <input type="checkbox" id="sectionLockEnabled" style="width:22px; height:22px; accent-color: var(--primary);"
                                 onchange="exams.sectionLockEnabled = this.checked; if(document.getElementById('lockSections')) document.getElementById('lockSections').checked = this.checked;">
                             <div>
                                 <span
-                                    style="font-size:1.1rem; font-weight:800; color:#2c3e50; display:block; margin-bottom: 4px;">Enable
+                                    style="font-size:1.05rem; font-weight:800; color:#1a1a1b; font-family: 'Montserrat', sans-serif; display:block;">Enable
                                     Section Locking</span>
-                                <span style="font-size:0.85rem; color:#6c757d; font-weight: 500;">Enforce a strict
-                                    sequential order for assessment sections.</span>
                             </div>
                         </label>
                     </div>
                     <div
-                        style="background: linear-gradient(135deg, #e7f3ff 0%, #d0e7ff 100%); padding: 24px; border-radius: 0; border: 1px solid #b8daff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s ease;">
-                        <label class="sec-toggle" style="display:flex; align-items:center; gap:16px; cursor:pointer;">
-                            <input type="checkbox" id="requireNetworkConfig" style="width:24px; height:24px;"
+                        style="background: #FFF4ED; padding: 18px 24px; border-radius: 0; border: 1px solid rgba(217, 108, 51, 0.2); box-shadow: 0 4px 12px rgba(217, 108, 51, 0.04); transition: all 0.3s ease;">
+                        <label class="sec-toggle" style="display:flex; align-items:center; gap:16px; cursor:pointer; margin: 0;">
+                            <input type="checkbox" id="requireNetworkConfig" style="width:22px; height:22px; accent-color: var(--primary);"
                                 onchange="document.getElementById('ipRestrictionEnabled').checked = this.checked; if(this.checked) toggleIPConfig(true);">
                             <div>
                                 <span
-                                    style="font-size:1.1rem; font-weight:800; color:#0056b3; display:block; margin-bottom: 4px;">Network
+                                    style="font-size:1.05rem; font-weight:800; color:#1a1a1b; font-family: 'Montserrat', sans-serif; display:block;">Network
                                     & IP Security</span>
-                                <span style="font-size:0.85rem; color:#495057; font-weight: 500;">Restrict access to
-                                    specific institutional IP ranges or WiFi.</span>
                             </div>
                         </label>
                     </div>
@@ -3426,7 +3617,6 @@
         <div id="step-3" class="wizard-step">
             <div class="step-header">
                 <h2 class="step-title">Step 3: Network & IP Access Control</h2>
-                <p class="step-desc">Restrict this assessment to specific institutional networks or WiFi zones.</p>
                 <div class="tri-orange-line">
                     <div style="background: #FFF1E7; flex: 2.5;"></div>
                     <div style="background: #E6BCA5; flex: 3.5;"></div>
@@ -3434,7 +3624,8 @@
                 </div>
             </div>
 
-            <div style="width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
+            <div
+                style="width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; margin-top: 24px;">
                 <div class="form-card"
                     style="padding: 0 !important; background:transparent; width: 100% !important; box-sizing: border-box; border: none; box-shadow: none;">
                     <label class="sec-toggle"
@@ -3442,11 +3633,7 @@
                         onmouseover="this.style.border='2px solid var(--primary)'; this.style.background='#fff5f0'"
                         onmouseout="this.style.border='2px solid rgba(217,108,51,0.2)'; this.style.background='#fffcfaf2'">
                         <div style="display:flex; align-items:center; gap:18px;">
-                            <div
-                                style="background: rgba(217,108,51,0.1); border-radius: 0; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                                <i data-lucide="shield-check"
-                                    style="color:var(--primary); width: 28px; height: 28px;"></i>
-                            </div>
+                            <!-- <i data-lucide="shield-check" style="color:var(--primary); width: 28px; height: 28px;"></i> -->
                             <div class="section-title"
                                 style="margin:0; font-size: 1.1rem; font-family: 'Montserrat', 'Outfit', sans-serif; font-weight: 600; color: #1a1a1b;">
                                 Enable Advanced Network Restrictions
@@ -4604,7 +4791,7 @@
                 <div class="form-card"
                     style="background:transparent; border:none; padding: 0 !important; width: 100% !important; max-width: 100% !important; box-shadow: none;">
                     <div class="section-title">
-                        <i data-lucide="shield-alert" style="color:var(--primary); width: 28px; height: 28px;"></i>
+                        <!-- <i data-lucide="shield-alert" style="color:var(--primary); width: 28px; height: 28px;"></i> -->
                         Entry Control & Security
                     </div>
                     <div class="tri-orange-line">
@@ -4618,7 +4805,6 @@
                         <label class="sec-toggle"
                             style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <i data-lucide="monitor" style="color:var(--primary); width: 24px; height: 24px;"></i>
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
@@ -4632,8 +4818,6 @@
                         <label class="sec-toggle"
                             style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <i data-lucide="graduation-cap"
-                                    style="color:var(--primary); width: 24px; height: 24px;"></i>
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
@@ -4647,7 +4831,6 @@
                         <label class="sec-toggle"
                             style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <i data-lucide="edit-3" style="color:var(--primary); width: 24px; height: 24px;"></i>
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
@@ -4733,8 +4916,8 @@
                 <div class="form-card"
                     style="background:transparent; border:none; padding: 0 !important; width: 100% !important; max-width: 100% !important; box-shadow: none;">
                     <div class="section-title">
-                        <i data-lucide="cpu" style="color:#2ecc71; width: 28px; height: 28px;"></i> Advanced Proctoring
-                        (AI)
+                        <!-- <i data-lucide="cpu" style="color:#2ecc71; width: 28px; height: 28px;"></i> -->
+                        Advanced Proctoring (AI)
                     </div>
                     <div class="tri-orange-line">
                         <div style="background: #FFF1E7; flex: 2.5;"></div>
@@ -4745,7 +4928,6 @@
                         <label class="sec-toggle"
                             style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <i class="fas fa-video" style="color:var(--primary); width: 20px;"></i>
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
@@ -4759,7 +4941,6 @@
                         <label class="sec-toggle"
                             style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <i class="fas fa-microphone" style="color:var(--primary); width: 20px;"></i>
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
@@ -4773,7 +4954,6 @@
                         <label class="sec-toggle"
                             style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <i class="fas fa-lock" style="color:var(--primary); width: 20px;"></i>
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
@@ -4788,7 +4968,6 @@
                         <label class="sec-toggle"
                             style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <i class="fas fa-network-wired" style="color:var(--primary); width: 20px;"></i>
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
@@ -4805,7 +4984,7 @@
                 <div class="form-card"
                     style="background:transparent; border:none; padding: 0 !important; width: 100% !important; max-width: 100% !important; box-shadow: none;">
                     <div class="section-title">
-                        <i data-lucide="clipboard-check" style="color:#f39c12; width: 28px; height: 28px;"></i>
+                        <!-- <i data-lucide="clipboard-check" style="color:#f39c12; width: 28px; height: 28px;"></i> -->
                         Evaluation Configuration
                     </div>
                     <div class="tri-orange-line">
@@ -4817,7 +4996,6 @@
                         <label class="sec-toggle"
                             style="display:flex; justify-content:space-between; align-items:center; background:transparent; padding:12px 0; border:none; cursor:pointer;">
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <i class="fas fa-marker" style="color:var(--primary);"></i>
                                 <div>
                                     <div
                                         style="font-family: 'Montserrat', sans-serif; font-weight:600; font-size:0.95rem; color:#1a1a1b;">
@@ -4838,17 +5016,14 @@
                 <div class="form-card"
                     style="background:transparent; border:none; padding: 0 !important; width: 100% !important; max-width: 100% !important; box-shadow: none;">
                     <div class="section-title">
-                        <i data-lucide="send" style="color:var(--primary); width: 28px; height: 28px;"></i> Final
-                        Release Configuration
+                        <!-- <i data-lucide="send" style="color:var(--primary); width: 28px; height: 28px;"></i> -->
+                        Final Release Configuration
                     </div>
                     <div class="tri-orange-line">
                         <div style="background: #FFF1E7; flex: 2.5;"></div>
                         <div style="background: #E6BCA5; flex: 3.5;"></div>
                         <div style="background: #DE5B2B; flex: 5;"></div>
                     </div>
-                    <p style="font-size:0.9rem; color:#666; margin-bottom:24px;">Please Review your settings before
-                        taking this
-                        assessment live.</p>
 
                     <div
                         style="position: relative; background: #fff url('../assets/BGNEW01.png') center/cover; padding: 30px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); overflow: hidden; font-family: 'Mulish', sans-serif;">
@@ -4861,7 +5036,8 @@
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span
                                     style="font-size:1.1rem; font-weight:800; color:var(--primary); letter-spacing: 0.5px; text-transform: uppercase; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fas fa-rocket"></i> RELEASE STATUS
+                                    <!-- <i class="fas fa-rocket"></i>  -->
+                                    RELEASE STATUS
                                 </span>
                                 <span
                                     style="background:var(--primary); color:#fff; padding:8px 16px; border-radius: 6px; font-size:0.9rem; font-weight:800; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(217, 108, 51, 0.3); display: flex; align-items: center; gap: 6px;">
@@ -4872,7 +5048,8 @@
                                 <div style="display:flex; flex-direction:column; gap: 4px;">
                                     <span
                                         style="font-size:1.2rem; font-weight:800; color:#2d3748; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-fingerprint" style="color: var(--primary);"></i> TEST IDENTITY
+                                        <!-- <i class="fas fa-fingerprint" style="color: var(--primary);"></i> -->
+                                        TEST IDENTITY
                                     </span>
                                     <span
                                         style="font-size:0.9rem; color:#718096; font-weight:600; padding-left: 26px;">Custom
@@ -6758,7 +6935,7 @@
 
         // Default preference selection: 'confirm' (Right) vs 'cancel' (Left)
         let activeSelection = 'confirm';
-        
+
         function updateModalFocus() {
             if (activeSelection === 'confirm') {
                 confirmBtn.focus();
@@ -7172,7 +7349,7 @@
         if (!container) return;
 
         if (!exams.identityFields || exams.identityFields.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:20px; color:#888; font-size:0.85rem; font-family:\'Montserrat\', sans-serif; font-weight:600; background:transparent; border:1.5px dashed rgba(217, 108, 51, 0.3); border-radius: 0;">No identity verification questions defined. Click below to add.</div>';
+            container.innerHTML = '<div style="text-align:center; padding:12px 0; color:#888; font-size:0.85rem; font-family:\'Montserrat\', sans-serif; font-weight:600; background:transparent; border:none; box-shadow:none;">No mandatory question added yet</div>';
             return;
         }
 
@@ -7659,21 +7836,21 @@
                     <div style="background: #FFF4ED; color: #1a1a1b; border-bottom: 1px solid rgba(217, 108, 51, 0.15); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; gap: 20px;">
                         
                         <!-- Left: Title & Rename -->
-                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
                             <div style="font-weight: 800; font-size: 1.3rem; color: #1a1a1b; font-family: 'Montserrat', sans-serif;">
                                 ${s} - Section ${i + 1}
                             </div>
-                            <button onclick="renameSectionPrompt('${s}', ${i})" style="background: #ffffff; border: 1px solid rgba(217, 108, 51, 0.3); color: var(--primary); width: 32px; height: 32px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(217, 108, 51, 0.08);" title="Rename Section" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';" onmouseout="this.style.background='#ffffff'; this.style.color='var(--primary)';">
+                            <button onclick="renameSectionPrompt(exams.sections[${i}], ${i})" style="background: transparent; border: none; color: var(--primary); font-size: 1.15rem; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 6px; transition: transform 0.2s;" title="Rename Section" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
                                 <i class="fas fa-edit"></i>
                             </button>
                         </div>
                         
                         <!-- Middle: Randomize Config -->
-                        <div style="display: flex; align-items: center; gap: 15px; background: #ffffff; padding: 8px 16px; border-radius: 6px; border: 1px solid rgba(217, 108, 51, 0.25); box-shadow: 0 2px 6px rgba(217, 108, 51, 0.05);">
-                            <label style="font-size:0.8rem; font-weight:700; color:#A03E12; display:flex; align-items:center; gap:8px; cursor:pointer; margin:0; letter-spacing: 0.5px; font-family: 'Montserrat', sans-serif;">
+                        <div style="display: flex; align-items: center; gap: 15px; background: transparent; padding: 0; border: none; box-shadow: none;">
+                            <label style="font-size:0.85rem; font-weight:700; color:#A03E12; display:flex; align-items:center; gap:8px; cursor:pointer; margin:0; letter-spacing: 0.5px; font-family: 'Montserrat', sans-serif;">
                                 <input type="checkbox" id="randEnabled_${i}" ${(exams.pools && exams.pools[s] && exams.pools[s].enabled) || exams.hasMultipleSets ? 'checked' : ''} 
                                     ${exams.hasMultipleSets ? 'disabled' : ''}
-                                    onchange="toggleRandomization('${s}', this.checked, ${i})" style="width:16px; height:16px; accent-color: var(--primary); cursor:pointer;">
+                                    onchange="toggleRandomization(exams.sections[${i}], this.checked, ${i})" style="width:16px; height:16px; accent-color: var(--primary); cursor:pointer;">
                                 RANDOMIZE
                             </label>
                             
@@ -7681,32 +7858,32 @@
                                 <div style="display:flex; align-items:center; gap:6px;">
                                     <span style="font-size:0.75rem; font-weight:700; color:#A03E12; font-family: 'Montserrat', sans-serif;">POOL:</span>
                                     <input type="number" value="${(exams.pools && exams.pools[s] && exams.pools[s].totalGoal) || 0}" 
-                                        style="width:48px; height:26px; border-radius:4px; border: 1px solid rgba(217, 108, 51, 0.3); font-weight:800; text-align:center; color:#DE5B2B; background:#FFF5F0; font-size: 0.85rem; outline: none; font-family: 'Montserrat', sans-serif;" 
-                                        onchange="updatePoolMeta('${s}', 'totalGoal', this.value)">
+                                        style="width:48px; height:26px; border: none; border-bottom: 2px solid rgba(217, 108, 51, 0.4); font-weight:800; text-align:center; color:#DE5B2B; background:transparent; font-size: 0.9rem; outline: none; font-family: 'Montserrat', sans-serif;" 
+                                        onchange="updatePoolMeta(exams.sections[${i}], 'totalGoal', this.value)">
                                 </div>
                                 <div style="display:flex; align-items:center; gap:6px;">
                                     <span style="font-size:0.75rem; font-weight:700; color:#A03E12; font-family: 'Montserrat', sans-serif;">PICK:</span>
                                     <input type="number" value="${(exams.pools && exams.pools[s] && (exams.pools[s].pickCount !== undefined ? exams.pools[s].pickCount : exams.pools[s])) || 0}" 
-                                        style="width:48px; height:26px; border-radius:4px; border: 1px solid rgba(217, 108, 51, 0.3); font-weight:800; text-align:center; color:#DE5B2B; background:#FFF5F0; font-size: 0.85rem; outline: none; font-family: 'Montserrat', sans-serif;" 
-                                        onchange="updatePoolMeta('${s}', 'pickCount', this.value)">
+                                        style="width:48px; height:26px; border: none; border-bottom: 2px solid rgba(217, 108, 51, 0.4); font-weight:800; text-align:center; color:#DE5B2B; background:transparent; font-size: 0.9rem; outline: none; font-family: 'Montserrat', sans-serif;" 
+                                        onchange="updatePoolMeta(exams.sections[${i}], 'pickCount', this.value)">
                                 </div>
                             </div>
                         </div>
 
                         <!-- Right: Actions & Expand -->
-                        <div style="display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end;">
-                            <button onclick="duplicateSection(${i})" style="background: #ffffff; border: 1px solid rgba(217, 108, 51, 0.3); color: var(--primary); width: 36px; height: 36px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(217, 108, 51, 0.08);" title="Duplicate Section" onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';" onmouseout="this.style.background='#ffffff'; this.style.color='var(--primary)';">
+                        <div style="display: flex; align-items: center; gap: 12px; flex: 1; justify-content: flex-end;">
+                            <button onclick="duplicateSection(${i})" style="background: transparent; border: none; color: var(--primary); font-size: 1.15rem; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 6px; transition: transform 0.2s;" title="Duplicate Section" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
                                 <i class="far fa-copy"></i>
                             </button>
                             ${exams.sections.length > 1 ? `
-                                <button onclick="removeSection(${i})" style="background: #ffffff; border: 1px solid rgba(240, 68, 56, 0.3); color: #F04438; width: 36px; height: 36px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(240, 68, 56, 0.08);" title="Remove Section" onmouseover="this.style.background='#F04438'; this.style.color='#fff';" onmouseout="this.style.background='#ffffff'; this.style.color='#F04438';">
+                                <button onclick="removeSection(${i})" style="background: transparent; border: none; color: #F04438; font-size: 1.15rem; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 6px; transition: transform 0.2s;" title="Remove Section" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             ` : ''}
                             
-                            <div onclick="toggleSectionActions(${i})" style="cursor: pointer; display: flex; align-items: center; gap: 10px; margin-left: 6px; padding: 8px 16px; background: #ffffff; border-radius: 6px; border: 1px solid rgba(217, 108, 51, 0.35); color: #A03E12; transition: all 0.2s; box-shadow: 0 2px 6px rgba(217, 108, 51, 0.06);" onmouseover="this.style.borderColor='var(--primary)'; this.style.background='#FFF5F0';" onmouseout="this.style.borderColor='rgba(217, 108, 51, 0.35)'; this.style.background='#ffffff';">
-                                <span style="font-size: 0.9rem; font-weight: 700; font-family: 'Montserrat', sans-serif;">${secQuestions.length}/${totalGoal > 0 ? totalGoal : secQuestions.length} Questions</span>
-                                <i class="fas fa-chevron-down" id="secActionIcon_${i}" style="color: var(--primary); font-size: 0.8rem; transition: transform 0.3s ease;"></i>
+                            <div onclick="toggleSectionActions(${i})" style="cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: 6px; padding: 4px 8px; background: transparent; border: none; color: #A03E12; transition: all 0.2s;" onmouseover="this.style.color='var(--primary)';" onmouseout="this.style.color='#A03E12';">
+                                <span style="font-size: 0.95rem; font-weight: 700; font-family: 'Montserrat', sans-serif;">${secQuestions.length}/${totalGoal > 0 ? totalGoal : secQuestions.length} Questions</span>
+                                <i class="fas fa-chevron-down" id="secActionIcon_${i}" style="color: var(--primary); font-size: 0.85rem; transition: transform 0.3s ease;"></i>
                             </div>
                         </div>
                     </div>
@@ -7733,7 +7910,7 @@
                                         <td style="padding: 20px 12px; color: #666; border-bottom: 1px solid #f5f5f5; text-transform: ${(!q.type || q.type.toLowerCase() === 'mcq') ? 'uppercase' : 'capitalize'};">${q.type || 'MCQ'}</td>
                                         <td style="padding: 20px 12px; color: #444; border-bottom: 1px solid #f5f5f5; font-weight: 500;">Saved</td>
                                         <td style="padding: 20px 12px; border-bottom: 1px solid #f5f5f5;">
-                                            <button onclick="goToStep(4); document.getElementById('questionSection').value = '${s}'; renderQuestions(); editQuestion('${q.id}');" style="background: none; border: none; color: #cf8469; cursor: pointer; font-size: 0.95rem; text-align: left; padding: 0;">
+                                            <button onclick="goToStep(4); document.getElementById('questionSection').value = exams.sections[${i}]; renderQuestions(); editQuestion('${q.id}');" style="background: none; border: none; color: #cf8469; cursor: pointer; font-size: 0.95rem; text-align: left; padding: 0;">
                                                 Modify<br>Question
                                             </button>
                                         </td>
@@ -7751,7 +7928,7 @@
             `;
         }).join('');
         lucide.createIcons();
-        document.getElementById('questionSection').innerHTML = exams.sections.map(s => `<option value="${s}">${s}</option>`).join('');
+        document.getElementById('questionSection').innerHTML = exams.sections.map(s => `<option value="${s.replace(/"/g, '&quot;')}">${s}</option>`).join('');
     }
 
     function toggleSectionActions(i) {
@@ -10490,7 +10667,7 @@
                 const user = auth.getCurrentUser();
                 if (user) return (user.id || user.email || user.rollNo || 'teacher_default').toString();
             }
-        } catch (e) {}
+        } catch (e) { }
         return 'teacher_default';
     }
 
@@ -10510,7 +10687,7 @@
                         }
                     };
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
         return {
             background: 'default',
@@ -10682,7 +10859,7 @@
             console.error("creatorSettingsModalOverlay element not found!");
             return;
         }
-        
+
         try {
             const settings = getCreatorSettings();
             currentSelectedBg = settings.background || 'default';
@@ -10722,7 +10899,7 @@
     function selectBgOption(bgType, liveApply = true) {
         currentSelectedBg = bgType;
         document.querySelectorAll('.bg-option-card').forEach(card => card.classList.remove('active'));
-        
+
         if (bgType === 'white') {
             document.getElementById('bgOptWhite')?.classList.add('active');
         } else if (bgType === 'bgnew01') {

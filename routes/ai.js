@@ -8,6 +8,8 @@ const aiController = require("../controllers/aiController");
  * @access  Internal
  */
 router.post("/ask-ai", aiController.askAI);
+router.post("/generate-questions", aiController.generateQuestions);
 
 module.exports = router;
+
 
