@@ -3413,41 +3413,10 @@
                     </div>
                 </div>
 
-                <!-- Optional OpenAI API Key Configuration Section -->
-                <div style="background: #fffcf8; border: 1px solid rgba(222, 104, 52, 0.25); border-radius: 8px; padding: 10px 14px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleAIKeyConfig()">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span id="aiEngineStatusDot" style="width: 8px; height: 8px; border-radius: 50%; background: #16a34a; display: inline-block;"></span>
-                            <span style="font-size: 0.8rem; font-weight: 700; color: #1e293b;" id="aiEngineStatusText">Engine: Built-in High-Speed Synthesizer</span>
-                        </div>
-                        <span style="font-size: 0.76rem; color: #DE6834; font-weight: 700;">
-                            <span id="aiKeyToggleLabel">API Key</span> <i class="fas fa-cog"></i>
-                        </span>
-                    </div>
-
-                    <div id="aiKeyConfigDrawer" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(222, 104, 52, 0.2);">
-                        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; text-transform: uppercase;">
-                            Custom OpenAI API Key (Optional)
-                        </label>
-                        <div style="display: flex; gap: 6px;">
-                            <input type="password" id="aiCustomApiKeyInput" placeholder="sk-proj-..."
-                                style="flex: 1; height: 34px; padding: 0 10px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-family: monospace; font-size: 0.82rem; outline: none;">
-                            <button type="button" onclick="saveAndTestCustomAIKey()"
-                                style="background: #DE6834; color: #ffffff; border: none; border-radius: 6px; padding: 0 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
-                                Save
-                            </button>
-                            <button type="button" onclick="clearCustomAIKey()"
-                                style="background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 8px; font-size: 0.8rem; cursor: pointer;" title="Reset to Built-in Engine">
-                                ✕
-                            </button>
-                        </div>
-                        <div id="aiKeyFeedbackMsg" style="font-size: 0.76rem; margin-top: 4px; display: none;"></div>
-                    </div>
-                </div>
 
                 <!-- Generate Trigger Button -->
                 <button type="button" id="btnExecuteAIGen" onclick="executeAIGeneration()" class="btn btn-run"
-                    style="width: 100%; height: 48px; border-radius: 8px; font-size: 1.02rem; font-weight: 700; gap: 10px; box-shadow: 0 4px 14px rgba(222, 104, 52, 0.25); cursor: pointer; margin-top: 4px;">
+                    style="width: 100%; height: 48px; border-radius: 8px; font-size: 1.02rem; font-weight: 700; gap: 10px; box-shadow: 0 4px 14px rgba(222, 104, 52, 0.25); cursor: pointer; margin-top: 8px;">
                     <i class="fas fa-robot"></i> Generate with AI
                 </button>
             </div>
