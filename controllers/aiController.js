@@ -547,7 +547,7 @@ exports.generateQuestions = async (req, res) => {
 
         const safeTopic = (topic || prompt || "General Knowledge").trim();
         const safeType = type || 'mcq';
-        const numCount = Math.min(Math.max(parseInt(count) || 1, 1), 10);
+        const numCount = Math.min(Math.max(parseInt(count) || 1, 1), 20);
         const numOpts = Math.min(Math.max(parseInt(optionsCount) || 4, 2), 6);
         const numSample = Math.min(Math.max(parseInt(sampleTestCasesCount) || 2, 1), 5);
         const numHidden = Math.min(Math.max(parseInt(hiddenTestCasesCount) || 3, 1), 10);
@@ -561,20 +561,34 @@ exports.generateQuestions = async (req, res) => {
 
         if (client) {
             try {
-                const systemPrompt = `You are an expert assessment and curriculum engineer.
-Generate EXACTLY ${numCount} MANDATORILY UNIQUE, NON-REPEATING questions for the requested topic.
-Every question MUST have a distinct title, distinct problem statement, and distinct concepts. No two questions can be similar or repeat.
+                const systemPrompt = `You are a principal assessment designer and professor of computer science.
+Generate EXACTLY ${numCount} NEW, ORIGINAL, and HIGHLY DISTINCT questions for the requested topic.
 
-Return ONLY a valid JSON array matching this format based on question type:
+CRITICAL INSTRUCTIONS FOR HIGH-QUALITY QUESTIONS:
+1. Difficulty level: ${diff}.
+2. Questions must test deep conceptual understanding and problem-solving, NOT rote memorization.
+3. For MCQs, distribute questions across the following categories:
+   - Conceptual & Invariant principles
+   - Code-based & Implementation tracing
+   - Output prediction & Trace evaluation
+   - Time/Space asymptotic complexity analysis
+   - Real-world application & Edge-case problem solving
+4. Cover relevant core subtopics comprehensively (e.g., if Binary Trees: traversals, BST invariant, LCA, depth/diameter, balancing, serialization).
+5. Provide exactly ${numOpts} distinct options with NO ambiguous wording.
+6. Ensure the correct answer is unambiguously correct and include an "explanation" field for every question.
+7. Strictly NO duplicate questions or repeated concepts.
+
+Output format MUST be a raw JSON array matching this structure:
 
 For MCQ:
 [
   {
-    "heading": "Unique Short Title",
-    "title": "<p>Detailed question HTML</p>",
+    "heading": "Descriptive Topic - Subtopic/Angle",
+    "title": "<p>Detailed question statement in clean HTML</p>",
     "type": "mcq",
-    "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-    "correctAnswer": "Exact string of correct option",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "correctAnswer": "Exact string of Option A",
+    "explanation": "Clear, concise technical justification of why this answer is correct.",
     "marks": ${itemMarks},
     "difficulty": "${diff}"
   }
@@ -583,7 +597,7 @@ For MCQ:
 For Coding:
 [
   {
-    "heading": "Unique Coding Problem Title",
+    "heading": "Unique Challenge Title",
     "title": "<p><strong>Problem Statement:</strong> ...</p><p><strong>Input Format:</strong> ...</p><p><strong>Output Format:</strong> ...</p><p><strong>Constraints:</strong> ...</p>",
     "type": "coding",
     "languages": ["Python", "Java", "C++", "JavaScript"],
@@ -602,32 +616,14 @@ For Coding:
   }
 ]
 
-For Assertion-Reason:
-[
-  {
-    "heading": "Unique Assertion Title",
-    "title": "<p><strong>Assertion (A):</strong> ...</p><p><strong>Reason (R):</strong> ...</p>",
-    "type": "assertion_reason",
-    "options": [
-      "Both (A) and (R) are true and (R) is the correct explanation of (A)",
-      "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)",
-      "(A) is true but (R) is false",
-      "(A) is false but (R) is true"
-    ],
-    "correctAnswer": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
-    "marks": ${itemMarks},
-    "difficulty": "${diff}"
-  }
-]
-
-Do NOT wrap in markdown fences. Output ONLY the raw JSON array.`;
+Return ONLY the raw JSON array. No markdown codeblocks (\`\`\`json).`;
 
                 const modelName = process.env.OPENAI_MODEL || "gpt-4o-mini";
                 const completion = await client.chat.completions.create({
                     model: modelName,
                     messages: [
                         { role: "system", content: systemPrompt },
-                        { role: "user", content: `Topic: ${safeTopic}\nPrompt instructions: ${prompt || 'Generate distinct technical questions'}\nType: ${safeType}\nCount: ${numCount}\nOptions count: ${numOpts}\nSample TC: ${numSample}\nHidden TC: ${numHidden}` }
+                        { role: "user", content: `Topic: ${safeTopic}\nPrompt/Instructions: ${prompt || 'Generate high-caliber, diverse assessment questions'}\nType: ${safeType}\nCount: ${numCount}\nOptions Count: ${numOpts}\nSample Test Cases: ${numSample}\nHidden Test Cases: ${numHidden}` }
                     ],
                     temperature: 0.7
                 });
