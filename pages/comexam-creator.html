@@ -3414,68 +3414,17 @@
             `;
 
             showModal({
-                title: 'Deployment Successful',
-                desc: '',
-                content: `
-<div style="background: linear-gradient(145deg, #ffffff, #fcfcfc); padding: 32px; border-radius: 20px; border: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); margin-top: -10px;">
-    
-    <!-- Success Header -->
-    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; margin-bottom: 8px;">
-        <div style="width: 72px; height: 72px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #10b981; font-size: 2.2rem; box-shadow: 0 4px 24px rgba(16, 185, 129, 0.2);">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <div>
-            <h3 style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800; color: #1a1a1b;">Ready for Candidates</h3>
-            <p style="margin: 6px 0 0 0; font-size: 0.95rem; color: #64748b; font-family: 'Inter', sans-serif;">The assessment is now live on the Exampad neural network.</p>
-        </div>
-    </div>
-
-    <!-- Credentials Box -->
-    <div style="background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden;">
-        <!-- Test ID Row -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #e2e8f0;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 32px; height: 32px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                    <i class="fas fa-fingerprint"></i>
-                </div>
-                <span style="font-size: 0.85rem; font-weight: 800; color: #475569; font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px;">TEST IDENTITY</span>
-            </div>
-            <span style="font-family: 'JetBrains Mono', monospace; color: var(--primary); font-size: 1.4rem; font-weight: 800; background: #fff; padding: 8px 18px; border-radius: 10px; border: 1px solid #cbd5e1; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">${testId}</span>
-        </div>
-        
-        <!-- Passcode Row -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 18px 24px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 32px; height: 32px; border-radius: 8px; background: #fff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <span style="font-size: 0.85rem; font-weight: 800; color: #475569; font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px;">PASSCODE</span>
-            </div>
-            <span style="font-family: 'JetBrains Mono', monospace; color: #0f172a; font-size: 1.4rem; font-weight: 800; background: #fff; padding: 8px 18px; border-radius: 10px; border: 1px dashed #cbd5e1;">${passcode}</span>
-        </div>
-    </div>
-
-    <!-- URL Box -->
-    <div style="padding: 20px; background: rgba(217, 108, 51, 0.05); border-radius: 16px; border: 1px solid rgba(217, 108, 51, 0.2);">
-        <label style="font-size: 0.75rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px;">
-            <i class="fas fa-link"></i> DIRECT ACCESS URL
-        </label>
-        <div style="display: flex; gap: 12px; align-items: center;">
-            <div style="flex: 1; background: #fff; border: 1px solid rgba(217, 108, 51, 0.3); border-radius: 12px; padding: 12px 16px; overflow: hidden; display: flex; align-items: center;">
-                <input type="text" readonly value="https://exam.testpad.chitpara.edu.in/test/${testId}" style="width: 100%; background: transparent; border: none; font-size: 0.9rem; color: #334155; font-weight: 600; font-family: 'Inter', sans-serif; outline: none;" id="finalLink">
-            </div>
-            <button onclick="navigator.clipboard.writeText(document.getElementById('finalLink').value); showToast('URL Copied to Clipboard!'); this.innerHTML='<i class=\'fas fa-check\'></i>'; setTimeout(() => this.innerHTML='<i class=\'fas fa-copy\'></i>', 2000);" style="background: var(--primary); color: #fff; border: none; width: 46px; height: 46px; border-radius: 12px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(217, 108, 51, 0.3); transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(217, 108, 51, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(217, 108, 51, 0.3)';">
-                <i class="fas fa-copy"></i>
-            </button>
-        </div>
-    </div>
-</div>
-                `,
-                confirmText: 'Return to Command Center',
-                onConfirm: goBack
+                title: 'Question Pool Database',
+                desc: 'Select questions to import into your active assessment.',
+                content: html,
+                confirmText: 'Done',
+                onConfirm: () => {}
             });
-        }, 1500);
-    }
+        } catch (e) {
+            console.error('Error opening question pool:', e);
+            showToast('Error opening question pool: ' + e.message);
+        }
+    };
 
     function previewAsStudent() {
         syncState();

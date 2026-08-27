@@ -9,3 +9,6 @@ build/
 *.bak
 .DS_Store
 Thumbs.db
+.system_generated/
+scratch/
+temp_*.js

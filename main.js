@@ -8,11 +8,18 @@ const { app, BrowserWindow, ipcMain, globalShortcut, dialog, Menu, desktopCaptur
 const path = require('path');
 const fs = require('fs');
 
-// AI Integration imports
+// AI Integration and Backend Server imports
 if (app.isPackaged) {
     require('dotenv').config({ path: path.join(process.resourcesPath, '.env') });
 } else {
     require('dotenv').config();
+}
+
+// Automatically start the embedded backend Express API server
+try {
+    require('./server');
+} catch (e) {
+    console.warn('[SERVER] Express server initialization notice:', e.message);
 }
 
 let mainWindow;
